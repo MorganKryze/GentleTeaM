@@ -80,11 +80,12 @@ const impl = await agent(
 if (!impl || impl.status === 'BLOCKED') return { status: 'BLOCKED', impl }
 
 const specialists = Object.keys(triggers).filter((r) => impl.files.some((f) => triggers[r].some((re) => re.test(f))))
+// A Fix escalates on size alone. On security or data ground it stays a Fix and that specialist
+// reviews it, as on any task.
 if (A.track === 'fix') {
-  const surface = specialists.filter((r) => r === 'security-reviewer' || r === 'data-reviewer')
   const ceiling = A.fixCeiling ?? 3
-  if (impl.files.length > ceiling || surface.length) {
-    const reason = impl.files.length > ceiling ? `${impl.files.length} files > ${ceiling}` : `touches ${surface.join(', ')} ground`
+  if (impl.files.length > ceiling) {
+    const reason = `${impl.files.length} files > ${ceiling}`
     log(`Fix escalates to Feature: ${reason}`)
     return { status: 'ESCALATE', reason, head: impl.head, files: impl.files }
   }

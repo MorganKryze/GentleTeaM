@@ -8,12 +8,15 @@ versions follow [SemVer](https://semver.org/).
 ### Added
 - Workflow test (`scripts/workflows.test.mjs`, no dependencies): runs deliver-task and
   design-loop against scripted agents and checks what they return and whom they dispatch,
-  with which model and effort: fix rounds, the Fix ceiling and its security and data
-  escalation, the design bar and rounds. `scripts/validate.mjs` runs it.
+  with which model and effort: fix rounds, the Fix ceiling, the specialists a Fix keeps on
+  security and data ground, the design bar and rounds. `scripts/validate.mjs` runs it.
 
 ### Changed
 - Install docs: in the VS Code extension, reload the window to see new or updated skills in the
   command menu; `/reload-plugins` alone does not refresh it.
+- A Fix on security or data ground no longer escalates to a Feature: the specialist for that
+  ground joins the reviewer, and only a Fix past the Fix ceiling escalates. A schema, migration or
+  auth change is still a Feature from the track pick (position 9, docs/positions.md).
 
 ### Fixed
 - Fix rounds keep the implementer at `max`, or any effort outside `low` to `xhigh`, instead of
