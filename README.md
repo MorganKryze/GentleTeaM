@@ -1,5 +1,15 @@
 # GentleTeaM (GTM)
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.png">
+  <img alt="GentleTeaM, a light agent-team method for Claude Code: you approve the board, the spec and the go" src="docs/assets/banner-light.png">
+</picture>
+
+[![Release](https://img.shields.io/github/v/release/MorganKryze/GentleTeaM)](https://github.com/MorganKryze/GentleTeaM/releases)
+[![validate](https://github.com/MorganKryze/GentleTeaM/actions/workflows/validate.yml/badge.svg)](https://github.com/MorganKryze/GentleTeaM/actions/workflows/validate.yml)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757)](docs/install.md)
+
 A light agent-team method for [Claude Code](https://code.claude.com), packaged as a plugin.
 GTM runs a small team of role agents (designer, architect, implementer, reviewers) that design,
 specify, build and review your change, while you make three decisions per feature: approve the

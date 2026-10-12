@@ -10,5 +10,5 @@
   "homepage": "https://github.com/MorganKryze/GentleTeaM",
   "repository": "https://github.com/MorganKryze/GentleTeaM",
   "license": "AGPL-3.0-only",
-  "keywords": ["agent-team", "method", "spec-driven", "code-review", "workflow", "subagents"]
+  "keywords": ["agent-team", "method", "spec-driven", "code-review", "workflow", "subagents", "tdd", "design-review", "multi-agent"]
 }
