@@ -126,6 +126,42 @@ never deleted. The architect reads it before every plan and lists the lessons it
 guidelines; `/gtm:tune` reads the `run` and `usage` lines to adjust the team profile. This is how
 each branch makes the next one cheaper.
 
+## Stealth mode
+Stealth mode is for work in a repository whose history is not yours to sign: a client's project,
+an open-source project you contribute to. GTM still runs the same team; it just leaves no trace in
+the project, and what it writes there reads like the project's own people wrote it.
+
+**What it changes**
+| Area | Stealth off (default) | Stealth on |
+| --- | --- | --- |
+| GTM's files | `.gtm/` may be committed, reports and mockups excluded | the whole root excluded through `.git/info/exclude`, or kept outside the repository |
+| Tracked files | a `GTM root:` line in CLAUDE.md when the root moves | nothing: no README badge, no CLAUDE.md or AGENTS.md line, no committed `.claude/settings.json`; GTM is installed at user scope |
+| Commits, PRs, docs, comments, changelogs, branch names | plain writing | no GTM name (GTM, `.gtm`, roles, skills, plans, ledger, workflows), no attribution trailer, branches in the project's pattern |
+| Voice | `guidelines/voice.md` is read | `guidelines/voice.md` is mandatory |
+| Ship | gate check | gate check, then the footprint check; a hit stops the ship |
+
+The project voice guideline is part of every project's conventions. It asks for the voice found in
+the project's own `git log`, docs and comments, and for plain writing: no filler or hedging, no
+stock phrases, no reflexive lists of three, no em-dash habit, no emoji clutter, no bullet walls for
+short content, specific words, active voice, varied sentence length.
+
+**How to switch it.** `/gtm:init` asks, with a recommendation from what it found (who owns the
+repository, its contributors, any policy on tools). `/gtm:tune stealth on` or `off` switches it
+later. Turning it on offers to remove what GTM already left in tracked files, in one commit; pushed
+history is never rewritten.
+
+**What the footprint check scans.** `plugins/gtm/scripts/footprint-check.mjs`, a Node script with
+no dependencies, reads the branch against its base: the branch name, every commit message, the PR
+text, every line the diff adds and every new file name. It reports each hit with its location:
+GTM's vocabulary, the names of excluded paths (the root, the mockups folder, `git.never_name`,
+`.git/info/exclude`), the attribution text in `git.forbid`, and in prose (commit messages, the PR,
+doc files, comment lines) em dashes, emoji, stock phrases, filler and hedging. Lists of three and
+runs of short bullets come back as notes, since a pattern cannot tell them from honest lists. The
+`footprint` block of `config.yml` adds words, allows known false positives and skips tells the
+project's own voice uses. Sentence length and passive voice are left to the voice guideline.
+
+Stealth mode changes what GTM writes into your project; it does not change any rules your organisation or the projects you contribute to set about tools and disclosure — follow those.
+
 ## Skills
 | Skill | Does |
 | --- | --- |
@@ -135,9 +171,9 @@ each branch makes the next one cheaper.
 | `/gtm:spec` | writes the spec, presents the For-you block and decision cards |
 | `/gtm:plan` | writes the task plan, replays risky tasks |
 | `/gtm:deliver` | delivers the plan task by task, final review, rulings |
-| `/gtm:ship` | PR text; push, merge, tag or release on the human's go |
+| `/gtm:ship` | PR text, the footprint check in stealth mode; push, merge, tag or release on the human's go |
 | `/gtm:retro` | distils lessons into the ledger and guidelines |
-| `/gtm:tune` | re-evaluates the team profile and conventions from evidence |
+| `/gtm:tune` | re-evaluates the team profile and conventions from evidence; switches stealth mode |
 | `/gtm:brief-me` | re-presents any artifact at brief, standard or deep detail |
 
 Workflows: `gtm:design-loop` and `gtm:deliver-task`, run by the skills above.

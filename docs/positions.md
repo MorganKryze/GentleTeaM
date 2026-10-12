@@ -108,3 +108,16 @@
 - **Cost:** stricter design rounds and an automated check per screen and theme.
 - **Enforced by:** `guidelines/accessibility.md` and `design.md`; the design critic's measurements;
   ux-qa on every screen diff.
+
+## 15. GTM serves the project, it does not sign it
+- **Statement:** what GTM writes into a project belongs to the project and reads in its voice. In
+  stealth mode GTM leaves no footprint at all: no files in the tracked tree, no names, no trailers.
+- **Why:** a project's history, docs and comments are read by its maintainers for years; a tool's
+  vocabulary there is noise to them, and template prose wastes their attention as much as the
+  developer's.
+- **Cost:** with stealth on, the team's memory stays on one machine and teammates do not inherit
+  it; the footprint check adds a step before shipping and can stop on a false positive.
+- **Enforced by:** `guidelines/voice.md` in every project; `stealth` in the config, chosen at
+  `/gtm:init` and switched with `/gtm:tune`; the footprint check, which `/gtm:ship` runs and which
+  stops the ship on a hit. Stealth changes what GTM writes, not the rules a project or an
+  organisation sets about tools and disclosure.

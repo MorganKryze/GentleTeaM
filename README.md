@@ -81,8 +81,10 @@ Details: [roles](docs/roles.md).
 - **Evidence before claims, tests first,** file-based hand-offs, specialists on trigger.
 - **Weights are a project decision,** recorded with reasons and revisited with evidence.
 - **Nothing pushed, merged or released without your go;** history kept, no squash by default.
+- **Stealth mode** for repositories that are not yours: no trace of GTM in the project, and its
+  commits, PRs and docs in the project's own voice. [method](docs/method.md#stealth-mode)
 
-All fourteen positions, with their costs: [positions](docs/positions.md).
+All fifteen positions, with their costs: [positions](docs/positions.md).
 
 ## 📚 Docs
 [Manifesto](docs/manifesto.md) · [Positions](docs/positions.md) · [Principles](docs/principles.md) ·

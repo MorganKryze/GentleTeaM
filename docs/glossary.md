@@ -17,6 +17,7 @@
 | Escalation | A Fix becoming a Feature when it exceeds the file ceiling or touches a schema or security surface. One-way. |
 | Final review | The whole-branch review before the go, with at most one fix wave. |
 | Fix round | One implementer pass over open findings, followed by re-review by the reviewers who raised them. Capped at three by default. |
+| Footprint check | The script `/gtm:ship` runs in stealth mode: scans the branch's commits, PR text, diff and new file names for GTM's names, excluded paths and writing tells; a hit stops the ship. [method](method.md#stealth-mode) |
 | For you | The at-most-ten-line synthesis that opens every artifact meant for the human. |
 | Gate | A check that must pass before work moves on. [method](method.md#gates) |
 | GTM root | The folder holding GTM's artifacts, `.gtm/` by default. |
@@ -28,11 +29,13 @@
 | Minor | A review finding that does not block a task; logged and triaged by the final review. |
 | NEEDS CLARIFICATION | A marker for something the spec must not guess; zero must remain before the plan. |
 | Priority | P0 to P3, defined in `guidelines/work.md`. |
+| Project voice | The guideline (`guidelines/voice.md`) that makes text written into the project match its own history and docs, in plain writing. [method](method.md#stealth-mode) |
 | Replay | Running a risky task's code in a scratch clone while planning, to prove the plan before delivery. |
 | Retro | The compound step: distilling a branch into lessons and guideline edits. |
 | Ruling | A decision the team took without asking the human, listed with its cost if wrong. |
 | Specialist | A reviewer that runs only on trigger: security, data, UX. |
 | Specialist trigger | A path regex in the team profile; a specialist runs when a changed file matches one. |
+| Stealth mode | `stealth: on` in the config: GTM keeps its files out of the tracked tree and its names out of everything it writes into the project. [method](method.md#stealth-mode) |
 | Story | One user-visible outcome with acceptance lines, delivered by one track. |
 | Team profile | `.gtm/team.md`: priorities, model and effort per role, specialists, gates, each with its reason and date. [method](method.md#team-profile) |
 | Touchpoint | A moment where the human decides: board, spec synthesis, go. |
