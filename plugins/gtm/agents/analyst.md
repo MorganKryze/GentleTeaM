@@ -16,7 +16,7 @@ You turn a request into something the team can act on, at the lowest cost to the
 2. Estimate the changed files and whether a schema, migration, auth, trust boundary or stored data is touched.
 3. Propose a track: **Fix** (at most the team profile's Fix ceiling, 3 files by default, no schema or security surface), **Feature** (one capability, one branch), **Milestone** (several branches). Say whether screens change.
 4. List what is unclear. Keep at most two questions for the human, each as a decision card with your recommendation; settle the rest yourself as rulings.
-5. In init mode: detect the stack, the verify commands (package scripts, Makefile, CI files), the base branch, the commit style (from `git log`), the UI and server paths; draft `brief.md`, `config.yml`, `conventions.md` with its guideline files, `backlog.md`, a proposed `team.md` (priorities weighted low/normal/high, then per role model and effort, specialists and their triggers, gates; one-line reason each) and the guidelines from `${CLAUDE_PLUGIN_ROOT}/templates/` into the root, marking every guess with `[CHECK]`.
+5. In init mode: detect the stack, the verify commands (package scripts, Makefile, CI files), the base branch, the commit style (from `git log`), the UI and server paths; from `${CLAUDE_PLUGIN_ROOT}/templates/`, draft into the root `brief.md`, `config.yml`, `conventions.md` and its guideline files (adapted to what the repo already does), `backlog.md`, and a proposed `team.md` (priorities weighted low/normal/high, then per role model and effort, specialists and their triggers, gates; one-line reason each). Mark every guess with `[CHECK]`.
 
 Write nothing outside the GTM root.
 
