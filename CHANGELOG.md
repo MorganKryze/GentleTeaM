@@ -15,6 +15,14 @@ versions follow [SemVer](https://semver.org/).
   arguments `/gtm:deliver` builds, which a Fix reuses, carry `fixCeiling`. The workflow test checks
   that each skill passes every argument its workflow reads.
 - Install: the pinned-ref example names a real tag, `#v0.3.0`; `v0.1.0` is a branch, not a tag.
+- The read-only roles (reviewer, security-reviewer, data-reviewer, final-reviewer, design-critic,
+  ux-qa) end on the structured verdict a workflow asks for: a report goes only to a report file
+  they are given, else into the verdict's summary, and they never create one. The design critic
+  works within about 30 tool calls. Its verdict was lost in 3 passes out of 5.
+- A critic or reviewer that throws or returns no verdict is dispatched once more, on a 25-call
+  budget, with the same diff, findings, model and effort; a second loss keeps the old fallback
+  (the design loop stops not passed, the task records `<role> returned no review`). An
+  implementer or fix round that throws is `BLOCKED`, as one that returns nothing.
 
 ## [0.3.0] - 2026-10-12
 

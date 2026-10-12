@@ -333,13 +333,88 @@ const deliver = [
     dispatches: [implement(), reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' }],
     log: ['security-reviewer', '('],
   },
+  {
+    name: 'lost review: nothing back, then a retry with findings starts the fix round',
+    args: { team: { reviewer: { model: 'opus', effort: 'medium' } } },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? null : d.label === 'reviewer · retry' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(),
+      reviewer('reviewer', { model: 'opus', effort: 'medium' }),
+      reviewer('reviewer · retry', { model: 'opus', effort: 'medium' }),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1', { model: 'opus', effort: 'medium' }),
+    ],
+    log: ['reviewer: no result, one retry'],
+  },
+  {
+    name: 'lost review: a specialist throws in a fix round, only it is retried and its approval counts',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], (d) => {
+      if (d.label === 'security-reviewer · round 1') throw new Error('no structured output')
+      return d.label === 'security-reviewer' ? bad : ok
+    }),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1 · retry' },
+    ],
+    log: ['security-reviewer · round 1: no result, one retry'],
+  },
+  {
+    name: 'lost review twice: nothing back, then a throw, is an important finding with no third dispatch',
+    args: { fixRounds: 0 },
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer · retry') throw new Error('no structured output')
+      return null
+    }),
+    returns: {
+      status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'],
+      open: [{ severity: 'important', summary: 'reviewer returned no review', by: 'reviewer' }],
+      stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · retry')],
+    log: ['reviewer: no result after its retry, no third dispatch'],
+  },
+  {
+    name: 'implementer throws: BLOCKED as for nothing back, never retried',
+    args: {},
+    reply: () => {
+      throw new Error('no structured output')
+    },
+    returns: { status: 'BLOCKED', impl: null },
+    dispatches: [implement()],
+  },
+  {
+    name: 'fix round throws: BLOCKED with the open findings, never retried',
+    args: {},
+    reply: (d) => {
+      if (d.label.startsWith('fix')) throw new Error('no structured output')
+      return implementer(['src/a.js'], () => bad)(d)
+    },
+    returns: {
+      status: 'BLOCKED', head: 'h0', open: [{ ...badFinding, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
-// Answers the designer with `board <round>` and the critic with critique(round).
+// Answers the designer with `board <round>` and the critic with critique(round, label).
 const designReply = (critique) => (d) => {
-  const round = Number(d.label.match(/round (\d+)$/)[1])
-  return d.agentType === 'gtm:designer' ? `board ${round}` : critique(round)
+  const round = Number(d.label.match(/round (\d+)/)[1])
+  return d.agentType === 'gtm:designer' ? `board ${round}` : critique(round, d.label)
 }
+const critic = (label, extra = {}) => ({ agentType: 'gtm:design-critic', label, ...extra })
 const score = (n, mustFix = []) => ({ score: n, mustFix, shouldFix: [], summary: 's' })
 const designRounds = (n, extra = {}, criticExtra = extra) =>
   rounds(n, (r) => [
@@ -361,6 +436,39 @@ const design = [
     reply: designReply(() => score(9, ['contrast'])),
     returns: { passed: false, rounds: 3, scores: [9, 9, 9], verdict: score(9, ['contrast']), board: 'board 3' },
     dispatches: designRounds(3),
+  },
+  {
+    name: 'design: a critic that returns nothing is retried once, same model and effort, and passes',
+    args: { team: { 'design-critic': { model: 'opus', effort: 'high' } } },
+    reply: designReply((r, label) => (label.endsWith('· retry') ? score(8) : null)),
+    returns: { passed: true, rounds: 1, scores: [8], verdict: score(8), board: 'board 1' },
+    dispatches: [
+      ...designRounds(1, {}, { model: 'opus', effort: 'high' }),
+      critic('critic · round 1 · retry', { model: 'opus', effort: 'high' }),
+    ],
+    log: ['critic · round 1: no result, one retry'],
+  },
+  {
+    name: 'design: a critic that throws is retried once and its score counts against the bar',
+    args: {},
+    reply: designReply((r, label) => {
+      if (label === 'critic · round 1') throw new Error('no structured output')
+      return score(r === 1 ? 7 : 8)
+    }),
+    returns: { passed: true, rounds: 2, scores: [7, 8], verdict: score(8), board: 'board 2' },
+    dispatches: [...designRounds(1), critic('critic · round 1 · retry'), ...designRounds(2).slice(2)],
+    log: ['critic · round 1: no result, one retry'],
+  },
+  {
+    name: 'design: nothing back, then a throw, stops the loop not passed, no third dispatch',
+    args: {},
+    reply: designReply((r, label) => {
+      if (label.endsWith('· retry')) throw new Error('no structured output')
+      return null
+    }),
+    returns: { passed: false, rounds: 0, scores: [], verdict: null, board: 'board 1' },
+    dispatches: [...designRounds(1), critic('critic · round 1 · retry')],
+    log: ['critic · round 1: no result after its retry, no third dispatch'],
   },
 ].map((s) => ({ workflow: 'design-loop', ...s }))
 

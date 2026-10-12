@@ -30,6 +30,25 @@ function as(role, extra) {
   return o
 }
 
+// A critic that throws or returns nothing gets one more dispatch on a budget; a second loss is
+// logged and stops the loop as before. Its model and effort stay the same.
+const RETRY = '\n\nThis is a retry: your previous run ended without the structured result. Use at most 25 tool calls, write no report file, and make the structured output call your last action.'
+async function attempt(prompt, opts) {
+  try {
+    return await agent(prompt, opts)
+  } catch {
+    return null
+  }
+}
+async function retried(prompt, opts) {
+  const first = await attempt(prompt, opts)
+  if (first != null) return first
+  log(`${opts.label}: no result, one retry with a 25-call budget`)
+  const second = await attempt(prompt + RETRY, { ...opts, label: `${opts.label} · retry` })
+  if (second == null) log(`${opts.label}: no result after its retry, no third dispatch`)
+  return second
+}
+
 let board = null
 let verdict = null
 const scores = []
@@ -42,7 +61,7 @@ for (let round = 1; round <= MAX; round++) {
     as('designer', { label: `designer · round ${round}`, phase: 'Design' }),
   )
   if (!board) break
-  verdict = await agent(
+  verdict = await retried(
     `Score this board against ${GUIDE}. Pass bar: ${BAR}/10 with zero must-fix.\n\nBrief:\n${A.brief}\n\nDesigner hand-back (PNG and HTML paths inside):\n${board}`,
     as('design-critic', { schema: SCORE, label: `critic · round ${round}`, phase: 'Critique' }),
   )

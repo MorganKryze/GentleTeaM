@@ -72,8 +72,29 @@ for (const [role, list] of Object.entries(A.triggers || {})) {
   })
 }
 
+// A reviewer that throws or returns nothing gets one more dispatch on a budget, with the same diff,
+// findings, model and effort; a second loss is logged and left to the fallback below. An
+// implementer is never retried (a second one could stack commits on a half-done attempt): a throw
+// is BLOCKED, as nothing back is.
+const RETRY = '\n\nThis is a retry: your previous run ended without the structured result. Use at most 25 tool calls, write no report file, and make the structured output call your last action. What you could not check within that budget is an important finding, never an approval.'
+async function attempt(prompt, opts) {
+  try {
+    return await agent(prompt, opts)
+  } catch {
+    return null
+  }
+}
+async function retried(prompt, opts) {
+  const first = await attempt(prompt, opts)
+  if (first != null) return first
+  log(`${opts.label}: no result, one retry with a 25-call budget`)
+  const second = await attempt(prompt + RETRY, { ...opts, label: `${opts.label} · retry` })
+  if (second == null) log(`${opts.label}: no result after its retry, no third dispatch`)
+  return second
+}
+
 phase('Implement')
-const impl = await agent(
+const impl = await attempt(
   `Implement this task on branch ${A.branch} (base ${A.base}).\nBrief (read it first): ${A.brief}\nReport file: ${A.report}\nReturn head = the commit after your work, files = repo-relative paths changed since ${A.base}.`,
   as('implementer', { schema: IMPL, label: 'implement', phase: 'Implement' }),
 )
@@ -105,7 +126,7 @@ for (let round = 0; round <= ROUNDS; round++) {
   phase('Review')
   const results = await parallel(
     pending.map((p) => () =>
-      agent(
+      retried(
         `${round ? 'Re-review the fix round' : 'Review the task'}: diff ${scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
           (A.mockup ? `\nValidated mockup: ${A.mockup}` : '') +
           (p.findings ? `\nYour findings this fix must address (say ADDRESSED or NOT for each, then any new breakage in the fix diff only):\n${JSON.stringify(p.findings, null, 2)}` : ''),
@@ -118,7 +139,7 @@ for (let round = 0; round <= ROUNDS; round++) {
   results.forEach((res, i) => {
     const r = pending[i].r
     if (!res) {
-      // A reviewer that died is not an approval.
+      // A reviewer that died twice is not an approval.
       open.push({ severity: 'important', summary: `${r} returned no review`, by: r })
       still.push(pending[i])
       return
@@ -138,7 +159,7 @@ for (let round = 0; round <= ROUNDS; round++) {
   if (!open.length) return { status: 'CLEAN', head, fixRounds: round, reviewers, stats, minors }
   if (round === ROUNDS) break
   log(`Fix round ${round + 1}: ${open.length} finding(s)`)
-  const fix = await agent(
+  const fix = await attempt(
     `Fix these review findings on branch ${A.branch} (head ${head}), test-first, one commit per fix; append a fix section to ${A.report}.\nBrief: ${A.brief}\nFindings:\n${JSON.stringify(open, null, 2)}\nReturn head = the commit after your fixes, files = paths changed in the fixes.`,
     as('implementer', { schema: IMPL, effort: raised(round + 1), label: `fix · round ${round + 1}`, phase: 'Fix' }),
   )
