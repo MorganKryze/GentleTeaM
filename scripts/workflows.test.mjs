@@ -136,6 +136,40 @@ const deliver = [
     ],
   },
   {
+    name: 'high effort: capped at xhigh from fix round 1',
+    args: { team: { implementer: { effort: 'high' } } },
+    reply: implementer(['src/a.js'], () => bad),
+    returns: {
+      status: 'OPEN', head: 'h3', fixRounds: 3, reviewers: ['reviewer'],
+      open: [{ ...badFinding, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 4, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement('gtm:implementer', { effort: 'high' }), reviewer(),
+      ...rounds(3, (n) => [
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: 'xhigh' },
+        reviewer(`reviewer · round ${n}`),
+      ]),
+    ],
+  },
+  {
+    name: 'max effort: kept on all 3 fix rounds',
+    args: { team: { implementer: { effort: 'max' } } },
+    reply: implementer(['src/a.js'], () => bad),
+    returns: {
+      status: 'OPEN', head: 'h3', fixRounds: 3, reviewers: ['reviewer'],
+      open: [{ ...badFinding, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 4, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement('gtm:implementer', { effort: 'max' }), reviewer(),
+      ...rounds(3, (n) => [
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: 'max' },
+        reviewer(`reviewer · round ${n}`),
+      ]),
+    ],
+  },
+  {
     name: 'fix: 4 files escalate at the default ceiling',
     args: { track: 'fix' },
     reply: implementer(srcFiles(4), () => ok),

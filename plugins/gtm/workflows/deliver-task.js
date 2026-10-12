@@ -52,10 +52,12 @@ function as(role, extra) {
   if (t.effort && !o.effort) o.effort = t.effort
   return o
 }
-// Each fix round thinks one level harder than the last, capped at xhigh.
+// Each fix round thinks one level harder than the last, capped at xhigh. An effort off that
+// ladder, such as max, is kept: lowering it would undo the project's choice.
 function raised(round) {
-  const base = LEVELS.indexOf((TEAM.implementer || {}).effort || 'low')
-  return LEVELS[Math.min(Math.max(base, 0) + round, LEVELS.length - 1)]
+  const effort = (TEAM.implementer || {}).effort || 'low'
+  const base = LEVELS.indexOf(effort)
+  return base < 0 ? effort : LEVELS[Math.min(base + round, LEVELS.length - 1)]
 }
 // Specialists run only when the diff touches their ground. A bad regex runs the specialist anyway.
 const triggers = {}

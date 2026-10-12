@@ -15,6 +15,10 @@ versions follow [SemVer](https://semver.org/).
 - Install docs: in the VS Code extension, reload the window to see new or updated skills in the
   command menu; `/reload-plugins` alone does not refresh it.
 
+### Fixed
+- Fix rounds keep the implementer at `max`, or any effort outside `low` to `xhigh`, instead of
+  dropping it to `medium` on the first round; `low` to `xhigh` still rise one level per round.
+
 ## [0.2.0] - 2026-10-12
 
 ### Added
