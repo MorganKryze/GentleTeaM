@@ -1,6 +1,6 @@
 ---
 name: init
-description: Bootstrap GTM in a project - drafts the brief, config, team profile and guidelines from the codebase, confirms them through a short interview, and offers to keep .gtm/ out of git. Use once per project, or to refresh a stale setup.
+description: Bootstrap GTM in a project - drafts the brief, config, team profile, conventions and guidelines from the codebase, confirms them through a short interview, and offers to keep .gtm/ out of git. Use once per project, or to refresh a stale setup.
 argument-hint: "[root path, default .gtm]"
 ---
 # Set up GTM in this project
@@ -13,14 +13,17 @@ corrects. Follow `${CLAUDE_PLUGIN_ROOT}/templates/briefing.md` for every message
   offer to fill only that.
 - Dispatch `gtm:analyst` in **init mode** with the root. It detects the stack, verify commands, base
   branch, commit style, UI and server paths, and drafts from `${CLAUDE_PLUGIN_ROOT}/templates/`:
-  `brief.md`, `config.yml`, `team.md` (proposed), `guidelines/*.md`, every guess marked `[CHECK]`.
-- Create `specs/`, `plans/`, `reports/` and `ledger.md` (from the template).
+  `brief.md`, `config.yml`, `team.md` (proposed), `conventions.md` and `guidelines/*.md` (adapted
+  to what the repo already does: commit style, test frameworks, languages), every guess marked
+  `[CHECK]`.
+- Create `specs/`, `plans/`, `reports/`, `ledger.md` and `backlog.md` (from the templates).
 
 ## 2. Interview (one message, ≤ 5 questions)
 Show the guesses as a table (item · my guess · why) and ask the human to reply "OK" or to correct
-lines. Cover only what the code cannot tell: purpose and users, non-negotiables, the human's
-language, whether the product has screens, and any verify command the analyst could not find.
-Write the answers in; remove every `[CHECK]`.
+lines. Cover only what the code cannot tell: purpose and users, non-negotiables, whether the product has
+screens, any verify command the analyst could not find, and the **communication style**: language,
+default detail level (brief / standard / deep / ask), emoji (off / light / generous; default light).
+Write the answers in (`language`, `briefing` in `config.yml`); remove every `[CHECK]`.
 
 ## 3. Team profile (one message)
 From the brief, propose `team.md`: priorities weighted low / normal / high (security, data
@@ -36,7 +39,15 @@ threshold, and whether the plan replays risky tasks. Derive, do not guess:
 Present a short table (priority or role · value · one-line reason) with your recommendation; the
 human approves or edits. Write `team.md` with each value's reason and today's date.
 
-## 4. Keep it out of git? (one decision card)
+## 4. Conventions (one message)
+Show `conventions.md` as its table: one row per area (code, tests, git and releases, docs,
+dependencies, security, data, language and copy, accessibility, design, work: priority P0-P3, epics
+and stories, definition of done), each with the default or the analyst's adapted value. The human
+accepts the table or edits rows in one reply. Write the choices into the guideline files, each
+keeping its "When to read" line, and today's date in the table. Delete the files of areas the
+project does not have (e.g. design without screens).
+
+## 5. Keep it out of git? (one decision card)
 ```
 Decision: where .gtm/ lives
 Options:  A. commit it, except reports/ and mockups/ (excluded locally)
@@ -47,5 +58,5 @@ Cost if wrong: A → shared files to tidy later; B → a teammate starts with no
 Apply the choice through `.git/info/exclude` (never `.gitignore` without asking). With B, add the
 root to `git.never_name` so no tracked file names it.
 
-## 5. Done
+## 6. Done
 TL;DR with what was created, then Next steps: `you` · run `/gtm <what you want done>`.

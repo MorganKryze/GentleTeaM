@@ -1,8 +1,8 @@
 ---
 name: tune
-description: Re-evaluate the GTM team profile - reads the ledger's run, minor and usage lines and the reports, proposes changes to priorities, per-role model and effort, specialists, triggers and gates as decision cards, and records what the human approves with its date. Use when /gtm:retro suggests it or the human feels the team is too slow, too costly or missing things.
+description: Re-evaluate the GTM team profile and conventions - reads the ledger's run, minor and usage lines and the reports, proposes changes to priorities, per-role model and effort, specialists, triggers, gates or a convention as decision cards, and records what the human approves with its date. Use when /gtm:retro suggests it or the human feels the team is too slow, too costly or missing things.
 ---
-# Tune the team profile
+# Tune the team profile and conventions
 
 Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without the human's answer.
 
@@ -20,6 +20,7 @@ Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without th
 | design loops end at the last round | raise the designer's effort, or revisit the threshold with the human |
 | `usage` notes about limits | lower the effort of high-volume roles first (implementer, reviewer); never a role guarding a high priority |
 | a priority changed in the brief | re-derive the roles it drives |
+| a convention keeps producing the same finding or the same `lesson` | edit that row of `conventions.md` and its guideline file |
 
 No signal: say so in one line and stop.
 
@@ -33,7 +34,8 @@ Cost if wrong: …
 ```
 
 ## 4. Record
-Write each approved value into `team.md` with its new reason and today's date, add a History line
+Write each approved value into `team.md` (or `conventions.md` and its guideline) with its new
+reason and today's date, add a History line
 (`- <date> · <setting>: <old> → <new> · <why>`), and a `ruling` line in the ledger quoting the
 human's choice. Rejected proposals get a ledger line too, so they are not proposed again without new
 evidence.

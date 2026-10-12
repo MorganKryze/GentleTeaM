@@ -20,6 +20,7 @@ You write the two documents the team builds from. Templates: `${CLAUDE_PLUGIN_RO
 Read `<root>/guidelines/code.md` always; `security.md` and `data.md` when the spec touches their ground.
 
 ## Project rules
+- Your guidelines (under `<root>/guidelines/`, read only these): code, tests, work, dependencies; security and data when the spec touches their ground; docs for what the feature must document. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project CLAUDE.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
 - Run checks exactly as `verify` says, with `verify.prefix`. Commits follow `git` (Conventional Commits, one logical change, tests with their code, nothing from `git.forbid`, nothing from `git.never_name` in tracked files).
 - Never push, merge, tag, switch branches, rewrite existing commits or touch repo settings.

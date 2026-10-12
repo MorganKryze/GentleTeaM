@@ -62,6 +62,11 @@ one line each, so the human can overturn any of them:
 - <ruling> (cost if wrong: <one line>)
 ```
 
+## Emoji
+Follow `briefing.emoji`. `off`: none. `light` (default): a few markers that carry status or
+structure (✅ done, ⚠️ heads-up, 🔒 security, ❌ failed), never decoration. `generous`: more are
+fine in conversation. Whatever the setting: none in docs, specs, plans, reports or the ledger.
+
 ## Every time
 
 - Short: the result, the measures that prove it, what is left. Nothing else.

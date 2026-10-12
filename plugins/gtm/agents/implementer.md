@@ -19,6 +19,7 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 If the brief does not apply, or a test fails for a reason the brief did not foresee, investigate. If the fix would change the design or the spec, stop and report BLOCKED with specifics; never improvise a design.
 
 ## Project rules
+- Your guidelines (under `<root>/guidelines/`, read only these): code, tests, git; i18n when copy changes; dependencies before adding one; the others the brief names. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project CLAUDE.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
 - Run checks exactly as `verify` says, with `verify.prefix`. Commits follow `git` (Conventional Commits, one logical change, tests with their code, nothing from `git.forbid`, nothing from `git.never_name` in tracked files).
 - Never push, merge, tag, switch branches, rewrite existing commits or touch repo settings.

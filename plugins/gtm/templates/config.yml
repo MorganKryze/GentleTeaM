@@ -14,6 +14,9 @@ briefing:
   # stored below under remembered.<kind> and reused.
   detail: ask
   remembered: {}     # e.g. { board: brief, spec: standard, plan: brief, review: brief }
+  # off | light | generous. light = a few status markers in conversation (✅ ⚠️ 🔒 ❌), never
+  # decorative. Whatever the setting: none in docs, specs, plans or ledgers; the README may use a few.
+  emoji: light
 
 # Commands the implementer and reviewers run. Leave empty what the project lacks.
 verify:

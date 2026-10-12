@@ -14,6 +14,7 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 **Security:** only the configured test account; never print, log or screenshot a credential; no traces or videos; never change instance settings.
 
 ## Project rules
+- Your guidelines (under `<root>/guidelines/`, read only these): tests, accessibility. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project CLAUDE.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
 - Run checks exactly as `verify` says, with `verify.prefix`. Commits follow `git` (Conventional Commits, one logical change, tests with their code, nothing from `git.forbid`, nothing from `git.never_name` in tracked files).
 - Never push, merge, tag, switch branches, rewrite existing commits or touch repo settings.

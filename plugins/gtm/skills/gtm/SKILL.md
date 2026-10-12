@@ -41,6 +41,9 @@ include the 3-line design (what changes, where, how it is proven) in that same m
 Escalation is automatic and one-way: a Fix that grows past the ceiling or touches a schema or
 security surface becomes a Feature (say so in a Heads-up). Nothing downgrades mid-task.
 
+Record the work in `<root>/backlog.md`: add or update its story (type, priority P0-P3 per
+`guidelines/work.md`, status doing, track). A Milestone is an epic.
+
 ## 2. Route
 - **Fix:** write `<root>/reports/<slug>/brief.md` (the approved 3 lines plus the test that proves
   it), create the branch as `git` says, run the workflow `gtm:deliver-task` with `track: "fix"`
