@@ -3,6 +3,12 @@
 All notable changes to GTM. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [SemVer](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- Install docs: in the VS Code extension, reload the window to see new or updated skills in the
+  command menu; `/reload-plugins` alone does not refresh it.
+
 ## [0.2.0] - 2026-10-12
 
 ### Added

@@ -44,6 +44,8 @@ Add the marketplace at a ref: `MorganKryze/GentleTeaM#v0.1.0` (a tag) or `#main`
 ## Develop locally
 `claude --plugin-dir ./plugins/gtm` loads the plugin from a checkout; `/reload-plugins` picks up
 edits. A marketplace added from a local path also reads files in place, with no version bump.
+In the VS Code extension, the command menu lists new or updated skills only after a window reload
+(Developer: Reload Window); `/reload-plugins` alone does not refresh it.
 
 ## Version bump rule
 `version` lives in one place, `plugins/gtm/.claude-plugin/plugin.json`, never in the marketplace
