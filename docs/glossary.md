@@ -14,8 +14,9 @@
 | Design score | The design critic's mark out of 10; a board passes at the threshold (8 by default) with zero must-fix. |
 | EARS | Easy Approach to Requirements Syntax: acceptance lines of the form WHEN / WHILE / WHERE / IF … THE SYSTEM SHALL …. |
 | Epic | A Milestone or a group of Features. |
-| Escalation | A Fix becoming a Feature when it exceeds the file ceiling. One-way. On security or data ground a Fix stays a Fix and gains that specialist. |
+| Escalation | A Fix becoming a Feature when its changed files exceed the Fix ceiling; its commits stay and it continues from the spec. One-way. On security or data ground a Fix stays a Fix and gains that specialist. |
 | Final review | The whole-branch review before the go, with at most one fix wave. |
+| Fix ceiling | The most files a Fix may change, 3 by default: the `Fix track ceiling` line in the team profile's Gates, set at `/gtm:init`, changed with `/gtm:tune`. Past it, a Fix escalates. [method](method.md#tracks) |
 | Fix round | One implementer pass over open findings, followed by re-review by the reviewers who raised them and every specialist whose ground the fix diff touches. Capped at three by default. |
 | Footprint check | The script `/gtm:ship` runs in stealth mode: scans the branch's commits, PR text, diff and new file names for GTM's names, excluded paths and writing tells; a hit stops the ship. [method](method.md#stealth-mode) |
 | For you | The at-most-ten-line synthesis that opens every artifact meant for the human. |
