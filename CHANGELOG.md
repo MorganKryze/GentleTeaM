@@ -11,6 +11,10 @@ versions follow [SemVer](https://semver.org/).
   with which model and effort: fix rounds, the Fix ceiling and its security and data
   escalation, the design bar and rounds. `scripts/validate.mjs` runs it.
 
+### Changed
+- Install docs: in the VS Code extension, reload the window to see new or updated skills in the
+  command menu; `/reload-plugins` alone does not refresh it.
+
 ## [0.2.0] - 2026-10-12
 
 ### Added
