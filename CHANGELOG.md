@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-12
+
 ### Added
 - Workflow test (`scripts/workflows.test.mjs`, no dependencies): runs deliver-task and
   design-loop against scripted agents and checks what they return and whom they dispatch,
