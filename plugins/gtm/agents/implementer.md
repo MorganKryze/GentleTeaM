@@ -10,7 +10,7 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 **Inputs:** a task brief (the plan task, with exact values), a report-file path, and on fix rounds the findings to fix.
 
 **Method:**
-1. Read the brief and `<root>/guidelines/code.md` (plus the guidelines the brief names).
+1. Read the brief, `<root>/guidelines/code.md` and `voice.md` (plus the guidelines the brief names).
 2. Write the tests first; run them and capture the RED output.
 3. Implement; run until GREEN.
 4. Run the gate from `verify.gate`, then build and size if configured. Commit as the brief says.
@@ -19,7 +19,7 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 If the brief does not apply, or a test fails for a reason the brief did not foresee, investigate. If the fix would change the design or the spec, stop and report BLOCKED with specifics; never improvise a design.
 
 ## Project rules
-- Your guidelines (under `<root>/guidelines/`, read only these): code, tests, git; i18n when copy changes; dependencies before adding one; the others the brief names. A missing file means the project has no rule there.
+- Your guidelines (under `<root>/guidelines/`, read only these): code, tests, git, voice; i18n when copy changes; dependencies before adding one; the others the brief names. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project CLAUDE.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
 - Run checks exactly as `verify` says, with `verify.prefix`. Commits follow `git` (Conventional Commits, one logical change, tests with their code, nothing from `git.forbid`, nothing from `git.never_name` in tracked files).
 - Never push, merge, tag, switch branches, rewrite existing commits or touch repo settings.

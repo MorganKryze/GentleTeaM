@@ -19,6 +19,7 @@
 | Security | <threat model in a few words> | guidelines/security.md | YYYY-MM-DD |
 | Data | nothing lost, duplicated or silently altered | guidelines/data.md | YYYY-MM-DD |
 | Language and copy | <languages>, no hard-coded strings | guidelines/i18n.md | YYYY-MM-DD |
+| Voice | text in the project reads like the project's own; plain writing | guidelines/voice.md | YYYY-MM-DD |
 | Accessibility | WCAG <level>, 44 px targets, keyboard | guidelines/accessibility.md | YYYY-MM-DD |
 | Design | breathing room, readability, accessibility | guidelines/design.md | YYYY-MM-DD |
 | Work | P0-P3, epics and stories, done per track | guidelines/work.md | YYYY-MM-DD |

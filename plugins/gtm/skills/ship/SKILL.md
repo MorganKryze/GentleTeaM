@@ -13,7 +13,7 @@ The final review says ready; the working tree is clean; the gate passes once mor
 the result). Commit messages carry nothing from `git.forbid` (check with `git log --format=%B`).
 
 ## 2. Write the PR text
-`<root>/reports/<slug>/pr.md`: a Conventional title; a body with the For-you summary, what changed
+`<root>/reports/<slug>/pr.md`, written as `<root>/guidelines/voice.md` says: a Conventional title; a body with the For-you summary, what changed
 for the user, how it was proven (tests, gate, review verdicts), the rulings, the deferred minors.
 Never name anything in `git.never_name`.
 
@@ -26,7 +26,7 @@ Cost if wrong: …
 ```
 Execute exactly what was approved. Merge as `git.merge` says; never squash or rewrite history
 unless the config says so. Tag and release only when asked: release notes from the CHANGELOG or
-the commits since the last tag, grouped by type, in the human's language.
+the commits since the last tag, grouped by type, in the project's voice (`guidelines/voice.md`).
 
 ## 4. After the human deploys
 If `qa.live_url` is set, offer one line: run `gtm:release-qa` on the live instance. Report per the

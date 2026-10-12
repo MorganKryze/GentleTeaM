@@ -9,7 +9,7 @@ Ground rules: as in the `gtm` skill §0.
 
 ## 1. Read
 `<root>/reports/<slug>/` (progress, task reports, final review), the spec and plan, and the whole
-ledger.
+ledger. Guideline edits follow `<root>/guidelines/voice.md`.
 
 ## 2. Distil
 - **Lessons:** what would have saved a fix round, a blocked task or a final-review finding. One line

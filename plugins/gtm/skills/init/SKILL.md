@@ -46,14 +46,14 @@ human approves or edits. Write `team.md` with each value's reason and today's da
 
 ## 4. Conventions (one message)
 Show `conventions.md` as its table: one row per area (code, tests, git and releases, docs,
-dependencies, security, data, language and copy, accessibility, design, work: priority P0-P3, epics
+dependencies, security, data, language and copy, voice, accessibility, design, work: priority P0-P3, epics
 and stories, definition of done), each with the default or the analyst's adapted value. The human
 accepts the table or edits rows in one reply. Your recommendation per row is GTM's default; a row
 that keeps the repository's own established practice says so, cites the evidence (e.g. "squash: 40
 of the last 40 PRs") and still gives GTM's default and why. Never recommend a practice the history
 does not already show over the default. Write the choices into the guideline files, each
 keeping its "When to read" line, and today's date in the table. Delete the files of areas the
-project does not have (e.g. design without screens).
+project does not have (e.g. design without screens); `voice.md` stays in every project.
 
 ## 5. Keep it out of git? (one decision card)
 ```
