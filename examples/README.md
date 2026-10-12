@@ -5,8 +5,8 @@
 > code or document is copied here; this note says what the reference project shows.
 
 ## Belay as the reference project
-- **Repository:** https://github.com/MorganKryze/belay (when public).
-- **What it exercised:** seven delivered milestones with a design loop per screen change, specs
+- **Repository:** https://github.com/MorganKryze/belay.
+- **What it exercised:** seven delivered branches with a design loop per screen change, specs
   with decision tables, plans replayed in scratch clones for migrations and sync, per-task review
   with triggered security, data and UX specialists, a final review per branch, and a ledger per
   milestone whose lessons fed the next plan.
