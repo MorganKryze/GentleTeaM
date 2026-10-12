@@ -28,13 +28,18 @@ Circles are the human touchpoints. Everything between them is settled inside the
 ## Tracks
 | Track | When | Flow | Artifacts |
 | --- | --- | --- | --- |
-| Fix | at most 3 files (the team profile's ceiling), no schema, migration, auth, trust boundary or stored-data surface | 3-line design in chat, implementer and reviewer | a brief in `reports/`, a ledger line if there is a lesson |
+| Fix | at most 3 files (the team profile's ceiling), no schema, migration or auth change | 3-line design in chat, implementer and reviewer, plus the specialist on security or data ground | a brief in `reports/`, a ledger line if there is a lesson |
 | Feature | one capability, one branch | design loop if screens change, spec, plan, deliver per task, final review | board, spec, plan, reports, ledger lines |
 | Milestone | several branches, a new surface | a one-page decomposition, then the Feature flow per sub-feature, final review per branch | the Feature artifacts per branch |
 
-The track is chosen up front with at most two questions. A Fix that grows past the ceiling or
-touches a schema or security surface escalates to a Feature automatically; its commits stay. Nothing
-downgrades mid-task.
+The track is chosen up front with at most two questions. A Fix that grows past the ceiling
+escalates to a Feature automatically; its commits stay. A Fix on security or data ground stays a
+Fix: the specialist for that ground reviews it, as on any task. Nothing downgrades mid-task.
+
+A small Feature has no screen, schema, migration or auth change and at most twice the Fix ceiling
+in estimated files (6 by default). The architect writes its spec and plan in one pass, the plan
+following each card's recommendation; the human approves the spec as for any Feature, and the plan
+is written again only when a card is answered otherwise or the spec changes.
 
 ## Artifacts
 All live under the GTM root, `.gtm/` by default (a project may move it and say so in its
@@ -76,8 +81,8 @@ contract. See [roles](roles.md).
 - **Hand-back:** at most ten lines, or the structured object a workflow asks for: status, files,
   verify result, concerns. The full report goes to the report file.
 - **Fresh context:** reviewers see the brief, the report and the diff, never the implementer's
-  reasoning. Re-reviews in a fix round go only to the reviewers who flagged something, and check
-  only their findings and the fix diff.
+  reasoning. Re-reviews in a fix round go only to the reviewers who flagged something and every
+  specialist whose ground the fix diff touches, and check only their findings and the fix diff.
 - **Fix rounds:** at most three per task by default; each round raises the implementer's effort one
   level.
 

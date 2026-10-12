@@ -57,17 +57,19 @@ function unscripted(files, scenarios) {
 const ok = { verdict: 'approve', findings: [], summary: 'ok' }
 const badFinding = { severity: 'important', file: 'src/a.js', summary: 'bug' }
 const bad = { verdict: 'fix', findings: [badFinding], summary: 'fix' }
+const critical = { severity: 'critical', file: 'scripts/x.mjs', summary: 'injection' }
+const typo = { severity: 'minor', summary: 'typo' }
 const TRIGGERS = { 'security-reviewer': ['^scripts/'], 'data-reviewer': ['^templates/'], 'ux-qa': ['^ui/'] }
 const srcFiles = (n) => Array.from({ length: n }, (_, i) => `src/${i}.js`)
 const implement = (agentType = 'gtm:implementer', extra = {}) => ({ agentType, label: 'implement', ...extra })
 const reviewer = (label = 'reviewer', extra = {}) => ({ agentType: 'gtm:reviewer', label, ...extra })
 
 // Answers the implementer by label; every other dispatch goes to review(d).
-function implementer(files, review) {
+function implementer(files, review, fixFiles = ['src/a.js']) {
   return (d) => {
     if (d.label === 'implement') return { status: 'DONE', head: 'h0', files, summary: 'done' }
     const fix = d.label.match(/^fix · round (\d+)$/)
-    if (fix) return { status: 'DONE', head: `h${fix[1]}`, files: ['src/a.js'], summary: 'fixed' }
+    if (fix) return { status: 'DONE', head: `h${fix[1]}`, files: fixFiles, summary: 'fixed' }
     return review(d)
   }
 }
@@ -97,6 +99,21 @@ const deliver = [
       implement(), reviewer(),
       { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
       { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+  },
+  {
+    name: 'feature: a fix round that reaches security ground brings its specialist in',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : ok), ['scripts/new.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
       { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
     ],
   },
@@ -184,18 +201,114 @@ const deliver = [
     dispatches: [implement(), reviewer(), { agentType: 'gtm:ux-qa', label: 'ux-qa' }],
   },
   {
-    name: 'fix: security ground escalates',
+    name: 'fix: 3 files on security ground stay a Fix, its specialist reviews',
     args: { track: 'fix', triggers: TRIGGERS },
-    reply: implementer(['scripts/x.mjs'], () => ok),
-    returns: { status: 'ESCALATE', reason: 'touches security-reviewer ground', head: 'h0', files: ['scripts/x.mjs'] },
-    dispatches: [implement()],
+    reply: implementer(['scripts/x.mjs', 'src/a.js', 'src/b.js'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' }],
   },
   {
-    name: 'fix: data ground escalates',
+    name: 'fix: data ground stays a Fix until its specialist approves',
     args: { track: 'fix', triggers: TRIGGERS },
-    reply: implementer(['templates/config.yml'], () => ok),
-    returns: { status: 'ESCALATE', reason: 'touches data-reviewer ground', head: 'h0', files: ['templates/config.yml'] },
+    reply: implementer(['templates/config.yml'], (d) => (d.label === 'data-reviewer' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'data-reviewer'],
+      stats: { 'data-reviewer': { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:data-reviewer', label: 'data-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' },
+    ],
+  },
+  {
+    name: 'fix: 4 files on security ground escalate',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs', ...srcFiles(3)], () => ok),
+    returns: { status: 'ESCALATE', reason: '4 files > 3', head: 'h0', files: ['scripts/x.mjs', ...srcFiles(3)] },
     dispatches: [implement()],
+    log: ['Fix escalates to Feature: 4 files > 3'],
+  },
+  {
+    name: 'fix: a fix round on security ground goes back to its specialist after an approval',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs', 'src/a.js', 'src/b.js'], (d) => (d.label === 'reviewer' ? bad : ok), ['scripts/x.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+  },
+  {
+    name: 'fix: a fix round on the ground of a specialist with findings re-reviews it once',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], (d) => (d.label === 'security-reviewer' ? bad : ok), ['scripts/x.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+  },
+  {
+    name: 'fix: a fix round that reaches security ground brings its specialist in',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : ok), ['scripts/new.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+  },
+  {
+    name: 'fix: a fix round that grows the Fix past the ceiling escalates',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(srcFiles(3), (d) => (d.label === 'reviewer' ? bad : ok), ['src/0.js', 'src/9.js']),
+    returns: {
+      status: 'ESCALATE', reason: '4 files > 3', head: 'h1', files: [...srcFiles(3), 'src/9.js'],
+      open: [{ ...badFinding, by: 'reviewer' }], reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }],
+    log: ['Fix escalates to Feature: 4 files > 3'],
+  },
+  {
+    name: 'fix: a test-first fix round past the ceiling escalates with the open security finding',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(
+      ['scripts/x.mjs', 'src/a.js', 'src/b.js'],
+      (d) => (d.label === 'security-reviewer' ? { verdict: 'fix', findings: [critical, typo], summary: 'fix' } : ok),
+      ['scripts/x.mjs', 'scripts/x.test.mjs'],
+    ),
+    returns: {
+      status: 'ESCALATE', reason: '4 files > 3', head: 'h1',
+      files: ['scripts/x.mjs', 'src/a.js', 'src/b.js', 'scripts/x.test.mjs'],
+      open: [{ ...critical, by: 'security-reviewer' }], reviewers: ['reviewer', 'security-reviewer'],
+      stats: { 'security-reviewer': { critical: 1, important: 0, minor: 1 } },
+      minors: [{ ...typo, by: 'security-reviewer' }],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+    ],
+    log: ['Fix escalates to Feature: 4 files > 3'],
   },
   {
     name: 'fix: fixCeiling 5 passed, 5 files stay a Fix',

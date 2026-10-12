@@ -70,8 +70,9 @@
 - **Statement:** an insecure or data-losing change never ships, whatever the track or the deadline.
 - **Why:** these are the failures that cannot be apologised away or rolled back.
 - **Cost:** specialist reviews at the highest effort; occasionally a blocked task.
-- **Enforced by:** Fix escalates to Feature on a schema or security surface; the security and data
-  reviewers; the final review orders security and data first; findings there are never "minor".
+- **Enforced by:** a schema, migration or auth change is a Feature from the track pick; the security
+  and data reviewers, on every Fix or task that touches their ground; the final review orders
+  security and data first; findings there are never "minor".
 
 ## 10. Nothing pushed, merged or released without the human's go
 - **Statement:** agents never push, merge, tag or release; the orchestrator does it only after an

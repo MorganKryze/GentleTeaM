@@ -30,11 +30,12 @@ Circles are your touchpoints. Full description: [method](docs/method.md).
 
 | Track | When | What you do |
 | --- | --- | --- |
-| 🔧 Fix | at most 3 files, no schema or security surface | approve a 3-line design, give the go |
+| 🔧 Fix | at most 3 files, no schema, migration or auth change | approve a 3-line design, give the go |
 | 🧩 Feature | one capability, one branch | approve the board (if screens change), the spec synthesis, the go |
 | 🗺️ Milestone | several branches | approve the decomposition, then the Feature touchpoints per branch |
 
-A Fix that grows escalates to a Feature on its own. Nothing downgrades mid-task.
+A Fix that grows past its file ceiling escalates to a Feature on its own; on security or data
+ground it stays a Fix and that specialist reviews it. Nothing downgrades mid-task.
 
 ## 📦 Install
 ```

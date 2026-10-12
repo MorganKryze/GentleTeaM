@@ -37,15 +37,21 @@ what to do. Clear and small: judge it yourself. Otherwise dispatch `gtm:analyst`
 
 | Track | When | Flow | Human touchpoints |
 | --- | --- | --- | --- |
-| **Fix** | ≤ Fix ceiling files (team profile, 3 by default), no schema, migration, auth, trust boundary or stored-data surface | 3-line design in chat → implementer + reviewer | approve the 3-line design, then the go |
+| **Fix** | ≤ Fix ceiling files (team profile, 3 by default), no schema, migration or auth change | 3-line design in chat → implementer + reviewer, plus the specialist on security or data ground | approve the 3-line design, then the go |
 | **Feature** | one capability, one branch | design-loop if screens change → spec → plan → deliver per task → final review | board, spec synthesis, go |
 | **Milestone** | several branches, a new surface | decomposition into sub-features, then the Feature flow per branch, final review per branch | decomposition, then per branch: board, spec, go |
 
-Present the track with its reason and at most two decision cards in **one** message. For a Fix,
-include the 3-line design (what changes, where, how it is proven) in that same message.
+A Feature is **small** when it changes no screen, schema, migration or auth and touches at most
+twice the Fix ceiling in estimated files (6 by default): `/gtm:spec` then has one architect pass
+write the spec and the plan.
 
-Escalation is automatic and one-way: a Fix that grows past the ceiling or touches a schema or
-security surface becomes a Feature (say so in a Heads-up). Nothing downgrades mid-task.
+Present the track with its reason and at most two decision cards in **one** message. For a Fix,
+include the 3-line design (what changes, where, how it is proven; for a threshold, the mutation its
+test catches) in that same message, naming the specialists whose `team.md` triggers match its
+files. For a Feature, say small or not, with the file count ("Feature, small, ~4 files").
+
+Escalation is automatic and one-way: a Fix that grows past the ceiling becomes a Feature (say so in
+a Heads-up). Nothing downgrades mid-task.
 
 Record the work in `<root>/backlog.md`: add or update its story (type, priority P0-P3 per
 `guidelines/work.md`, status doing, track). A Milestone is an epic.
@@ -53,7 +59,7 @@ Record the work in `<root>/backlog.md`: add or update its story (type, priority 
 ## 2. Route
 - **Fix:** write `<root>/reports/<slug>/brief.md` (the approved 3 lines plus the test that proves
   it), create the branch as `git` says, run the workflow `gtm:deliver-task` with `track: "fix"`
-  (args as `/gtm:deliver` builds them). `ESCALATE` → continue as a Feature from `/gtm:spec`; the
+  (args as `/gtm:deliver` builds them). `ESCALATE` → read it as `/gtm:deliver` §2 says; the
   commits stay. `CLEAN` → present the result and ask the go (`/gtm:ship`).
 - **Feature:** `/gtm:design` (only if screens change and `design.screens` is true) → `/gtm:spec` →
   `/gtm:plan` → `/gtm:deliver` → `/gtm:ship`. Invoke each skill in turn; stop only at a touchpoint.

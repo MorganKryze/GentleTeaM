@@ -9,9 +9,12 @@ Ground rules: as in the `gtm` skill §0. The spec must say `Status: approved`; o
 `/gtm:spec` first.
 
 ## 1. Write
-Dispatch `gtm:architect` (plan mode) with: the spec path, the validated board, the output path
-`<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, and the team profile's Gates (replay risky
-tasks: yes/no; risky paths). Template: `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`.
+The spec's Status ends with `plan kept from the one pass` and the plan exists: dispatch no
+architect, go to §2. Otherwise (no one pass, a card answered otherwise, the spec changed),
+dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: the spec path, the
+validated board, the output path `<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, and the
+team profile's Gates (replay risky tasks: yes/no; risky paths). Template:
+`${CLAUDE_PLUGIN_ROOT}/templates/plan.md`.
 
 ## 2. Check
 - Every task has Files, Interfaces, TDD steps with commands from `verify`, a Verify line and a
