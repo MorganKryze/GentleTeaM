@@ -27,7 +27,8 @@ rulings at the end. Everything the human reads follows the human briefing format
 ## 1. Pick the track (≤ 2 questions)
 Request: $ARGUMENTS
 
-Clear and small: judge it yourself. Otherwise dispatch `gtm:analyst` with the request and the root.
+No request given: explain GTM in five lines (the tracks, your touchpoints, the skills) and ask
+what to do. Clear and small: judge it yourself. Otherwise dispatch `gtm:analyst` with the request and the root.
 
 | Track | When | Flow | Human touchpoints |
 | --- | --- | --- | --- |
