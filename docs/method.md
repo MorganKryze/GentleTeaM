@@ -36,6 +36,11 @@ The track is chosen up front with at most two questions. A Fix that grows past t
 escalates to a Feature automatically; its commits stay. A Fix on security or data ground stays a
 Fix: the specialist for that ground reviews it, as on any task. Nothing downgrades mid-task.
 
+A small Feature has no screen, schema, migration or auth change and at most twice the Fix ceiling
+in estimated files (6 by default). The architect writes its spec and plan in one pass, the plan
+following each card's recommendation; the human approves the spec as for any Feature, and the plan
+is written again only when a card is answered otherwise or the spec changes.
+
 ## Artifacts
 All live under the GTM root, `.gtm/` by default (a project may move it and say so in its
 CLAUDE.md, and may keep it out of git).

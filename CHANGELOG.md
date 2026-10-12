@@ -17,6 +17,10 @@ versions follow [SemVer](https://semver.org/).
 - A Fix on security or data ground no longer escalates to a Feature: the specialist for that
   ground joins the reviewer, and only a Fix past the Fix ceiling escalates. A schema, migration or
   auth change is still a Feature from the track pick (position 9, docs/positions.md).
+- A small Feature (no screen, schema, migration or auth change, at most twice the Fix ceiling in
+  estimated files) gets its spec and plan from one architect pass; the plan step keeps that plan
+  unless a card is answered otherwise or the spec changes. The track pick says small or not, with
+  the file count.
 
 ### Fixed
 - Fix rounds keep the implementer at `max`, or any effort outside `low` to `xhigh`, instead of

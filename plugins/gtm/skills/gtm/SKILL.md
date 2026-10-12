@@ -41,9 +41,14 @@ what to do. Clear and small: judge it yourself. Otherwise dispatch `gtm:analyst`
 | **Feature** | one capability, one branch | design-loop if screens change → spec → plan → deliver per task → final review | board, spec synthesis, go |
 | **Milestone** | several branches, a new surface | decomposition into sub-features, then the Feature flow per branch, final review per branch | decomposition, then per branch: board, spec, go |
 
+A Feature is **small** when it changes no screen, schema, migration or auth and touches at most
+twice the Fix ceiling in estimated files (6 by default): `/gtm:spec` then has one architect pass
+write the spec and the plan.
+
 Present the track with its reason and at most two decision cards in **one** message. For a Fix,
 include the 3-line design (what changes, where, how it is proven; for a threshold, the mutation its
-test catches) in that same message.
+test catches) in that same message, naming the specialists whose `team.md` triggers match its
+files. For a Feature, say small or not, with the file count ("Feature, small, ~4 files").
 
 Escalation is automatic and one-way: a Fix that grows past the ceiling becomes a Feature (say so in
 a Heads-up). Nothing downgrades mid-task.

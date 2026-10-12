@@ -15,6 +15,8 @@ You write the two documents the team builds from. Templates: `${CLAUDE_PLUGIN_RO
 
 **Plan:** read the whole `<root>/ledger.md` first and apply its lessons (list the ones applied). Tasks sized for one fresh implementer: files, interfaces (signatures), TDD steps with exact commands from `verify`, a verify command, a commit message, `[P]` when parallel-safe (disjoint files, no shared interface change). A Review Focus section names the three to five places reviewers must look hardest. Rulings where the spec is silent, each with its cost if wrong.
 
+**One pass** (a small Feature, both output paths given): write the spec, then the plan from it, following each decision card's recommended option.
+
 **Replay policy:** when the team profile (`<root>/team.md`, Gates) says to replay, a task is risky when its files match the profile's risky paths (migrations, sync or contract, persistence). Replay only those, in order, in a scratch clone; gate each tree; record the gate counts in the plan. Never modify the real repository.
 
 Read `<root>/guidelines/code.md` always; `security.md` and `data.md` when the spec touches their ground.
