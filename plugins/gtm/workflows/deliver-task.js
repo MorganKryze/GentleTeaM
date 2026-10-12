@@ -79,18 +79,20 @@ const impl = await agent(
 )
 if (!impl || impl.status === 'BLOCKED') return { status: 'BLOCKED', impl }
 
-const specialists = Object.keys(triggers).filter((r) => impl.files.some((f) => triggers[r].some((re) => re.test(f))))
-// A Fix escalates on size alone. On security or data ground it stays a Fix and that specialist
-// reviews it, as on any task.
-if (A.track === 'fix') {
-  const ceiling = A.fixCeiling ?? 3
-  if (impl.files.length > ceiling) {
-    const reason = `${impl.files.length} files > ${ceiling}`
-    log(`Fix escalates to Feature: ${reason}`)
-    return { status: 'ESCALATE', reason, head: impl.head, files: impl.files }
-  }
+const ground = (files) => Object.keys(triggers).filter((r) => files.some((f) => triggers[r].some((re) => re.test(f))))
+// A Fix escalates on size alone, counted over every file it has changed so far. On security or
+// data ground it stays a Fix and that specialist reviews it, as on any task.
+const ceiling = A.fixCeiling ?? 3
+function escalation(files, at) {
+  if (A.track !== 'fix' || files.length <= ceiling) return null
+  const reason = `${files.length} files > ${ceiling}`
+  log(`Fix escalates to Feature: ${reason}`)
+  return { status: 'ESCALATE', reason, head: at, files }
 }
-const reviewers = ['reviewer', ...specialists]
+let changed = impl.files
+const early = escalation(changed, impl.head)
+if (early) return early
+const reviewers = ['reviewer', ...ground(impl.files)]
 log(`Reviews for this task: ${reviewers.join(', ')}`)
 
 let head = impl.head
@@ -141,6 +143,15 @@ for (let round = 0; round <= ROUNDS; round++) {
     as('implementer', { schema: IMPL, effort: raised(round + 1), label: `fix · round ${round + 1}`, phase: 'Fix' }),
   )
   if (!fix || fix.status === 'BLOCKED') return { status: 'BLOCKED', head, open, stats, minors }
+  changed = [...new Set([...changed, ...fix.files])]
+  const grown = escalation(changed, fix.head)
+  if (grown) return grown
+  // A fix round on a specialist's ground goes back to that specialist, even after its approval:
+  // a Fix has no final review to catch it later.
+  for (const r of ground(fix.files)) {
+    if (!still.some((p) => p.r === r)) still.push({ r, findings: null })
+    if (!reviewers.includes(r)) reviewers.push(r)
+  }
   scope = `${head}..${fix.head}`
   head = fix.head
   pending = still
