@@ -3,6 +3,18 @@
 All notable changes to GTM. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [SemVer](https://semver.org/).
 
+## [0.1.1] - 2026-10-12
+
+### Changed
+- Init recommends GTM's conventions (merge commits, never rewrite pushed history) unless the
+  repository's history clearly shows another established practice; it then cites the evidence and
+  still states GTM's default and why.
+- Init runs only fast verify commands (lint, typecheck or a smoke test) within 90 seconds and marks
+  the rest `[CHECK]`; the first `/gtm:deliver` run confirms them. The draft takes about 1-2 minutes.
+
+### Fixed
+- Docs name the entry point `/gtm:gtm`; bare `/gtm` may resolve when unambiguous.
+
 ## [0.1.0] - 2026-10-12
 
 ### Added
