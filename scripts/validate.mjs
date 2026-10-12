@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Checks what `claude plugin validate` does not: agent and skill frontmatter, workflow syntax,
-// and that the plugin version has a CHANGELOG entry. No dependencies.
+// that the plugin version has a CHANGELOG entry, and the footprint check against its fixtures.
+// No dependencies.
 import { readFileSync, readdirSync, writeFileSync, mkdtempSync } from 'node:fs'
 import { join, basename } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -70,5 +71,9 @@ for (const name of readdirSync(join(plugin, 'workflows'))) {
   try { execFileSync(process.execPath, ['--check', wrapped], { stdio: 'pipe' }) } catch (e) { fail(file, e.stderr.toString().split('\n').slice(0, 5).join(' ')) }
 }
 
+try {
+  execFileSync(process.execPath, [join(root, 'scripts/footprint-check.test.mjs')], { stdio: 'pipe' })
+} catch (e) { fail(join(root, 'scripts/footprint-check.test.mjs'), (e.stderr || '').toString().trim() || e.message) }
+
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log('gtm: manifests, agents, skills and workflows OK')
+console.log('gtm: manifests, agents, skills, workflows and footprint check OK')

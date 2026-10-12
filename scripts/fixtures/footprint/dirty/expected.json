@@ -1,0 +1,24 @@
+{
+  "exit": 1,
+  "hits": [
+    "vocabulary | branch gtm/csv-export | gtm",
+    "emoji | commit c1 line 1 | 🚀",
+    "stock | commit c1 line 1 | seamlessly",
+    "em-dash | commit c1 line 3 | —",
+    "filler | commit c1 line 3 | Basically",
+    "attribution | commit c1 line 5 | Co-authored-by",
+    "vocabulary | commit c2 line 1 | GTM",
+    "vocabulary | PR line 1 | ## For you",
+    "path | PR line 3 | .agent-notes",
+    "vocabulary | PR line 3 | team profile",
+    "vocabulary | PR line 3 | decision card",
+    "vocabulary | file name notes/gtm-review.txt | gtm",
+    "vocabulary | docs/export.md:3 | project falcon",
+    "stock | docs/export.md:3 | delve",
+    "path | src/export.js:1 | .gtm",
+    "stock | src/export.js:1 | leverage"
+  ],
+  "notes": [
+    "triad | commit c2 line 3 | Fast, simple and reliable"
+  ]
+}
