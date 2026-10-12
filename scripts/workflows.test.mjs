@@ -244,9 +244,9 @@ for (const s of scenarios) {
 
 const S1 = 'self-check: a missing runtime global is named'
 for (const [src, global] of [
-  ['process.exit(0)', 'process'],
-  ["await fetch('http://example.invalid')", 'fetch'],
-  ["require('node:child_process')", 'require'],
+  ['void process', 'process'],
+  ['void fetch', 'fetch'],
+  ['void require', 'require'],
 ]) {
   const want = `probe: runtime global ${global} is not provided`
   const got = await run('probe', src, {}, () => null).then(() => 'no error', (e) => e.message)
