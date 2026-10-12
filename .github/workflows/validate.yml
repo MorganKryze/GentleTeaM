@@ -1,0 +1,24 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Frontmatter, workflow syntax, changelog
+        run: node scripts/validate.mjs
+      # `claude plugin validate` reads local files only and needs no login or API key.
+      - name: Marketplace and plugin manifests
+        run: |
+          npx -y @anthropic-ai/claude-code@2.1.296 plugin validate .
+          npx -y @anthropic-ai/claude-code@2.1.296 plugin validate plugins/gtm
