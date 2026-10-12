@@ -28,12 +28,17 @@ until it reports no hit. Notes (lists of three, short bullet runs) do not stop i
 lines against `guidelines/voice.md`.
 
 ## 3. Ask the go (one decision card)
-```
-Decision: what to do with <branch>
-Options:  A. push and open the PR · B. merge locally into <base> (merge commit) · C. wait
-I recommend: <letter>, because …
-Cost if wrong: …
-```
+
+**Decision: what to do with <branch>**
+
+| Option | What it means |
+| --- | --- |
+| **A** push | push and open the PR |
+| **B** merge | merge locally into <base> (merge commit) |
+| **C** wait | nothing leaves the machine |
+
+**I recommend: <letter>**, <why>. **Cost if wrong:** <one line>.
+
 Execute exactly what was approved. Merge as `git.merge` says; never squash or rewrite history
 unless the config says so. Tag and release only when asked: release notes from the CHANGELOG or
 the commits since the last tag, grouped by type, in the project's voice (`guidelines/voice.md`).

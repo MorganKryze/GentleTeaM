@@ -44,23 +44,36 @@ A request that blocks everything goes **first**, before the details.
 
 ## Decision card
 
-Every decision put to the human uses this card. Never a decision without a recommendation.
+Every decision put to the human uses this card, as plain Markdown (never in a code fence). Never a
+decision without a recommendation; prefer the long-term option.
 
-```
-Decision: <the question, one line>
-Options:  A. <option> · B. <option> (· C. <option>)
-I recommend: <letter>, because <one line>; prefer the long-term option
-Cost if wrong: <what breaks, how hard to undo>
-```
+**Decision: <the question, one line>**
+
+| Option | What it means |
+| --- | --- |
+| **A** <name> | <what it implies, one line> |
+| **B** <name> | <one line> |
+
+**I recommend: B**, <why, one line>. **Cost if wrong:** <what breaks, how hard to undo>.
+
+A third option is a third row. The labels are written in `language.human`: in French, "Décision",
+"Option", "Ce que ça implique", "Mon avis", "Si c'est faux".
 
 ## Rulings I made
 
 At the end of a run, every decision the orchestrator or an agent took without asking is listed,
 one line each, so the human can overturn any of them:
 
-```
 - <ruling> (cost if wrong: <one line>)
-```
+
+## Layout in the terminal
+
+Messages are read in the Claude Code terminal and in the editor extension; both render Markdown.
+- Never put prose, cards or tables in a code fence, and never indent a block by four spaces (it
+  renders as code). Fences are for commands, lists of paths and code only.
+- Lines short enough for an 80-100 column terminal; a long cell becomes a sentence after the table.
+- Tables have at most three or four columns.
+- Labels and headings in `language.human`, like the rest of the message.
 
 ## Emoji
 Follow `briefing.emoji`. `off`: none. `light` (default): a few markers that carry status or

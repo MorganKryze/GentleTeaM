@@ -26,13 +26,20 @@ Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
 No signal: say so in one line and stop.
 
 ## 3. Propose
-One decision card per change, at most five, most valuable first:
-```
-Decision: <setting>: <current> → <proposed>
-Why: <the ledger evidence, with counts>
-I recommend: yes / no, because …
-Cost if wrong: …
-```
+One decision card per change, at most five, most valuable first, in the briefing format (plain
+Markdown, no code fence). Its options are "change" and "keep"; one line before the table gives the
+ledger evidence, with counts:
+
+**Decision: <setting>, <current> → <proposed>**
+
+Why: <the ledger evidence, with counts>.
+
+| Option | What it means |
+| --- | --- |
+| **A** change | <proposed>, and what it costs |
+| **B** keep | <current> |
+
+**I recommend: <A or B>**, <why>. **Cost if wrong:** <one line>.
 
 ## 4. Record
 Write each approved value into `team.md` (or `conventions.md` and its guideline) with its new

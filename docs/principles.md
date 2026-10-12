@@ -16,12 +16,17 @@ A question, two or three options, a firm recommendation (the long-term option by
 cost if the recommendation is wrong. Never a decision without a recommendation; never more than two
 questions to pick a track.
 
-```
-Decision: <the question>
-Options:  A. … · B. …
-I recommend: A, because …
-Cost if wrong: …
-```
+**Decision: <the question>**
+
+| Option | What it means |
+| --- | --- |
+| **A** <name> | <one line> |
+| **B** <name> | <one line> |
+
+**I recommend: A**, <why>. **Cost if wrong:** <one line>.
+
+The card is plain Markdown in the human's language, never a code block, so it reads cleanly in the
+terminal and in the editor.
 
 Enforced by: the briefing format (`plugins/gtm/templates/briefing.md`), every skill.
 

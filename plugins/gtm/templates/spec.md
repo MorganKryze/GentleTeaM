@@ -29,14 +29,17 @@ Each line is testable and becomes at least one test.
 | --- | --- | --- | --- | --- |
 | D1 | <question> | <choice> | <one line> | proposed / approved |
 
-Open decision cards (the human answers these; zero left before the plan):
+Open decision cards (the human answers these; zero left before the plan), as plain Markdown in
+the human's language, never in a code fence:
 
-```
-Decision: <question>
-Options:  A. … · B. …
-I recommend: <letter>, because …
-Cost if wrong: …
-```
+**Decision: <question>**
+
+| Option | What it means |
+| --- | --- |
+| **A** <name> | <one line> |
+| **B** <name> | <one line> |
+
+**I recommend: <letter>**, <why, one line>. **Cost if wrong:** <one line>.
 
 ## Screens
 <Only when screens change: one short block per screen, pointing at the validated board.>

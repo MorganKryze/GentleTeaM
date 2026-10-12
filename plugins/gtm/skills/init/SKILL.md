@@ -59,13 +59,18 @@ project does not have (e.g. design without screens); `voice.md` stays in every p
 ## 5. Footprint (one message, at most two decision cards)
 First card: stealth, from the analyst's evidence (who owns the repository, contributors, a
 contribution policy on tools or disclosure).
-```
-Decision: stealth mode
-Options:  A. off: GTM's files may be shared with the team
-          B. on: GTM leaves no footprint; its files stay local, text reads in the project's voice
-I recommend: A for a project you own; B for a client's or an open-source project you contribute to
-Cost if wrong: A → GTM's traces in someone else's history; B → teammates start with no memory
-```
+
+**Decision: stealth mode**
+
+| Option | What it means |
+| --- | --- |
+| **A** off | GTM's files may be shared with the team |
+| **B** on | no footprint: files stay local, text in the project's voice |
+
+**I recommend: A** for a project you own, **B** for a client's project or an open-source one you
+contribute to. **Cost if wrong:** A leaves GTM's traces in someone else's history; B leaves
+teammates with no memory.
+
 Write the answer as `stealth: on|off` in `config.yml`.
 
 **Stealth on:** no second card. Keep the whole root out of the tracked tree: its entry in
@@ -77,13 +82,17 @@ CLAUDE.md or AGENTS.md line, no committed `.claude/settings.json` (install GTM a
 project's own log already uses (cite the evidence). `guidelines/voice.md` is mandatory.
 
 **Stealth off:** second card, where `.gtm/` lives:
-```
-Decision: where .gtm/ lives
-Options:  A. commit it, except reports/ and mockups/ (excluded locally)
-          B. keep all of it local (.git/info/exclude)
-I recommend: A: the brief, team profile and ledger are the team's memory; reviews stay local
-Cost if wrong: A → shared files to tidy later; B → a teammate starts with no memory
-```
+
+**Decision: where .gtm/ lives**
+
+| Option | What it means |
+| --- | --- |
+| **A** commit it | except `reports/` and `mockups/`, excluded locally |
+| **B** keep it local | all of it in `.git/info/exclude` |
+
+**I recommend: A**, the brief, team profile and ledger are the team's memory; reviews stay local.
+**Cost if wrong:** A leaves shared files to tidy later; B starts a teammate with no memory.
+
 Apply the choice through `.git/info/exclude`, replacing the entry from §1 (never `.gitignore`
 without asking). With B, add the
 root to `git.never_name` so no tracked file names it.
