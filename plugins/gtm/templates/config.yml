@@ -1,0 +1,62 @@
+# GTM project config. Read by every GTM skill and agent. Keep it short; delete what you do not use.
+# Paths are relative to the repository root. Regexes are JavaScript syntax, matched against
+# repo-relative paths.
+
+# Where GTM keeps its artifacts. Moving it? Also add "GTM root: <path>" to the project's CLAUDE.md.
+root: .gtm
+
+language:
+  human: en          # briefings, specs' "For you", board captions, decision cards
+  code: en           # plans, reports, commits, code comments
+
+briefing:
+  # brief | standard | deep | ask. "ask" = one quick question before presenting, then the answer is
+  # stored below under remembered.<kind> and reused.
+  detail: ask
+  remembered: {}     # e.g. { board: brief, spec: standard, plan: brief, review: brief }
+
+# Commands the implementer and reviewers run. Leave empty what the project lacks.
+verify:
+  prefix: ""         # prepended to every command, e.g. a wrapper that keeps exit codes
+  lint: ""
+  typecheck: ""
+  test: ""
+  build: ""
+  size: ""
+  e2e: ""
+  gate: [lint, typecheck, test]   # run before every commit; build/size/e2e at task end
+
+git:
+  base: main
+  branch: "<slug>"                # branch name pattern
+  commits: conventional           # Conventional Commits, one logical change, tests with their code
+  forbid: ["Co-authored-by", "Generated with"]   # never in a commit message
+  never_name: []                  # paths or words never written in tracked files (e.g. .gtm/)
+  merge: merge-commit             # merge-commit | rebase; never squash unless set here
+  push: ask                       # ask = nothing pushed, merged, tagged or released without the go
+
+# Specialists run only when a diff touches their ground. Remove a line to switch one off.
+# A name without ":" is a GTM role; a project agent is written as its full agent type.
+specialists:
+  security-reviewer: ["^(server|api|auth)/", "migrations?/"]
+  data-reviewer: ["migrations?/", "(db|store|sync)/"]
+  ux-qa: ["^(src/)?(components|routes|pages|screens)/", "\\.css$"]
+
+# Tasks the architect replays in a scratch clone before handing the plan over.
+risky: ["migrations?/", "(sync|contract|schema)", "(db|store|storage)/"]
+
+design:
+  screens: true                   # false = the project has no UI; design-loop never runs
+  mockups: .gtm/mockups           # HTML + PNG boards
+  render: ""                      # "<cmd> {html} {png} {width}"; empty = npx playwright screenshot
+  widths: [360, 390, 1280]
+  threshold: 8                    # critic score to pass, /10, with zero must-fix
+  rounds: 3
+
+qa:
+  live_url: ""                    # release-qa target after the human deploys; empty = skip
+  account: ""                     # where the test account's credentials live (never the values)
+
+limits:
+  fix_rounds: 3
+  fix_files: 3                    # Fix track ceiling; above it, the work becomes a Feature
