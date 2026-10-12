@@ -13,6 +13,10 @@ Ground rules: as in the `gtm` skill §0.
 - From `team.md`: `team` = `{ role: {model, effort} }` for every role; `triggers` = the specialists
   that are `on`, with their regexes; `fixRounds`; the Fix ceiling.
 - Progress file: `<root>/reports/<slug>/progress.md`, one line per task.
+- Verify commands still marked `[CHECK]` in `config.yml` (not run at init): run each once on the
+  branch, with `verify.prefix`. It runs → remove the mark. It cannot run (missing tool, wrong
+  command) or fails on the untouched base → stop with a Heads-up and one decision card (correct the
+  command / drop it / accept the failure as pre-existing, logged) before the first task.
 
 ## 2. Each task, in plan order
 1. Write `<root>/reports/<slug>/task-<n>-brief.md`: the task verbatim, the plan's global

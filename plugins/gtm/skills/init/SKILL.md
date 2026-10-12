@@ -6,12 +6,14 @@ argument-hint: "[root path, default .gtm]"
 # Set up GTM in this project
 
 Goal: a working `.gtm/` in under ten minutes of the human's time. The analyst guesses; the human
-corrects. Follow `${CLAUDE_PLUGIN_ROOT}/templates/briefing.md` for every message.
+corrects. The draft takes about 1-2 minutes: say so when you dispatch the analyst. Follow `${CLAUDE_PLUGIN_ROOT}/templates/briefing.md` for every message.
 
 ## 1. Draft
 - Root: `$ARGUMENTS` or `.gtm/`. If it exists, never overwrite: list what is missing or stale and
   offer to fill only that.
-- Dispatch `gtm:analyst` in **init mode** with the root. It detects the stack, verify commands, base
+- Dispatch `gtm:analyst` in **init mode** with the root. It detects the stack, verify commands (it
+  runs only the fast ones: lint, typecheck or a smoke test, within 90 seconds; the rest stay
+  `[CHECK]` until the first `/gtm:deliver` run confirms them), base
   branch, commit style, UI and server paths, and drafts from `${CLAUDE_PLUGIN_ROOT}/templates/`:
   `brief.md`, `config.yml`, `team.md` (proposed), `conventions.md` and `guidelines/*.md` (adapted
   to what the repo already does: commit style, test frameworks, languages), every guess marked
@@ -25,7 +27,8 @@ Show the guesses as a table (item · my guess · why) and ask the human to reply
 lines. Cover only what the code cannot tell: purpose and users, non-negotiables, whether the product has
 screens, any verify command the analyst could not find, and the **communication style**: language,
 default detail level (brief / standard / deep / ask), emoji (off / light / generous; default light).
-Write the answers in (`language`, `briefing` in `config.yml`); remove every `[CHECK]`.
+Write the answers in (`language`, `briefing` in `config.yml`); remove every `[CHECK]` except on
+verify commands not run at init, which `/gtm:deliver` confirms on its first run.
 
 ## 3. Team profile (one message)
 From the brief, propose `team.md`: priorities weighted low / normal / high (security, data
