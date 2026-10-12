@@ -3,6 +3,29 @@
 All notable changes to GTM. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [SemVer](https://semver.org/).
 
+## [0.2.0] - 2026-10-12
+
+### Added
+- Stealth mode (`stealth: on|off` in `.gtm/config.yml`, chosen at `/gtm:init`, switched with
+  `/gtm:tune`): GTM's files stay out of the tracked tree, nothing it writes into the project names
+  it, no attribution trailers, branches follow the project's pattern.
+- Project voice guideline (`guidelines/voice.md`) in every project, mandatory with stealth on:
+  text written into the project follows its own history and docs, in plain writing. The
+  implementer, ship and retro read it.
+- Footprint check (`plugins/gtm/scripts/footprint-check.mjs`, no dependencies): scans the branch
+  name, commit messages, PR text, added lines and new file names for GTM's vocabulary, excluded
+  paths, attribution and writing tells; `/gtm:ship` runs it with stealth on and stops on a hit.
+  Patterns are configurable under `footprint` in the config; `scripts/validate.mjs` runs its
+  fixture test.
+- Docs: a Stealth mode section in the method, position 15 ("GTM serves the project, it does not
+  sign it"), glossary entries, a README line.
+
+### Fixed
+- Decision cards render as plain Markdown (a bold question, an options table, one line with the
+  recommendation and the cost if wrong) with labels in the human's language, instead of a code
+  block with English labels. The briefing format keeps prose, cards and tables out of code fences
+  and lines within an 80-100 column terminal.
+
 ## [0.1.1] - 2026-10-12
 
 ### Changed

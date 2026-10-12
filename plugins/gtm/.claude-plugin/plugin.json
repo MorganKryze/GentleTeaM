@@ -1,7 +1,7 @@
 {
   "name": "gtm",
   "displayName": "GentleTeaM",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A light agent-team method: three tracks, eleven roles, three human touchpoints per feature, briefings that spare the developer's attention",
   "author": {
     "name": "MorganKryze",
