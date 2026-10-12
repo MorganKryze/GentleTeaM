@@ -28,7 +28,7 @@ Circles are the human touchpoints. Everything between them is settled inside the
 ## Tracks
 | Track | When | Flow | Artifacts |
 | --- | --- | --- | --- |
-| Fix | at most 3 files (the team profile's ceiling), no schema, migration or auth change | 3-line design in chat, implementer and reviewer, plus the specialist on security or data ground | a brief in `reports/`, a ledger line if there is a lesson |
+| Fix | at most the Fix ceiling (3 files by default), no schema, migration or auth change | 3-line design in chat, implementer and reviewer, plus the specialist on security or data ground | a brief in `reports/`, a ledger line if there is a lesson |
 | Feature | one capability, one branch | design loop if screens change, spec, plan, deliver per task, final review | board, spec, plan, reports, ledger lines |
 | Milestone | several branches, a new surface | a one-page decomposition, then the Feature flow per sub-feature, final review per branch | the Feature artifacts per branch |
 
