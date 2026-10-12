@@ -48,8 +48,8 @@ both. Project-wide install, updates and pinning: [install](docs/install.md).
 1. `/gtm:init`: GTM reads your repository and drafts a one-page brief, the config, your
    conventions and a **team profile** (what matters most here, and from that, how hard each role
    thinks and which specialists exist). You approve or edit each in one reply.
-2. `/gtm <what you want done>` (namespaced form: `/gtm:gtm`): GTM picks the track with at most two
-   questions and runs it.
+2. `/gtm:gtm <what you want done>` (listed as `/gtm:gtm (gtm)`; bare `/gtm` may also resolve when
+   no other command shares the name): GTM picks the track with at most two questions and runs it.
 3. Later: `/gtm:retro` after shipping, `/gtm:tune` when the team feels slow, costly or blind to
    something, `/gtm:brief-me` to understand any artifact without reading it.
 

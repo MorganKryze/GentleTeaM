@@ -7,7 +7,7 @@
 ## Per role
 | Role | Verdict | Companion | Why |
 | --- | --- | --- | --- |
-| analyst | optional | [superpowers](https://github.com/obra/superpowers) `brainstorming` | Socratic exploration for vague ideas, before `/gtm` picks a track |
+| analyst | optional | [superpowers](https://github.com/obra/superpowers) `brainstorming` | Socratic exploration for vague ideas, before `/gtm:gtm` picks a track |
 | designer | keep one | one design skill at most (e.g. `frontend-design`) | many overlapping design skills inflate every session's context |
 | design-critic | add | [impeccable](https://github.com/pbakaus/impeccable) `critique` / `audit` | deterministic design-tell detectors, cheap and repeatable |
 | architect | optional | [context7](https://github.com/upstash/context7) | current library docs while planning |

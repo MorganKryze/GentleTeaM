@@ -16,7 +16,9 @@ On Claude Code 2.1.275 or later, one step also works:
 From a shell: `claude plugin marketplace add MorganKryze/GentleTeaM`, then
 `claude plugin install gtm@gentleteam`.
 
-Then, in your project: `/gtm:init`, and `/gtm <what you want done>` (namespaced form: `/gtm:gtm`).
+Then, in your project: `/gtm:init`, and `/gtm:gtm <what you want done>`. The entry point is
+namespaced like every plugin skill and shows as `/gtm:gtm (gtm)` in the command menu; bare `/gtm`
+may also resolve when no other command shares the name.
 
 ## For a whole project
 Add the marketplace at project scope and commit `.claude/settings.json`, so teammates get GTM once

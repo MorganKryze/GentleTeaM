@@ -30,7 +30,7 @@ the commits since the last tag, grouped by type, in the human's language.
 
 ## 4. After the human deploys
 If `qa.live_url` is set, offer one line: run `gtm:release-qa` on the live instance. Report per the
-briefing format; a bug becomes a Fix or a Feature through `/gtm`.
+briefing format; a bug becomes a Fix or a Feature through `/gtm:gtm`.
 
 Once merged, mark the story done in `<root>/backlog.md` (definition of done: `guidelines/work.md`).
 Then suggest `/gtm:retro` in one line.

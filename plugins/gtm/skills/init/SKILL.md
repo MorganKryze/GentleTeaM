@@ -67,4 +67,4 @@ Apply the choice through `.git/info/exclude` (never `.gitignore` without asking)
 root to `git.never_name` so no tracked file names it.
 
 ## 6. Done
-TL;DR with what was created, then Next steps: `you` · run `/gtm <what you want done>`.
+TL;DR with what was created, then Next steps: `you` · run `/gtm:gtm <what you want done>`.

@@ -17,7 +17,7 @@
 - A story is delivered by one track: a Fix or a Feature. Its acceptance lines become the spec's EARS
   lines; the plan's tasks are how it is built, not stories.
 - `<root>/backlog.md` lists epics, their stories, each with priority and status (todo, doing,
-  done, dropped). `/gtm` adds or updates the story; `/gtm:ship` marks it done.
+  done, dropped). `/gtm:gtm` adds or updates the story; `/gtm:ship` marks it done.
 
 ## Definition of done
 | Track | Done when |

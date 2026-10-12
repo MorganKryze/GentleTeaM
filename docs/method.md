@@ -46,7 +46,7 @@ CLAUDE.md, and may keep it out of git).
 | `config.yml` | mechanics: paths, verify commands, git rules, languages, briefing style | init | every skill and role |
 | `team.md` | the team profile: priorities, model and effort per role, specialists, gates | init, `/gtm:tune` | every skill and workflow |
 | `conventions.md` + `guidelines/*.md` | the project's conventions, one file per area, each with a "when to read" line | init, `/gtm:retro`, `/gtm:tune` | each role reads only its own files |
-| `backlog.md` | epics, stories, priority, status | `/gtm`, `/gtm:ship` | analyst, human |
+| `backlog.md` | epics, stories, priority, status | `/gtm:gtm`, `/gtm:ship` | analyst, human |
 | `specs/` | one spec per Feature: For you, what and why, EARS acceptance, decisions | architect | human (For you), team |
 | `plans/` | one plan per Feature: tasks with files, interfaces, TDD steps, verify command | architect | implementers, reviewers |
 | `mockups/` | design boards (HTML and PNG) | designer | critic, human, ux-qa |
@@ -115,7 +115,7 @@ convention that keeps producing the same finding.
 - **Done:** per track, as `guidelines/work.md` defines it: verified, reviewed, documented, ledger
   updated, and the human's go.
 
-`backlog.md` stays a single table per epic. `/gtm` adds or updates the story when work starts;
+`backlog.md` stays a single table per epic. `/gtm:gtm` adds or updates the story when work starts;
 `/gtm:ship` marks it done.
 
 ## Ledger and the compound step
@@ -129,7 +129,7 @@ each branch makes the next one cheaper.
 ## Skills
 | Skill | Does |
 | --- | --- |
-| `/gtm` | explains the method, picks the track, routes |
+| `/gtm:gtm` | the entry point (bare `/gtm` when unambiguous): explains the method, picks the track, routes |
 | `/gtm:init` | drafts and confirms brief, config, team profile, conventions |
 | `/gtm:design` | runs the design loop, presents the scored board |
 | `/gtm:spec` | writes the spec, presents the For-you block and decision cards |
