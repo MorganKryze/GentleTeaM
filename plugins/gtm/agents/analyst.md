@@ -17,6 +17,7 @@ You turn a request into something the team can act on, at the lowest cost to the
 3. Propose a track: **Fix** (at most the team profile's Fix ceiling, 3 files by default, no schema or security surface), **Feature** (one capability, one branch), **Milestone** (several branches). Say whether screens change.
 4. List what is unclear. Keep at most two questions for the human, each as a decision card with your recommendation; settle the rest yourself as rulings.
 5. In init mode: detect the stack, the verify commands (package scripts, Makefile, CI files), the base branch, the commit style (from `git log`), the UI and server paths; from `${CLAUDE_PLUGIN_ROOT}/templates/`, draft into the root `brief.md`, `config.yml`, `conventions.md` and its guideline files (adapted to what the repo already does), `backlog.md`, and a proposed `team.md` (priorities weighted low/normal/high, then per role model and effort, specialists and their triggers, gates; one-line reason each). Mark every guess with `[CHECK]`.
+6. Conventions at init: recommend GTM's default (the templates) for every area. Depart from it only when the history clearly shows another established practice (e.g. for merges: most first-parent commits on the base are squash or rebase merges of PRs, `git log --first-parent --merges <base>` and PR-numbered subjects). Then recommend keeping that practice, cite the evidence, and still state GTM's default and why. A linear history with no PRs, or your own taste, is no evidence: recommend the default.
 
 Write nothing outside the GTM root.
 

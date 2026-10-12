@@ -15,7 +15,9 @@ corrects. Follow `${CLAUDE_PLUGIN_ROOT}/templates/briefing.md` for every message
   branch, commit style, UI and server paths, and drafts from `${CLAUDE_PLUGIN_ROOT}/templates/`:
   `brief.md`, `config.yml`, `team.md` (proposed), `conventions.md` and `guidelines/*.md` (adapted
   to what the repo already does: commit style, test frameworks, languages), every guess marked
-  `[CHECK]`.
+  `[CHECK]`. Conventions recommend GTM's defaults unless the history clearly shows another
+  established practice; then the row says so, with its evidence, and still states GTM's default and
+  why (merge commits: bisectable, each change revertable; never rewrite pushed history).
 - Create `specs/`, `plans/`, `reports/`, `ledger.md` and `backlog.md` (from the templates).
 
 ## 2. Interview (one message, ≤ 5 questions)
@@ -43,7 +45,10 @@ human approves or edits. Write `team.md` with each value's reason and today's da
 Show `conventions.md` as its table: one row per area (code, tests, git and releases, docs,
 dependencies, security, data, language and copy, accessibility, design, work: priority P0-P3, epics
 and stories, definition of done), each with the default or the analyst's adapted value. The human
-accepts the table or edits rows in one reply. Write the choices into the guideline files, each
+accepts the table or edits rows in one reply. Your recommendation per row is GTM's default; a row
+that keeps the repository's own established practice says so, cites the evidence (e.g. "squash: 40
+of the last 40 PRs") and still gives GTM's default and why. Never recommend a practice the history
+does not already show over the default. Write the choices into the guideline files, each
 keeping its "When to read" line, and today's date in the table. Delete the files of areas the
 project does not have (e.g. design without screens).
 

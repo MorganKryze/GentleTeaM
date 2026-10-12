@@ -2,6 +2,11 @@
 
 > One-table summary of the project's conventions. Each row points at its guideline file, which
 > agents read for their role. Proposed at `/gtm:init`, revisited with `/gtm:tune`.
+>
+> Each row starts as GTM's default. Init keeps it unless the repository's history clearly shows
+> another established practice; the row then keeps that practice, cites the evidence, and still
+> states GTM's default and why (e.g. "squash: 40 of the last 40 PRs, `git log --first-parent`;
+> GTM default: merge commits, so each commit stays bisectable and revertable").
 
 | Area | Convention in one line | File | Decided |
 | --- | --- | --- | --- |

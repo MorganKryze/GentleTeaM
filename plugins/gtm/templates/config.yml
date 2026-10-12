@@ -35,7 +35,8 @@ git:
   commits: conventional           # Conventional Commits, one logical change, tests with their code
   forbid: ["Co-authored-by", "Generated with"]   # never in a commit message
   never_name: []                  # paths or words never written in tracked files (e.g. .gtm/)
-  merge: merge-commit             # merge-commit | rebase; never squash unless set here
+  merge: merge-commit             # merge-commit (GTM default) | rebase | squash; another value only
+                                  # when the history shows it established (see guidelines/git.md)
   push: ask                       # ask = nothing pushed, merged, tagged or released without the go
 
 # Specialists, their triggers, risky paths, fix rounds and the design threshold are weights, not

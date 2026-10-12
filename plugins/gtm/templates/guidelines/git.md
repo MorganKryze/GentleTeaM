@@ -8,6 +8,9 @@
 - **PRs:** title = a Conventional Commit; body = the For-you summary, what changed for the user, how
   it was proven, rulings, deferred minors. Size: one Feature; past ~400 changed lines (tests aside),
   split. Review rule: <e.g. one human approval>.
-- **Merges:** <merge commit (default) | squash>. Never rewrite pushed history.
+- **Merges:** merge commits (GTM default: every commit stays on the base, so history can be
+  bisected and any single change reverted). Another practice (squash, rebase) only when the history
+  already shows it established: name it, cite the evidence, keep GTM's default and reason beside
+  it. Never rewrite pushed history.
 - **Releases:** SemVer; a CHANGELOG entry per release (Keep a Changelog); tag `v<version>` only on
   the human's go.
