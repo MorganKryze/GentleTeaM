@@ -42,10 +42,8 @@ async function run(name, src, args, reply) {
     return { value, dispatches, logs }
   } catch (e) {
     // Errors from inside the context come from its own realm, so match on the name.
-    if (e && e.name === 'ReferenceError') {
-      const missing = String(e.message).split(' ')[0]
-      throw new Error(`${name}: runtime global ${missing} is not provided`)
-    }
+    const missing = e && e.name === 'ReferenceError' && /^(\S+) is not defined$/.exec(String(e.message))
+    if (missing) throw new Error(`${name}: runtime global ${missing[1]} is not provided`)
     throw e
   }
 }
