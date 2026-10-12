@@ -1,0 +1,20 @@
+name: Bug
+description: GTM did something wrong or failed to run
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: What happened
+      description: The command or skill you ran, what you expected, what you got.
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Versions
+      description: GTM version (plugin.json) and `claude --version`.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Report or ledger excerpt
+      description: The relevant lines from `.gtm/reports/` or `.gtm/ledger.md`, if any.

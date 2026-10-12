@@ -6,6 +6,7 @@ versions follow [SemVer](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- README: banner, badges; issue and pull request templates; more plugin keywords.
 - Docs: the method, glossary and install page say where the Fix ceiling is set (the team
   profile's Gates, changed with `/gtm:tune`) and what happens past it (the Fix continues as a
   Feature from the spec, its commits kept).
