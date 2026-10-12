@@ -103,6 +103,21 @@ const deliver = [
     ],
   },
   {
+    name: 'feature: a fix round that reaches security ground brings its specialist in',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : ok), ['scripts/new.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+  },
+  {
     name: 'default fix rounds: OPEN after 3, efforts raised from low',
     args: { team: { implementer: { model: 'opus', effort: 'low' }, reviewer: { model: 'inherit', effort: 'medium' } } },
     reply: implementer(['src/a.js'], () => bad),

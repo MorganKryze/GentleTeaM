@@ -148,8 +148,8 @@ for (let round = 0; round <= ROUNDS; round++) {
   // Feature flow checks them instead of losing them.
   const grown = escalation(changed, fix.head)
   if (grown) return { ...grown, open, reviewers, stats, minors }
-  // A fix round on a specialist's ground goes back to that specialist, even after its approval:
-  // a Fix has no final review to catch it later.
+  // A fix round on a specialist's ground goes back to that specialist, even after its approval,
+  // on every track: a Fix has no final review, and a task's own review should not wait for it.
   for (const r of ground(fix.files)) {
     if (!still.some((p) => p.r === r)) still.push({ r, findings: null })
     if (!reviewers.includes(r)) reviewers.push(r)

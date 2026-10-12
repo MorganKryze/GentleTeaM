@@ -81,8 +81,8 @@ contract. See [roles](roles.md).
 - **Hand-back:** at most ten lines, or the structured object a workflow asks for: status, files,
   verify result, concerns. The full report goes to the report file.
 - **Fresh context:** reviewers see the brief, the report and the diff, never the implementer's
-  reasoning. Re-reviews in a fix round go only to the reviewers who flagged something, and check
-  only their findings and the fix diff.
+  reasoning. Re-reviews in a fix round go only to the reviewers who flagged something and every
+  specialist whose ground the fix diff touches, and check only their findings and the fix diff.
 - **Fix rounds:** at most three per task by default; each round raises the implementer's effort one
   level.
 

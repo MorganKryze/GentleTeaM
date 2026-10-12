@@ -21,6 +21,9 @@ versions follow [SemVer](https://semver.org/).
   estimated files) gets its spec and plan from one architect pass; the plan step keeps that plan
   unless a card is answered otherwise or the spec changes. The track pick says small or not, with
   the file count.
+- Fix rounds go back to every specialist whose ground the fix touches, on every track, even after
+  its approval. A Fix that grows past the ceiling in a fix round escalates and carries its open
+  findings to the Feature flow.
 
 ### Fixed
 - Fix rounds keep the implementer at `max`, or any effort outside `low` to `xhigh`, instead of
