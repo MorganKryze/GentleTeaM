@@ -1,0 +1,4 @@
+feat(export): write sessions as CSV
+
+The export button now saves a CSV file with one row per set. Dates use
+ISO 8601 so spreadsheets sort them.

@@ -1,0 +1,15 @@
+# Fixture config for the footprint check test.
+root: .gtm
+stealth: on
+design:
+  mockups: .gtm/mockups
+git:
+  base: main
+  forbid: ["Co-authored-by", "Generated with"]
+  never_name:
+    - .agent-notes
+footprint:
+  words: ["project falcon"]   # an internal codename
+  allow:
+    - 'Google Tag Manager'
+  skip: [bullets]

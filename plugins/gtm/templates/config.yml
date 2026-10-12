@@ -1,0 +1,67 @@
+# GTM project config. Read by every GTM skill and agent. Keep it short; delete what you do not use.
+# Paths are relative to the repository root. Regexes are JavaScript syntax, matched against
+# repo-relative paths.
+
+# Where GTM keeps its artifacts. Moving it? Also add "GTM root: <path>" to the project's CLAUDE.md
+# (to CLAUDE.local.md, itself excluded from git, when stealth is on). May be outside the repository.
+root: .gtm
+
+# on = GTM leaves no footprint in the project: its files stay out of the tracked tree, nothing it
+# writes into the project names it, and text follows guidelines/voice.md. Switch with /gtm:tune.
+stealth: off
+
+language:
+  human: en          # briefings, specs' "For you", board captions, decision cards
+  code: en           # plans, reports, commits, code comments
+
+briefing:
+  # brief | standard | deep | ask. "ask" = one quick question before presenting, then the answer is
+  # stored below under remembered.<kind> and reused.
+  detail: ask
+  remembered: {}     # e.g. { board: brief, spec: standard, plan: brief, review: brief }
+  # off | light | generous. light = a few status markers in conversation (✅ ⚠️ 🔒 ❌), never
+  # decorative. Whatever the setting: none in docs, specs, plans or ledgers; the README may use a few.
+  emoji: light
+
+# Commands the implementer and reviewers run. Leave empty what the project lacks.
+verify:
+  prefix: ""         # prepended to every command, e.g. a wrapper that keeps exit codes
+  lint: ""
+  typecheck: ""
+  test: ""
+  build: ""
+  size: ""
+  e2e: ""
+  gate: [lint, typecheck, test]   # run before every commit; build/size/e2e at task end
+
+git:
+  base: main
+  branch: "<slug>"                # branch name pattern
+  commits: conventional           # Conventional Commits, one logical change, tests with their code
+  forbid: ["Co-authored-by", "Generated with"]   # never in a commit message
+  never_name: []                  # paths or words never written in tracked files (e.g. .gtm/)
+  merge: merge-commit             # merge-commit (GTM default) | rebase | squash; another value only
+                                  # when the history shows it established (see guidelines/git.md)
+  push: ask                       # ask = nothing pushed, merged, tagged or released without the go
+
+# The footprint check (scripts/footprint-check.mjs), run by /gtm:ship when stealth is on. It already
+# flags GTM's vocabulary, the root, design.mockups, git.never_name, .git/info/exclude entries and
+# git.forbid; these add to it.
+footprint:
+  words: []                       # more regexes to flag (case-insensitive), e.g. an internal codename
+  allow: []                       # regexes; a hit on a line matching one is ignored
+  skip: []                        # writing tells the project's own voice uses: em-dash, emoji, stock,
+                                  # filler, triad, bullets
+
+# Specialists, their triggers, risky paths, fix rounds and the design threshold are weights, not
+# mechanics: they live in the team profile (<root>/team.md), next to their reasons.
+
+design:
+  screens: true                   # false = the project has no UI; design-loop never runs
+  mockups: .gtm/mockups           # HTML + PNG boards
+  render: ""                      # "<cmd> {html} {png} {width}"; empty = npx playwright screenshot
+  widths: [360, 390, 1280]
+
+qa:
+  live_url: ""                    # release-qa target after the human deploys; empty = skip
+  account: ""                     # where the test account's credentials live (never the values)

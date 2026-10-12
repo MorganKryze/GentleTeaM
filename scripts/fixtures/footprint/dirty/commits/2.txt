@@ -1,0 +1,3 @@
+docs(export): describe the columns per the GTM plan
+
+Fast, simple and reliable.

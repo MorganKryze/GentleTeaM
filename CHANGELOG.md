@@ -1,0 +1,53 @@
+# Changelog
+
+All notable changes to GTM. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
+versions follow [SemVer](https://semver.org/).
+
+## [0.2.0] - 2026-10-12
+
+### Added
+- Stealth mode (`stealth: on|off` in `.gtm/config.yml`, chosen at `/gtm:init`, switched with
+  `/gtm:tune`): GTM's files stay out of the tracked tree, nothing it writes into the project names
+  it, no attribution trailers, branches follow the project's pattern.
+- Project voice guideline (`guidelines/voice.md`) in every project, mandatory with stealth on:
+  text written into the project follows its own history and docs, in plain writing. The
+  implementer, ship and retro read it.
+- Footprint check (`plugins/gtm/scripts/footprint-check.mjs`, no dependencies): scans the branch
+  name, commit messages, PR text, added lines and new file names for GTM's vocabulary, excluded
+  paths, attribution and writing tells; `/gtm:ship` runs it with stealth on and stops on a hit.
+  Patterns are configurable under `footprint` in the config; `scripts/validate.mjs` runs its
+  fixture test.
+- Docs: a Stealth mode section in the method, position 15 ("GTM serves the project, it does not
+  sign it"), glossary entries, a README line.
+
+### Fixed
+- Decision cards render as plain Markdown (a bold question, an options table, one line with the
+  recommendation and the cost if wrong) with labels in the human's language, instead of a code
+  block with English labels. The briefing format keeps prose, cards and tables out of code fences
+  and lines within an 80-100 column terminal.
+
+## [0.1.1] - 2026-10-12
+
+### Changed
+- Init recommends GTM's conventions (merge commits, never rewrite pushed history) unless the
+  repository's history clearly shows another established practice; it then cites the evidence and
+  still states GTM's default and why.
+- Init runs only fast verify commands (lint, typecheck or a smoke test) within 90 seconds and marks
+  the rest `[CHECK]`; the first `/gtm:deliver` run confirms them. The draft takes about 1-2 minutes.
+
+### Fixed
+- Docs name the entry point `/gtm:gtm`; bare `/gtm` may resolve when unambiguous.
+
+## [0.1.0] - 2026-10-12
+
+### Added
+- Marketplace `gentleteam` and plugin `gtm`.
+- Three tracks (Fix, Feature, Milestone) with automatic, one-way escalation from Fix to Feature.
+- Eleven role agents: analyst, designer, design-critic, architect, implementer, reviewer,
+  security-reviewer, data-reviewer, ux-qa, final-reviewer, release-qa.
+- Workflows `design-loop` and `deliver-task`, taking the project's team profile per dispatch.
+- Skills `/gtm`, `init`, `design`, `spec`, `plan`, `deliver`, `ship`, `retro`, `tune`, `brief-me`.
+- Templates for the brief, config, team profile, conventions and eleven guideline files, backlog,
+  spec, plan, ledger, and the human briefing format.
+- Docs: manifesto, positions, principles, method, roles, glossary, install, companions,
+  contributing; CI validation of manifests, frontmatter and workflow syntax.

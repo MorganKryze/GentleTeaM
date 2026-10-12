@@ -1,0 +1,5 @@
+feat(export): seamlessly write sessions as CSV 🚀
+
+Basically the export button now saves a CSV — one row per set.
+
+Co-authored-by: Bot <bot@example.com>
