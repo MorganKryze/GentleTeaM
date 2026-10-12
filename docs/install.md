@@ -20,6 +20,10 @@ Then, in your project: `/gtm:init`, and `/gtm:gtm <what you want done>`. The ent
 namespaced like every plugin skill and shows as `/gtm:gtm (gtm)` in the command menu; bare `/gtm`
 may also resolve when no other command shares the name.
 
+`/gtm:init` also writes the team profile, `team.md`, whose Gates hold the Fix ceiling: the most
+files a Fix may change (3 by default) before it becomes a Feature. `/gtm:tune` changes it; see the
+[method](method.md#tracks).
+
 ## For a whole project
 Add the marketplace at project scope and commit `.claude/settings.json`, so teammates get GTM once
 they trust the folder:
@@ -39,7 +43,7 @@ auto-update is off by default; turn it on per marketplace in `/plugin`, Marketpl
 Because `plugin.json` sets a `version`, you stay on your installed version until a release bumps it.
 
 ## Pin
-Add the marketplace at a ref: `MorganKryze/GentleTeaM#v0.1.0` (a tag) or `#main`.
+Add the marketplace at a ref: `MorganKryze/GentleTeaM#v0.3.0` (a tag) or `#main`.
 
 ## Develop locally
 `claude --plugin-dir ./plugins/gtm` loads the plugin from a checkout; `/reload-plugins` picks up

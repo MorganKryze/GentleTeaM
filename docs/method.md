@@ -28,13 +28,22 @@ Circles are the human touchpoints. Everything between them is settled inside the
 ## Tracks
 | Track | When | Flow | Artifacts |
 | --- | --- | --- | --- |
-| Fix | at most 3 files (the team profile's ceiling), no schema, migration or auth change | 3-line design in chat, implementer and reviewer, plus the specialist on security or data ground | a brief in `reports/`, a ledger line if there is a lesson |
+| Fix | at most the Fix ceiling (3 files by default), no schema, migration or auth change | 3-line design in chat, implementer and reviewer, plus the specialist on security or data ground | a brief in `reports/`, a ledger line if there is a lesson |
 | Feature | one capability, one branch | design loop if screens change, spec, plan, deliver per task, final review | board, spec, plan, reports, ledger lines |
 | Milestone | several branches, a new surface | a one-page decomposition, then the Feature flow per sub-feature, final review per branch | the Feature artifacts per branch |
 
-The track is chosen up front with at most two questions. A Fix that grows past the ceiling
-escalates to a Feature automatically; its commits stay. A Fix on security or data ground stays a
+The track is chosen up front with at most two questions. A Fix on security or data ground stays a
 Fix: the specialist for that ground reviews it, as on any task. Nothing downgrades mid-task.
+
+The Fix ceiling is the most files a Fix may change, 3 by default. It lives in the team profile
+(`team.md`) as the Gates line `Fix track ceiling: N files`; `/gtm:init` sets it and `/gtm:tune`
+changes it. Every file a Fix changes counts, a CHANGELOG included, and so do the files its fix
+rounds add: a Fix of exactly the ceiling stays a Fix, one more file escalates. A change expected
+to be larger is a Feature from the track pick. A Fix that passes the ceiling during delivery
+escalates on its own, before review or right after the fix round that grew it, and continues as
+a Feature from the spec. Its commits stay, its minor findings go to the ledger, and the findings
+its last fix round answered, which no reviewer re-checked, become spec requirements with their
+tests, so the final review checks them.
 
 A small Feature has no screen, schema, migration or auth change and at most twice the Fix ceiling
 in estimated files (6 by default). The architect writes its spec and plan in one pass, the plan

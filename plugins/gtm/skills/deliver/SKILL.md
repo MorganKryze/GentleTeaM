@@ -11,7 +11,8 @@ Ground rules: as in the `gtm` skill §0.
 - Branch: create it from `git.base` as `git.branch` says (the orchestrator does this once; agents
   never switch branches). Note the base commit.
 - From `team.md`: `team` = `{ role: {model, effort} }` for every role; `triggers` = the specialists
-  that are `on`, with their regexes; `fixRounds`; the Fix ceiling.
+  that are `on`, with their regexes; `fixRounds`; `fixCeiling`, the N of the Gates line
+  `Fix track ceiling: N files`.
 - Progress file: `<root>/reports/<slug>/progress.md`, one line per task.
 - Verify commands still marked `[CHECK]` in `config.yml` (not run at init): run each once on the
   branch, with `verify.prefix`. It runs → remove the mark. It cannot run (missing tool, wrong
@@ -23,7 +24,7 @@ Ground rules: as in the `gtm` skill §0.
    constraints, the spec path, the validated board, the guidelines it touches.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report:
    "<root>/reports/<slug>/task-<n>.md", branch, base: <head before this task>, mockup, triggers,
-   team, fixRounds, track }`.
+   team, fixRounds, fixCeiling, track }`.
 3. Read the result:
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line (status, fix rounds,
      reviewers), go on.

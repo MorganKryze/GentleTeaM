@@ -5,6 +5,17 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Docs: the method, glossary and install page say where the Fix ceiling is set (the team
+  profile's Gates, changed with `/gtm:tune`) and what happens past it (the Fix continues as a
+  Feature from the spec, its commits kept).
+
+### Fixed
+- A Fix now escalates at the team profile's Fix ceiling, not always past 3 files: the workflow
+  arguments `/gtm:deliver` builds, which a Fix reuses, carry `fixCeiling`. The workflow test checks
+  that each skill passes every argument its workflow reads.
+- Install: the pinned-ref example names a real tag, `#v0.3.0`; `v0.1.0` is a branch, not a tag.
+
 ## [0.3.0] - 2026-10-12
 
 ### Added
