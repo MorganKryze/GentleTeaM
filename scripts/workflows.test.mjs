@@ -57,6 +57,8 @@ function unscripted(files, scenarios) {
 const ok = { verdict: 'approve', findings: [], summary: 'ok' }
 const badFinding = { severity: 'important', file: 'src/a.js', summary: 'bug' }
 const bad = { verdict: 'fix', findings: [badFinding], summary: 'fix' }
+const critical = { severity: 'critical', file: 'scripts/x.mjs', summary: 'injection' }
+const typo = { severity: 'minor', summary: 'typo' }
 const TRIGGERS = { 'security-reviewer': ['^scripts/'], 'data-reviewer': ['^templates/'], 'ux-qa': ['^ui/'] }
 const srcFiles = (n) => Array.from({ length: n }, (_, i) => `src/${i}.js`)
 const implement = (agentType = 'gtm:implementer', extra = {}) => ({ agentType, label: 'implement', ...extra })
@@ -263,8 +265,34 @@ const deliver = [
     name: 'fix: a fix round that grows the Fix past the ceiling escalates',
     args: { track: 'fix', triggers: TRIGGERS },
     reply: implementer(srcFiles(3), (d) => (d.label === 'reviewer' ? bad : ok), ['src/0.js', 'src/9.js']),
-    returns: { status: 'ESCALATE', reason: '4 files > 3', head: 'h1', files: [...srcFiles(3), 'src/9.js'] },
+    returns: {
+      status: 'ESCALATE', reason: '4 files > 3', head: 'h1', files: [...srcFiles(3), 'src/9.js'],
+      open: [{ ...badFinding, by: 'reviewer' }], reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }],
+    log: ['Fix escalates to Feature: 4 files > 3'],
+  },
+  {
+    name: 'fix: a test-first fix round past the ceiling escalates with the open security finding',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(
+      ['scripts/x.mjs', 'src/a.js', 'src/b.js'],
+      (d) => (d.label === 'security-reviewer' ? { verdict: 'fix', findings: [critical, typo], summary: 'fix' } : ok),
+      ['scripts/x.mjs', 'scripts/x.test.mjs'],
+    ),
+    returns: {
+      status: 'ESCALATE', reason: '4 files > 3', head: 'h1',
+      files: ['scripts/x.mjs', 'src/a.js', 'src/b.js', 'scripts/x.test.mjs'],
+      open: [{ ...critical, by: 'security-reviewer' }], reviewers: ['reviewer', 'security-reviewer'],
+      stats: { 'security-reviewer': { critical: 1, important: 0, minor: 1 } },
+      minors: [{ ...typo, by: 'security-reviewer' }],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+    ],
     log: ['Fix escalates to Feature: 4 files > 3'],
   },
   {

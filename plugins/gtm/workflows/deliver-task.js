@@ -144,8 +144,10 @@ for (let round = 0; round <= ROUNDS; round++) {
   )
   if (!fix || fix.status === 'BLOCKED') return { status: 'BLOCKED', head, open, stats, minors }
   changed = [...new Set([...changed, ...fix.files])]
+  // The findings this fix round got are not re-reviewed yet: they go with the escalation, so the
+  // Feature flow checks them instead of losing them.
   const grown = escalation(changed, fix.head)
-  if (grown) return grown
+  if (grown) return { ...grown, open, reviewers, stats, minors }
   // A fix round on a specialist's ground goes back to that specialist, even after its approval:
   // a Fix has no final review to catch it later.
   for (const r of ground(fix.files)) {

@@ -54,7 +54,7 @@ Record the work in `<root>/backlog.md`: add or update its story (type, priority 
 ## 2. Route
 - **Fix:** write `<root>/reports/<slug>/brief.md` (the approved 3 lines plus the test that proves
   it), create the branch as `git` says, run the workflow `gtm:deliver-task` with `track: "fix"`
-  (args as `/gtm:deliver` builds them). `ESCALATE` → continue as a Feature from `/gtm:spec`; the
+  (args as `/gtm:deliver` builds them). `ESCALATE` → read it as `/gtm:deliver` §2 says; the
   commits stay. `CLEAN` → present the result and ask the go (`/gtm:ship`).
 - **Feature:** `/gtm:design` (only if screens change and `design.screens` is true) → `/gtm:spec` →
   `/gtm:plan` → `/gtm:deliver` → `/gtm:ship`. Invoke each skill in turn; stop only at a touchpoint.
