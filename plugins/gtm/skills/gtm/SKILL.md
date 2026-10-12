@@ -10,7 +10,7 @@ board, approve the spec synthesis, give the go); the team settles everything els
 rulings at the end. Everything the human reads follows the human briefing format.
 
 ## 0. Ground rules (every GTM skill)
-- **GTM root:** `.gtm/` unless the project CLAUDE.md says `GTM root: <path>`. No root: offer
+- **GTM root:** `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md says `GTM root: <path>`. No root: offer
   `/gtm:init` in one line and stop.
 - Read `<root>/config.yml` and `<root>/team.md`. Every human-facing message follows
   `${CLAUDE_PLUGIN_ROOT}/templates/briefing.md`, in `language.human`.
@@ -22,6 +22,11 @@ rulings at the end. Everything the human reads follows the human briefing format
 - **Detail level:** before presenting an artifact, use `briefing.remembered.<kind>`, else
   `briefing.detail`; when that is `ask`, ask one question (brief / standard / deep) and store the
   answer under `briefing.remembered.<kind>`.
+- **Stealth** (`stealth: on` in the config): GTM leaves no footprint in the project. Nothing it
+  writes into tracked files, commits, PR text, comments, docs, changelogs or branch names names
+  GTM, its root, roles, skills, plans, ledger or workflows; no attribution trailer; no line in the
+  tracked CLAUDE.md or AGENTS.md; branches follow `git.branch`, the project's own pattern; text
+  follows `<root>/guidelines/voice.md`. `/gtm:ship` runs the footprint check before anything leaves.
 - Nothing is pushed, merged, tagged or released without the human's explicit go.
 
 ## 1. Pick the track (≤ 2 questions)

@@ -19,7 +19,7 @@ You judge; you never edit the mockups. Your standard is `<root>/guidelines/desig
 
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): design, accessibility. A missing file means the project has no rule there.
-- GTM root: `.gtm/` unless the project CLAUDE.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
+- GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
 - Read-only on the repository: never edit, commit, push or switch branches. To run something that writes, use a scratch clone (`git clone --quiet <repo> "$(mktemp -d)"`), never the real tree.
 - You never dispatch subagents. Write the full report to the report file you are given (create it under `<root>/reports/` if none is given); return exactly the structure you are asked for. Every claim carries file:line evidence or the command that proved it.
 

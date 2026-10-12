@@ -2,8 +2,13 @@
 # Paths are relative to the repository root. Regexes are JavaScript syntax, matched against
 # repo-relative paths.
 
-# Where GTM keeps its artifacts. Moving it? Also add "GTM root: <path>" to the project's CLAUDE.md.
+# Where GTM keeps its artifacts. Moving it? Also add "GTM root: <path>" to the project's CLAUDE.md
+# (to CLAUDE.local.md, itself excluded from git, when stealth is on). May be outside the repository.
 root: .gtm
+
+# on = GTM leaves no footprint in the project: its files stay out of the tracked tree, nothing it
+# writes into the project names it, and text follows guidelines/voice.md. Switch with /gtm:tune.
+stealth: off
 
 language:
   human: en          # briefings, specs' "For you", board captions, decision cards
@@ -38,6 +43,15 @@ git:
   merge: merge-commit             # merge-commit (GTM default) | rebase | squash; another value only
                                   # when the history shows it established (see guidelines/git.md)
   push: ask                       # ask = nothing pushed, merged, tagged or released without the go
+
+# The footprint check (scripts/footprint-check.mjs), run by /gtm:ship when stealth is on. It already
+# flags GTM's vocabulary, the root, design.mockups, git.never_name, .git/info/exclude entries and
+# git.forbid; these add to it.
+footprint:
+  words: []                       # more regexes to flag (case-insensitive), e.g. an internal codename
+  allow: []                       # regexes; a hit on a line matching one is ignored
+  skip: []                        # writing tells the project's own voice uses: em-dash, emoji, stock,
+                                  # filler, triad, bullets
 
 # Specialists, their triggers, risky paths, fix rounds and the design threshold are weights, not
 # mechanics: they live in the team profile (<root>/team.md), next to their reasons.

@@ -1,10 +1,11 @@
 ---
 name: tune
-description: Re-evaluate the GTM team profile and conventions - reads the ledger's run, minor and usage lines and the reports, proposes changes to priorities, per-role model and effort, specialists, triggers, gates or a convention as decision cards, and records what the human approves with its date. Use when /gtm:retro suggests it or the human feels the team is too slow, too costly or missing things.
+description: Re-evaluate the GTM team profile and conventions - reads the ledger's run, minor and usage lines and the reports, proposes changes to priorities, per-role model and effort, specialists, triggers, gates or a convention as decision cards, and records what the human approves with its date. Also switches stealth mode on or off. Use when /gtm:retro suggests it or the human feels the team is too slow, too costly or missing things.
 ---
 # Tune the team profile and conventions
 
 Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without the human's answer.
+Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
 
 ## 1. Read
 `<root>/team.md`, the `run`, `minor` and `usage` lines of the ledger, and the final reviews under
@@ -39,3 +40,13 @@ reason and today's date, add a History line
 (`- <date> · <setting>: <old> → <new> · <why>`), and a `ruling` line in the ledger quoting the
 human's choice. Rejected proposals get a ledger line too, so they are not proposed again without new
 evidence.
+
+## 5. Switch stealth mode
+One decision card: the switch, what it changes, the cost if wrong. On the human's answer, set
+`stealth` in `config.yml` and add a `ruling` line to the ledger.
+- **On:** apply `/gtm:init` §5 "Stealth on": the root out of the tracked tree, the `GTM root:` line
+  moved from CLAUDE.md to an excluded CLAUDE.local.md, user-scope install, `voice.md` mandatory.
+  List what GTM already left in tracked files (a CLAUDE.md line, a committed `.gtm/`, a project
+  `.claude/settings.json` entry) and offer to remove it in one commit, in the project's voice.
+  Pushed history is never rewritten: say so plainly.
+- **Off:** set it, then the init card on where `.gtm/` lives; nothing else changes.

@@ -1,6 +1,6 @@
 ---
 name: init
-description: Bootstrap GTM in a project - drafts the brief, config, team profile, conventions and guidelines from the codebase, confirms them through a short interview, and offers to keep .gtm/ out of git. Use once per project, or to refresh a stale setup.
+description: Bootstrap GTM in a project - drafts the brief, config, team profile, conventions and guidelines from the codebase, confirms them through a short interview, and sets stealth mode and whether .gtm/ stays out of git. Use once per project, or to refresh a stale setup.
 argument-hint: "[root path, default .gtm]"
 ---
 # Set up GTM in this project
@@ -10,7 +10,8 @@ corrects. The draft takes about 1-2 minutes: say so when you dispatch the analys
 
 ## 1. Draft
 - Root: `$ARGUMENTS` or `.gtm/`. If it exists, never overwrite: list what is missing or stale and
-  offer to fill only that.
+  offer to fill only that. Until §5 is answered, list the root in `.git/info/exclude`, so nothing
+  of GTM can be staged by accident.
 - Dispatch `gtm:analyst` in **init mode** with the root. It detects the stack, verify commands (it
   runs only the fast ones: lint, typecheck or a smoke test, within 90 seconds; the rest stay
   `[CHECK]` until the first `/gtm:deliver` run confirms them), base
@@ -55,7 +56,27 @@ does not already show over the default. Write the choices into the guideline fil
 keeping its "When to read" line, and today's date in the table. Delete the files of areas the
 project does not have (e.g. design without screens); `voice.md` stays in every project.
 
-## 5. Keep it out of git? (one decision card)
+## 5. Footprint (one message, at most two decision cards)
+First card: stealth, from the analyst's evidence (who owns the repository, contributors, a
+contribution policy on tools or disclosure).
+```
+Decision: stealth mode
+Options:  A. off: GTM's files may be shared with the team
+          B. on: GTM leaves no footprint; its files stay local, text reads in the project's voice
+I recommend: A for a project you own; B for a client's or an open-source project you contribute to
+Cost if wrong: A → GTM's traces in someone else's history; B → teammates start with no memory
+```
+Write the answer as `stealth: on|off` in `config.yml`.
+
+**Stealth on:** no second card. Keep the whole root out of the tracked tree: its entry in
+`.git/info/exclude` (never `.gitignore`, which is tracked), or a root outside the repository set
+as `root:` with the `GTM root:` line in `CLAUDE.local.md`, itself listed in `.git/info/exclude`.
+Add the root to `git.never_name`. Write nothing into tracked files: no README badge, no
+CLAUDE.md or AGENTS.md line, no committed `.claude/settings.json` (install GTM at user scope).
+`git.branch` keeps the project's branch pattern; `footprint.skip` lists only the tells the
+project's own log already uses (cite the evidence). `guidelines/voice.md` is mandatory.
+
+**Stealth off:** second card, where `.gtm/` lives:
 ```
 Decision: where .gtm/ lives
 Options:  A. commit it, except reports/ and mockups/ (excluded locally)
@@ -63,7 +84,8 @@ Options:  A. commit it, except reports/ and mockups/ (excluded locally)
 I recommend: A: the brief, team profile and ledger are the team's memory; reviews stay local
 Cost if wrong: A → shared files to tidy later; B → a teammate starts with no memory
 ```
-Apply the choice through `.git/info/exclude` (never `.gitignore` without asking). With B, add the
+Apply the choice through `.git/info/exclude`, replacing the entry from §1 (never `.gitignore`
+without asking). With B, add the
 root to `git.never_name` so no tracked file names it.
 
 ## 6. Done
