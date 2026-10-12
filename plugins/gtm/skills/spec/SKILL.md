@@ -27,7 +27,8 @@ recommended option.
 Show the For-you block and the open decision cards. Nothing else unless the detail level asks for
 it. The human answers the cards; write the answers into the Decisions table, set
 `Status: approved by the human on <date>`. Rulings the architect took go to the ledger. In one
-pass, when every card is answered as recommended and nothing else in the spec changed, end that
-line with `; plan kept from the one pass`.
+pass, when every card is answered as recommended and the spec is unchanged since the one pass
+wrote the plan (no §2 correction round, no other edit), end that line with
+`; plan kept from the one pass`.
 
 Changing the spec later reopens this touchpoint, and drops that ending.
