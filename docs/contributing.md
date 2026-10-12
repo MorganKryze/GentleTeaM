@@ -20,6 +20,8 @@
 
 ## Checks
 `node scripts/validate.mjs` and `claude plugin validate .` must pass; CI runs both on every push.
+`validate.mjs` also runs each workflow against scripted agents (`scripts/workflows.test.mjs`): a
+new workflow needs a scenario there, and a changed default or threshold changes one.
 
 ## Versions
 SemVer, in `plugins/gtm/.claude-plugin/plugin.json` only.
