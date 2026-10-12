@@ -1,0 +1,14 @@
+{
+  "name": "gtm",
+  "displayName": "GentleTeaM",
+  "version": "0.1.0",
+  "description": "A light agent-team method: three tracks, eleven roles, three human touchpoints per feature, briefings that spare the developer's attention",
+  "author": {
+    "name": "MorganKryze",
+    "url": "https://github.com/MorganKryze"
+  },
+  "homepage": "https://github.com/MorganKryze/GentleTeaM",
+  "repository": "https://github.com/MorganKryze/GentleTeaM",
+  "license": "AGPL-3.0-only",
+  "keywords": ["agent-team", "method", "spec-driven", "code-review", "workflow", "subagents"]
+}

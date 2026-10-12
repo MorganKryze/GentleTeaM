@@ -1,0 +1,15 @@
+{
+  "name": "gentleteam",
+  "description": "GentleTeaM: a light agent-team method for Claude Code",
+  "owner": {
+    "name": "MorganKryze",
+    "url": "https://github.com/MorganKryze"
+  },
+  "plugins": [
+    {
+      "name": "gtm",
+      "source": "./plugins/gtm",
+      "description": "A light agent-team method: three tracks, eleven roles, three human touchpoints per feature"
+    }
+  ]
+}
