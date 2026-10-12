@@ -5,6 +5,11 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- A Fix now escalates at the team profile's Fix ceiling, not always past 3 files: the workflow
+  arguments `/gtm:deliver` builds, which a Fix reuses, carry `fixCeiling`. The workflow test checks
+  that each skill passes every argument its workflow reads.
+
 ## [0.3.0] - 2026-10-12
 
 ### Added

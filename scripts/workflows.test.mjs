@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Runs each workflow in plugins/gtm/workflows against scripted agents and compares the returned
 // value, the dispatches and the log lines with what each scenario expects. Every workflow needs
-// at least one scenario. Run by validate.mjs. No dependencies.
+// at least one scenario. It also checks that each skill running a workflow passes every argument
+// the workflow reads. Run by validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import vm from 'node:vm'
@@ -403,8 +404,28 @@ const probe = unscripted(['deliver-task.js', 'design-loop.js', 'extra.js'], scen
 if (canon(probe) !== canon(['extra.js'])) differs(S2, 'returned value', ['extra.js'], probe)
 for (const file of unscripted(readdirSync(folder), scenarios)) failures.push(`${file}: no scenario in scripts/workflows.test.mjs`)
 
+// A skill must hand a workflow every argument the workflow reads: one left out falls back to the
+// workflow's default without a word. Every workflow must be run by one such argument block, so a
+// reworded skill cannot slip past this check.
+const skills = new URL('../plugins/gtm/skills/', import.meta.url).pathname
+const RUN = /Run the workflow `gtm:([\w-]+)` with args:?\s*`\{([\s\S]*?)\}`/g
+const handed = new Set()
+for (const dir of readdirSync(skills)) {
+  const text = readFileSync(join(skills, dir, 'SKILL.md'), 'utf8')
+  for (const [, workflow, block] of text.matchAll(RUN)) {
+    handed.add(workflow)
+    const src = readFileSync(join(folder, `${workflow}.js`), 'utf8')
+    for (const name of new Set([...src.matchAll(/\b(?:A|args)\.(\w+)/g)].map((m) => m[1]))) {
+      if (!new RegExp(`\\b${name}\\b`).test(block)) failures.push(`skills/${dir}/SKILL.md: args for ${workflow} omit ${name}`)
+    }
+  }
+}
+for (const file of readdirSync(folder)) {
+  if (file.endsWith('.js') && !handed.has(file.slice(0, -3))) failures.push(`${file}: no skill runs it with an args block`)
+}
+
 if (failures.length) {
   console.error(failures.join('\n\n'))
   process.exit(1)
 }
-console.log(`workflow test: ${scenarios.length} scenarios and 2 self-checks OK`)
+console.log(`workflow test: ${scenarios.length} scenarios, 2 self-checks and ${handed.size} skill hand-offs OK`)
