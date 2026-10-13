@@ -148,8 +148,10 @@ for (; round <= ROUNDS; round++) {
   const still = []
   results.forEach((res, i) => {
     const r = pending[i].r
+    // The findings its last fix round got go with the placeholder: nobody has checked them.
     if (!res) {
-      unreviewed.push({ severity: 'important', summary: `${r} returned no review`, by: r })
+      unreviewed.push({ severity: 'important', summary: `${r} returned no review`, by: r },
+        ...(pending[i].findings || []).map((f) => ({ ...f, by: r })))
       return
     }
     const blocking = []
@@ -159,6 +161,8 @@ for (; round <= ROUNDS; round++) {
       if (f.severity === 'minor') minors.push({ ...f, by: r })
       else blocking.push(f)
     }
+    // A fix verdict is never an approval, even with nothing blocking to show for it.
+    if (res.verdict === 'fix' && !blocking.length) blocking.push({ severity: 'important', summary: `${r} asked for a fix without a blocking finding` })
     if (blocking.length) {
       open.push(...blocking.map((f) => ({ ...f, by: r })))
       still.push({ r, findings: blocking })

@@ -456,6 +456,114 @@ const deliver = [
     },
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }],
   },
+  {
+    name: 'verdict fix without a blocking finding: an important finding, a fix round and a re-review',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [typo], summary: 'fix' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 0, minor: 1 } },
+      minors: [{ ...typo, by: 'reviewer' }],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'verdict fix without a blocking finding on every round: OPEN with that finding',
+    args: { fixRounds: 1 },
+    reply: implementer(['src/a.js'], () => ({ verdict: 'fix', findings: [], summary: 'fix' })),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      open: [{ severity: 'important', summary: 'reviewer asked for a fix without a blocking finding', by: 'reviewer' }],
+      stats: {}, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'verdict approve with a blocking finding: the finding blocks',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...bad, verdict: 'approve' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'no re-review: the findings the fix round got stay open with the placeholder',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], (d) => {
+      if (d.label === 'security-reviewer') return bad
+      return d.label === 'security-reviewer · round 1' ? null : ok
+    }, ['scripts/x.mjs']),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      open: [
+        { severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' },
+        { ...badFinding, by: 'security-reviewer' },
+      ],
+      stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+    log: ['security-reviewer · round 1: returned nothing', 'not dispatched again'],
+  },
+  {
+    name: 'fix: an escalation carries the specialist with no review in open',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs', 'src/a.js'], (d) => (d.label === 'security-reviewer' ? null : bad), ['src/b.js', 'src/c.js']),
+    returns: {
+      status: 'ESCALATE', reason: '4 files > 3', head: 'h1', files: ['scripts/x.mjs', 'src/a.js', 'src/b.js', 'src/c.js'],
+      open: [
+        { ...badFinding, by: 'reviewer' },
+        { severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' },
+      ],
+      reviewers: ['reviewer', 'security-reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+    ],
+    log: ['Fix escalates to Feature: 4 files > 3'],
+  },
+  {
+    name: 'fix round blocked: BLOCKED carries the specialist with no review in open',
+    args: { triggers: TRIGGERS },
+    reply: (d) => {
+      if (d.label.startsWith('fix')) return { status: 'BLOCKED', head: 'h0', files: [], summary: 'stuck' }
+      return implementer(['scripts/x.mjs'], (r) => (r.label === 'security-reviewer' ? null : bad))(d)
+    },
+    returns: {
+      status: 'BLOCKED', head: 'h0',
+      open: [
+        { ...badFinding, by: 'reviewer' },
+        { severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' },
+      ],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+    ],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).

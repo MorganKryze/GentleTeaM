@@ -28,9 +28,10 @@ Ground rules: as in the `gtm` skill §0.
 3. Read the result:
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line (status, fix rounds,
      reviewers), go on.
-   - `OPEN` (fix rounds exhausted) or `BLOCKED`: stop the loop. Present a Heads-up and one decision
-     card (revise the plan / accept with the open findings logged / take over by hand), with your
-     recommendation. Resume from this task after the answer.
+   - `OPEN` (fix rounds exhausted, or a reviewer gave no review) or `BLOCKED`: stop the loop.
+     Present a Heads-up and one decision card (re-run the missing review / revise the plan / accept
+     with the open findings logged / take over by hand), with your recommendation. Resume from this
+     task after the answer.
    - `ESCALATE` (Fix only): append each minor to the ledger (`minor`), then continue as a Feature
      from `/gtm:spec`. Its `open` findings went to a fix round that grew the Fix past the ceiling
      and were not re-reviewed: the spec states each as a requirement with its test, so the final
