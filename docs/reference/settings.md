@@ -60,7 +60,7 @@ defaults in the role files.
 | Priorities | security, data integrity, UX and accessibility, performance, delivery speed, usage and cost sensitivity: `low`, `normal` or `high` | `normal` for all six | `/gtm:init`, `/gtm:tune`, the architect |
 | Roles | each role's model (`opus`, `sonnet`, `haiku`, `fable`, a full model id or `inherit`) and effort (`low` to `max`) | `opus`, with the efforts in [Roles](/reference/roles/) | every command that dispatches a role |
 | Specialists | `security-reviewer`, `data-reviewer`, `ux-qa`: `on` or `off`, and the path regexes that call each one in | all `on`, with example triggers to adapt | `/gtm:deliver` |
-| Limits | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver` |
+| Limits | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky, `budget per task` and `budget per branch` | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver`, `/gtm:tune` |
 | History | one line per change made by `/gtm:tune`: date, setting, old and new value, why | empty | `/gtm:tune`, `/gtm:retro` |
 
 The limits and their defaults: a task gets 3
@@ -68,6 +68,10 @@ The limits and their defaults: a task gets 3
 [file limit for a fix](/reference/glossary/#file-limit-for-a-fix) is 3 files; mockups pass at 8/10 with no
 must-fix finding, and are redrawn 3 times at most; risky tasks get a
 [dry run](/reference/glossary/#dry-run), on paths matching `migrations?/`, `(sync|contract|schema)` and
-`(db|store|storage)/`.
+`(db|store|storage)/`. The two budgets, `budget per task` and `budget per branch`, are `none`
+or `<minutes> min, <tokens>k tokens`, and start at `none`; a profile without these lines reads as
+`none`. Past 1.5 times a budget, `/gtm:deliver` raises a Heads-up, notes it in the ledger and goes
+on: no budget changes a verdict, a correction round or the order of tasks. After three measured
+runs with no budget, `/gtm:tune` proposes both at the medians of those runs.
 
 To change any of them, see [Change your team settings](/guides/team-settings/).
