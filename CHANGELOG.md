@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-13
+
 ### Changed
 - README: banner, badges; issue and pull request templates; more plugin keywords.
 - README: says what GTM costs in agent time, measured on its own branches; how specialist
@@ -18,6 +20,22 @@ versions follow [SemVer](https://semver.org/).
   arguments `/gtm:deliver` builds, which a Fix reuses, carry `fixCeiling`. The workflow test checks
   that each skill passes every argument its workflow reads.
 - Install: the pinned-ref example names a real tag, `#v0.3.0`; `v0.1.0` is a branch, not a tag.
+- The read-only roles (reviewer, security-reviewer, data-reviewer, final-reviewer, design-critic,
+  ux-qa) end on the structured verdict a workflow asks for: a report goes only to a report file
+  they are given, else into the verdict's summary, and they never create one. The design critic
+  works within about 30 tool calls. Its verdict was lost in 3 passes out of 5.
+- A critic or reviewer that loses its verdict is retried once when it throws, on a 25-call
+  budget, with the same diff, findings, model and effort; a second throw keeps the old fallback
+  (the design loop stops not passed, the task records `<role> returned no review`). A blocked or
+  skipped role returns nothing and is not re-dispatched: it goes straight to that fallback. That
+  finding starts no fix round and keeps the task `OPEN`; the role no longer re-reviews a later fix
+  diff in place of the task's own, which could end a task `CLEAN` with no review of its own diff
+  from that role. An implementer or fix round that throws is `BLOCKED`, as one that returns nothing.
+- A review with a `fix` verdict and no critical or important finding is no longer an approval: it
+  counts as an important finding carrying the reviewer's summary, gets a fix round and a
+  re-review. A role that gives no re-review keeps the findings its fix round got open, not only
+  `<role> returned no review`. `/gtm:deliver` stops on that `OPEN` too and offers to re-run the
+  missing review.
 
 ## [0.3.0] - 2026-10-12
 

@@ -333,13 +333,248 @@ const deliver = [
     dispatches: [implement(), reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' }],
     log: ['security-reviewer', '('],
   },
+  {
+    name: 'lost review: a throw, then a retry with findings starts the fix round',
+    args: { team: { reviewer: { model: 'opus', effort: 'medium' } } },
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') throw new Error('subagent completed without calling StructuredOutput')
+      return d.label === 'reviewer · retry' ? bad : ok
+    }),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(),
+      reviewer('reviewer', { model: 'opus', effort: 'medium' }),
+      reviewer('reviewer · retry', { model: 'opus', effort: 'medium' }),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1', { model: 'opus', effort: 'medium' }),
+    ],
+    log: ['reviewer: lost its structured result, one retry'],
+  },
+  {
+    name: 'lost review: a specialist throws in a fix round, only it is retried and its approval counts',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], (d) => {
+      if (d.label === 'security-reviewer · round 1') throw new Error('no structured output')
+      return d.label === 'security-reviewer' ? bad : ok
+    }),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1 · retry' },
+    ],
+    log: ['security-reviewer · round 1: lost its structured result, one retry'],
+  },
+  {
+    name: 'no review: a reviewer that returns null is an important finding, no fix round, not dispatched again',
+    args: {},
+    reply: implementer(['src/a.js'], () => null),
+    returns: {
+      status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'],
+      open: [{ severity: 'important', summary: 'reviewer returned no review', by: 'reviewer' }],
+      stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer()],
+    log: ['reviewer: returned nothing', 'not dispatched again'],
+    unlogged: ['retry'],
+  },
+  {
+    name: 'lost review twice: two throws are an important finding, no fix round, no third dispatch',
+    args: {},
+    reply: implementer(['src/a.js'], () => {
+      throw new Error('subagent completed without calling StructuredOutput')
+    }),
+    returns: {
+      status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'],
+      open: [{ severity: 'important', summary: 'reviewer returned no review', by: 'reviewer' }],
+      stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · retry')],
+    log: ['reviewer: no result after its retry, no third dispatch'],
+  },
+  {
+    name: 'fix: a specialist with no review leaves the task OPEN, never CLEAN',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], (d) => (d.label === 'security-reviewer' ? null : ok), ['scripts/x.mjs']),
+    returns: {
+      status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'],
+      open: [{ severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' }],
+      stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' }],
+    log: ['security-reviewer: returned nothing', 'not dispatched again'],
+  },
+  {
+    name: 'no review: other findings get their fix round, the specialist is not re-dispatched on its ground',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], (d) => {
+      if (d.label === 'security-reviewer') throw new Error('subagent completed without calling StructuredOutput')
+      if (d.label === 'security-reviewer · retry') return null
+      return d.label === 'reviewer' ? bad : ok
+    }, ['scripts/x.mjs']),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      open: [{ severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' }],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · retry' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    log: ['security-reviewer: no result after its retry, no third dispatch'],
+  },
+  {
+    name: 'implementer throws: BLOCKED as for nothing back, never retried',
+    args: {},
+    reply: () => {
+      throw new Error('no structured output')
+    },
+    returns: { status: 'BLOCKED', impl: null },
+    dispatches: [implement()],
+  },
+  {
+    name: 'fix round throws: BLOCKED with the open findings, never retried',
+    args: {},
+    reply: (d) => {
+      if (d.label.startsWith('fix')) throw new Error('no structured output')
+      return implementer(['src/a.js'], () => bad)(d)
+    },
+    returns: {
+      status: 'BLOCKED', head: 'h0', open: [{ ...badFinding, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }],
+  },
+  {
+    name: 'verdict fix without a blocking finding: an important finding, a fix round and a re-review',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [typo], summary: 'fix' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 0, minor: 1 } },
+      minors: [{ ...typo, by: 'reviewer' }],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'verdict fix without a blocking finding on every round: OPEN with that finding',
+    args: { fixRounds: 1 },
+    reply: implementer(['src/a.js'], () => ({ verdict: 'fix', findings: [], summary: 'execSync builds a shell string at x.mjs:12' })),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      open: [{
+        severity: 'important', by: 'reviewer',
+        summary: 'reviewer asked for a fix without a blocking finding: execSync builds a shell string at x.mjs:12',
+      }],
+      stats: {}, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'verdict approve with a blocking finding: the finding blocks',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...bad, verdict: 'approve' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'no re-review: the findings the fix round got stay open with the placeholder',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], (d) => {
+      if (d.label === 'security-reviewer') return bad
+      return d.label === 'security-reviewer · round 1' ? null : ok
+    }, ['scripts/x.mjs']),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      open: [
+        { severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' },
+        { ...badFinding, by: 'security-reviewer' },
+      ],
+      stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+    log: ['security-reviewer · round 1: returned nothing', 'not dispatched again'],
+  },
+  {
+    name: 'fix: an escalation carries the specialist with no review in open',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs', 'src/a.js'], (d) => (d.label === 'security-reviewer' ? null : bad), ['src/b.js', 'src/c.js']),
+    returns: {
+      status: 'ESCALATE', reason: '4 files > 3', head: 'h1', files: ['scripts/x.mjs', 'src/a.js', 'src/b.js', 'src/c.js'],
+      open: [
+        { ...badFinding, by: 'reviewer' },
+        { severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' },
+      ],
+      reviewers: ['reviewer', 'security-reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+    ],
+    log: ['Fix escalates to Feature: 4 files > 3'],
+  },
+  {
+    name: 'fix round blocked: BLOCKED carries the specialist with no review in open',
+    args: { triggers: TRIGGERS },
+    reply: (d) => {
+      if (d.label.startsWith('fix')) return { status: 'BLOCKED', head: 'h0', files: [], summary: 'stuck' }
+      return implementer(['scripts/x.mjs'], (r) => (r.label === 'security-reviewer' ? null : bad))(d)
+    },
+    returns: {
+      status: 'BLOCKED', head: 'h0',
+      open: [
+        { ...badFinding, by: 'reviewer' },
+        { severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' },
+      ],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+    ],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
-// Answers the designer with `board <round>` and the critic with critique(round).
+// Answers the designer with `board <round>` and the critic with critique(round, label).
 const designReply = (critique) => (d) => {
-  const round = Number(d.label.match(/round (\d+)$/)[1])
-  return d.agentType === 'gtm:designer' ? `board ${round}` : critique(round)
+  const round = Number(d.label.match(/round (\d+)/)[1])
+  return d.agentType === 'gtm:designer' ? `board ${round}` : critique(round, d.label)
 }
+const critic = (label, extra = {}) => ({ agentType: 'gtm:design-critic', label, ...extra })
 const score = (n, mustFix = []) => ({ score: n, mustFix, shouldFix: [], summary: 's' })
 const designRounds = (n, extra = {}, criticExtra = extra) =>
   rounds(n, (r) => [
@@ -362,6 +597,50 @@ const design = [
     returns: { passed: false, rounds: 3, scores: [9, 9, 9], verdict: score(9, ['contrast']), board: 'board 3' },
     dispatches: designRounds(3),
   },
+  {
+    name: 'design: a critic that throws is retried once, same model and effort, and passes',
+    args: { team: { 'design-critic': { model: 'opus', effort: 'high' } } },
+    reply: designReply((r, label) => {
+      if (!label.endsWith('· retry')) throw new Error('subagent completed without calling StructuredOutput')
+      return score(8)
+    }),
+    returns: { passed: true, rounds: 1, scores: [8], verdict: score(8), board: 'board 1' },
+    dispatches: [
+      ...designRounds(1, {}, { model: 'opus', effort: 'high' }),
+      critic('critic · round 1 · retry', { model: 'opus', effort: 'high' }),
+    ],
+    log: ['critic · round 1: lost its structured result, one retry'],
+  },
+  {
+    name: 'design: a critic that throws is retried once and its score counts against the bar',
+    args: {},
+    reply: designReply((r, label) => {
+      if (label === 'critic · round 1') throw new Error('no structured output')
+      return score(r === 1 ? 7 : 8)
+    }),
+    returns: { passed: true, rounds: 2, scores: [7, 8], verdict: score(8), board: 'board 2' },
+    dispatches: [...designRounds(1), critic('critic · round 1 · retry'), ...designRounds(2).slice(2)],
+    log: ['critic · round 1: lost its structured result, one retry'],
+  },
+  {
+    name: 'design: a critic that returns null stops the loop not passed and is not dispatched again',
+    args: {},
+    reply: designReply(() => null),
+    returns: { passed: false, rounds: 0, scores: [], verdict: null, board: 'board 1' },
+    dispatches: designRounds(1),
+    log: ['critic · round 1: returned nothing', 'not dispatched again'],
+    unlogged: ['retry'],
+  },
+  {
+    name: 'design: two throws stop the loop not passed, no third dispatch',
+    args: {},
+    reply: designReply(() => {
+      throw new Error('subagent completed without calling StructuredOutput')
+    }),
+    returns: { passed: false, rounds: 0, scores: [], verdict: null, board: 'board 1' },
+    dispatches: [...designRounds(1), critic('critic · round 1 · retry')],
+    log: ['critic · round 1: no result after its retry, no third dispatch'],
+  },
 ].map((s) => ({ workflow: 'design-loop', ...s }))
 
 const scenarios = [...deliver, ...design]
@@ -383,6 +662,8 @@ for (const s of scenarios) {
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
     // Each expected entry is a set of fragments that one log line must hold together.
     if (s.log && !logs.some((line) => s.log.every((part) => line.includes(part)))) differs(where, 'log', s.log, logs)
+    // And no log line may hold any of these.
+    for (const part of s.unlogged || []) if (logs.some((line) => line.includes(part))) differs(where, `log without "${part}"`, [], logs)
   } catch (e) {
     failures.push(`${where}: ${e.message}`)
   }
