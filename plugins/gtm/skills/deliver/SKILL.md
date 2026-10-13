@@ -38,12 +38,12 @@ Ground rules: as in the `gtm` skill §0.
      review checks it.
 
 ## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
-1. Record the checked-out branch and head. Per task, `git worktree add -b "<branch>-t<n>" "<wt>"
-   <head>`, `<wt>` = `<repo's parent>/<repo name>-wt-<slug>-t<n>` (an existing path or branch stops
-   the wave), absolute `<root>` paths in brief and args. Run their `gtm:deliver-task` workflows at
-   once, §2's args plus `branch: <branch>-t<n>`, `base: <head>`, `worktree: <wt>`; let all return.
+1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
+   "<branch>-t<n>" "<wt>" <base>`, `<wt>` = `<repo's parent>/<repo name>-wt-<slug>-t<n>` (an
+   existing path or branch stops the wave), absolute `<root>` paths in brief and args. Run them at
+   once, §2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`; let all return.
 2. Before each merge, the branch and head are the ones last recorded and the tasks' `git -c
-   core.quotePath=false diff --name-only --no-renames <head>..<branch>-t<n>` lists disjoint. Merge
+   core.quotePath=false diff --name-only --no-renames <base>..<branch>-t<n>` lists disjoint. Merge
    each `CLEAN` branch in plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the
    head, gate once; per merged task `git worktree remove "<wt>"`, `git branch -d "<branch>-t<n>"`.
 3. A moved branch or head, an overlap, a conflict or a red gate: merge nothing more, keep unmerged
