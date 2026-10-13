@@ -880,3 +880,42 @@ body { font-size: 1.0625rem; }
   .card .card-title { margin-bottom: 0.35rem; }
   .card::after { top: 1.45rem; transform: none; }
 }
+
+/* ======================================================================================
+   Lists, the home figure row, the one-pager rule and small accessibility fixes.
+   ====================================================================================== */
+
+/* Lists keep the prose measure on their items, not on the list box: the bullet's indent no
+   longer eats ten characters of every line. */
+.main-content > ul, .main-content > ol { max-width: none; }
+.main-content > ul > li, .main-content > ol > li { max-width: var(--measure); }
+
+/* A page with its own pager shows only that one. */
+.content-layout:has(.gtm-pager) .page-navigation:not(.gtm-pager) { display: none !important; }
+
+/* Pager labels: docmd fades them to 80 %, under AA on the light card. */
+.page-navigation .prev-page small, .page-navigation .next-page small { opacity: 1; color: var(--muted); }
+
+/* The "Last updated" line opens the commit history from the keyboard: a 44 px target. */
+.git-last-updated.has-history { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* Edge labels: SVG paints with fill, but contrast tools read color and background-color, where
+   Mermaid leaves a light grey under the label. Both follow the tokens. */
+.mermaid svg .edgeLabel text, .mermaid svg .edgeLabel tspan { color: var(--muted) !important; }
+.mermaid svg .edgeLabel rect { background-color: var(--surface) !important; }
+
+/* Home from 1440: the figure card and its caption first, the three explanations beside it.
+   The content column is a flex column, so a two-column grid replaces it on this page only. */
+@media (min-width: 1440px) {
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content {
+    display: grid; grid-template-columns: 31rem minmax(0, 1fr); column-gap: 2.5rem;
+    grid-auto-flow: row dense; align-content: start;
+  }
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > * { grid-column: 1 / -1; min-width: 0; }
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > :is(.mermaid, .docmd-mermaid-container),
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > :is(.mermaid, .docmd-mermaid-container) + p { grid-column: 1; }
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > :is(.mermaid, .docmd-mermaid-container) ~ .grids:not(:has(.card)) {
+    grid-column: 2; grid-row: span 2; align-self: start; column-gap: 2rem; margin-top: 1rem;
+  }
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > :is(.mermaid, .docmd-mermaid-container) ~ .grids:not(:has(.card)) > .grid-item { margin-top: 0; }
+}

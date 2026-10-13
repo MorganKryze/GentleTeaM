@@ -15,7 +15,8 @@ hideTitle: true
 GentleTeaM (GTM) is a plugin for Claude Code. Its agents draw the
 [mockups](/reference/glossary/#mockups) of your change (each new screen, light and dark), write
 its [spec](/reference/glossary/#spec) (what will be built and how it is checked, opened by a
-ten-line [summary](/reference/glossary/#summary) for you), then build and review it. You step in
+ten-line [summary](/reference/glossary/#summary) that you read), then build and review
+it. You step in
 at three [checkpoints](/reference/glossary/#checkpoint), the moments where you decide.
 
 ::: button "Start the tutorial" /tutorial/first-feature/ ::: ::: button "Install GTM" /start/install/ :::
@@ -121,18 +122,18 @@ The problem GTM answers, and what it costs you.
 :::
 
 Then, in your project, run `/gtm:init`. GTM reads your repository and drafts a one-page
-[brief](/reference/glossary/#brief), your project's purpose, users and limits, for you to
-approve.
+[brief](/reference/glossary/#brief) of your project's purpose, users and limits, and you
+approve it.
 
 ## What does it cost?
 
 GTM spends agent time to save your attention. Measured on GTM's own changes:
 
-| Change | Size | Agent time |
-| --- | --- | --- |
-| 2 files, security code | Fix | 71 s |
-| a docs fix and one workflow argument | Feature, 2 tasks | 11 min |
-| a workflow change | Feature, 3 tasks | 58 min |
+| Change | Size | Agent time | Measured on |
+| --- | --- | --- | --- |
+| 2 files, on security ground | Fix | 71 s | GTM 0.3.0 |
+| a docs fix and one workflow argument, 2 tasks | Feature | 11 min | GTM 0.3.0 |
+| a workflow change, 3 tasks | Feature | 58 min | GTM 0.3.0 |
 
 Installed and idle, GTM adds about 1,300 tokens to a session. A Feature uses more of your plan
 than asking Claude Code directly; a Fix is the cheap path.
