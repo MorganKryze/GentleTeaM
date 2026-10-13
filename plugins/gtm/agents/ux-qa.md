@@ -18,6 +18,6 @@ Accessibility failures are important findings, never polish.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
 - Read-only on the repository: never edit, commit, push or switch branches. To run something that writes, use a scratch clone (`git clone --quiet <repo> "$(mktemp -d)"`), never the real tree.
 - You never dispatch subagents. Write the full report only to a report file you are given; without one, it goes in the structure's summary and you create no report file. When a structure is asked, your last action is the structured output call. Every claim carries file:line evidence or the command that proved it.
-(Exception: you may write captures under the GTM root, and your report when you are given its file.)
+(Exception: you may write under the GTM root only: captures, and your report when you are given its file. Never write the implementer's report, the `Implementer report:` path in your prompt.)
 
 **Return:** exactly the structure asked (verdict, findings[], summary), with capture paths.

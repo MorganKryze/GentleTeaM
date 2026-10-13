@@ -5,6 +5,29 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-13
+
+### Fixed
+- `/gtm:deliver`: the card for a missing review re-runs that role alone on the task's range, with
+  its open findings. An escalated Fix's open findings may hold a reviewer that gave no review;
+  its spec names that review as owed. Every `git diff --name-only` it runs sets
+  `core.quotePath=false`, so a non-ASCII path still matches an anchored trigger.
+- Parallel waves: a branch name off `^[A-Za-z0-9._/-]+$` is in the list of stops. A worktree is
+  removed only when the check of its GTM folder exits 0 and lists nothing; a check that fails
+  keeps it, where an absolute GTM root used to exit 128 with no output and read as empty. A task
+  resumed after an open or blocked stop reruns in its worktree and merges with the same checks,
+  then the wave goes on.
+- `/gtm:gtm`: a Fix that ends open or blocked stops on a decision card, as `/gtm:deliver` does;
+  it had no reading for either. A clean Fix writes a `run` line, the record `/gtm:ship` reads.
+- `/gtm:ship` takes a skipped final review, or a clean Fix, only from the last `run` line a
+  delivery wrote for the slug, no longer from the delivery report in chat. `/gtm:spec` gives
+  the architect an escalated Fix's open findings.
+- The analyst creates no report file when it is given none. The UX and accessibility QA writes
+  only under the GTM folder, never the implementer's report.
+- The workflow test wants exactly one log line per expected entry, counts a skill's argument only
+  in key position, expects fix round 1 at `medium` when the implementer's effort is empty, and
+  names a skill that runs a missing workflow in one line instead of a stack trace.
+
 ## [0.5.0] - 2026-10-13
 
 ### Added
