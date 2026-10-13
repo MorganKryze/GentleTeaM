@@ -11,7 +11,7 @@
 | Conventions | `.gtm/conventions.md` and its guideline files: the project's rules per area. [method](method.md#conventions) |
 | Decision card | A question, options, a firm recommendation and the cost if wrong. [principles](principles.md) |
 | Definition of done | What "done" means per track: verified, reviewed, documented, ledger updated, the human's go. |
-| Design score | The design critic's mark out of 10; a board passes at the threshold (8 by default) with zero must-fix. |
+| Design score | The design critic's mark out of 10, per screen; a screen passes at the threshold (8 by default) with zero must-fix, and a board when every screen passed. |
 | EARS | Easy Approach to Requirements Syntax: acceptance lines of the form WHEN / WHILE / WHERE / IF … THE SYSTEM SHALL …. |
 | Epic | A Milestone or a group of Features. |
 | Escalation | A Fix becoming a Feature when its changed files exceed the Fix ceiling; its commits stay and it continues from the spec. One-way. On security or data ground a Fix stays a Fix and gains that specialist. |
@@ -29,6 +29,7 @@
 | Ledger | `.gtm/ledger.md`: append-only one-line lessons, rulings, deferred minors and run summaries. |
 | Minor | A review finding that does not block a task; logged and triaged by the final review. |
 | NEEDS CLARIFICATION | A marker for something the spec must not guess; zero must remain before the plan. |
+| Parallel wave | Two or more consecutive `[P]` tasks with disjoint files, run at once in their own worktrees and merged in plan order. |
 | Priority | P0 to P3, defined in `guidelines/work.md`. |
 | Project voice | The guideline (`guidelines/voice.md`) that makes text written into the project match its own history and docs, in plain writing. [method](method.md#stealth-mode) |
 | Replay | Running a risky task's code in a scratch clone while planning, to prove the plan before delivery; for plans of two tasks or more. A one-task plan plants its mutations in its TDD steps. |

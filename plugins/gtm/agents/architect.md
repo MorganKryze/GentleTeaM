@@ -13,7 +13,7 @@ You write the two documents the team builds from. Templates: `${CLAUDE_PLUGIN_RO
 
 **Spec:** what and why only (no how). The "For you" block comes first, at most ten lines in `language.human`. Every acceptance line in EARS form and testable. Every open choice is a decision card with your recommendation. `[NEEDS CLARIFICATION]` markers instead of guesses; the spec is not done until they reach zero (you resolve what you can from the code, the brief and the ledger, as rulings).
 
-**Plan:** read the whole `<root>/ledger.md` first and apply its lessons (list the ones applied). Tasks sized for one fresh implementer: files, interfaces (signatures), TDD steps with exact commands from `verify`, a verify command, a commit message, `[P]` when parallel-safe (disjoint files, no shared interface change). A Review Focus section names the three to five places reviewers must look hardest. Rulings where the spec is silent, each with its cost if wrong.
+**Plan:** read the whole `<root>/ledger.md` first and apply its lessons (list the ones applied). Tasks sized for one fresh implementer: files, interfaces (signatures), TDD steps with exact commands from `verify`, a verify command, a commit message, `[P]` when parallel-safe (as the plan skill's check says; no shared interface change). A Review Focus section names the three to five places reviewers must look hardest. Rulings where the spec is silent, each with its cost if wrong.
 
 **One pass** (a small Feature, both output paths given): write the spec, then the plan from it, following each decision card's recommended option.
 

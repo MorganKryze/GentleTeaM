@@ -112,6 +112,15 @@ review it bring it back.
   critical, a security hole or a data-integrity defect.
 - **Fix rounds:** at most three per task by default; each round raises the implementer's effort one
   level.
+- **Parallel wave:** two or more consecutive `[P]` tasks, whose files (CHANGELOG included) are
+  disjoint, run at once, each in its own worktree outside the repository and on its own branch.
+  When all have returned, the clean ones merge into the delivery branch with merge commits in plan
+  order, then the gate runs once. A moved branch or head, an overlap of files, a conflict or a red
+  gate stops the merges and undoes nothing without the human; a task left open or blocked does
+  not hold back its clean siblings, which still merge, but no later task starts.
+- **Design loop:** with several screens, each gets its own designer and critic, all at once; each
+  screen is redrawn alone until it passes or its rounds run out, and the board passes when every
+  screen passed.
 - **Fix wave:** at most one per branch, after a `fix-first` final review: the implementer at a
   fix round's effort, then a re-review of the fix range, one effort level lower when that range
   touches no specialist's ground.
