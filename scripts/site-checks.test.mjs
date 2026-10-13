@@ -605,7 +605,10 @@ check('A30', () => {
   if (/actions\/checkout|^\s*(- )?run:/m.test(j.deploy || '')) f.push('deploy runs a checkout or a command');
   if (!/persist-credentials:\s*false/.test(j.build || '')) f.push('build checkout persists its token');
   if (/secrets\.|github\.token|GITHUB_TOKEN/.test(j.build || '')) f.push('build job reads a secret or the token');
-  if (!/npm_config_ignore_scripts:\s*["']?true/.test(j.build || '')) f.push('package install scripts are not disabled for the build');
+  // Set once for the whole job, so no step runs npm with install scripts on; npm reads the
+  // variable in any case, so a step may not set it to anything else.
+  if (!/^    env:\s*\n(?:      .+\n)*?      npm_config_ignore_scripts:\s*["']?true["']?\s*$/m.test(j.build || '')) f.push('package install scripts are not disabled for the whole build job (env: npm_config_ignore_scripts: true)');
+  for (const m of (j.build || '').matchAll(/npm_config_ignore_scripts:\s*(.*)$/gim)) if (!/^["']?true["']?\s*$/.test(m[1])) f.push(`a build step sets npm_config_ignore_scripts to ${m[1].trim()}`);
   for (const m of t.matchAll(/uses:\s*([^\s#]+)/g)) if (!/@[0-9a-f]{40}$/.test(m[1])) f.push(`not pinned to a full SHA: ${m[1]}`);
   if (!/^    concurrency:\s*\n\s+group:\s*\S+\s*\n\s+cancel-in-progress:\s*false\s*$/m.test(j.deploy || '')) f.push('deploy has no concurrency group with cancel-in-progress: false');
   return f;
