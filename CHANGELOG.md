@@ -8,8 +8,8 @@ versions follow [SemVer](https://semver.org/).
 ### Changed
 - A branch of one task that ends clean at 0 fix rounds skips the final review: the `run` line
   says so, `/gtm:ship` takes the skip in place of a ready verdict, and the branch's minors wait
-  for `/gtm:retro`. A release-only task does not count; a fix round or an escalated Fix's commits
-  bring the final review back.
+  for `/gtm:retro`. A release-only task does not count; a fix round, an escalated Fix's commits
+  or a specialist the task's diff triggers but who did not review it bring the final review back.
 - The final review replays two of the planted mutations, those nearest a pinned threshold, not
   all of them; one that survives is a must-fix. A one-task plan is not replayed: its TDD steps
   plant the mutations instead.

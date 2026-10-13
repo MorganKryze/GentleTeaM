@@ -88,7 +88,8 @@ contract. See [roles](roles.md).
 The final review replays two of the mutations the task reports planted, those nearest a pinned
 threshold (all of them when two or fewer); one that survives is a must-fix. A branch of one task,
 clean at 0 fix rounds, skips it: that task's review, with every triggered specialist, was the
-last, and the `run` line says so. A fix round or an escalated Fix's commits bring it back.
+last, and the `run` line says so. A fix round, an escalated Fix's commits or a specialist whose
+trigger the task's `git diff --name-only` matches but who did not review it bring it back.
 
 ## Hand-offs and hand-backs
 - **Hand-off:** an agent receives paths (brief, spec, plan, report file), never pasted documents.
