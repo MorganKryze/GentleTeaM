@@ -39,12 +39,15 @@ Ground rules: as in the `gtm` skill §0.
 
 ## 3. Final review (once per branch)
 Skip it only when all of these hold:
-- the plan has one task (one that only bumps the version and renames the CHANGELOG section does
-  not count);
-- that task returned `CLEAN` at 0 fix rounds;
-- the branch has no commit before that task's base (an escalated Fix's);
-- every specialist whose trigger matches `git diff --name-only <task base>..<task head>` is in
-  that task's `reviewers` (the workflow picks them from the files the implementer reports).
+- the plan has one task (one that only bumps the version and renames the CHANGELOG section, its
+  `git diff --name-only` listing those two files alone, does not count);
+- every task, the release one included, returned `CLEAN` at 0 fix rounds;
+- the tasks' ranges chain from the branch's fork point to `HEAD`: the first base is `git merge-base
+  <git.base> HEAD`, each next base is the previous task's head, `HEAD` is the last task's head (no
+  hand commit or escalated Fix's commit outside a task);
+- in every task, each specialist whose trigger matches `git diff --name-only <task base>..<task
+  head>` is in that task's `reviewers` (the workflow picks them from the files the implementer
+  reports).
 
 Then dispatch no reviewer, write `final review skipped: one task, clean at 0 fix rounds` in the
 `run` line and the report, leave this slug's minors for `/gtm:retro` and write no `resolved` line.
