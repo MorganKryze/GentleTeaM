@@ -3,7 +3,7 @@
 // value, the dispatches and the log lines with what each scenario expects. Every workflow needs
 // at least one scenario. It also checks that each skill running a workflow passes every argument
 // the workflow reads. Run by validate.mjs. No dependencies.
-import { readFileSync, readdirSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import vm from 'node:vm'
 
@@ -203,6 +203,23 @@ const deliver = [
       implement('gtm:implementer', { effort: 'max' }), reviewer(),
       ...rounds(3, (n) => [
         { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: 'max' },
+        reviewer(`reviewer · round ${n}`),
+      ]),
+    ],
+  },
+  {
+    name: 'empty effort: fix rounds raised from low, as with none',
+    args: { team: { implementer: { effort: '' } } },
+    reply: implementer(['src/a.js'], () => bad),
+    returns: {
+      status: 'OPEN', head: 'h3', fixRounds: 3, reviewers: ['reviewer'],
+      open: [{ ...badFinding, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 4, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      ...rounds(3, (n) => [
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: ['medium', 'high', 'xhigh'][n - 1] },
         reviewer(`reviewer · round ${n}`),
       ]),
     ],
@@ -1009,8 +1026,8 @@ for (const s of scenarios) {
     const { value, dispatches, logs, prompts, extra } = await run(s.workflow, src, s.args, s.reply)
     if (canon(value) !== canon(s.returns)) differs(where, 'returned value', s.returns, value)
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
-    // Each expected entry is a set of fragments that one log line must hold together.
-    if (s.log && !logs.some((line) => s.log.every((part) => line.includes(part)))) differs(where, 'log', s.log, logs)
+    // The expected entry is a set of fragments that exactly one log line must hold together.
+    if (s.log && logs.filter((line) => s.log.every((part) => line.includes(part))).length !== 1) differs(where, 'log', s.log, logs)
     // And no log line may hold any of these.
     for (const part of s.unlogged || []) if (logs.some((line) => line.includes(part))) differs(where, `log without "${part}"`, [], logs)
     if (extra.length) failures.push(`${where}: reply fields the schema does not declare: ${extra.join(', ')}`)
@@ -1059,9 +1076,15 @@ for (const dir of readdirSync(skills)) {
   const text = readFileSync(join(skills, dir, 'SKILL.md'), 'utf8')
   for (const [, workflow, block] of text.matchAll(RUN)) {
     handed.add(workflow)
-    const src = readFileSync(join(folder, `${workflow}.js`), 'utf8')
+    const file = join(folder, `${workflow}.js`)
+    if (!existsSync(file)) {
+      failures.push(`skills/${dir}/SKILL.md: runs gtm:${workflow}, which is not in plugins/gtm/workflows`)
+      continue
+    }
+    const src = readFileSync(file, 'utf8')
     for (const name of new Set([...src.matchAll(/\b(?:A|args)\.(\w+)/g)].map((m) => m[1]))) {
-      if (!new RegExp(`\\b${name}\\b`).test(block)) failures.push(`skills/${dir}/SKILL.md: args for ${workflow} omit ${name}`)
+      // In key position only: first in the block or after a comma, never inside a value.
+      if (!new RegExp(`(?:^|,)\\s*${name}\\b`).test(block)) failures.push(`skills/${dir}/SKILL.md: args for ${workflow} omit ${name}`)
     }
   }
 }

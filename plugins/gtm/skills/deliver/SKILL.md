@@ -29,13 +29,14 @@ Ground rules: as in the `gtm` skill §0.
 3. Read the result:
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line (as §1 says), go on.
    - `OPEN` (fix rounds exhausted, or a reviewer gave no review) or `BLOCKED`: stop the loop.
-     Present a Heads-up and one decision card (re-run the missing review / revise the plan / accept
-     with the open findings logged / take over by hand), with your recommendation. Resume from this
-     task after the answer.
+     Present a Heads-up and one decision card (re-run the missing review: that role alone on the
+     task's `<base>..<head>` with its open findings / revise the plan / accept with the open
+     findings logged / take over by hand), with your recommendation. Resume from this task after
+     the answer.
    - `ESCALATE` (Fix only): append each minor to the ledger (`minor`), then continue as a Feature
      from `/gtm:spec`. Its `open` findings went to a fix round that grew the Fix past the ceiling
-     and were not re-reviewed: the spec states each as a requirement with its test, so the final
-     review checks it.
+     and were not re-reviewed; `open` may also hold `<role> returned no review`. The spec states
+     each as a requirement with its test, a missing review as owed, so the final review checks it.
 
 ## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
 1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
@@ -45,24 +46,28 @@ Ground rules: as in the `gtm` skill §0.
 2. Before each merge, branch/head are as last recorded and tasks' `git -c core.quotePath=false diff
    --name-only --no-renames "<base>..<branch>-t<n>"` lists disjoint. Merge each `CLEAN` branch in
    plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the head, gate once. Per
-   merged task, `<root>` out of the repo or unlisted by `git -C "<wt>" status --porcelain --ignored
-   -unormal -- "<root>"` (repo path): `git worktree remove "<wt>"`, `git branch -d "<branch>-t<n>"`.
-3. A moved branch/head, overlap, conflict, red gate or files in a worktree's `<root>`: merge no
-   more, keep it and unmerged worktrees, undo nothing without the human. `OPEN`/`BLOCKED`: `CLEAN`
-   siblings merge, no later task starts. Heads-up, §2's card; resume in its worktree, base its head.
+   merged task, only when `<root>` is out of the repo, or `git -C "<wt>" status --porcelain
+   --ignored -unormal -- "<root>"` (repo path) exits 0 and lists nothing: `git worktree remove
+   "<wt>"`, `git branch -d "<branch>-t<n>"`. A check that fails keeps the worktree.
+3. A branch name off `^[A-Za-z0-9._/-]+$` (before step 1), a moved branch/head, overlap, conflict,
+   red gate, a failed check or files in a worktree's `<root>`: merge no more, keep it and unmerged
+   worktrees, undo nothing without the human. `OPEN`/`BLOCKED`: `CLEAN` siblings merge, no later
+   task starts. Heads-up, §2's card. On resume, that task reruns in its worktree, base its head,
+   and merges as step 2 says, checks included; the rest go on.
 
 ## 4. Final review (once per branch)
 Skip it only when all of these hold:
 - the plan has one task (one that only bumps the version and renames the CHANGELOG section, its
-  `git diff --name-only --no-renames` listing those two files alone, does not count);
+  `git -c core.quotePath=false diff --name-only --no-renames` listing those two files alone,
+  does not count);
 - every task, the release one included, returned `CLEAN` at 0 fix rounds;
 - the tasks' ranges chain from the branch's fork point to `HEAD`: the first base is `git merge-base
   <git.base> HEAD`, each next base is the previous task's head, `HEAD` is the last task's head (no
   hand commit or escalated Fix's commit outside a task); a wave is one link: its tasks share its
   base, the next base is the head after its merges, which stay in range;
-- in every task, each specialist whose trigger matches
-  `git diff --name-only --no-renames <task base>..<task head>` (a rename lists both paths) is in
-  that task's `reviewers` (the workflow picks them from the files the implementer reports).
+- in every task, each specialist whose trigger matches `git -c core.quotePath=false diff
+  --name-only --no-renames <task base>..<task head>` (a rename lists both paths) is in that
+  task's `reviewers` (the workflow picks them from the files the implementer reports).
 
 Then dispatch no reviewer, write `final review skipped: one task, clean at 0 fix rounds` in the
 `run` line and the report, leave this slug's minors for `/gtm:retro` and write no `resolved` line.
@@ -71,10 +76,10 @@ Otherwise dispatch `gtm:final-reviewer` with the spec, the plan, the branch rang
 the report path `<root>/reports/<slug>/final.md`. `fix-first` → one fix wave: dispatch
 `gtm:implementer` with the must-fix list at a fix round's effort (one level above its profile, at
 most `xhigh`; an effort off that ladder, such as `max`, kept), then `gtm:final-reviewer` once more
-on the fix range only, one level below its profile effort when that range's
-`git diff --name-only --no-renames` matches no specialist trigger (`low` at least, `max` kept).
-Still not ready → a Heads-up and a decision card. Write `resolved` lines for minors fixed, keep
-the others.
+on the fix range only, one level below its profile effort when that range's `git -c
+core.quotePath=false diff --name-only --no-renames` matches no specialist trigger (`low` at least,
+`max` kept). Still not ready → a Heads-up and a decision card. Write `resolved` lines for minors
+fixed, keep the others.
 
 ## 5. Record and report
 - Ledger: one `run` line (`tasks N · fix rounds per task · findings per reviewer (critical /

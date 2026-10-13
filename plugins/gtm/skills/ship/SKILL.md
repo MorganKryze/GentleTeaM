@@ -9,9 +9,11 @@ Ground rules: as in the `gtm` skill §0. Nothing is pushed, merged, tagged or re
 human's explicit go **in this conversation**, for that exact action.
 
 ## 1. Check
-The final review says ready, or the deliver report says it was skipped (one task, clean at 0 fix
-rounds); the working tree is clean; the gate passes once more (run it, quote the result). Commit
-messages carry nothing from `git.forbid` (check with `git log --format=%B`).
+The final review says ready, or the last `run` line a delivery wrote for this slug holds
+`final review skipped: one task, clean at 0 fix rounds` or `Fix: CLEAN, no final review`
+(read anywhere else, neither counts); the working tree is clean; the gate passes once more
+(run it, quote the result). Commit messages carry nothing from `git.forbid` (check with
+`git log --format=%B`).
 
 ## 2. Write the PR text
 `<root>/reports/<slug>/pr.md`, written as `<root>/guidelines/voice.md` says: a Conventional title; a body with the For-you summary, what changed
