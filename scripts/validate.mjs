@@ -78,5 +78,12 @@ for (const test of ['footprint-check.test.mjs', 'workflows.test.mjs']) {
   catch (e) { fail(file, (e.stderr || '').toString().trim() || e.message) }
 }
 
+// The site's source lines need no build and no network: the built-site lines run in the Pages workflow.
+{
+  const file = join(root, 'scripts', 'site-checks.test.mjs')
+  try { execFileSync(process.execPath, [file, root, '--source'], { stdio: 'pipe' }) }
+  catch (e) { fail(file, ((e.stdout || '').toString() + (e.stderr || '').toString()).trim() || e.message) }
+}
+
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log('gtm: manifests, agents, skills, workflows, workflow scenarios and footprint check OK')
+console.log('gtm: manifests, agents, skills, workflows, workflow scenarios, footprint check and site sources OK')
