@@ -16,14 +16,14 @@
 // One PASS or FAIL line per line, details indented; exit 1 on any FAIL.
 import { createServer } from 'node:http';
 import { readFileSync, existsSync, statSync, readdirSync, writeFileSync } from 'node:fs';
-import { join, extname } from 'node:path';
+import { join, extname, resolve as resolvePath, sep } from 'node:path';
 import { createRequire } from 'node:module';
 
 const argv = process.argv.slice(2);
 const opt = k => (argv.includes(k) ? argv[argv.indexOf(k) + 1] : null);
 const repo = argv[0];
 if (!repo || repo.startsWith('-')) { console.error('usage: node scripts/site-measure.test.mjs <repo> [--pages ...] [--widths ...] [--only ...] [--json f]'); process.exit(2); }
-const root = join(repo, 'site');
+const root = resolvePath(repo, 'site');
 if (!existsSync(join(root, 'index.html'))) { console.error('no build: run `npx -y @docmd/core@0.9.7 build` in the repo first'); process.exit(2); }
 const BASE = '/GentleTeaM';
 const widths = (opt('--widths') || '360,390,1280,1440,1920,2560').split(',').map(Number);
@@ -49,9 +49,12 @@ const AXE_SRC = readFileSync(join(axe.path, '..', 'axe.min.js'), 'utf8');
 
 const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2', '.txt': 'text/plain', '.ico': 'image/x-icon', '.xml': 'application/xml' };
 const server = createServer((req, res) => {
-  let p = decodeURIComponent(req.url.split('?')[0]);
+  let p;
+  try { p = decodeURIComponent(req.url.split('?')[0]); } catch { res.writeHead(404).end(); return; }
   if (!p.startsWith(BASE)) { res.writeHead(404).end(); return; }
-  p = join(root, p.slice(BASE.length));
+  // A decoded `..` may climb out of the build: serve nothing outside it.
+  p = resolvePath(root, '.' + p.slice(BASE.length));
+  if (p !== root && !p.startsWith(root + sep)) { res.writeHead(404).end(); return; }
   if (existsSync(p) && statSync(p).isDirectory()) p = join(p, 'index.html');
   if (!existsSync(p)) { res.writeHead(404).end(); return; }
   res.writeHead(200, { 'content-type': TYPES[extname(p)] || 'application/octet-stream' }).end(readFileSync(p));
