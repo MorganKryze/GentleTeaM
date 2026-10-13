@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-13
+
 ### Changed
 - Docs: the method, glossary and install page say where the Fix ceiling is set (the team
   profile's Gates, changed with `/gtm:tune`) and what happens past it (the Fix continues as a
