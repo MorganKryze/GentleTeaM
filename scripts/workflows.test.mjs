@@ -82,6 +82,7 @@ const reviewer = (label = 'reviewer', extra = {}) => ({ agentType: 'gtm:reviewer
 const addressed = { ...badFinding, status: 'addressed' }
 const leak = { severity: 'important', file: 'src/b.js', summary: 'leak' }
 const SCOPE = ['Scope: a defect the task\'s diff', 'did not introduce', 'unless it is critical, a security hole or a data-integrity defect']
+const WORKTREE = ['Worktree: /tmp/wt/acme-t2.', 'Run every command after cd "/tmp/wt/acme-t2"', 'read every repository file there']
 const STATUS = ['Return each with status "addressed" or "open"', 'only new breakage in the fix diff', 'approve when none is left open']
 
 // Answers the implementer by label; every other dispatch goes to review(d).
@@ -763,6 +764,36 @@ const deliver = [
     },
     unprompted: { reviewer: STATUS, 'security-reviewer': STATUS },
   },
+  {
+    name: 'worktree: every prompt names it as the directory for every command and read',
+    args: { worktree: '/tmp/wt/acme-t2' },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    prompts: Object.fromEntries(['implement', 'reviewer', 'fix · round 1', 'reviewer · round 1'].map((l) => [l, WORKTREE])),
+  },
+  {
+    name: 'no worktree: no prompt names one',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    unprompted: Object.fromEntries(['implement', 'reviewer', 'fix · round 1', 'reviewer · round 1'].map((l) => [l, ['Worktree', 'cd ']])),
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
@@ -776,6 +807,12 @@ const designRounds = (n, extra = {}, criticExtra = extra) =>
   rounds(n, (r) => [
     { agentType: 'gtm:designer', label: `designer · round ${r}`, ...extra },
     { agentType: 'gtm:design-critic', label: `critic · round ${r}`, ...criticExtra },
+  ])
+
+const screenRounds = (screen, n) =>
+  rounds(n, (r) => [
+    { agentType: 'gtm:designer', label: `designer · ${screen} · round ${r}` },
+    { agentType: 'gtm:design-critic', label: `critic · ${screen} · round ${r}` },
   ])
 
 const design = [
@@ -836,6 +873,122 @@ const design = [
     returns: { passed: false, rounds: 0, scores: [], verdict: null, board: 'board 1' },
     dispatches: [...designRounds(1), critic('critic · round 1 · retry')],
     log: ['critic · round 1: no result after its retry, no third dispatch'],
+  },
+  {
+    name: 'design screens: each screen drawn and judged alone, passed when every screen passed',
+    args: { outDir: 'out', screens: ['home', 'search'] },
+    reply: designReply((r, label) => score(label.includes('search') && r === 1 ? 7 : 8)),
+    returns: {
+      passed: true,
+      screens: [
+        { screen: 'home', passed: true, rounds: 1, scores: [8], verdict: score(8), board: 'board 1' },
+        { screen: 'search', passed: true, rounds: 2, scores: [7, 8], verdict: score(8), board: 'board 2' },
+      ],
+    },
+    dispatches: [...screenRounds('home', 1), ...screenRounds('search', 2)],
+    prompts: {
+      'designer · home · round 1': ['Screen: home. Draw this screen alone', 'Output folder: out/home\n'],
+      'critic · search · round 2': ['the screen search alone', 'Screen: search.'],
+      'designer · search · round 2': ['Output folder: out/search\n', "The critic's verdict on your previous board"],
+    },
+    unprompted: { 'designer · home · round 1': ['Screen: search'] },
+  },
+  {
+    name: 'design screens: a screen below the bar gets its own full rounds, its sibling passed, the run fails',
+    args: { screens: ['home', 'search'] },
+    reply: designReply((r, label) => score(label.includes('home') ? 9 : 7)),
+    returns: {
+      passed: false,
+      screens: [
+        { screen: 'home', passed: true, rounds: 1, scores: [9], verdict: score(9), board: 'board 1' },
+        { screen: 'search', passed: false, rounds: 3, scores: [7, 7, 7], verdict: score(7), board: 'board 3' },
+      ],
+    },
+    dispatches: [...screenRounds('home', 1), ...screenRounds('search', 3)],
+    log: ['search: Round 3: 7/10'],
+  },
+  {
+    name: 'design screens: maxRounds 2 is each screen own cap',
+    args: { maxRounds: 2, screens: ['a', 'b', 'c'] },
+    reply: designReply((r, label) => score(label.includes(' b ') ? 9 : 6, label.includes(' b ') ? [] : ['overflow'])),
+    returns: {
+      passed: false,
+      screens: [
+        { screen: 'a', passed: false, rounds: 2, scores: [6, 6], verdict: score(6, ['overflow']), board: 'board 2' },
+        { screen: 'b', passed: true, rounds: 1, scores: [9], verdict: score(9), board: 'board 1' },
+        { screen: 'c', passed: false, rounds: 2, scores: [6, 6], verdict: score(6, ['overflow']), board: 'board 2' },
+      ],
+    },
+    dispatches: [...screenRounds('a', 2), ...screenRounds('b', 1), ...screenRounds('c', 2)],
+  },
+  {
+    name: 'design screens: a designer that throws or returns nothing, or a critic lost twice, ends that screen only',
+    args: { screens: ['home', 'list', 'cart', 'search'] },
+    reply: (d) => {
+      if (d.label === 'designer · home · round 1') throw new Error('designer crashed')
+      if (d.label === 'designer · list · round 1') return null
+      if (d.label.startsWith('critic · cart')) throw new Error('subagent completed without calling StructuredOutput')
+      return designReply(() => score(8))(d)
+    },
+    returns: {
+      passed: false,
+      screens: [
+        { screen: 'home', passed: false, rounds: 0, scores: [], verdict: null, board: null },
+        { screen: 'list', passed: false, rounds: 0, scores: [], verdict: null, board: null },
+        { screen: 'cart', passed: false, rounds: 0, scores: [], verdict: null, board: 'board 1' },
+        { screen: 'search', passed: true, rounds: 1, scores: [8], verdict: score(8), board: 'board 1' },
+      ],
+    },
+    dispatches: [
+      screenRounds('home', 1)[0], screenRounds('list', 1)[0],
+      ...screenRounds('cart', 1), critic('critic · cart · round 1 · retry'), ...screenRounds('search', 1),
+    ],
+    log: ['list: the designer returned nothing, this screen ends not passed'],
+  },
+  {
+    name: 'design screens: a screen listed twice runs nothing',
+    args: { screens: ['home', 'search', 'home'] },
+    reply: designReply(() => score(9)),
+    returns: { passed: false, screens: [], error: 'screen "home" listed twice or not a slug' },
+    dispatches: [],
+    log: ['Screen "home" is listed twice', 'nothing runs'],
+  },
+  {
+    name: 'design screens: a screen that is not a slug runs nothing',
+    args: { screens: ['home', '../etc'] },
+    reply: designReply(() => score(9)),
+    returns: { passed: false, screens: [], error: 'screen "../etc" listed twice or not a slug' },
+    dispatches: [],
+  },
+  {
+    name: 'design screens: a screen that is not a string runs nothing',
+    args: { screens: ['home', null] },
+    reply: designReply(() => score(9)),
+    returns: { passed: false, screens: [], error: 'screen "null" listed twice or not a slug' },
+    dispatches: [],
+  },
+  {
+    name: 'design screens: a nested list of screens runs nothing',
+    args: { screens: ['home', ['home']] },
+    reply: designReply(() => score(9)),
+    returns: { passed: false, screens: [], error: 'screen "home" listed twice or not a slug' },
+    dispatches: [],
+  },
+  {
+    name: 'design screens: screens given as a plain string run nothing',
+    args: { screens: 'home,search' },
+    reply: designReply(() => score(9)),
+    returns: { passed: false, screens: [], error: 'screen "home,search" listed twice or not a slug' },
+    dispatches: [],
+  },
+  {
+    name: 'design screens: one screen runs the loop as today',
+    args: { outDir: 'out', screens: ['home'] },
+    reply: designReply(() => score(8)),
+    returns: { passed: true, rounds: 1, scores: [8], verdict: score(8), board: 'board 1' },
+    dispatches: designRounds(1),
+    prompts: { 'designer · round 1': ['Output folder: out\n'] },
+    unprompted: { 'designer · round 1': ['Screen:'], 'critic · round 1': ['Screen:', 'alone'] },
   },
 ].map((s) => ({ workflow: 'design-loop', ...s }))
 

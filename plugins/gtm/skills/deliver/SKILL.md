@@ -9,11 +9,12 @@ Ground rules: as in the `gtm` skill §0.
 
 ## 1. Prepare
 - Branch: create it from `git.base` as `git.branch` says (the orchestrator does this once; agents
-  never switch branches). Note the base commit.
+  never switch branches). Note the base commit. A name off `^[A-Za-z0-9._/-]+$` stops a wave (§3).
 - From `team.md`: `team` = `{ role: {model, effort} }` for every role; `triggers` = the specialists
   that are `on`, with their regexes; `fixRounds`; `fixCeiling`, the N of the Gates line
   `Fix track ceiling: N files`.
-- Progress file: `<root>/reports/<slug>/progress.md`, one line per task.
+- Progress file: `<root>/reports/<slug>/progress.md`, one line per task: status, fix rounds,
+  reviewers, `<base>..<head>`, and its merge commit in a wave.
 - Verify commands still marked `[CHECK]` in `config.yml` (not run at init): run each once on the
   branch, with `verify.prefix`. It runs → remove the mark. It cannot run (missing tool, wrong
   command) or fails on the untouched base → stop with a Heads-up and one decision card (correct the
@@ -23,11 +24,10 @@ Ground rules: as in the `gtm` skill §0.
 1. Write `<root>/reports/<slug>/task-<n>-brief.md`: the task verbatim, the plan's global
    constraints, the spec path, the validated board, the guidelines it touches.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report:
-   "<root>/reports/<slug>/task-<n>.md", branch, base: <head before this task>, mockup, triggers,
-   team, fixRounds, fixCeiling, track }`.
+   "<root>/reports/<slug>/task-<n>.md", branch, base: <head before this task>, worktree (in a wave
+   only, else omitted, never "none"), mockup, triggers, team, fixRounds, fixCeiling, track }`.
 3. Read the result:
-   - `CLEAN`: append each minor to the ledger (`minor`), one progress line (status, fix rounds,
-     reviewers), go on.
+   - `CLEAN`: append each minor to the ledger (`minor`), one progress line (as §1 says), go on.
    - `OPEN` (fix rounds exhausted, or a reviewer gave no review) or `BLOCKED`: stop the loop.
      Present a Heads-up and one decision card (re-run the missing review / revise the plan / accept
      with the open findings logged / take over by hand), with your recommendation. Resume from this
@@ -37,14 +37,29 @@ Ground rules: as in the `gtm` skill §0.
      and were not re-reviewed: the spec states each as a requirement with its test, so the final
      review checks it.
 
-## 3. Final review (once per branch)
+## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
+1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
+   "<branch>-t<n>" "<wt>" <base>`, `<wt>` = `<repo's parent>/<repo name>-wt-<slug>-t<n>` (an
+   existing path or branch stops the wave), absolute `<root>` paths in brief and args. Run them at
+   once, §2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`; let all return.
+2. Before each merge, branch/head are as last recorded and tasks' `git -c core.quotePath=false diff
+   --name-only --no-renames "<base>..<branch>-t<n>"` lists disjoint. Merge each `CLEAN` branch in
+   plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the head, gate once. Per
+   merged task, `<root>` out of the repo or unlisted by `git -C "<wt>" status --porcelain --ignored
+   -unormal -- "<root>"` (repo path): `git worktree remove "<wt>"`, `git branch -d "<branch>-t<n>"`.
+3. A moved branch/head, overlap, conflict, red gate or files in a worktree's `<root>`: merge no
+   more, keep it and unmerged worktrees, undo nothing without the human. `OPEN`/`BLOCKED`: `CLEAN`
+   siblings merge, no later task starts. Heads-up, §2's card; resume in its worktree, base its head.
+
+## 4. Final review (once per branch)
 Skip it only when all of these hold:
 - the plan has one task (one that only bumps the version and renames the CHANGELOG section, its
   `git diff --name-only --no-renames` listing those two files alone, does not count);
 - every task, the release one included, returned `CLEAN` at 0 fix rounds;
 - the tasks' ranges chain from the branch's fork point to `HEAD`: the first base is `git merge-base
   <git.base> HEAD`, each next base is the previous task's head, `HEAD` is the last task's head (no
-  hand commit or escalated Fix's commit outside a task);
+  hand commit or escalated Fix's commit outside a task); a wave is one link: its tasks share its
+  base, the next base is the head after its merges, which stay in range;
 - in every task, each specialist whose trigger matches
   `git diff --name-only --no-renames <task base>..<task head>` (a rename lists both paths) is in
   that task's `reviewers` (the workflow picks them from the files the implementer reports).
@@ -61,7 +76,7 @@ on the fix range only, one level below its profile effort when that range's
 Still not ready → a Heads-up and a decision card. Write `resolved` lines for minors fixed, keep
 the others.
 
-## 4. Record and report
+## 5. Record and report
 - Ledger: one `run` line (`tasks N · fix rounds per task · findings per reviewer (critical /
   important / minor) · design rounds and score`) and each ruling taken.
 - Report to the human, per the briefing format: TL;DR (ready or not, the measure: tasks clean,

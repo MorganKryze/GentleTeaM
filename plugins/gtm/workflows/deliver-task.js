@@ -1,7 +1,7 @@
 export const meta = {
   name: 'deliver-task',
   description: 'Implement one plan task, run only the reviews its diff needs, fix until clean (default 3 fix rounds)',
-  whenToUse: 'Each task of an approved plan, or a Fix. args: {brief, report, branch, base, mockup?, track?, triggers?: {role: [regex]}, team?: {role: {model, effort}}, fixRounds?, fixCeiling?}',
+  whenToUse: 'Each task of an approved plan, or a Fix. args: {brief, report, branch, base, worktree?, mockup?, track?, triggers?: {role: [regex]}, team?: {role: {model, effort}}, fixRounds?, fixCeiling?}',
   phases: [{ title: 'Implement' }, { title: 'Review' }, { title: 'Fix' }],
 }
 
@@ -49,6 +49,10 @@ const REVIEW = {
 // The scope rule reads against the task's whole range on every round: a re-review's diff is the
 // fix, and every finding it re-checks was introduced by the task, never by the fix.
 const SCOPE = (range) => `\nScope: a defect the task's diff ${range} did not introduce (it neither adds nor changes the faulty lines nor makes them newly reachable) is minor, its summary saying it predates the task, unless it is critical, a security hole or a data-integrity defect.`
+
+// A task of a parallel wave runs in its own worktree: every prompt names it, so no agent reads or
+// writes the delivery's tree. Without one, no prompt mentions a worktree.
+const WT = A.worktree ? `\nWorktree: ${A.worktree}. Run every command after cd "${A.worktree}" and read every repository file there; paths given outside it stay as given.` : ''
 
 // A GTM role is namespaced by the plugin; a project agent keeps its own type.
 // The project's team profile wins over the agents' frontmatter defaults.
@@ -107,7 +111,7 @@ async function retried(prompt, opts) {
 
 phase('Implement')
 const impl = await attempt(
-  `Implement this task on branch ${A.branch} (base ${A.base}).\nBrief (read it first): ${A.brief}\nReport file: ${A.report}\nReturn head = the commit after your work, files = repo-relative paths changed since ${A.base}.`,
+  `Implement this task on branch ${A.branch} (base ${A.base}).\nBrief (read it first): ${A.brief}\nReport file: ${A.report}\nReturn head = the commit after your work, files = repo-relative paths changed since ${A.base}.${WT}`,
   as('implementer', { schema: IMPL, label: 'implement', phase: 'Implement' }),
 )
 if (!impl || impl.status === 'BLOCKED') return { status: 'BLOCKED', impl }
@@ -147,7 +151,7 @@ for (; round <= ROUNDS; round++) {
         `${round ? 'Re-review the fix round' : 'Review the task'}: diff ${scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
           (A.mockup ? `\nValidated mockup: ${A.mockup}` : '') +
           (p.findings ? `\nYour findings this fix must address. Return each with status "addressed" or "open", then only new breakage in the fix diff; approve when none is left open. Each finding sent keeps its severity until it is addressed:\n${JSON.stringify(p.findings, null, 2)}` : '') +
-          SCOPE(`${A.base}..${head}`),
+          SCOPE(`${A.base}..${head}`) + WT,
         as(p.r, { schema: REVIEW, label: `${p.r}${round ? ` · round ${round}` : ''}`, phase: 'Review' }),
       ),
     ),
@@ -185,7 +189,7 @@ for (; round <= ROUNDS; round++) {
   if (!open.length || round === ROUNDS) break
   log(`Fix round ${round + 1}: ${open.length} finding(s)`)
   const fix = await attempt(
-    `Fix these review findings on branch ${A.branch} (head ${head}), test-first, one commit per fix; append a fix section to ${A.report}.\nBrief: ${A.brief}\nFindings:\n${JSON.stringify(open, null, 2)}\nReturn head = the commit after your fixes, files = paths changed in the fixes.`,
+    `Fix these review findings on branch ${A.branch} (head ${head}), test-first, one commit per fix; append a fix section to ${A.report}.\nBrief: ${A.brief}\nFindings:\n${JSON.stringify(open, null, 2)}\nReturn head = the commit after your fixes, files = paths changed in the fixes.${WT}`,
     as('implementer', { schema: IMPL, effort: raised(round + 1), label: `fix · round ${round + 1}`, phase: 'Fix' }),
   )
   if (!fix || fix.status === 'BLOCKED') return { status: 'BLOCKED', head, open: [...open, ...unreviewed], stats, minors }

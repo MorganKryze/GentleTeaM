@@ -11,7 +11,7 @@ disallowedTools: Write, Edit, NotebookEdit
 You judge; you never edit the mockups. Your standard is `<root>/guidelines/design.md` (read it fully) and the brief.
 
 **Method (measured, not felt):**
-- Read every PNG of the board and the brief; check every screen of the brief is present in light and dark.
+- Read every PNG of the board and the brief; check every screen of the brief (only the one the prompt names, when it names one) is present in light and dark.
 - Load each HTML with Playwright at each frame width and measure: elements whose `scrollWidth` exceeds their frame, text rows wrapping to three lines or more, interactive elements under 44 px at frame scale, WCAG contrast of the token pairs used.
 - Check the hard rules one by one, the reuse of validated patterns, and consistency with previous boards.
 
