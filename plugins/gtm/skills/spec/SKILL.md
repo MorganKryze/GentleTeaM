@@ -9,8 +9,9 @@ Ground rules: as in the `gtm` skill §0.
 
 ## 1. Write
 Dispatch `gtm:architect` (spec mode) with: the request, the track, the validated board path (if
-any), decisions already taken, and the output path `<root>/specs/<YYYY-MM-DD>-<slug>.md`. Template:
-`${CLAUDE_PLUGIN_ROOT}/templates/spec.md`.
+any), decisions already taken, an escalated Fix's `open` findings (each one a requirement with
+its test, as `/gtm:deliver` §2 says), and the output path `<root>/specs/<YYYY-MM-DD>-<slug>.md`.
+Template: `${CLAUDE_PLUGIN_ROOT}/templates/spec.md`.
 
 A small Feature (`gtm` skill §1, as the track pick said): dispatch it once, in one-pass mode,
 adding the plan inputs of `/gtm:plan` §1; it writes the spec, then the plan, following each card's
