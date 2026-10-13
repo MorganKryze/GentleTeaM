@@ -82,6 +82,7 @@ const reviewer = (label = 'reviewer', extra = {}) => ({ agentType: 'gtm:reviewer
 const addressed = { ...badFinding, status: 'addressed' }
 const leak = { severity: 'important', file: 'src/b.js', summary: 'leak' }
 const SCOPE = ['Scope: a defect the task\'s diff', 'did not introduce', 'unless it is critical, a security hole or a data-integrity defect']
+const WORKTREE = ['Worktree: /tmp/wt/acme-t2.', 'Run every command after cd /tmp/wt/acme-t2', 'read every repository file there']
 const STATUS = ['Return each with status "addressed" or "open"', 'only new breakage in the fix diff', 'approve when none is left open']
 
 // Answers the implementer by label; every other dispatch goes to review(d).
@@ -762,6 +763,36 @@ const deliver = [
       'security-reviewer · round 1': [...SCOPE, ...STATUS],
     },
     unprompted: { reviewer: STATUS, 'security-reviewer': STATUS },
+  },
+  {
+    name: 'worktree: every prompt names it as the directory for every command and read',
+    args: { worktree: '/tmp/wt/acme-t2' },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    prompts: Object.fromEntries(['implement', 'reviewer', 'fix · round 1', 'reviewer · round 1'].map((l) => [l, WORKTREE])),
+  },
+  {
+    name: 'no worktree: no prompt names one',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    unprompted: Object.fromEntries(['implement', 'reviewer', 'fix · round 1', 'reviewer · round 1'].map((l) => [l, ['Worktree', 'cd ']])),
   },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 

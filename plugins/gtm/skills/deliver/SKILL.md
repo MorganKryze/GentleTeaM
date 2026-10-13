@@ -23,8 +23,8 @@ Ground rules: as in the `gtm` skill §0.
 1. Write `<root>/reports/<slug>/task-<n>-brief.md`: the task verbatim, the plan's global
    constraints, the spec path, the validated board, the guidelines it touches.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report:
-   "<root>/reports/<slug>/task-<n>.md", branch, base: <head before this task>, mockup, triggers,
-   team, fixRounds, fixCeiling, track }`.
+   "<root>/reports/<slug>/task-<n>.md", branch, base: <head before this task>, worktree: <its
+   worktree in a wave, else none>, mockup, triggers, team, fixRounds, fixCeiling, track }`.
 3. Read the result:
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line (status, fix rounds,
      reviewers), go on.
