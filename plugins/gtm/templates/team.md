@@ -50,6 +50,12 @@ type.
 - design threshold: 8/10, zero must-fix · why: <reason> · YYYY-MM-DD
 - design rounds: 3 · why: <reason> · YYYY-MM-DD
 - replay risky tasks: yes · risky paths `migrations?/`, `(sync|contract|schema)`, `(db|store|storage)/` · why: <reason> · YYYY-MM-DD
+- budget per task: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD
+- budget per branch: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD
+
+A budget is `none` or `<minutes> min, <tokens>k tokens`. Past 1.5× of one, `/gtm:deliver` raises a
+Heads-up and goes on; no budget changes a verdict, a fix round or the order of tasks. A profile
+without these lines reads as `none`.
 
 ## History
 Changes made by `/gtm:tune`, newest last: `- YYYY-MM-DD · <setting>: <old> → <new> · <why>`.
