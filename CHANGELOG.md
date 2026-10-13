@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-13
+
 ### Changed
 - A branch of one task that ends clean at 0 fix rounds skips the final review: the `run` line
   says so, `/gtm:ship` takes the skip in place of a ready verdict, and the branch's minors wait
