@@ -15,7 +15,7 @@
 | EARS | Easy Approach to Requirements Syntax: acceptance lines of the form WHEN / WHILE / WHERE / IF … THE SYSTEM SHALL …. |
 | Epic | A Milestone or a group of Features. |
 | Escalation | A Fix becoming a Feature when its changed files exceed the Fix ceiling; its commits stay and it continues from the spec. One-way. On security or data ground a Fix stays a Fix and gains that specialist. |
-| Final review | The whole-branch review before the go, with at most one fix wave. |
+| Final review | The whole-branch review before the go: it replays two planted mutations, and its one fix wave is re-reviewed one effort level lower when the fix touches no specialist's ground. Skipped for a branch of one task clean at 0 fix rounds. |
 | Fix ceiling | The most files a Fix may change, 3 by default: the `Fix track ceiling` line in the team profile's Gates, set at `/gtm:init`, changed with `/gtm:tune`. Past it, a Fix escalates. [method](method.md#tracks) |
 | Fix round | One implementer pass over open findings, followed by re-review by the reviewers who raised them and every specialist whose ground the fix diff touches. Capped at three by default. |
 | Footprint check | The script `/gtm:ship` runs in stealth mode: scans the branch's commits, PR text, diff and new file names for GTM's names, excluded paths and writing tells; a hit stops the ship. [method](method.md#stealth-mode) |
@@ -31,7 +31,7 @@
 | NEEDS CLARIFICATION | A marker for something the spec must not guess; zero must remain before the plan. |
 | Priority | P0 to P3, defined in `guidelines/work.md`. |
 | Project voice | The guideline (`guidelines/voice.md`) that makes text written into the project match its own history and docs, in plain writing. [method](method.md#stealth-mode) |
-| Replay | Running a risky task's code in a scratch clone while planning, to prove the plan before delivery. |
+| Replay | Running a risky task's code in a scratch clone while planning, to prove the plan before delivery; for plans of two tasks or more. A one-task plan plants its mutations in its TDD steps. |
 | Retro | The compound step: distilling a branch into lessons and guideline edits. |
 | Ruling | A decision the team took without asking the human, listed with its cost if wrong. |
 | Specialist | A reviewer that runs only on trigger: security, data, UX. |

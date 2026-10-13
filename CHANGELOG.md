@@ -5,6 +5,22 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- A branch of one task that ends clean at 0 fix rounds skips the final review: the `run` line
+  says so, `/gtm:ship` takes the skip in place of a ready verdict, and the branch's minors wait
+  for `/gtm:retro`. A release-only task does not count; a fix round or an escalated Fix's commits
+  bring the final review back.
+- The final review replays two of the planted mutations, those nearest a pinned threshold, not
+  all of them; one that survives is a must-fix. A one-task plan is not replayed: its TDD steps
+  plant the mutations instead.
+- The re-review after the final review's fix wave runs one effort level below the final
+  reviewer's profile when the fix range touches no specialist's ground.
+
+### Fixed
+- The final review's fix wave raises the implementer's effort as a fix round does: one level
+  above its profile, at most `xhigh`, an effort off that ladder such as `max` kept. "One level
+  above" read as `max` from `xhigh`.
+
 ## [0.3.1] - 2026-10-13
 
 ### Changed

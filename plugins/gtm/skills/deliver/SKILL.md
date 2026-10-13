@@ -38,11 +38,19 @@ Ground rules: as in the `gtm` skill §0.
      review checks it.
 
 ## 3. Final review (once per branch)
-Dispatch `gtm:final-reviewer` with the spec, the plan, the branch range, the ledger and the report
-path `<root>/reports/<slug>/final.md`. `fix-first` → one fix wave: dispatch `gtm:implementer` with
-the must-fix list (effort one level above its profile), then `gtm:final-reviewer` once more on the
-fix range only. Still not ready → a Heads-up and a decision card. Write `resolved` lines for minors
-fixed, keep the others.
+Skip it when the plan has one task (one that only bumps the version and renames the CHANGELOG
+section does not count), that task returned `CLEAN` at 0 fix rounds, and the branch has no commit
+before that task's base (an escalated Fix's): dispatch no reviewer, write `final review skipped:
+one task, clean at 0 fix rounds` in the `run` line and the report, leave this slug's minors for
+`/gtm:retro` and write no `resolved` line.
+
+Otherwise dispatch `gtm:final-reviewer` with the spec, the plan, the branch range, the ledger and
+the report path `<root>/reports/<slug>/final.md`. `fix-first` → one fix wave: dispatch
+`gtm:implementer` with the must-fix list at a fix round's effort (one level above its profile, at
+most `xhigh`; an effort off that ladder, such as `max`, kept), then `gtm:final-reviewer` once more
+on the fix range only, one level below its profile effort when that range matches no specialist
+trigger (`low` at least, `max` kept). Still not ready → a Heads-up and a decision card. Write
+`resolved` lines for minors fixed, keep the others.
 
 ## 4. Record and report
 - Ledger: one `run` line (`tasks N · fix rounds per task · findings per reviewer (critical /
