@@ -10,17 +10,18 @@
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 [![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-d97757)](docs/install.md)
 
-A light agent-team method for [Claude Code](https://code.claude.com), packaged as a plugin.
-GTM runs a small team of role agents (designer, architect, implementer, reviewers) that design,
+An agent-team method for [Claude Code](https://code.claude.com) that spares your attention,
+packaged as a plugin. GTM runs a small team of role agents (designer, architect, implementer, reviewers) that design,
 specify, build and review your change, while you make three decisions per feature: approve the
 board, approve the spec synthesis, give the go. Everything else is settled inside the team, and
-every ruling it took is listed for you at the end, with its cost if wrong.
+every ruling it took is listed for you at the end, with its cost if wrong. It spares your
+attention, not agent time: see [what it costs](#-what-it-costs).
 
 ## 🧭 Why GTM
 Agent teams can now write and review most of a feature. What they also produce is reading:
 reports, specs, reviews, status updates. GTM spends that output inside the team and hands you
-verdicts, decision cards and visuals, in your language. It keeps the process sized to the change,
-the artifacts few, and context and usage limits for real work. More in the
+verdicts, decision cards and visuals, in your language. It sizes the process to the change and
+keeps the team's working files out of your reading. More in the
 [manifesto](docs/manifesto.md).
 
 ## ⚙️ How it works
@@ -64,7 +65,19 @@ both. Project-wide install, updates and pinning: [install](docs/install.md).
 3. Later: `/gtm:retro` after shipping, `/gtm:tune` when the team feels slow, costly or blind to
    something, `/gtm:brief-me` to understand any artifact without reading it.
 
-GTM adds about 1,300 tokens to a session until a skill or role is used.
+## 💸 What it costs
+GTM trades agent time for your attention. Measured on GTM's own branches
+([ledger](.gtm/ledger.md)):
+
+| Change | Track | Agent wall time |
+| --- | --- | --- |
+| 2 files, on security ground | Fix | 71 s |
+| a docs fix and one workflow argument, 2 tasks | Feature | 11 min, 61% of it final review |
+| a workflow change, 3 tasks | Feature | 58 min |
+
+Every role runs Opus by default, so a Feature uses more of your plan than asking Claude Code
+directly; a Fix is the cheap path. Installed and idle, GTM adds about 1,300 tokens to a session.
+No controlled comparison with Claude Code alone has been run yet.
 
 ## 👥 Roles
 All roles default to Opus and differ by reasoning effort; your team profile can change any of them.
@@ -83,7 +96,9 @@ All roles default to Opus and differ by reasoning effort; your team profile can 
 | final-reviewer | whole branch, once (read-only) | xhigh |
 | release-qa | live journey after you deploy | low |
 
-Details: [roles](docs/roles.md).
+Specialists trigger on path patterns from your team profile, matched against the files the
+implementer reports changing: a file it leaves out triggers nothing. The final review reads the
+whole branch; a Fix has none. Details: [roles](docs/roles.md).
 
 ## 🧱 Principles
 - **Your attention is the scarce resource:** For-you syntheses, decision cards with a
@@ -92,8 +107,9 @@ Details: [roles](docs/roles.md).
 - **Evidence before claims, tests first,** file-based hand-offs, specialists on trigger.
 - **Weights are a project decision,** recorded with reasons and revisited with evidence.
 - **Nothing pushed, merged or released without your go;** history kept, no squash by default.
-- **Stealth mode** for repositories that are not yours: no trace of GTM in the project, and its
-  commits, PRs and docs in the project's own voice. [method](docs/method.md#stealth-mode)
+- **Stealth mode** for repositories that are not yours: GTM's working files stay out of the
+  project and its commits follow the project's conventions. It does not override a project's
+  rules on AI tools and disclosure. [method](docs/method.md#stealth-mode)
 
 All fifteen positions, with their costs: [positions](docs/positions.md).
 
