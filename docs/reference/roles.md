@@ -97,12 +97,10 @@ without the command that proved it.
 
 ## Which rules does every role follow?
 
-- **Reads first:** `.gtm/config.yml` and `.gtm/brief.md`, and never hard-codes a rule the
-  config can state.
-- **Never publishes:** a role never pushes, merges, tags or switches branches.
-- **Never delegates:** a role never dispatches other agents; the commands do.
-- **Read-only stays read-only:** a reviewer that needs to run something uses a scratch copy of
-  the repository.
+Every role reads `.gtm/config.yml` and `.gtm/brief.md` first, and never hard-codes a rule the
+config can state. No role pushes, merges, tags or switches branches, and no role dispatches
+other agents: the commands do. A read-only role that needs to run something uses a scratch copy
+of the repository.
 
 ## What does Claude Code ignore in a role?
 

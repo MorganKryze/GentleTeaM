@@ -15,7 +15,7 @@ rules. `team.md`, your [team settings](/reference/glossary/#team-settings), hold
 priorities, roles, specialists and limits, each with its reason and the date it was decided.
 `/gtm:init` drafts both; `/gtm:tune` changes them.
 
-## What does config.yml hold?
+## What does `config.yml` hold?
 
 Every command and role reads it first. Paths are relative to the repository root; regexes are
 JavaScript syntax, matched against repository-relative paths.
@@ -49,7 +49,7 @@ JavaScript syntax, matched against repository-relative paths.
 | `qa.live_url` | the live site checked after you deploy; empty skips the check | `""` | `release-qa` |
 | `qa.account` | where the test account's credentials live, never the values | `""` | `release-qa` |
 
-## What does team.md hold?
+## What does `team.md` hold?
 
 Your team settings, read by every command that dispatches a role. Each line carries its reason
 and the date it was decided; GTM passes the role values on every call, so they win over the
@@ -63,14 +63,11 @@ defaults in the role files.
 | Limits | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver` |
 | History | one line per change made by `/gtm:tune`: date, setting, old and new value, why | empty | `/gtm:tune`, `/gtm:retro` |
 
-The limits and their defaults:
-
-- **[Correction rounds](/reference/glossary/#correction-round) per task:** 3. Each round raises
-  the implementer's effort one level.
-- **[File limit for a fix](/reference/glossary/#file-limit-for-a-fix):** 3 files.
-- **Mockup threshold:** 8/10, with no must-fix finding.
-- **Mockup rounds:** 3.
-- **[Dry runs](/reference/glossary/#dry-run) of risky tasks:** yes, on paths matching
-  `migrations?/`, `(sync|contract|schema)` and `(db|store|storage)/`.
+The limits and their defaults: a task gets 3
+[correction rounds](/reference/glossary/#correction-round), each raising the implementer's effort one level; the
+[file limit for a fix](/reference/glossary/#file-limit-for-a-fix) is 3 files; mockups pass at 8/10 with no
+must-fix finding, and are redrawn 3 times at most; risky tasks get a
+[dry run](/reference/glossary/#dry-run), on paths matching `migrations?/`, `(sync|contract|schema)` and
+`(db|store|storage)/`.
 
 To change any of them, see [Change your team settings](/guides/team-settings/).
