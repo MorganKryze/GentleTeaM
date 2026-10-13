@@ -4,12 +4,14 @@
 // files and in the built site, and the tutorial's state. The rendered rules (overflow, measure,
 // contrast, targets, amber, dark diagrams, h1) are measure-site.mjs. Node standard library only.
 //
-// Usage: node site-checks.mjs <repo> [A1 A7 ...] [--base <rev>] [--final] [--source]
+// Usage: node site-checks.mjs <repo> [A1 A7 ...] [--base <rev>] [--final] [--source] [--lasting]
 //   <repo>   the worktree; checks that read the build need `npx -y @docmd/core@0.9.7 build` first.
 //   A<n>     run only these lines (default: all).
 //   --base   the base branch, for A31 and A32 (default: main; diffs run from the merge base).
 //   --final  A34's second half: the tutorial holds no illustrative block.
 //   --source only the lines read from the sources and git: no build and no network needed.
+//   --lasting skip the lines that judge this branch against its base (CHANGELOG and plugin
+//            scope, banner redraw, illustrative tutorial): they hold until the merge only.
 // One PASS or FAIL line per line, details indented; exit 1 on any FAIL.
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname, posix } from 'node:path';
@@ -24,6 +26,9 @@ const final = argv.includes('--final');
 const source = argv.includes('--source');
 // Lines that read the build: skipped with --source.
 const BUILT = ['A8', 'A27', 'A33'];
+// Lines that judge the branch against its base: skipped with --lasting (CI and the gate).
+const DELIVERY = ['A31', 'A32', 'A34'];
+const lasting = argv.includes('--lasting');
 const SITE_URL = 'https://morgankryze.github.io/GentleTeaM';
 
 // The site's pages in reading order: [path, url, source file under docs/, title].
@@ -163,6 +168,7 @@ const results = [];
 const check = (id, fn) => {
   if (only.length && !only.includes(id)) return;
   if (source && BUILT.includes(id)) return;
+  if (lasting && DELIVERY.includes(id)) return;
   let fails = [];
   try { fails = fn() || []; } catch (e) { fails = [`crashed: ${e.message}`]; }
   results.push([id, fails]);
