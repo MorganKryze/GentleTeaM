@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-10-13
+
 ### Fixed
 
 - A re-review returns each finding it was sent with a status. One marked `addressed` no longer
