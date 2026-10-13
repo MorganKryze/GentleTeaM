@@ -110,6 +110,11 @@ flowchart TD
 
 How to read it: three amber steps; with no screen changes, the first one is skipped.
 
+A small Feature changes no screen, schema, migration or sign-in, and touches at most twice the 3
+files a Fix may change, so 6 files by default. The architect writes its spec and plan in one
+pass. You still approve the summary and give the go; the plan is written again only if you answer
+a decision otherwise or the spec changes.
+
 ### What does a Milestone ask of me?
 
 One split, then Features. A Milestone spans several branches, or opens a new surface.

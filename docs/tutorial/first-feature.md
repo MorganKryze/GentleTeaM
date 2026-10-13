@@ -11,7 +11,7 @@ description: Follow one Feature from your request to the merge, with what you se
 :::
 
 <nav class="gtm-tracker" aria-label="The six steps of this tutorial">
-<p class="gtm-tracker-title">Six steps: you start the Feature, the team works, and you decide at the three amber checkpoints</p>
+<p class="gtm-tracker-title">Six steps: you start the <a href="/reference/glossary/#feature">Feature</a>, the team works, and you decide at the three amber <a href="/reference/glossary/#checkpoint">checkpoints</a></p>
 <ol>
 <li><a href="#step-1"><span class="n">1</span><span class="t">Set up GTM</span><span class="w">You, once per project</span></a></li>
 <li><a href="#step-2"><span class="n">2</span><span class="t">Ask for the change</span><span class="w">You, in one sentence</span></a></li>
