@@ -40,14 +40,14 @@ Ground rules: as in the `gtm` skill §0.
 ## 3. Final review (once per branch)
 Skip it only when all of these hold:
 - the plan has one task (one that only bumps the version and renames the CHANGELOG section, its
-  `git diff --name-only` listing those two files alone, does not count);
+  `git diff --name-only --no-renames` listing those two files alone, does not count);
 - every task, the release one included, returned `CLEAN` at 0 fix rounds;
 - the tasks' ranges chain from the branch's fork point to `HEAD`: the first base is `git merge-base
   <git.base> HEAD`, each next base is the previous task's head, `HEAD` is the last task's head (no
   hand commit or escalated Fix's commit outside a task);
-- in every task, each specialist whose trigger matches `git diff --name-only <task base>..<task
-  head>` is in that task's `reviewers` (the workflow picks them from the files the implementer
-  reports).
+- in every task, each specialist whose trigger matches
+  `git diff --name-only --no-renames <task base>..<task head>` (a rename lists both paths) is in
+  that task's `reviewers` (the workflow picks them from the files the implementer reports).
 
 Then dispatch no reviewer, write `final review skipped: one task, clean at 0 fix rounds` in the
 `run` line and the report, leave this slug's minors for `/gtm:retro` and write no `resolved` line.
@@ -56,9 +56,10 @@ Otherwise dispatch `gtm:final-reviewer` with the spec, the plan, the branch rang
 the report path `<root>/reports/<slug>/final.md`. `fix-first` → one fix wave: dispatch
 `gtm:implementer` with the must-fix list at a fix round's effort (one level above its profile, at
 most `xhigh`; an effort off that ladder, such as `max`, kept), then `gtm:final-reviewer` once more
-on the fix range only, one level below its profile effort when `git diff --name-only` of that
-range matches no specialist trigger (`low` at least, `max` kept). Still not ready → a Heads-up
-and a decision card. Write `resolved` lines for minors fixed, keep the others.
+on the fix range only, one level below its profile effort when that range's
+`git diff --name-only --no-renames` matches no specialist trigger (`low` at least, `max` kept).
+Still not ready → a Heads-up and a decision card. Write `resolved` lines for minors fixed, keep
+the others.
 
 ## 4. Record and report
 - Ledger: one `run` line (`tasks N · fix rounds per task · findings per reviewer (critical /

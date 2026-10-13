@@ -90,7 +90,8 @@ threshold (all of them when two or fewer); one that survives is a must-fix. A br
 clean at 0 fix rounds, skips it: that task's review, with every triggered specialist, was the
 last, and the `run` line says so. A fix round in any task (the release one included), a commit
 outside the tasks' ranges (an escalated Fix's, a hand commit) or a specialist whose trigger a
-task's `git diff --name-only` matches but who did not review it bring it back.
+task's `git diff --name-only --no-renames` matches (both paths of a rename) but who did not
+review it bring it back.
 
 ## Hand-offs and hand-backs
 - **Hand-off:** an agent receives paths (brief, spec, plan, report file), never pasted documents.
