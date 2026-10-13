@@ -42,11 +42,11 @@ Ground rules: as in the `gtm` skill §0.
    "<branch>-t<n>" "<wt>" <base>`, `<wt>` = `<repo's parent>/<repo name>-wt-<slug>-t<n>` (an
    existing path or branch stops the wave), absolute `<root>` paths in brief and args. Run them at
    once, §2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`; let all return.
-2. Before each merge, branch and head are the last recorded and the tasks' `git -c
-   core.quotePath=false diff --name-only --no-renames "<base>..<branch>-t<n>"` lists disjoint. Merge
-   each `CLEAN` branch in plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the
-   head, gate once. Per merged task whose `git -C "<wt>" status --porcelain --ignored -- "<root>"`
-   prints nothing: `git worktree remove "<wt>"`, `git branch -d "<branch>-t<n>"`.
+2. Before each merge, branch/head are as last recorded and tasks' `git -c core.quotePath=false diff
+   --name-only --no-renames "<base>..<branch>-t<n>"` lists disjoint. Merge each `CLEAN` branch in
+   plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the head, gate once. Per
+   merged task, `<root>` out of the repo or unlisted by `git -C "<wt>" status --porcelain --ignored
+   -unormal -- "<root>"` (repo path): `git worktree remove "<wt>"`, `git branch -d "<branch>-t<n>"`.
 3. A moved branch/head, overlap, conflict, red gate or files in a worktree's `<root>`: merge no
    more, keep it and unmerged worktrees, undo nothing without the human. `OPEN`/`BLOCKED`: `CLEAN`
    siblings merge, no later task starts. Heads-up, §2's card; resume in its worktree, base its head.
