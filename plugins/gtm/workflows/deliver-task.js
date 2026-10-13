@@ -126,8 +126,13 @@ let scope = `${A.base}..${head}`
 let pending = reviewers.map((r) => ({ r, findings: null }))
 const minors = []
 const stats = {}
+// A reviewer with no review is not an approval, and no fix round can answer it: its finding stays
+// open to the end and it is not dispatched again, so a later round's diff never stands in for the
+// task's own.
+const unreviewed = []
 let open = []
-for (let round = 0; round <= ROUNDS; round++) {
+let round = 0
+for (; round <= ROUNDS; round++) {
   phase('Review')
   const results = await parallel(
     pending.map((p) => () =>
@@ -144,9 +149,7 @@ for (let round = 0; round <= ROUNDS; round++) {
   results.forEach((res, i) => {
     const r = pending[i].r
     if (!res) {
-      // A reviewer that died twice is not an approval.
-      open.push({ severity: 'important', summary: `${r} returned no review`, by: r })
-      still.push(pending[i])
+      unreviewed.push({ severity: 'important', summary: `${r} returned no review`, by: r })
       return
     }
     const blocking = []
@@ -161,22 +164,23 @@ for (let round = 0; round <= ROUNDS; round++) {
       still.push({ r, findings: blocking })
     }
   })
-  if (!open.length) return { status: 'CLEAN', head, fixRounds: round, reviewers, stats, minors }
-  if (round === ROUNDS) break
+  if (!open.length && !unreviewed.length) return { status: 'CLEAN', head, fixRounds: round, reviewers, stats, minors }
+  if (!open.length || round === ROUNDS) break
   log(`Fix round ${round + 1}: ${open.length} finding(s)`)
   const fix = await attempt(
     `Fix these review findings on branch ${A.branch} (head ${head}), test-first, one commit per fix; append a fix section to ${A.report}.\nBrief: ${A.brief}\nFindings:\n${JSON.stringify(open, null, 2)}\nReturn head = the commit after your fixes, files = paths changed in the fixes.`,
     as('implementer', { schema: IMPL, effort: raised(round + 1), label: `fix · round ${round + 1}`, phase: 'Fix' }),
   )
-  if (!fix || fix.status === 'BLOCKED') return { status: 'BLOCKED', head, open, stats, minors }
+  if (!fix || fix.status === 'BLOCKED') return { status: 'BLOCKED', head, open: [...open, ...unreviewed], stats, minors }
   changed = [...new Set([...changed, ...fix.files])]
   // The findings this fix round got are not re-reviewed yet: they go with the escalation, so the
   // Feature flow checks them instead of losing them.
   const grown = escalation(changed, fix.head)
-  if (grown) return { ...grown, open, reviewers, stats, minors }
+  if (grown) return { ...grown, open: [...open, ...unreviewed], reviewers, stats, minors }
   // A fix round on a specialist's ground goes back to that specialist, even after its approval,
   // on every track: a Fix has no final review, and a task's own review should not wait for it.
   for (const r of ground(fix.files)) {
+    if (unreviewed.some((f) => f.by === r)) continue
     if (!still.some((p) => p.r === r)) still.push({ r, findings: null })
     if (!reviewers.includes(r)) reviewers.push(r)
   }
@@ -184,4 +188,4 @@ for (let round = 0; round <= ROUNDS; round++) {
   head = fix.head
   pending = still
 }
-return { status: 'OPEN', head, fixRounds: ROUNDS, open, reviewers, stats, minors }
+return { status: 'OPEN', head, fixRounds: round, open: [...open, ...unreviewed], reviewers, stats, minors }

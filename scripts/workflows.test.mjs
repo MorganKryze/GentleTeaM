@@ -374,8 +374,8 @@ const deliver = [
     log: ['security-reviewer · round 1: lost its structured result, one retry'],
   },
   {
-    name: 'no review: a reviewer that returns null is an important finding and is not dispatched again',
-    args: { fixRounds: 0 },
+    name: 'no review: a reviewer that returns null is an important finding, no fix round, not dispatched again',
+    args: {},
     reply: implementer(['src/a.js'], () => null),
     returns: {
       status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'],
@@ -387,8 +387,8 @@ const deliver = [
     unlogged: ['retry'],
   },
   {
-    name: 'lost review twice: two throws are an important finding with no third dispatch',
-    args: { fixRounds: 0 },
+    name: 'lost review twice: two throws are an important finding, no fix round, no third dispatch',
+    args: {},
     reply: implementer(['src/a.js'], () => {
       throw new Error('subagent completed without calling StructuredOutput')
     }),
@@ -399,6 +399,40 @@ const deliver = [
     },
     dispatches: [implement(), reviewer(), reviewer('reviewer · retry')],
     log: ['reviewer: no result after its retry, no third dispatch'],
+  },
+  {
+    name: 'fix: a specialist with no review leaves the task OPEN, never CLEAN',
+    args: { track: 'fix', triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], (d) => (d.label === 'security-reviewer' ? null : ok), ['scripts/x.mjs']),
+    returns: {
+      status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'],
+      open: [{ severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' }],
+      stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' }],
+    log: ['security-reviewer: returned nothing', 'not dispatched again'],
+  },
+  {
+    name: 'no review: other findings get their fix round, the specialist is not re-dispatched on its ground',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], (d) => {
+      if (d.label === 'security-reviewer') throw new Error('subagent completed without calling StructuredOutput')
+      if (d.label === 'security-reviewer · retry') return null
+      return d.label === 'reviewer' ? bad : ok
+    }, ['scripts/x.mjs']),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      open: [{ severity: 'important', summary: 'security-reviewer returned no review', by: 'security-reviewer' }],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · retry' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    log: ['security-reviewer: no result after its retry, no third dispatch'],
   },
   {
     name: 'implementer throws: BLOCKED as for nothing back, never retried',

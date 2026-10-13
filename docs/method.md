@@ -92,6 +92,8 @@ contract. See [roles](roles.md).
   that object's summary; an agent never creates one, and the structured call is its last action.
   A critic or reviewer is retried once when it throws, on a 25-call budget, before the
   workflow's fallback; a blocked or skipped one is not re-dispatched, nor is an implementer.
+  A reviewer left with no review keeps the task open: no fix round answers it, and it does not
+  re-review a later fix diff.
 - **Fresh context:** reviewers see the brief, the report and the diff, never the implementer's
   reasoning. Re-reviews in a fix round go only to the reviewers who flagged something and every
   specialist whose ground the fix diff touches, and check only their findings and the fix diff.

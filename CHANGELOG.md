@@ -22,8 +22,10 @@ versions follow [SemVer](https://semver.org/).
 - A critic or reviewer that loses its verdict is retried once when it throws, on a 25-call
   budget, with the same diff, findings, model and effort; a second throw keeps the old fallback
   (the design loop stops not passed, the task records `<role> returned no review`). A blocked or
-  skipped role returns nothing and is not re-dispatched: it goes straight to that fallback. An
-  implementer or fix round that throws is `BLOCKED`, as one that returns nothing.
+  skipped role returns nothing and is not re-dispatched: it goes straight to that fallback. That
+  finding starts no fix round and keeps the task `OPEN`; the role no longer re-reviews a later fix
+  diff in place of the task's own, which could end a task `CLEAN` with no review of its own diff
+  from that role. An implementer or fix round that throws is `BLOCKED`, as one that returns nothing.
 
 ## [0.3.0] - 2026-10-12
 
