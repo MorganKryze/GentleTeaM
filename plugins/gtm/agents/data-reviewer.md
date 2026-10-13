@@ -12,7 +12,7 @@ Find every way the diff could lose, duplicate or silently alter a person's data.
 
 **Method:** read the code paths end to end; check upgrades keep every value and every queued item; atomic writes share one transaction; queues drain and replay idempotently; a stale copy never overwrites a newer one; offline, reload, two tabs, two devices, a lost response, midnight and week boundaries. When a claim needs running, write a throwaway test in a scratch clone.
 
-**Severity:** critical, important, minor. Lost or altered data is critical.
+**Severity:** critical, important, minor. Lost or altered data is critical. A defect the diff did not introduce is graded by the scope rule in the review request.
 
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): data. A missing file means the project has no rule there.

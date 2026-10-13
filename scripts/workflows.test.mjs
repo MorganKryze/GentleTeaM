@@ -18,18 +18,32 @@ const sorted = (v) =>
       : v
 const canon = (v) => JSON.stringify(sorted(v), null, 2)
 
+// The fields of a reply that its schema does not declare, by path. A real structured output
+// refuses them, so a stub that holds one would test a reply no reviewer can give.
+function undeclared(value, schema, at) {
+  if (Array.isArray(value)) return value.flatMap((v, i) => undeclared(v, schema.items || {}, `${at}[${i}]`))
+  if (!value || typeof value !== 'object' || !schema.properties) return []
+  return Object.entries(value).flatMap(([k, v]) =>
+    Object.hasOwn(schema.properties, k) ? undeclared(v, schema.properties[k], `${at}.${k}`) : [`${at}.${k}`])
+}
+
 // The context holds only what the workflow runtime provides, so a workflow that reaches for any
 // other global fails here instead of in a session. It runs only this repository's own files.
 async function run(name, src, args, reply) {
   const dispatches = []
   const logs = []
+  const prompts = {}
+  const extra = []
   const agent = async (prompt, opts = {}) => {
     if (dispatches.length >= MAX_DISPATCHES) throw new Error(`${name}: more than ${MAX_DISPATCHES} dispatches`)
     const d = { agentType: opts.agentType, label: opts.label }
     if (opts.model !== undefined) d.model = opts.model
     if (opts.effort !== undefined) d.effort = opts.effort
     dispatches.push(d)
-    return reply(d)
+    prompts[opts.label] = prompt
+    const out = await reply(d)
+    if (opts.schema) extra.push(...undeclared(out, opts.schema, opts.label))
+    return out
   }
   const parallel = async (thunks) => {
     const out = []
@@ -40,7 +54,7 @@ async function run(name, src, args, reply) {
   const body = src.replace(/^export const meta/m, 'const meta')
   try {
     const value = await vm.runInContext(`(async () => {\n${body}\n})()`, context, { filename: name })
-    return { value, dispatches, logs }
+    return { value, dispatches, logs, prompts, extra }
   } catch (e) {
     // Errors from inside the context come from its own realm, so match on the name.
     const missing = e && e.name === 'ReferenceError' && /^(\S+) is not defined$/.exec(String(e.message))
@@ -64,6 +78,11 @@ const TRIGGERS = { 'security-reviewer': ['^scripts/'], 'data-reviewer': ['^templ
 const srcFiles = (n) => Array.from({ length: n }, (_, i) => `src/${i}.js`)
 const implement = (agentType = 'gtm:implementer', extra = {}) => ({ agentType, label: 'implement', ...extra })
 const reviewer = (label = 'reviewer', extra = {}) => ({ agentType: 'gtm:reviewer', label, ...extra })
+// Re-review stubs: a finding sent back with its status, and the fragments every review request holds.
+const addressed = { ...badFinding, status: 'addressed' }
+const leak = { severity: 'important', file: 'src/b.js', summary: 'leak' }
+const SCOPE = ['Scope: a defect the task\'s diff', 'did not introduce', 'unless it is critical, a security hole or a data-integrity defect']
+const STATUS = ['Return each with status "addressed" or "open"', 'only new breakage in the fix diff', 'approve when none is left open']
 
 // Answers the implementer by label; every other dispatch goes to review(d).
 function implementer(files, review, fixFiles = ['src/a.js']) {
@@ -567,6 +586,183 @@ const deliver = [
       { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
     ],
   },
+  {
+    name: 'review scope: every sent finding addressed ends CLEAN at round 1',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : { ...ok, findings: [addressed] })),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'review scope: one of two addressed, the next round gets only the other',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') return { ...bad, findings: [badFinding, leak] }
+      if (d.label === 'reviewer · round 1') return { ...bad, findings: [addressed, { ...leak, status: 'open' }] }
+      return ok
+    }),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 3, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' },
+      reviewer('reviewer · round 2'),
+    ],
+    prompts: { 'fix · round 2': ['"leak"'], 'reviewer · round 2': ['"leak"'] },
+    unprompted: { 'fix · round 2': ['"bug"'], 'reviewer · round 2': ['"bug"'] },
+  },
+  {
+    name: 'review scope: a re-listed finding without a status stays open',
+    args: { fixRounds: 1 },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : { ...ok, findings: [badFinding] })),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      open: [{ ...badFinding, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'review scope: a status on a first review is ignored',
+    args: { fixRounds: 0 },
+    reply: implementer(['src/a.js'], () => ({ ...ok, findings: [addressed] })),
+    returns: {
+      status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'],
+      open: [{ ...badFinding, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [implement(), reviewer()],
+  },
+  {
+    name: 'review scope: an ignored status never reaches the fix round or the re-review',
+    args: { fixRounds: 1 },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...bad, findings: [addressed] } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    prompts: { 'fix · round 1': ['"bug"'], 'reviewer · round 1': ['"bug"'] },
+    unprompted: { 'fix · round 1': ['"status": "addressed"'], 'reviewer · round 1': ['"status": "addressed"'] },
+  },
+  {
+    name: 'review scope: a re-review reads the scope rule against the task, findings keep their severity, a minor drops its status',
+    args: { base: 'b0', fixRounds: 1 },
+    reply: implementer(['src/a.js'], (d) =>
+      (d.label === 'reviewer' ? bad : { ...ok, findings: [{ ...typo, status: 'open' }] })),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 1 } }, minors: [{ ...typo, by: 'reviewer' }],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    prompts: {
+      'reviewer · round 1': [
+        'diff h0..h1', "Scope: a defect the task's diff b0..h1 did not introduce",
+        'Each finding sent keeps its severity until it is addressed',
+      ],
+    },
+  },
+  {
+    name: 'review scope: a status from a specialist called back is ignored',
+    args: { triggers: TRIGGERS, fixRounds: 1 },
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') return bad
+      if (d.label === 'security-reviewer · round 1') return { ...ok, findings: [{ ...critical, status: 'addressed' }] }
+      return ok
+    }, ['scripts/x.mjs']),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      open: [{ ...critical, by: 'security-reviewer' }],
+      stats: {
+        reviewer: { critical: 0, important: 1, minor: 0 },
+        'security-reviewer': { critical: 1, important: 0, minor: 0 },
+      },
+      minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+  },
+  {
+    name: 'review scope: a fix verdict with every finding addressed still blocks',
+    args: { fixRounds: 1 },
+    reply: implementer(['src/a.js'], (d) =>
+      (d.label === 'reviewer' ? bad : { verdict: 'fix', findings: [addressed], summary: 'still wrong' })),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      open: [{ severity: 'important', summary: 'reviewer asked for a fix without a blocking finding: still wrong', by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'review scope: an addressed finding stays out of the stats and the minors',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : {
+      ...ok, findings: [addressed, { ...typo, status: 'addressed' }, { severity: 'minor', summary: 'new nit' }],
+    })),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 1 } },
+      minors: [{ severity: 'minor', summary: 'new nit', by: 'reviewer' }],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'review scope: every review request states the scope rule, a re-review asks for each status',
+    args: { triggers: { ...TRIGGERS, 'acme-reviewer': ['^scripts/'] } },
+    reply: implementer(['scripts/x.mjs'], (d) => (d.label === 'security-reviewer' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer', 'acme-reviewer'],
+      stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'acme-reviewer', label: 'acme-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+    prompts: {
+      reviewer: SCOPE, 'security-reviewer': SCOPE, 'acme-reviewer': SCOPE,
+      'security-reviewer · round 1': [...SCOPE, ...STATUS],
+    },
+    unprompted: { reviewer: STATUS, 'security-reviewer': STATUS },
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
@@ -657,13 +853,22 @@ for (const s of scenarios) {
   }
   try {
     const src = readFileSync(join(folder, `${s.workflow}.js`), 'utf8')
-    const { value, dispatches, logs } = await run(s.workflow, src, s.args, s.reply)
+    const { value, dispatches, logs, prompts, extra } = await run(s.workflow, src, s.args, s.reply)
     if (canon(value) !== canon(s.returns)) differs(where, 'returned value', s.returns, value)
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
     // Each expected entry is a set of fragments that one log line must hold together.
     if (s.log && !logs.some((line) => s.log.every((part) => line.includes(part)))) differs(where, 'log', s.log, logs)
     // And no log line may hold any of these.
     for (const part of s.unlogged || []) if (logs.some((line) => line.includes(part))) differs(where, `log without "${part}"`, [], logs)
+    if (extra.length) failures.push(`${where}: reply fields the schema does not declare: ${extra.join(', ')}`)
+    // The prompt sent to each listed label holds every fragment given for it, and none of the unprompted.
+    for (const [label, parts] of Object.entries(s.prompts || {})) {
+      for (const part of parts) if (!(prompts[label] || '').includes(part)) failures.push(`${where}: prompt of ${label} lacks "${part}"`)
+    }
+    for (const [label, parts] of Object.entries(s.unprompted || {})) {
+      if (!(label in prompts)) failures.push(`${where}: no dispatch labelled ${label}`)
+      for (const part of parts) if ((prompts[label] || '').includes(part)) failures.push(`${where}: prompt of ${label} holds "${part}"`)
+    }
   } catch (e) {
     failures.push(`${where}: ${e.message}`)
   }
@@ -679,6 +884,12 @@ for (const [src, global] of [
   const got = await run('probe', src, {}, () => null).then(() => 'no error', (e) => e.message)
   if (got !== want) differs(S1, 'returned value', want, got)
 }
+
+const S3 = 'self-check: a reply field the schema does not declare is named'
+const PROBE = { type: 'object', properties: { findings: { type: 'array', items: { type: 'object', properties: { summary: { type: 'string' } } } } } }
+const caught = await run('probe', "void await agent('p', { label: 'x', schema: args })", PROBE,
+  () => ({ findings: [{ summary: 's', status: 'addressed' }], note: 'n' }))
+if (canon(caught.extra) !== canon(['x.findings[0].status', 'x.note'])) differs(S3, 'returned value', ['x.findings[0].status', 'x.note'], caught.extra)
 
 const S2 = 'self-check: a workflow without scenario is named'
 const probe = unscripted(['deliver-task.js', 'design-loop.js', 'extra.js'], scenarios)
@@ -709,4 +920,4 @@ if (failures.length) {
   console.error(failures.join('\n\n'))
   process.exit(1)
 }
-console.log(`workflow test: ${scenarios.length} scenarios, 2 self-checks and ${handed.size} skill hand-offs OK`)
+console.log(`workflow test: ${scenarios.length} scenarios, 3 self-checks and ${handed.size} skill hand-offs OK`)

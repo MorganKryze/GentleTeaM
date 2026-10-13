@@ -15,7 +15,7 @@ Your standard is `<root>/guidelines/security.md` (threat model and rules) and th
 - migrations: applied ones untouched; new ones safe on a populated database (prove it in a throwaway database or scratch clone when in doubt);
 - secrets and logs: no secret or personal data written anywhere.
 
-**Severity:** critical, important, minor, as the reviewer uses them. An insecure change is never minor.
+**Severity:** critical, important, minor, as the reviewer uses them. An insecure change is never minor. A defect the diff did not introduce is graded by the scope rule in the review request.
 
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): security, dependencies. A missing file means the project has no rule there.

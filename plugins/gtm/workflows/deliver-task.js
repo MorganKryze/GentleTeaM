@@ -34,6 +34,7 @@ const REVIEW = {
           severity: { type: 'string', enum: ['critical', 'important', 'minor'] },
           file: { type: 'string' },
           summary: { type: 'string' },
+          status: { type: 'string', enum: ['addressed', 'open'] },
         },
         required: ['severity', 'summary'],
       },
@@ -42,6 +43,12 @@ const REVIEW = {
   },
   required: ['verdict', 'findings', 'summary'],
 }
+
+// Every task reviewer, every round, is told what a defect the diff did not introduce weighs, so a
+// pre-existing one waits in the ledger instead of blocking a task that did not cause it.
+// The scope rule reads against the task's whole range on every round: a re-review's diff is the
+// fix, and every finding it re-checks was introduced by the task, never by the fix.
+const SCOPE = (range) => `\nScope: a defect the task's diff ${range} did not introduce (it neither adds nor changes the faulty lines nor makes them newly reachable) is minor, its summary saying it predates the task, unless it is critical, a security hole or a data-integrity defect.`
 
 // A GTM role is namespaced by the plugin; a project agent keeps its own type.
 // The project's team profile wins over the agents' frontmatter defaults.
@@ -139,7 +146,8 @@ for (; round <= ROUNDS; round++) {
       retried(
         `${round ? 'Re-review the fix round' : 'Review the task'}: diff ${scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
           (A.mockup ? `\nValidated mockup: ${A.mockup}` : '') +
-          (p.findings ? `\nYour findings this fix must address (say ADDRESSED or NOT for each, then any new breakage in the fix diff only):\n${JSON.stringify(p.findings, null, 2)}` : ''),
+          (p.findings ? `\nYour findings this fix must address. Return each with status "addressed" or "open", then only new breakage in the fix diff; approve when none is left open. Each finding sent keeps its severity until it is addressed:\n${JSON.stringify(p.findings, null, 2)}` : '') +
+          SCOPE(`${A.base}..${head}`),
         as(p.r, { schema: REVIEW, label: `${p.r}${round ? ` · round ${round}` : ''}`, phase: 'Review' }),
       ),
     ),
@@ -156,10 +164,14 @@ for (; round <= ROUNDS; round++) {
     }
     const blocking = []
     for (const f of res.findings) {
+      // Only a reviewer sent findings to re-check can close one; anywhere else the severity decides.
+      if (pending[i].findings && f.status === 'addressed') continue
       stats[r] = stats[r] || { critical: 0, important: 0, minor: 0 }
       stats[r][f.severity]++
-      if (f.severity === 'minor') minors.push({ ...f, by: r })
-      else blocking.push(f)
+      // A status it may not set goes too, or the fix round and the re-review would read it as true.
+      const { status, ...kept } = f
+      if (f.severity === 'minor') minors.push({ ...kept, by: r })
+      else blocking.push(kept)
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
     // then the only reason given, so the fix round and the re-review get it.

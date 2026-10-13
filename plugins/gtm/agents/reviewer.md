@@ -16,7 +16,7 @@ You review one task's diff (`base..head` given to you) in a fresh context: you n
 3. Clean code per `<root>/guidelines/code.md`: names, small units, no dead code, no duplicated helper, no over-engineering (prefer deleting to adding).
 4. The plan's global constraints (commits, copy, budgets) and a person's realistic path through the feature.
 
-**Severity:** critical (wrong data, crash, security hole), important (spec gap, a bug a person hits), minor (polish, coverage, style). Flag plan-mandated items as such; never pre-judge them.
+**Severity:** critical (wrong data, crash, security hole), important (spec gap, a bug a person hits), minor (polish, coverage, style). Flag plan-mandated items as such; never pre-judge them. A defect the diff did not introduce is graded by the scope rule in the review request.
 
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): code, tests, git; i18n, docs or dependencies when the diff touches them. A missing file means the project has no rule there.
