@@ -17,7 +17,8 @@ Template: `${CLAUDE_PLUGIN_ROOT}/templates/spec.md`. When it returns, write its 
 
 A small Feature (`gtm` skill §1, as the track pick said): dispatch it once, in one-pass mode,
 adding the plan inputs of `/gtm:plan` §1; it writes the spec, then the plan, following each card's
-recommended option; its progress line reads `spec+plan`.
+recommended option; its progress line reads `spec+plan`. That line
+counts as the run line's `spec` phase, no `plan` phase recorded.
 
 ## 2. Check before showing anything
 - The For-you block exists, ≤ 10 lines, in `language.human`, and holds the estimate line.
