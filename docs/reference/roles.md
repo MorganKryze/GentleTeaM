@@ -80,3 +80,33 @@ How to read it: you appear only when three correction rounds were not enough.
 | `critical` | wrong data, a crash, a security hole | blocks the task, starts a correction round |
 | `important` | a spec gap, a bug a person hits, an accessibility failure | blocks the task, starts a correction round |
 | `minor` | polish, coverage, style | written to the logbook, sorted at the final review |
+
+Every task review adds a scope rule, read against the task's whole range on every round: a
+defect the task's change did not introduce (it neither adds nor changes the faulty lines nor
+makes them newly reachable) is `minor`, its summary saying it predates the task, unless it is
+critical, a security hole or a data-integrity defect. On a re-check, each finding sent keeps its
+severity until it is addressed; a finding returned as `addressed` no longer blocks and is not
+counted, and one returned without a status stays open.
+
+## What does a role send back?
+
+Each role ends with a short hand-back: at most ten lines (twelve for the architect, fifteen for
+`release-qa`), or the structured object a workflow asks for. It gives the status, the files, the
+result of the checks, any concerns and the path of the full report. A role never claims a result
+without the command that proved it.
+
+## Which rules does every role follow?
+
+- **Reads first:** `.gtm/config.yml` and `.gtm/brief.md`, and never hard-codes a rule the
+  config can state.
+- **Never publishes:** a role never pushes, merges, tags or switches branches.
+- **Never delegates:** a role never dispatches other agents; the commands do.
+- **Read-only stays read-only:** a reviewer that needs to run something uses a scratch copy of
+  the repository.
+
+## What does Claude Code ignore in a role?
+
+Claude Code ignores `hooks`, `mcpServers` and `permissionMode` in a plugin agent's frontmatter.
+GTM's roles rely on none of them: their permissions come from your session.
+
+To change a role's model or effort, see [Change your team settings](/guides/team-settings/).
