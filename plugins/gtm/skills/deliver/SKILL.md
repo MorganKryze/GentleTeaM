@@ -14,11 +14,11 @@ Ground rules: as in the `gtm` skill §0.
   that are `on`, with their regexes; `fixRounds`; `fixCeiling`, the N of the Gates line
   `Fix track ceiling: N files`; the budgets, Gates lines `budget per task` and `budget per
   branch` (`<minutes> min, <tokens>k tokens`; absent or `none`: no budget).
-- Progress file: `<root>/reports/<slug>/progress.md`, one line per task: status, fix rounds,
-  reviewers, `<base>..<head>`, and its merge commit in a wave. Every phase's line (design, spec,
-  plan, each task, final review, re-review, fix wave) ends `· <s> s · <t>k · <a> agents`: the
-  `duration_ms`, `subagent_tokens` and `agent_count` Claude Code reports for its run (a dispatch
-  is 1 agent), `?` for a value it did not report, never an estimate; a workflow adds `· run <id>`.
+- Progress file: `<root>/reports/<slug>/progress.md`, one line per task run, any result (reruns
+  append): status, fix rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each line
+  (design, spec, plan, task run, final review, re-review, re-run review, fix wave) ends `· <s> s ·
+  <t>k · <a> agents`: the `duration_ms`, `subagent_tokens` and `agent_count` Claude Code gives per
+  run (a dispatch is 1 agent), `?` if unreported, never an estimate; workflows add `· run <id>`.
 - Verify commands still marked `[CHECK]` in `config.yml` (not run at init): run each once on the
   branch, with `verify.prefix`. It runs → remove the mark. It cannot run (missing tool, wrong
   command) or fails on the untouched base → stop with a Heads-up and one decision card (correct the
@@ -41,11 +41,11 @@ Ground rules: as in the `gtm` skill §0.
    skip or the order of tasks.
 4. Read the result:
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line (as §1 says), go on.
-   - `OPEN` (fix rounds exhausted, or a reviewer gave no review) or `BLOCKED`: stop the loop.
-     Present a Heads-up and one decision card (re-run the missing review: that role alone on the
-     task's `<base>..<head>` with its open findings / revise the plan / accept with the open
-     findings logged / take over by hand), with your recommendation. Resume from this task after
-     the answer.
+   - `OPEN` (fix rounds exhausted, or a reviewer gave no review) or `BLOCKED`: its progress line
+     (as §1 says), then stop the loop. A Heads-up and one decision card (re-run the missing
+     review: that role alone on the task's `<base>..<head>` with its open findings, its line
+     written and measured as step 3 says / revise the plan / accept with the open findings logged
+     / take over by hand), with your recommendation. Resume from this task after the answer.
    - `ESCALATE` (Fix only): append each minor to the ledger (`minor`), then continue as a Feature
      from `/gtm:spec`. Its `open` findings went to a fix round that grew the Fix past the ceiling
      and were not re-reviewed; `open` may also hold `<role> returned no review`. The spec states
@@ -56,7 +56,7 @@ Ground rules: as in the `gtm` skill §0.
    "<branch>-t<n>" "<wt>" <base>`, `<wt>` = `<repo's parent>/<repo name>-wt-<slug>-t<n>` (an
    existing path or branch stops the wave), absolute `<root>` paths in brief and args. Run them at
    once, §2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`; let all return;
-   measure each as §2 step 3 says.
+   write each one's progress line, measure each as §2 step 3 says.
 2. Before each merge, branch/head are as last recorded and tasks' `git -c core.quotePath=false diff
    --name-only --no-renames "<base>..<branch>-t<n>"` lists disjoint. Merge each `CLEAN` branch in
    plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the head, gate once. Per
@@ -98,12 +98,12 @@ fixed, keep the others. Each dispatch writes its progress line and is measured a
 ## 5. Record and report
 - Ledger: one `run` line (`tasks N · fix rounds per task · findings per reviewer (critical /
   important / minor) · design rounds and score`), ending with `measured <W>m <T>k <A>a: <phase>
-  <w>m <t>k <a>a, ...; roles <role> <p>%, ...` from the progress lines: phases design, spec,
-  plan, tasks, final (with its re-reviews), fix (the fix waves), in that order, a phase not run
-  left out; minutes to one decimal, tokens in thousands; `<W>` the sum of the phases, a wave
-  counting its longest task; a sum holding a `?` is `?`. `roles`: the roles at 5% or more, from
-  `role-split.mjs` over every run folder of the branch plus `--also <role>:<s>:<tokens>` per
-  dispatch (architect, final-reviewer, implementer); any `?` → `roles ?`. Then each ruling taken.
+  <w>m <t>k <a>a, ...; roles <role> <p>%, ...` from every progress line (a task's runs summed):
+  phases design, spec, plan, tasks, final (with its re-reviews), fix (fix waves), in that order, a
+  phase not run omitted; minutes to one decimal, tokens in thousands; `<W>` the phases' sum, a wave
+  its longest task; a sum holding a `?` is `?`. `roles`: roles at 5% or more, `role-split.mjs` over
+  the branch's run folders plus `--also <role>:<s>:<tokens>` per dispatch (architect,
+  final-reviewer, implementer, re-run review); any `?` → `roles ?`. Then each ruling taken.
 - Report to the human, per the briefing format: TL;DR (ready or not, the measure: tasks clean,
   gate result, final verdict), one table (task, result, reviewers, cost) with a total row,
   deferred minors count, each budget Heads-up again, a Heads-up if anything deviated, **Rulings
