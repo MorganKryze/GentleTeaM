@@ -26,6 +26,12 @@
 | important | spec gap, a bug a person hits, an accessibility failure | blocks the task; fix round |
 | minor | polish, coverage, style | logged in the ledger, triaged by the final review |
 
+Every task review request adds a scope rule: a defect the diff did not introduce (it neither
+adds nor changes the faulty lines nor makes them newly reachable) is minor, its summary saying
+it predates the diff, unless it is critical, a security hole or a data-integrity defect. On a
+re-review, a finding returned with status `addressed` no longer blocks and is not counted; one
+returned without a status stays open.
+
 ## Hand-back contract
 At most ten lines (twelve for the architect, fifteen for release QA), or the structured object a
 workflow asks for: status, files, the verify result, concerns, the report path. Never a claim
