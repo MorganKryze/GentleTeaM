@@ -47,7 +47,7 @@ Add the marketplace at project scope and commit the settings file of your projec
 }
 ```
 
-This command writes the first part for you:
+This command writes the first part:
 
 ```text
 claude plugin marketplace add MorganKryze/GentleTeaM --scope project
