@@ -16,6 +16,6 @@ body:
   - type: textarea
     attributes:
       label: Cost and what it removes
-      description: A new file, more tokens, one more question to the human; and the work it saves. See docs/contributing.md.
+      description: A new file, more tokens, one more question to the human; and the work it saves. See https://morgankryze.github.io/GentleTeaM/reference/contributing/.
     validations:
       required: true
