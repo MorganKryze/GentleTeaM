@@ -1,0 +1,4 @@
+{
+  "exit": 0,
+  "stdout": "{\"roles\":[{\"role\":\"final-reviewer\",\"agents\":1,\"seconds\":445,\"tokens\":61000,\"share\":28},{\"role\":\"architect\",\"agents\":1,\"seconds\":470,\"tokens\":48000,\"share\":22},{\"role\":\"implementer\",\"agents\":2,\"seconds\":174,\"tokens\":39019,\"share\":18},{\"role\":\"reviewer\",\"agents\":2,\"seconds\":98,\"tokens\":36010,\"share\":16},{\"role\":\"security-reviewer\",\"agents\":1,\"seconds\":182,\"tokens\":34447,\"share\":16}],\"total\":{\"agents\":7,\"seconds\":1369,\"tokens\":218476}}"
+}
