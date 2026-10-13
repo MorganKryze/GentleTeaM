@@ -52,7 +52,7 @@ const SCOPE = (range) => `\nScope: a defect the task's diff ${range} did not int
 
 // A task of a parallel wave runs in its own worktree: every prompt names it, so no agent reads or
 // writes the delivery's tree. Without one, no prompt mentions a worktree.
-const WT = A.worktree ? `\nWorktree: ${A.worktree}. Run every command after cd ${A.worktree} and read every repository file there; paths given outside it stay as given.` : ''
+const WT = A.worktree ? `\nWorktree: ${A.worktree}. Run every command after cd "${A.worktree}" and read every repository file there; paths given outside it stay as given.` : ''
 
 // A GTM role is namespaced by the plugin; a project agent keeps its own type.
 // The project's team profile wins over the agents' frontmatter defaults.

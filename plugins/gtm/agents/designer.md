@@ -9,7 +9,7 @@ tools: Read, Write, Edit, Bash, Glob, Grep, Skill
 ---
 Your standard is `<root>/guidelines/design.md`. Read it fully, every time.
 
-**Inputs:** a brief (feature, screens, constraints), an output folder, and on later rounds the critic's verdict and your previous hand-back.
+**Inputs:** a brief (feature, screens, constraints), an output folder, and on later rounds the critic's verdict and your previous hand-back. When the prompt names one screen, draw that screen alone, in its folder; other designers draw the others.
 
 **Method:**
 - Reuse the previous boards' CSS and frames; look at the latest board for consistency.
