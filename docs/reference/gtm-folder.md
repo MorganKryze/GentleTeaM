@@ -13,6 +13,13 @@ GTM keeps everything it writes in one folder at the root of your project, `.gtm/
 entries; the team reads the rest. A project may move the folder, or keep it out of git, and says
 so in its `CLAUDE.md`.
 
+Three of those entries have names of their own. The [mockups](/reference/glossary/#mockups) are
+the pages showing each new screen before it is built. Your
+[team settings](/reference/glossary/#team-settings), in `team.md`, say which roles run and how
+hard each one thinks. The [logbook](/reference/glossary/#logbook), `ledger.md`, keeps one line
+per lesson or decision, so each [Feature](/reference/glossary/#feature) starts from what the last
+one learned.
+
 ## Which files do I read?
 
 <figure class="gtm-tree" aria-label="The .gtm/ folder, with the files you read marked read it">
@@ -47,3 +54,24 @@ so in its `CLAUDE.md`.
 | `plans/` | one plan per Feature: tasks, files, test steps | architect |
 | `reports/` | each agent's full report, and the pull request text | every role |
 | `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
+
+## What does a new project start with?
+
+Right after `/gtm:init`, the folder holds the files below. The logbook stays empty until the
+first branch, and the four folders fill as you work.
+
+```text
+.gtm/
+  brief.md        one page
+  config.yml      paths, checks, git, language, briefings
+  team.md         priorities, roles, specialists, limits
+  conventions.md  one table, pointing at guidelines/
+  guidelines/     code, tests, git, docs, dependencies,
+                  security, data, i18n, accessibility,
+                  design, work
+  backlog.md      epics and stories
+  ledger.md       empty until the first branch
+  specs/ plans/ reports/ mockups/
+```
+
+To see each file appear as a Feature runs, follow [your first Feature](/tutorial/first-feature/).
