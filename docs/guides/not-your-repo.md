@@ -42,7 +42,7 @@ With stealth on, `/gtm:ship` scans the branch against its base before a push: th
 every commit message, the PR text, every added line and every new file name. It reports each hit
 with its place:
 
-- GTM's own words, and the names of the paths kept out of the project;
+- GTM's own words and the paths kept out of the project;
 - the attribution text the project forbids;
 - in prose, em dashes, emoji, stock phrases, filler and hedging.
 

@@ -64,8 +64,10 @@ and usage lines of past changes, proposes changes and records each one with its 
 settings' history. You can also name the change yourself, for example a lower effort for one role.
 `/gtm:retro` suggests a tune when a pattern appears across changes.
 
-Efforts run `low`, `medium`, `high`, `xhigh`, `max`. Models are `opus`, `sonnet`, `haiku`,
-`fable`, a full model id, or `inherit`.
+| Setting | Values |
+| --- | --- |
+| Effort | `low`, `medium`, `high`, `xhigh`, `max` |
+| Model | `opus`, `sonnet`, `haiku`, `fable`, a full model id, or `inherit` |
 
 ## Why are these my decision and not GTM's?
 
