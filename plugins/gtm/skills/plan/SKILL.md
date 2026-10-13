@@ -15,7 +15,8 @@ dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: t
 validated board, the output path `<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, and the
 team profile's Gates (replay risky tasks: yes/no; risky paths). Template:
 `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. When it returns, write its progress line (`plan`) as
-`/gtm:deliver` §1 says.
+`/gtm:deliver` §1 says, and one more after each correction round and each revision (§2); a
+phase's lines are summed in the run line.
 
 ## 2. Check
 - Every task has Files, Interfaces, TDD steps with commands from `verify`, a Verify line and a

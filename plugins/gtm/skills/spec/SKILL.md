@@ -13,7 +13,8 @@ any), decisions already taken, an escalated Fix's `open` findings (each one a re
 its test, a missing review as owed, as `/gtm:deliver` §2 says), and the output path
 `<root>/specs/<YYYY-MM-DD>-<slug>.md`.
 Template: `${CLAUDE_PLUGIN_ROOT}/templates/spec.md`. When it returns, write its progress line
-(`spec`) as `/gtm:deliver` §1 says.
+(`spec`) as `/gtm:deliver` §1 says, and one more after
+each send-back (§2) and each reopening (§3); a phase's lines are summed in the run line.
 
 A small Feature (`gtm` skill §1, as the track pick said): dispatch it once, in one-pass mode,
 adding the plan inputs of `/gtm:plan` §1; it writes the spec, then the plan, following each card's
