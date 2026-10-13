@@ -961,6 +961,27 @@ const design = [
     dispatches: [],
   },
   {
+    name: 'design screens: a screen that is not a string runs nothing',
+    args: { screens: ['home', null] },
+    reply: designReply(() => score(9)),
+    returns: { passed: false, screens: [], error: 'screen "null" listed twice or not a slug' },
+    dispatches: [],
+  },
+  {
+    name: 'design screens: a nested list of screens runs nothing',
+    args: { screens: ['home', ['home']] },
+    reply: designReply(() => score(9)),
+    returns: { passed: false, screens: [], error: 'screen "home" listed twice or not a slug' },
+    dispatches: [],
+  },
+  {
+    name: 'design screens: screens given as a plain string run nothing',
+    args: { screens: 'home,search' },
+    reply: designReply(() => score(9)),
+    returns: { passed: false, screens: [], error: 'screen "home,search" listed twice or not a slug' },
+    dispatches: [],
+  },
+  {
     name: 'design screens: one screen runs the loop as today',
     args: { outDir: 'out', screens: ['home'] },
     reply: designReply(() => score(8)),

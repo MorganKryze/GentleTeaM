@@ -92,14 +92,17 @@ async function loop(screen) {
 }
 
 // Two screens or more: all at once, each below the bar redrawn alone; the run passes only when
-// every screen passed. A screen named twice, or not a slug, would share or escape a folder: nothing runs.
+// every screen passed. A screen named twice, or not a slug string, would share or escape a
+// folder: nothing runs; neither does a list that is not an array.
 const SCREENS = A.screens || []
-if (SCREENS.length < 2) return await loop(null)
-const wrong = SCREENS.find((s, i) => SCREENS.indexOf(s) !== i || !/^[a-z0-9][a-z0-9-]*$/.test(s))
-if (wrong !== undefined) {
+const bad = (s, i) => typeof s !== 'string' || SCREENS.indexOf(s) !== i || !/^[a-z0-9][a-z0-9-]*$/.test(s)
+const at = Array.isArray(SCREENS) ? SCREENS.findIndex(bad) : -2
+if (at !== -1) {
+  const wrong = at === -2 ? SCREENS : SCREENS[at]
   log(`Screen "${wrong}" is listed twice or is not a slug (a-z, 0-9, -): nothing runs`)
   return { passed: false, screens: [], error: `screen "${wrong}" listed twice or not a slug` }
 }
+if (SCREENS.length < 2) return await loop(null)
 const results = await parallel(SCREENS.map((s) => () => loop(s)))
 const screens = results.map((r, i) => ({ screen: SCREENS[i], ...r }))
 return { passed: screens.every((s) => s.passed), screens }
