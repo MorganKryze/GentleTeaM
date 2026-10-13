@@ -36,7 +36,7 @@ jobs:
         env:
           PLAYWRIGHT_PATH: ${{ runner.temp }}/site-tools
         run: |
-          node scripts/site-checks.test.mjs .
+          node scripts/site-checks.test.mjs . --lasting
           node scripts/site-measure.test.mjs .
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
