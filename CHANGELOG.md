@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-10-13
+
 ### Fixed
 - `/gtm:deliver`: the card for a missing review re-runs that role alone on the task's range, with
   its open findings. An escalated Fix's open findings may hold a reviewer that gave no review;
