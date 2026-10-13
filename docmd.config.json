@@ -156,7 +156,10 @@
     "seo": {
       "defaultDescription": "A team of agents designs, builds and reviews your change in Claude Code. You make three decisions."
     },
-    "ai": false
+    "ai": false,
+    "git": {
+      "commitHistory": false
+    }
   },
   "markdown": {
     "breaks": false
