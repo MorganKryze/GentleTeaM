@@ -7,6 +7,8 @@ versions follow [SemVer](https://semver.org/).
 
 ### Changed
 - README: banner, badges; issue and pull request templates; more plugin keywords.
+- README: says what GTM costs in agent time, measured on its own branches; how specialist
+  triggers can miss a file; stealth mode as keeping working files out, not hiding AI use.
 - Docs: the method, glossary and install page say where the Fix ceiling is set (the team
   profile's Gates, changed with `/gtm:tune`) and what happens past it (the Fix continues as a
   Feature from the spec, its commits kept).
