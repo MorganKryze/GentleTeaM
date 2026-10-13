@@ -3,7 +3,8 @@
 // A8 one visible pager with a Next card, A15 the loop's edges at 360, A17 overflow, A18 diagram
 // labels, A19 the home figure row, A20 the Roles term list, A21 measure and side bands, A22
 // contrast (search dialog included), A23 targets, A24 amber, A25 dark diagrams and the toggle,
-// A26 one h1, heading order and the menu control, A27 fonts from the site's origin. Requests to
+// A26 one h1, heading order and the menu control, A27 fonts from the site's origin, and
+// tables at 360 and 390 whose second column starts inside the viewport. Requests to
 // other origins are listed, not failed.
 // A axe-core pass runs the WCAG 2.1 A and AA rules on every page, width and mode: 0 violations.
 // Needs the build (`npx -y @docmd/core@0.9.7 build` in <repo>), Playwright 1.64.0 and axe-core
@@ -181,6 +182,15 @@ const inPage = ({ w, page }) => {
     if (!svgs.length && main.querySelectorAll('.mermaid, pre.mermaid').length) out.dark.push('a diagram did not render');
   }
 
+  // Tables at phone widths: the second column starts inside the viewport, with no scrolling
+  out.tables = [];
+  if (vw <= 390) for (const t of main.querySelectorAll('table')) {
+    if (!vis(t)) continue; const row = t.rows[0]; const c = row && row.cells[1]; if (!c) continue;
+    for (let p = t; p && p !== document.body; p = p.parentElement) p.scrollLeft = 0;
+    const left = Math.round(c.getBoundingClientRect().left);
+    if (left >= vw - 80) out.tables.push(`table "${(row.cells[0].textContent || '').trim().slice(0, 24)}": second column starts at ${left}px`);
+  }
+
   // A26: one h1, headings in order
   const hs = [...document.querySelectorAll('h1, h2, h3, h4, h5, h6')].filter(vis);
   out.h1 = hs.filter(h => h.tagName === 'H1').length;
@@ -237,6 +247,7 @@ const run = async ([p, w, mode]) => {
   if (want('A22')) { for (const x of m.lowText) fail('A22', `${tag}: ${x}`); for (const x of m.lowGraphic) fail('A22', `${tag}: ${x}`); }
   if (want('A24')) for (const x of m.amber) fail('A24', `${tag}: ${x}`);
   if (want('A25')) for (const x of m.dark) fail('A25', `${tag}: ${x}`);
+  if (want('tables')) for (const x of m.tables) fail('tables', `${tag}: ${x}`);
   if (want('A8') && (m.pager.n !== 1 || !m.pager.next)) fail('A8', `${tag}: ${m.pager.n} visible pager(s)${m.pager.next ? '' : ', no Next card'}`);
   if (want('axe')) {
     await page.addScriptTag({ content: AXE_SRC });
@@ -299,7 +310,7 @@ const pool = 4; let i = 0;
 await Promise.all(Array.from({ length: pool }, async () => { while (i < jobs.length) { const j = jobs[i++]; try { await run(j); } catch (e) { fail('crash', `${j.join(' ')}: ${e.message.split('\n')[0]}`); } } }));
 await browser.close(); server.close();
 
-const ids = ['A8', 'A15', 'A17', 'A18', 'A19', 'A20', 'A21', 'A22', 'A23', 'A24', 'A25', 'A26', 'A27', 'axe', 'crash'].filter(id => id === 'crash' ? results.crash : want(id));
+const ids = ['A8', 'A15', 'A17', 'A18', 'A19', 'A20', 'A21', 'A22', 'A23', 'A24', 'A25', 'A26', 'A27', 'tables', 'axe', 'crash'].filter(id => id === 'crash' ? results.crash : want(id));
 let failed = 0;
 console.log(`${pages.length} pages x ${widths.join('/')} px x light/dark = ${jobs.length} loads`);
 for (const id of ids) {

@@ -339,7 +339,6 @@ p > .docmd-button + br + .docmd-button {
 .table-wrapper td { padding: 0.65rem 0.9rem; border-top: 1px solid var(--rule); vertical-align: top; background: transparent; }
 .table-wrapper tr:first-child td { border-top: 0; }
 .table-wrapper td:first-child { font-weight: 600; }
-.table-wrapper table:has(th:nth-child(5)) td:first-child { white-space: nowrap; }
 .table-wrapper tbody tr:hover { background: none; }
 
 /* ---------- Steps ---------- */
@@ -490,6 +489,9 @@ p > .docmd-button + br + .docmd-button {
      wrapping a cell to five lines */
   .table-wrapper table { min-width: 30rem; }
   .table-wrapper table:has(th:nth-child(5)) { min-width: 50rem; }
+  /* The first column takes 9rem (more only for a name that cannot break): the table's spare width
+     goes to the other columns, so the second one starts on screen */
+  .table-wrapper th:first-child { width: 9rem; }
   /* Commands wrap in their block, the copy button stays visible and clear of the text */
   .main-content pre, .main-content pre code { white-space: pre-wrap !important; overflow-wrap: anywhere; }
   .docmd-code-block-wrapper pre { padding-right: 3.25rem !important; }
@@ -690,7 +692,9 @@ li.step-item:has(.callout-you) .callout-see { border-color: color-mix(in srgb, v
 }
 .table-wrapper th { background: transparent; color: var(--muted); font-weight: 550; font-size: 0.88rem; padding: 0.6rem 0.9rem 0.6rem 0; }
 .table-wrapper td { padding: 0.7rem 0.9rem 0.7rem 0; }
-.table-wrapper td:first-child { white-space: nowrap; font-weight: 550; }
+.table-wrapper td:first-child { font-weight: 550; }
+/* A name in a first cell (a code chip: field, command, role) never breaks; a sentence wraps */
+.table-wrapper td:first-child code { white-space: nowrap; }
 .main-content .table-wrapper td code {
   font-size: 0.84rem; background: var(--tint); border: 1px solid var(--rule); border-radius: 5px; padding: 0.1em 0.4em;
 }
