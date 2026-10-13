@@ -9,7 +9,7 @@ Ground rules: as in the `gtm` skill §0.
 
 ## 1. Prepare
 - Branch: create it from `git.base` as `git.branch` says (the orchestrator does this once; agents
-  never switch branches). Note the base commit.
+  never switch branches). Note the base commit. A name off `^[A-Za-z0-9._/-]+$` stops a wave (§3).
 - From `team.md`: `team` = `{ role: {model, effort} }` for every role; `triggers` = the specialists
   that are `on`, with their regexes; `fixRounds`; `fixCeiling`, the N of the Gates line
   `Fix track ceiling: N files`.
@@ -43,7 +43,7 @@ Ground rules: as in the `gtm` skill §0.
    existing path or branch stops the wave), absolute `<root>` paths in brief and args. Run them at
    once, §2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`; let all return.
 2. Before each merge, the branch and head are the ones last recorded and the tasks' `git -c
-   core.quotePath=false diff --name-only --no-renames <base>..<branch>-t<n>` lists disjoint. Merge
+   core.quotePath=false diff --name-only --no-renames "<base>..<branch>-t<n>"` lists disjoint. Merge
    each `CLEAN` branch in plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the
    head, gate once; per merged task `git worktree remove "<wt>"`, `git branch -d "<branch>-t<n>"`.
 3. A moved branch or head, an overlap, a conflict or a red gate: merge nothing more, keep unmerged
