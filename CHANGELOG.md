@@ -16,9 +16,10 @@ versions follow [SemVer](https://semver.org/).
   resumed after an open or blocked stop reruns in its worktree and merges with the same checks,
   then the wave goes on.
 - `/gtm:gtm`: a Fix that ends open or blocked stops on a decision card, as `/gtm:deliver` does;
-  it had no reading for either.
-- `/gtm:ship` takes a skipped final review only from the ledger's `run` line, no longer from the
-  delivery report in chat. `/gtm:spec` gives the architect an escalated Fix's open findings.
+  it had no reading for either. A clean Fix writes a `run` line, the record `/gtm:ship` reads.
+- `/gtm:ship` takes a skipped final review, or a clean Fix, only from the last `run` line a
+  delivery wrote for the slug, no longer from the delivery report in chat. `/gtm:spec` gives
+  the architect an escalated Fix's open findings.
 - The analyst creates no report file when it is given none. The UX and accessibility QA writes
   only under the GTM folder, never the implementer's report.
 - The workflow test wants exactly one log line per expected entry, counts a skill's argument only
