@@ -9,8 +9,9 @@ Ground rules: as in the `gtm` skill §0. Nothing is pushed, merged, tagged or re
 human's explicit go **in this conversation**, for that exact action.
 
 ## 1. Check
-The final review says ready, or the deliver report says it was skipped (one task, clean at 0 fix
-rounds); the working tree is clean; the gate passes once more (run it, quote the result). Commit
+The final review says ready, or this slug's ledger `run` line holds
+`final review skipped: one task, clean at 0 fix rounds` (a skip read anywhere else does not
+count); the working tree is clean; the gate passes once more (run it, quote the result). Commit
 messages carry nothing from `git.forbid` (check with `git log --format=%B`).
 
 ## 2. Write the PR text
