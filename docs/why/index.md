@@ -1,93 +1,71 @@
 ---
 title: Why GTM exists
-description: The problem GTM answers, and the costs it accepts.
+description: The problem GTM answers, who it is for, and what it is not.
 ---
 
 ::: callout summary
-- **You will learn:** the problem GTM answers, and what it trades for it.
+- **You will learn:** the problem GTM answers, who it is for and what it is not.
 - **Reading time:** 3 minutes.
 - **Before this:** nothing.
 :::
 
-Agent teams can now write and review most of a feature. What they also produce is reading:
-reports, [specs](/reference/glossary/#spec), reviews, status updates. GTM spends that output
-inside the team and hands you verdicts, [decision cards](/reference/glossary/#decision-card) (a
-question, its options, a firm recommendation and the cost if wrong) and pictures, in your
-language.
+## What is the problem?
 
-## What GTM chooses, and what it costs
+Agent teams can now write, review and test most of a feature. What they also produce is reading:
+reports, [specs](/reference/glossary/#spec), reviews, status updates. You end up reading more
+than you would have written, and the decisions that are yours get lost inside long texts. Two
+costs remain, and popular methods tend to raise them.
 
-::: grids
+The first is overload: every agent writes a report, every phase a document, and reviews
+multiply. The second is drain: personas, long prompts, tool schemas and repeated reviews fill
+context windows and usage limits with ceremony instead of work.
 
-::: grid
+## What does GTM do about it?
 
-### Light over complete
+GTM spends that output inside the team and hands you verdicts,
+[decision cards](/reference/glossary/#decision-card) and pictures, in your language. It sizes
+the process to the change: a [Fix](/reference/glossary/#fix), a
+[Feature](/reference/glossary/#feature) or a [Milestone](/reference/glossary/#milestone),
+chosen up front with at most two questions.
 
-The smallest process that keeps quality: three tracks, few files, short pages. Every extra
-document is read by someone, or ignored, and both cost.
+It keeps the working files few and short: a one-page brief, a spec and a plan per feature, and a
+[logbook](/reference/glossary/#logbook) of lessons and decisions that only grows. Agents get
+paths to files and answer in a few lines, so your conversation holds verdicts, not transcripts.
 
-<p class="gtm-cost">Cost: some decisions live in a plan rather than in a document of their own.</p>
+Specialists run only when a change touches their ground, and each project decides once, in
+writing, how hard each role thinks: its [team settings](/reference/glossary/#team-settings).
+Everything reaches you in one compact format, verdict first, with the
+[decisions made for you](/reference/glossary/#decisions-made-for-you) listed at the end.
 
-:::
+## Who GTM is for
 
-::: grid
+Developers and small teams who use Claude Code for real products and want agent speed without
+giving up judgment: one person shipping a side project to production, or a team that wants the
+same rules applied to every branch. It assumes git, a test suite, and a person who decides.
 
-### Three checkpoints, not thirty updates
+## What does success look like?
 
-You approve the mockups, the summary and the go. Everything else is settled inside the team and
-shown to you as decisions made for you, so the few that are yours are never buried.
+A feature reaches review with you having spent minutes on it, not hours: one look at the
+[mockups](/reference/glossary/#mockups), one [Summary](/reference/glossary/#summary), one go.
+Those are the three [checkpoints](/reference/glossary/#checkpoint) of a Feature.
 
-<p class="gtm-cost">Cost: the team will sometimes decide as you would not have; one reply overturns it.</p>
+Every decision can be traced: who took it, why, and what it costs if it is wrong. The next plan
+is better than the last, because the logbook feeds it. And no insecure or data-losing change
+ships, whatever the speed.
 
-:::
+## What GTM is not
 
-::: grid
+It is not a heavyweight persona framework. Eleven roles exist, but most tasks see two of them;
+there is no role-play, no story-file ceremony, no seven documents per feature.
 
-### Evidence before claims
+It is not a replacement for judgment. Agents recommend and you decide what matters; GTM's job is
+to make those decisions few, clear and well argued.
 
-No "done", "fixed" or "passing" without the command and its result. What was not checked is
-said plainly, because a confident claim without proof is the dearest error to find later.
+It is not autonomous. Nothing is pushed, merged, tagged or released without your explicit go,
+and the decisions the team takes on its own are listed so you can overturn any of them.
 
-<p class="gtm-cost">Cost: reports run slightly longer, and checks take time.</p>
+It is not a lock-in. It is Markdown, two workflow scripts and a config file in your repository.
+Stop using it and your specs, plans and logbook remain readable documents.
 
-:::
-
-::: grid
-
-### Tests first
-
-A failing test comes before the code, and every line of the spec has its test. The failing run
-proves the test can fail; the spec turns into tests directly.
-
-<p class="gtm-cost">Cost: slower first commits on exploratory work.</p>
-
-:::
-
-::: grid
-
-### Verdicts in your chat, reports on disk
-
-Each agent writes its full report to a file and hands back ten lines at most. Your conversation
-holds verdicts, not transcripts, which saves your attention and your plan.
-
-<p class="gtm-cost">Cost: one more file per task in the project's .gtm/ folder.</p>
-
-:::
-
-::: grid
-
-### Specialists only where they matter
-
-Security, data and screen reviewers run only when a change touches their ground, decided by
-paths your project owns. A specialist on every task is expensive noise.
-
-<p class="gtm-cost">Cost: a path rule that is too narrow misses a change; the final review catches it.</p>
-
-:::
-
-:::
-
-<div class="page-navigation gtm-pager">
-<a href="../reference/glossary/" class="prev-page"><span class="arrow" aria-hidden="true">&larr;</span><span><small>Previous</small><strong>Glossary</strong></span></a>
-<a href="../" class="next-page"><span><small>Back to the start</small><strong>What GTM is</strong></span><span class="arrow" aria-hidden="true">&rarr;</span></a>
-</div>
+The stances behind these choices, and what each costs, are in [Positions](/why/positions/); the
+rules that protect your attention are in [Principles](/why/principles/).
