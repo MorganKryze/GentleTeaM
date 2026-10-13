@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-13
+
 ### Added
 - Measured runs: each phase of a delivery (design, spec, plan, each task, final review, fix
   waves) records the wall time, tokens and agents Claude Code reports, and the branch's `run`
