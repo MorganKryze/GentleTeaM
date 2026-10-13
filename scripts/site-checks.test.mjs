@@ -19,7 +19,7 @@ import { execFileSync } from 'node:child_process';
 
 const argv = process.argv.slice(2);
 const repo = argv.find(a => !a.startsWith('-') && !/^A\d+$/.test(a));
-if (!repo) { console.error('usage: node site-checks.mjs <repo> [A1 ...] [--base <rev>] [--final]'); process.exit(2); }
+if (!repo) { console.error('usage: node site-checks.mjs <repo> [A1 ...] [--source] [--lasting] [--base <rev>] [--final]'); process.exit(2); }
 const only = argv.filter(a => /^A\d+$/.test(a));
 const base = argv.includes('--base') ? argv[argv.indexOf('--base') + 1] : 'main';
 const final = argv.includes('--final');
