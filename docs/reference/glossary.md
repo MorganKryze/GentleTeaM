@@ -12,77 +12,77 @@ description: Every term GTM uses, in one line each.
 
 ## What does each term mean?
 
-### Backlog
+### Backlog {#backlog}
 `.gtm/backlog.md`: epics, their stories, priority and status, one table per epic.
 
-### Brief
+### Brief {#brief}
 `.gtm/brief.md`: your project's one-page constitution: purpose, users, principles, limits.
 
-### Checkpoint
+### Checkpoint {#checkpoint}
 A moment where you decide, three per Feature: the mockups, the summary and the go, at
 `/gtm:design`, `/gtm:spec` and `/gtm:ship`.
 
-### Conventions
+### Conventions {#conventions}
 The project's rules, one file per area: `conventions.md` in `.gtm/`, and its files under
 `guidelines/`.
 
-### Correction round
+### Correction round {#correction-round}
 The implementer fixes open findings, then the same reviewers re-check. 3 at most, the
 `fix rounds per task` line in `team.md`; each raises the implementer's effort one level.
 
-### Decision card
+### Decision card {#decision-card}
 A question, its options, a firm recommendation and the cost if wrong, shown by `/gtm:spec` and
 `/gtm:deliver`.
 
-### Decisions made for you
+### Decisions made for you {#decisions-made-for-you}
 What the team decided without asking, each with its cost if wrong, kept in `ledger.md` as
 `ruling` lines.
 
-### Dry run
+### Dry run {#dry-run}
 The architect runs a risky task's code in a scratch copy while planning (`/gtm:plan`), to prove
 the plan; risky paths are set in `team.md`.
 
-### Feature
+### Feature {#feature}
 One capability on one branch, with three checkpoints, started with `/gtm:gtm`.
 
-### File limit for a fix
+### File limit for a fix {#file-limit-for-a-fix}
 The most files a Fix may change, 3 by default: the `Fix track ceiling` line in `team.md`. Past
 it, a fix grows into a Feature.
 
-### Final review
+### Final review {#final-review}
 One last review of the whole branch against the spec and the plan, by the `final-reviewer`, once
 every task is done.
 
-### Fix
+### Fix {#fix}
 A change of at most 3 files with no schema or sign-in change, run by `/gtm:gtm`.
 
-### Logbook
+### Logbook {#logbook}
 `ledger.md`, in `.gtm/`: one line per lesson, decision or deferred finding, kept across changes.
 
-### Milestone
+### Milestone {#milestone}
 Work across several branches, each run as a Feature, tracked as an epic in `backlog.md`.
 
-### Mockups
+### Mockups {#mockups}
 One page showing each new screen in light and dark, scored by the critic, kept in `.gtm/mockups/`.
 
-### Retro
+### Retro {#retro}
 `/gtm:retro`: distils a delivered branch into at most five lessons and guideline edits.
 
-### Spec
+### Spec {#spec}
 The document the architect writes before any code, in `.gtm/specs/`: what will be built, what is
 left out, and how each part is checked.
 
-### Stealth
+### Stealth {#stealth}
 `stealth: on` in `config.yml`: GTM keeps its files out of the tracked tree and its names out of
 everything it writes into the project.
 
-### Summary
+### Summary {#summary}
 The ten lines at the top of a spec in `.gtm/specs/`, written for you.
 
-### Team settings
+### Team settings {#team-settings}
 `team.md`, in `.gtm/`: which roles run, how hard each one thinks, and why, each with its date.
 
-### Tune
+### Tune {#tune}
 `/gtm:tune`: re-evaluates your team settings and conventions from the logbook's evidence, and
 switches stealth on or off.
 

@@ -120,7 +120,7 @@ const COVER = [
   ['roles', 'Hand-back contract', 'reference/roles.md', /hand-back/i],
   ['roles', 'Shared rules', 'reference/roles.md', /never pushes|read-only/i],
   ['roles', 'Plugin limits worth knowing', 'reference/roles.md', /permissionMode/],
-  ['glossary', 'all terms', 'reference/glossary.md', /^### Logbook$/m],
+  ['glossary', 'all terms', 'reference/glossary.md', /^### Logbook( \{#logbook\})?$/m],
   ['install', 'For yourself', 'start/install.md', /plugin install gtm@gentleteam/],
   ['install', 'For a whole project', 'start/install.md', /\.claude\/settings\.json/],
   ['install', 'Update', 'start/install.md', /plugin marketplace update gentleteam/],
@@ -271,7 +271,7 @@ const glossary = () => {
   const t = unfront(page('reference/glossary.md') || '');
   const entries = {};
   const parts = t.split(/^### /m).slice(1);
-  for (const p of parts) { const [head, ...body] = p.split('\n'); entries[head.trim()] = body.join('\n').split(/^#{2,3} /m)[0].trim(); }
+  for (const p of parts) { const [head, ...body] = p.split('\n'); entries[head.replace(/\s*\{#[^}]*\}\s*$/, '').trim()] = body.join('\n').split(/^#{2,3} /m)[0].trim(); }
   return { t, entries };
 };
 
