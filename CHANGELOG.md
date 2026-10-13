@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-13
+
 ### Added
 - Parallel waves: two or more consecutive parallel-safe tasks run at once, each in its own
   worktree outside the repository and on its own branch, named in every prompt it gets. The
