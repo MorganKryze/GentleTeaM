@@ -24,7 +24,8 @@ versions follow [SemVer](https://semver.org/).
 
 No change is needed to an existing GTM folder: a team profile without budget lines reads as
 `none` and raises no Heads-up, and `run` lines written before this release, with no `measured`
-part, are skipped by the estimates and by `/gtm:tune`.
+part, are left out of the estimates and of `/gtm:tune`'s three new signals; its other signals
+read them as before.
 
 ## [0.5.1] - 2026-10-13
 

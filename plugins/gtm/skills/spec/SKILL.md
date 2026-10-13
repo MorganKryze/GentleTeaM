@@ -22,7 +22,8 @@ recommended option; its progress line reads `spec+plan`. That line
 counts as the run line's `spec` phase, no `plan` phase recorded.
 
 ## 2. Check before showing anything
-- The For-you block exists, ≤ 10 lines, in `language.human`, and holds the estimate line.
+- The For-you block exists, ≤ 10 lines, in `language.human`, and holds the estimate line;
+  otherwise send the spec back to the architect, once.
 - Every acceptance line is EARS and testable.
 - `grep -c "NEEDS CLARIFICATION"` is 0 outside the Open questions heading; otherwise send the spec
   back to the architect with the list, once. Still open → they become decision cards.

@@ -56,7 +56,7 @@ Ground rules: as in the `gtm` skill §0.
    "<branch>-t<n>" "<wt>" <base>`, `<wt>` = `<repo's parent>/<repo name>-wt-<slug>-t<n>` (an
    existing path or branch stops the wave), absolute `<root>` paths in brief and args. Run them at
    once, §2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`; let all return;
-   write each one's progress line, measure each as §2 step 3 says.
+   write each one's progress line (no wave total line), measure each as §2 step 3 says.
 2. Before each merge, branch/head are as last recorded and tasks' `git -c core.quotePath=false diff
    --name-only --no-renames "<base>..<branch>-t<n>"` lists disjoint. Merge each `CLEAN` branch in
    plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the head, gate once. Per
@@ -99,11 +99,12 @@ fixed, keep the others. Each dispatch writes its progress line and is measured a
 - Ledger: one `run` line (`tasks N · fix rounds per task · findings per reviewer (critical /
   important / minor) · design rounds and score`), ending with `measured <W>m <T>k <A>a: <phase>
   <w>m <t>k <a>a, ...; roles <role> <p>%, ...` from every progress line (a task's runs summed):
-  phases design, spec, plan, tasks, final (with its re-reviews), fix (fix waves), in that order, a
-  phase not run omitted; minutes to one decimal, tokens in thousands; `<W>` the phases' sum, a wave
-  its longest task; a sum holding a `?` is `?`. `roles`: roles at 5% or more, `role-split.mjs` over
-  the branch's run folders plus `--also <role>:<s>:<tokens>` per dispatch (architect,
-  final-reviewer, implementer, re-run review); any `?` → `roles ?`. Then each ruling taken.
+  phases design, spec, plan, tasks (re-run reviews in), final (re-reviews in), fix (fix waves),
+  in that order, a phase not run omitted; minutes to one decimal, tokens in thousands; all
+  summed, but a wave's minutes are its longest task's; a sum holding a `?` is `?`. `roles`: roles
+  at 5% or more, `role-split.mjs` over the folder of each progress line's `· run <id>` (id checked
+  and folder found as §2 step 3 says) plus `--also <role>:<s>:<tokens>` per dispatch (architect,
+  final-reviewer, implementer, a re-run review's role); any `?` → `roles ?`. Then each ruling taken.
 - Report to the human, per the briefing format: TL;DR (ready or not, the measure: tasks clean,
   gate result, final verdict), one table (task, result, reviewers, cost) with a total row,
   deferred minors count, each budget Heads-up again, a Heads-up if anything deviated, **Rulings
