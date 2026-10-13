@@ -9,6 +9,8 @@ description: Every term GTM uses, in one line each.
 - **Before this:** nothing.
 :::
 
+## What does each term mean?
+
 ### Brief
 Your project's one-page constitution: purpose, users, principles, limits.
 
