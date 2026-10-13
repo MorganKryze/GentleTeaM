@@ -9,8 +9,9 @@ versions follow [SemVer](https://semver.org/).
 - Parallel waves: two or more consecutive parallel-safe tasks run at once, each in its own
   worktree outside the repository and on its own branch, named in every prompt it gets. The
   clean ones merge with merge commits in plan order, then the gate runs once. A moved branch or
-  head, an overlap of files, a conflict or a red gate stops the merges and undoes nothing; a
-  task left open or blocked lets its clean siblings merge but starts no later task.
+  head, an overlap of files, a conflict, a red gate or files left in a worktree's GTM folder stops
+  the merges and undoes nothing, that worktree kept; a task left open or blocked lets its clean
+  siblings merge but starts no later task.
 - Per-screen design: with several screens, each gets its own designer and critic and its own
   rounds, redrawn alone until it passes; the boards come back in one table for one approval,
   and the run passes when every screen passed. One screen runs as before.
