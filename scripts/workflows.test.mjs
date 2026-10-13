@@ -334,9 +334,12 @@ const deliver = [
     log: ['security-reviewer', '('],
   },
   {
-    name: 'lost review: nothing back, then a retry with findings starts the fix round',
+    name: 'lost review: a throw, then a retry with findings starts the fix round',
     args: { team: { reviewer: { model: 'opus', effort: 'medium' } } },
-    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? null : d.label === 'reviewer · retry' ? bad : ok)),
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') throw new Error('subagent completed without calling StructuredOutput')
+      return d.label === 'reviewer · retry' ? bad : ok
+    }),
     returns: {
       status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
       stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
@@ -348,7 +351,7 @@ const deliver = [
       { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
       reviewer('reviewer · round 1', { model: 'opus', effort: 'medium' }),
     ],
-    log: ['reviewer: no result, one retry'],
+    log: ['reviewer: lost its structured result, one retry'],
   },
   {
     name: 'lost review: a specialist throws in a fix round, only it is retried and its approval counts',
@@ -368,14 +371,26 @@ const deliver = [
       { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
       { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1 · retry' },
     ],
-    log: ['security-reviewer · round 1: no result, one retry'],
+    log: ['security-reviewer · round 1: lost its structured result, one retry'],
   },
   {
-    name: 'lost review twice: nothing back, then a throw, is an important finding with no third dispatch',
+    name: 'no review: a reviewer that returns null is an important finding and is not dispatched again',
     args: { fixRounds: 0 },
-    reply: implementer(['src/a.js'], (d) => {
-      if (d.label === 'reviewer · retry') throw new Error('no structured output')
-      return null
+    reply: implementer(['src/a.js'], () => null),
+    returns: {
+      status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'],
+      open: [{ severity: 'important', summary: 'reviewer returned no review', by: 'reviewer' }],
+      stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer()],
+    log: ['reviewer: returned nothing', 'not dispatched again'],
+    unlogged: ['retry'],
+  },
+  {
+    name: 'lost review twice: two throws are an important finding with no third dispatch',
+    args: { fixRounds: 0 },
+    reply: implementer(['src/a.js'], () => {
+      throw new Error('subagent completed without calling StructuredOutput')
     }),
     returns: {
       status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'],
@@ -438,15 +453,18 @@ const design = [
     dispatches: designRounds(3),
   },
   {
-    name: 'design: a critic that returns nothing is retried once, same model and effort, and passes',
+    name: 'design: a critic that throws is retried once, same model and effort, and passes',
     args: { team: { 'design-critic': { model: 'opus', effort: 'high' } } },
-    reply: designReply((r, label) => (label.endsWith('· retry') ? score(8) : null)),
+    reply: designReply((r, label) => {
+      if (!label.endsWith('· retry')) throw new Error('subagent completed without calling StructuredOutput')
+      return score(8)
+    }),
     returns: { passed: true, rounds: 1, scores: [8], verdict: score(8), board: 'board 1' },
     dispatches: [
       ...designRounds(1, {}, { model: 'opus', effort: 'high' }),
       critic('critic · round 1 · retry', { model: 'opus', effort: 'high' }),
     ],
-    log: ['critic · round 1: no result, one retry'],
+    log: ['critic · round 1: lost its structured result, one retry'],
   },
   {
     name: 'design: a critic that throws is retried once and its score counts against the bar',
@@ -457,14 +475,22 @@ const design = [
     }),
     returns: { passed: true, rounds: 2, scores: [7, 8], verdict: score(8), board: 'board 2' },
     dispatches: [...designRounds(1), critic('critic · round 1 · retry'), ...designRounds(2).slice(2)],
-    log: ['critic · round 1: no result, one retry'],
+    log: ['critic · round 1: lost its structured result, one retry'],
   },
   {
-    name: 'design: nothing back, then a throw, stops the loop not passed, no third dispatch',
+    name: 'design: a critic that returns null stops the loop not passed and is not dispatched again',
     args: {},
-    reply: designReply((r, label) => {
-      if (label.endsWith('· retry')) throw new Error('no structured output')
-      return null
+    reply: designReply(() => null),
+    returns: { passed: false, rounds: 0, scores: [], verdict: null, board: 'board 1' },
+    dispatches: designRounds(1),
+    log: ['critic · round 1: returned nothing', 'not dispatched again'],
+    unlogged: ['retry'],
+  },
+  {
+    name: 'design: two throws stop the loop not passed, no third dispatch',
+    args: {},
+    reply: designReply(() => {
+      throw new Error('subagent completed without calling StructuredOutput')
     }),
     returns: { passed: false, rounds: 0, scores: [], verdict: null, board: 'board 1' },
     dispatches: [...designRounds(1), critic('critic · round 1 · retry')],
@@ -491,6 +517,8 @@ for (const s of scenarios) {
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
     // Each expected entry is a set of fragments that one log line must hold together.
     if (s.log && !logs.some((line) => s.log.every((part) => line.includes(part)))) differs(where, 'log', s.log, logs)
+    // And no log line may hold any of these.
+    for (const part of s.unlogged || []) if (logs.some((line) => line.includes(part))) differs(where, `log without "${part}"`, [], logs)
   } catch (e) {
     failures.push(`${where}: ${e.message}`)
   }

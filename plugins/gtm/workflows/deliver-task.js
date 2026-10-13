@@ -72,10 +72,11 @@ for (const [role, list] of Object.entries(A.triggers || {})) {
   })
 }
 
-// A reviewer that throws or returns nothing gets one more dispatch on a budget, with the same diff,
-// findings, model and effort; a second loss is logged and left to the fallback below. An
-// implementer is never retried (a second one could stack commits on a half-done attempt): a throw
-// is BLOCKED, as nothing back is.
+// A reviewer whose dispatch throws (its structured result lost) gets one more dispatch on a
+// budget, with the same diff, findings, model and effort; a second throw is logged and left to the
+// fallback below. A null is a blocked spawn, a human's skip or an API error already logged: it is
+// never retried. An implementer is never retried (a second one could stack commits on a half-done
+// attempt): a throw is BLOCKED, as nothing back is.
 const RETRY = '\n\nThis is a retry: your previous run ended without the structured result. Use at most 25 tool calls, write no report file, and make the structured output call your last action. What you could not check within that budget is an important finding, never an approval.'
 async function attempt(prompt, opts) {
   try {
@@ -85,9 +86,13 @@ async function attempt(prompt, opts) {
   }
 }
 async function retried(prompt, opts) {
-  const first = await attempt(prompt, opts)
-  if (first != null) return first
-  log(`${opts.label}: no result, one retry with a 25-call budget`)
+  try {
+    const first = await agent(prompt, opts)
+    if (first == null) log(`${opts.label}: returned nothing (a blocked spawn, a skip or an API error), not dispatched again`)
+    return first
+  } catch {
+    log(`${opts.label}: lost its structured result, one retry with a 25-call budget`)
+  }
   const second = await attempt(prompt + RETRY, { ...opts, label: `${opts.label} · retry` })
   if (second == null) log(`${opts.label}: no result after its retry, no third dispatch`)
   return second

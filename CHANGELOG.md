@@ -19,9 +19,10 @@ versions follow [SemVer](https://semver.org/).
   ux-qa) end on the structured verdict a workflow asks for: a report goes only to a report file
   they are given, else into the verdict's summary, and they never create one. The design critic
   works within about 30 tool calls. Its verdict was lost in 3 passes out of 5.
-- A critic or reviewer that throws or returns no verdict is dispatched once more, on a 25-call
-  budget, with the same diff, findings, model and effort; a second loss keeps the old fallback
-  (the design loop stops not passed, the task records `<role> returned no review`). An
+- A critic or reviewer that loses its verdict is retried once when it throws, on a 25-call
+  budget, with the same diff, findings, model and effort; a second throw keeps the old fallback
+  (the design loop stops not passed, the task records `<role> returned no review`). A blocked or
+  skipped role returns nothing and is not re-dispatched: it goes straight to that fallback. An
   implementer or fix round that throws is `BLOCKED`, as one that returns nothing.
 
 ## [0.3.0] - 2026-10-12

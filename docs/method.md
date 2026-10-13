@@ -90,8 +90,8 @@ contract. See [roles](roles.md).
 - **Hand-back:** at most ten lines, or the structured object a workflow asks for: status, files,
   verify result, concerns. The full report goes to the report file when one is given, else into
   that object's summary; an agent never creates one, and the structured call is its last action.
-  A critic or reviewer that returns nothing is dispatched once more, on a 25-call budget, before
-  the workflow's fallback; an implementer is not.
+  A critic or reviewer is retried once when it throws, on a 25-call budget, before the
+  workflow's fallback; a blocked or skipped one is not re-dispatched, nor is an implementer.
 - **Fresh context:** reviewers see the brief, the report and the diff, never the implementer's
   reasoning. Re-reviews in a fix round go only to the reviewers who flagged something and every
   specialist whose ground the fix diff touches, and check only their findings and the fix diff.
