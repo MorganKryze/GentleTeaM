@@ -203,9 +203,11 @@ costs more. The design critic measures them and the screen reviewer checks every
 What GTM writes into a project belongs to the project and reads in its voice. With
 [stealth](/reference/glossary/#stealth) on, GTM leaves no trace at all: no files in the tracked
 tree, no names, no trailers, checked by a scan before every ship. A project's history and docs
-are read by its maintainers for years, and a tool's vocabulary there is noise.
+are read by its maintainers for years, and a tool's vocabulary there is noise. Stealth changes
+what GTM writes, not the rules an organisation or a project sets on AI tools and disclosure:
+follow those.
 
-<p class="gtm-cost">Cost: with stealth on, the team's memory stays on one machine, and the scan before shipping can stop on a false alarm.</p>
+<p class="gtm-cost">Cost: with stealth on, the team's memory stays on one machine and teammates do not inherit it, and the scan before shipping can stop on a false alarm.</p>
 
 :::
 
