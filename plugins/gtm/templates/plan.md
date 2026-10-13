@@ -5,7 +5,9 @@
 
 ## For you
 <At most ten lines: how many tasks, which are risky and were replayed, what the human must know.
-Usually nothing to decide here: the spec settled it.>
+Usually nothing to decide here: the spec settled it. Last line, the estimate, as in the spec:
+`<n> tasks × <m> min + <phase> <m> min, ... ≈ <W> min, <T>k tokens (medians of the last <k>
+measured runs)`, or `no measured run yet`.>
 
 ## Global constraints
 - Gate before every commit: <commands from config, with prefix>.

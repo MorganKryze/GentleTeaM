@@ -8,8 +8,8 @@ Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without th
 Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
 
 ## 1. Read
-`<root>/team.md`, the `run`, `minor` and `usage` lines of the ledger, and the final reviews under
-`<root>/reports/`.
+`<root>/team.md`, the `run` lines (their `measured` part included), the `minor` and `usage` lines
+of the ledger, and the final reviews under `<root>/reports/`.
 
 ## 2. Look for signals
 | Signal | Typical proposal |
@@ -21,6 +21,9 @@ Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
 | design loops end at the last round | raise the designer's effort, or revisit the threshold with the human |
 | `usage` notes about limits | lower the effort of high-volume roles first (implementer, reviewer); never a role guarding a high priority |
 | a priority changed in the brief | re-derive the roles it drives |
+| a role holds 40% of the tokens or more (`roles`) in two measured runs | lower its effort, or narrow its triggers if a specialist |
+| an `over budget` usage line in two runs | revisit that budget, or the plan's task sizing |
+| three measured runs and no budget | set `budget per task` and `budget per branch` at their medians |
 | a convention keeps producing the same finding or the same `lesson` | edit that row of `conventions.md` and its guideline file |
 
 No signal: say so in one line and stop.

@@ -13,6 +13,30 @@ versions follow [SemVer](https://semver.org/).
 - The README is reduced to what GTM is, install, cost and the link to the site; the old docs
   pages moved into the site.
 
+## [0.6.0] - 2026-10-13
+
+### Added
+- Measured runs: each phase of a delivery (design, spec, plan, each task, final review, fix
+  waves) records the wall time, tokens and agents Claude Code reports, and the branch's `run`
+  line ends with their totals per phase and each role's share of the tokens. A value Claude Code
+  did not report reads `?`, never an estimate.
+- `plugins/gtm/scripts/role-split.mjs` reads the agent files beside a workflow run's journal and
+  prints each role's agents, agent-seconds and share of tokens: role names and numbers only,
+  regular files only. A link, a missing file or an unknown shape prints `roles ?`, the totals
+  kept.
+- Budgets: `budget per task` and `budget per branch` in the team profile's Gates. Past 1.5× of
+  one, a Heads-up names the task or phase, the measure and the largest role, and the delivery
+  goes on; no budget changes a verdict, a fix round or the order of tasks.
+- Estimates: the spec and the plan show tasks × the measured per-task median plus each other
+  phase's median, over the last five measured runs; `/gtm:plan` raises a Heads-up when the
+  plan's passes 1.5× the spec's. `/gtm:tune` reads the measures: a role at 40% of the tokens in
+  two runs, a budget passed twice, no budget after three measured runs.
+
+No change is needed to an existing GTM folder: a team profile without budget lines reads as
+`none` and raises no Heads-up, and `run` lines written before this release, with no `measured`
+part, are left out of the estimates and of `/gtm:tune`'s three new signals; its other signals
+read them as before.
+
 ## [0.5.1] - 2026-10-13
 
 ### Fixed

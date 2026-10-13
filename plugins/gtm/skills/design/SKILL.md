@@ -35,4 +35,6 @@ the image already shows. Then, per the briefing format:
 
 The human's approval makes the board the validated mockup; its path goes in the spec. Write
 `design: <rounds> rounds, <score>/10` (several screens: `design: <n> screens, <most> rounds, lowest
-<score>/10`) as the first line of `<root>/reports/<slug>/progress.md`, for the ledger's `run` line.
+<score>/10`) as the first line of `<root>/reports/<slug>/progress.md`, for the ledger's `run` line,
+ending as `/gtm:deliver` §1 says: the measures summed over every design-loop run of the board, a
+screen rerun and one more round included, and `· run <id>` for each.
