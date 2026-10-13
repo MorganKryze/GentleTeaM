@@ -166,8 +166,10 @@ for (; round <= ROUNDS; round++) {
       if (pending[i].findings && f.status === 'addressed') continue
       stats[r] = stats[r] || { critical: 0, important: 0, minor: 0 }
       stats[r][f.severity]++
+      // A status it may not set goes too, or the fix round and the re-review would read it as true.
+      const { status, ...kept } = f
       if (f.severity === 'minor') minors.push({ ...f, by: r })
-      else blocking.push(f)
+      else blocking.push(kept)
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
     // then the only reason given, so the fix round and the re-review get it.

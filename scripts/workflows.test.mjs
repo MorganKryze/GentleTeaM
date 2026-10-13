@@ -643,10 +643,26 @@ const deliver = [
     reply: implementer(['src/a.js'], () => ({ ...ok, findings: [addressed] })),
     returns: {
       status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'],
-      open: [{ ...addressed, by: 'reviewer' }],
+      open: [{ ...badFinding, by: 'reviewer' }],
       stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
     },
     dispatches: [implement(), reviewer()],
+  },
+  {
+    name: 'review scope: an ignored status never reaches the fix round or the re-review',
+    args: { fixRounds: 1 },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...bad, findings: [addressed] } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    prompts: { 'fix · round 1': ['"bug"'], 'reviewer · round 1': ['"bug"'] },
+    unprompted: { 'fix · round 1': ['"status": "addressed"'], 'reviewer · round 1': ['"status": "addressed"'] },
   },
   {
     name: 'review scope: a status from a specialist called back is ignored',
@@ -658,7 +674,7 @@ const deliver = [
     }, ['scripts/x.mjs']),
     returns: {
       status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
-      open: [{ ...critical, status: 'addressed', by: 'security-reviewer' }],
+      open: [{ ...critical, by: 'security-reviewer' }],
       stats: {
         reviewer: { critical: 0, important: 1, minor: 0 },
         'security-reviewer': { critical: 1, important: 0, minor: 0 },
