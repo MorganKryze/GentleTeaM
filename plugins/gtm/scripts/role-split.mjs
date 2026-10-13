@@ -12,7 +12,7 @@
 // roles at 5% of the tokens or more, largest first; --json lists every role.
 // Exit 0: split printed. Exit 1: unknown shape. Exit 2: usage.
 import { lstatSync, readdirSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, resolve } from 'node:path'
 
 const ROLE = /^(?:[a-z0-9-]{1,40}:)?[a-z0-9-]{1,40}$/
 const ENTRY = /^agent-([A-Za-z0-9]{1,64})\.(meta\.json|jsonl)$/
@@ -53,7 +53,8 @@ function agent(dir, id) {
   return { role, seconds: Math.round((Date.parse(last) - Date.parse(first)) / 1000), tokens: parts.reduce((a, b) => a + b) }
 }
 
-function run(dir) {
+function run(arg) {
+  const dir = resolve(arg) // drops a trailing `/` or `/.`, which would make lstat follow a link
   let st
   try { st = lstatSync(dir) } catch { odd('a run folder is missing') }
   if (!st.isDirectory()) odd('a run folder is not a folder')

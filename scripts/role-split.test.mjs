@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/role-split.mjs. Each scenario under
 // scripts/fixtures/role-split/ holds run folders, args.json (folders relative to the scenario)
-// and expected.json ({ exit, stdout }). Three more scenarios are built here, since git keeps no
-// link to a planted file: an agent file that is a link, a run folder that is a link, an agent
-// file that is a folder. In every scenario the planted secret is absent from stdout and stderr,
+// and expected.json ({ exit, stdout }). Four more scenarios are built here, since git keeps no
+// link to a planted file: an agent file that is a link, a run folder that is a link, the same
+// link written with a trailing slash, an agent file that is a folder. In every scenario the planted secret is absent from stdout and stderr,
 // and stdout is role names and numbers only. Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync, mkdtempSync, cpSync, rmSync, symlinkSync, writeFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -61,6 +61,7 @@ try {
   check('link-file', split(tmp, ['link-file']), { exit: 1, stdout: 'roles ?' })
   symlinkSync(copy('real-folder'), join(tmp, 'link-folder'))
   check('link-folder', split(tmp, ['link-folder']), { exit: 1, stdout: 'roles ?' })
+  check('link-folder/', split(tmp, ['link-folder/']), { exit: 1, stdout: 'roles ?' })
   const folderEntry = copy('folder-entry')
   rmSync(join(folderEntry, 'agent-aefece30d91ad34a2.jsonl'))
   mkdirSync(join(folderEntry, 'agent-aefece30d91ad34a2.jsonl'))
@@ -68,4 +69,4 @@ try {
 } finally { rmSync(tmp, { recursive: true, force: true }) }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`role split: ${names.length + 3} scenarios OK`)
+console.log(`role split: ${names.length + 4} scenarios OK`)
