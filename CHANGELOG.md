@@ -27,9 +27,10 @@ versions follow [SemVer](https://semver.org/).
   diff in place of the task's own, which could end a task `CLEAN` with no review of its own diff
   from that role. An implementer or fix round that throws is `BLOCKED`, as one that returns nothing.
 - A review with a `fix` verdict and no critical or important finding is no longer an approval: it
-  counts as an important finding, gets a fix round and a re-review. A role that gives no re-review
-  keeps the findings its fix round got open, not only `<role> returned no review`. `/gtm:deliver`
-  stops on that `OPEN` too and offers to re-run the missing review.
+  counts as an important finding carrying the reviewer's summary, gets a fix round and a
+  re-review. A role that gives no re-review keeps the findings its fix round got open, not only
+  `<role> returned no review`. `/gtm:deliver` stops on that `OPEN` too and offers to re-run the
+  missing review.
 
 ## [0.3.0] - 2026-10-12
 

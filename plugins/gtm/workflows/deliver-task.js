@@ -161,8 +161,9 @@ for (; round <= ROUNDS; round++) {
       if (f.severity === 'minor') minors.push({ ...f, by: r })
       else blocking.push(f)
     }
-    // A fix verdict is never an approval, even with nothing blocking to show for it.
-    if (res.verdict === 'fix' && !blocking.length) blocking.push({ severity: 'important', summary: `${r} asked for a fix without a blocking finding` })
+    // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
+    // then the only reason given, so the fix round and the re-review get it.
+    if (res.verdict === 'fix' && !blocking.length) blocking.push({ severity: 'important', summary: `${r} asked for a fix without a blocking finding: ${res.summary}` })
     if (blocking.length) {
       open.push(...blocking.map((f) => ({ ...f, by: r })))
       still.push({ r, findings: blocking })

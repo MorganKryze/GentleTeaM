@@ -474,10 +474,13 @@ const deliver = [
   {
     name: 'verdict fix without a blocking finding on every round: OPEN with that finding',
     args: { fixRounds: 1 },
-    reply: implementer(['src/a.js'], () => ({ verdict: 'fix', findings: [], summary: 'fix' })),
+    reply: implementer(['src/a.js'], () => ({ verdict: 'fix', findings: [], summary: 'execSync builds a shell string at x.mjs:12' })),
     returns: {
       status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
-      open: [{ severity: 'important', summary: 'reviewer asked for a fix without a blocking finding', by: 'reviewer' }],
+      open: [{
+        severity: 'important', by: 'reviewer',
+        summary: 'reviewer asked for a fix without a blocking finding: execSync builds a shell string at x.mjs:12',
+      }],
       stats: {}, minors: [],
     },
     dispatches: [
