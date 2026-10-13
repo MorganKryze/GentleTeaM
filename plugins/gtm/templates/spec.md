@@ -6,7 +6,8 @@
 ## For you
 <At most ten lines, in the human's language: what this builds, why now, what you must decide
 (each as a decision card below), and my recommendation. Read this and the cards; the rest is for
-the team.>
+the team. Last line, the estimate: `<n> tasks × <m> min + <phase> <m> min, ... ≈ <W> min, <T>k
+tokens (medians of the last <k> measured runs)`, or `no measured run yet`.>
 
 ## What and why
 <What changes for the user, and why. No how: no file names, no libraries.>
