@@ -12,9 +12,10 @@ versions follow [SemVer](https://semver.org/).
   stays open. A status on a first review or a specialist's callback is ignored, and a `fix`
   verdict with nothing left open still blocks. Re-reviews used to answer ADDRESSED in free
   text the result could not hold, so every re-listed finding blocked again.
-- Every task review request says that a defect the diff did not introduce is minor, its
-  summary saying so, unless it is critical, a security hole or a data-integrity defect, so a
-  task no longer blocks on what a later task fixes. The reviewer, security-reviewer and
+- Every task review request says that a defect the task's diff did not introduce is minor,
+  its summary saying so, unless it is critical, a security hole or a data-integrity defect, so
+  a task no longer blocks on what a later task fixes. A re-review reads it against the task's
+  whole range, and each finding it was sent keeps its severity until it is addressed. The reviewer, security-reviewer and
   data-reviewer point at that rule, and a Fix that ends clean appends its minors to the
   ledger as a plan task does.
 

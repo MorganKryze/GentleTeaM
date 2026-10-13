@@ -98,9 +98,10 @@ contract. See [roles](roles.md).
   reasoning. Re-reviews in a fix round go only to the reviewers who flagged something and every
   specialist whose ground the fix diff touches, and check only their findings and the fix diff.
   A re-review returns each finding it was sent with a status: `addressed` stops it blocking and
-  counting, no status leaves it open. Every review request adds the scope rule: a defect the
-  diff did not introduce is minor, its summary saying so, unless it is critical, a security
-  hole or a data-integrity defect.
+  counting, no status leaves it open, and each keeps its severity until it is addressed. Every
+  review request adds the scope rule, read against the task's whole range on every round: a
+  defect the task's diff did not introduce is minor, its summary saying so, unless it is
+  critical, a security hole or a data-integrity defect.
 - **Fix rounds:** at most three per task by default; each round raises the implementer's effort one
   level.
 

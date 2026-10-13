@@ -24,7 +24,7 @@ function undeclared(value, schema, at) {
   if (Array.isArray(value)) return value.flatMap((v, i) => undeclared(v, schema.items || {}, `${at}[${i}]`))
   if (!value || typeof value !== 'object' || !schema.properties) return []
   return Object.entries(value).flatMap(([k, v]) =>
-    k in schema.properties ? undeclared(v, schema.properties[k], `${at}.${k}`) : [`${at}.${k}`])
+    Object.hasOwn(schema.properties, k) ? undeclared(v, schema.properties[k], `${at}.${k}`) : [`${at}.${k}`])
 }
 
 // The context holds only what the workflow runtime provides, so a workflow that reaches for any
@@ -81,7 +81,7 @@ const reviewer = (label = 'reviewer', extra = {}) => ({ agentType: 'gtm:reviewer
 // Re-review stubs: a finding sent back with its status, and the fragments every review request holds.
 const addressed = { ...badFinding, status: 'addressed' }
 const leak = { severity: 'important', file: 'src/b.js', summary: 'leak' }
-const SCOPE = ['Scope: a defect this diff did not introduce', 'unless it is critical, a security hole or a data-integrity defect']
+const SCOPE = ['Scope: a defect the task\'s diff', 'did not introduce', 'unless it is critical, a security hole or a data-integrity defect']
 const STATUS = ['Return each with status "addressed" or "open"', 'only new breakage in the fix diff', 'approve when none is left open']
 
 // Answers the implementer by label; every other dispatch goes to review(d).
@@ -663,6 +663,27 @@ const deliver = [
     ],
     prompts: { 'fix · round 1': ['"bug"'], 'reviewer · round 1': ['"bug"'] },
     unprompted: { 'fix · round 1': ['"status": "addressed"'], 'reviewer · round 1': ['"status": "addressed"'] },
+  },
+  {
+    name: 'review scope: a re-review reads the scope rule against the task, findings keep their severity, a minor drops its status',
+    args: { base: 'b0', fixRounds: 1 },
+    reply: implementer(['src/a.js'], (d) =>
+      (d.label === 'reviewer' ? bad : { ...ok, findings: [{ ...typo, status: 'open' }] })),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 1 } }, minors: [{ ...typo, by: 'reviewer' }],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+    prompts: {
+      'reviewer · round 1': [
+        'diff h0..h1', "Scope: a defect the task's diff b0..h1 did not introduce",
+        'Each finding sent keeps its severity until it is addressed',
+      ],
+    },
   },
   {
     name: 'review scope: a status from a specialist called back is ignored',
