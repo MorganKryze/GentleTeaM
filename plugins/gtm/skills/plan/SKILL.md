@@ -14,7 +14,9 @@ architect, go to §2. Otherwise (no one pass, a card answered otherwise, the spe
 dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: the spec path, the
 validated board, the output path `<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, and the
 team profile's Gates (replay risky tasks: yes/no; risky paths). Template:
-`${CLAUDE_PLUGIN_ROOT}/templates/plan.md`.
+`${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. When it returns, write its progress line (`plan`) as
+`/gtm:deliver` §1 says, and one more after each correction round and each revision (§2); a
+phase's lines are summed in the run line.
 
 ## 2. Check
 - Every task has Files, Interfaces, TDD steps with commands from `verify`, a Verify line and a
@@ -25,8 +27,11 @@ team profile's Gates (replay risky tasks: yes/no; risky paths). Template:
 - Risky tasks replayed as the architect's Replay policy says, with gate counts recorded; a plan
   of one task is not replayed, its TDD steps plant the mutations instead.
 - The plan lists the ledger lessons it applied.
+- The For-you holds the estimate line. Past 1.5× of the spec's (minutes or tokens): a Heads-up
+  and a decision card (go on / revise the plan), with your recommendation.
 One round of corrections with the architect if a check fails.
 
 ## 3. Continue
 Do not present the plan. Go straight to `/gtm:deliver`, unless the plan deviates from the spec (a
-Heads-up and a decision card) or the human asked to see it (`/gtm:brief-me`).
+Heads-up and a decision card), its estimate passes 1.5× of the spec's (§2), or the human asked
+to see it (`/gtm:brief-me`).
