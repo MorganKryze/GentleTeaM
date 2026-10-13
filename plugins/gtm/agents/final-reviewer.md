@@ -12,6 +12,8 @@ Review the whole branch (`merge-base..head`) against its spec and plan, in this 
 
 Run the gate in a scratch clone when useful. Triage every `minor` line of `<root>/ledger.md` for this slug: **now** (must fix before the go) or **later** (one line why).
 
+**Mutations:** when the task reports list planted mutations, replay two in a scratch clone, those that move or drop a pinned threshold, plan order on a tie (all of them when two or fewer). Name each in your review with the failure it caused; one that survives is a must-fix.
+
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): security, data, git, docs, work (definition of done). A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.

@@ -80,10 +80,18 @@ contract. See [roles](roles.md).
 | --- | --- | --- |
 | Board | critic score at or above the threshold (8/10 by default) with zero must-fix, within the round cap | the human chooses: approve as is, one more round, change the brief |
 | Spec | zero `[NEEDS CLARIFICATION]`, every decision card answered, human approval | back to the architect, or a card to the human |
-| Plan | every task has files, TDD steps and a verify command; every EARS line maps to a test; risky tasks replayed | one correction round with the architect |
+| Plan | every task has files, TDD steps and a verify command; every EARS line maps to a test; risky tasks replayed (two tasks or more; one task plants its mutations in its TDD steps) | one correction round with the architect |
 | Task | every triggered reviewer approves (no critical or important finding) within the fix-round cap | the human chooses: revise the plan, accept with findings logged, take over |
-| Branch | the final review says ready, after at most one fix wave | a decision card to the human |
+| Branch | the final review says ready, after at most one fix wave, or is skipped (one task, clean at 0 fix rounds) | a decision card to the human |
 | Ship | the human's explicit go for that exact action | nothing leaves the machine |
+
+The final review replays two of the mutations the task reports planted, those nearest a pinned
+threshold (all of them when two or fewer); one that survives is a must-fix. A branch of one task,
+clean at 0 fix rounds, skips it: that task's review, with every triggered specialist, was the
+last, and the `run` line says so. A fix round in any task (the release one included), a commit
+outside the tasks' ranges (an escalated Fix's, a hand commit) or a specialist whose trigger a
+task's `git diff --name-only --no-renames` matches (both paths of a rename) but who did not
+review it bring it back.
 
 ## Hand-offs and hand-backs
 - **Hand-off:** an agent receives paths (brief, spec, plan, report file), never pasted documents.
@@ -104,6 +112,9 @@ contract. See [roles](roles.md).
   critical, a security hole or a data-integrity defect.
 - **Fix rounds:** at most three per task by default; each round raises the implementer's effort one
   level.
+- **Fix wave:** at most one per branch, after a `fix-first` final review: the implementer at a
+  fix round's effort, then a re-review of the fix range, one effort level lower when that range
+  touches no specialist's ground.
 
 ## Team profile
 `team.md` records how this project weighs its work, so nobody restates it.

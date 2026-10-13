@@ -5,6 +5,25 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-13
+
+### Changed
+- A branch of one task that ends clean at 0 fix rounds skips the final review: the `run` line
+  says so, `/gtm:ship` takes the skip in place of a ready verdict, and the branch's minors wait
+  for `/gtm:retro`. A release-only task does not count; a fix round in any task, a commit outside
+  the tasks' ranges or a specialist a task's diff triggers but who did not review it bring the
+  final review back.
+- The final review replays two of the planted mutations, those nearest a pinned threshold, not
+  all of them; one that survives is a must-fix. A one-task plan is not replayed: its TDD steps
+  plant the mutations instead.
+- The re-review after the final review's fix wave runs one effort level below the final
+  reviewer's profile when the fix range touches no specialist's ground.
+
+### Fixed
+- The final review's fix wave raises the implementer's effort as a fix round does: one level
+  above its profile, at most `xhigh`, an effort off that ladder such as `max` kept. "One level
+  above" read as `max` from `xhigh`.
+
 ## [0.3.2] - 2026-10-13
 
 ### Fixed
@@ -17,9 +36,9 @@ versions follow [SemVer](https://semver.org/).
 - Every task review request says that a defect the task's diff did not introduce is minor,
   its summary saying so, unless it is critical, a security hole or a data-integrity defect, so
   a task no longer blocks on what a later task fixes. A re-review reads it against the task's
-  whole range, and each finding it was sent keeps its severity until it is addressed. The reviewer, security-reviewer and
-  data-reviewer point at that rule, and a Fix that ends clean appends its minors to the
-  ledger as a plan task does.
+  whole range, and each finding it was sent keeps its severity until it is addressed. The
+  reviewer, security-reviewer and data-reviewer point at that rule, and a Fix that ends clean
+  appends its minors to the ledger as a plan task does.
 
 ## [0.3.1] - 2026-10-13
 

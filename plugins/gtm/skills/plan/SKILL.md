@@ -21,7 +21,8 @@ team profile's Gates (replay risky tasks: yes/no; risky paths). Template:
   commit message.
 - `[P]` only on tasks whose files are disjoint from every other `[P]` task in the same wave.
 - Every EARS line of the spec maps to at least one task's test.
-- Risky tasks were replayed when the profile says so, with gate counts recorded.
+- Risky tasks replayed as the architect's Replay policy says, with gate counts recorded; a plan
+  of one task is not replayed, its TDD steps plant the mutations instead.
 - The plan lists the ledger lessons it applied.
 One round of corrections with the architect if a check fails.
 

@@ -10,13 +10,13 @@
 | analyst | clarifies the request, proposes the track, drafts the setup at init | medium | no | track selection, `/gtm:init` |
 | designer | PNG mockup boards in light and dark at the configured widths | medium | mockups only | design loop |
 | design-critic | scores the board with measurements: overflow, targets, contrast, rules | high | no (read-only) | design loop |
-| architect | spec, then task plan; replays risky tasks in a scratch clone | high | specs and plans | after the board; after the spec |
+| architect | spec, then task plan; replays risky tasks in a scratch clone (plans of two tasks or more) | high | specs and plans | after the board; after the spec |
 | implementer | one task or one fix list, test-first, gate, commit | low (raised per fix round) | yes | every task |
 | reviewer | spec compliance, then code quality | medium | no (read-only) | every task |
 | security-reviewer | isolation, trust boundaries, auth, migrations, secrets | xhigh | no (read-only) | diff matches its triggers |
 | data-reviewer | lost, duplicated or altered data; upgrades, queues, conflicts | high | no (read-only) | diff matches its triggers |
 | ux-qa | captures touched screens, measures overflow, targets, axe; compares with the board | medium | captures only | diff matches its triggers |
-| final-reviewer | whole branch against spec and plan; triages deferred minors | xhigh | no (read-only) | once per branch |
+| final-reviewer | whole branch against spec and plan; replays two planted mutations; triages deferred minors | xhigh (one lower on a re-review off specialist ground) | no (read-only) | once per branch, unless one task ended clean at 0 fix rounds |
 | release-qa | runs the scripted journey on the live instance with the test account | low | journey script only | after the human deploys |
 
 ## Severity scale (reviewers)

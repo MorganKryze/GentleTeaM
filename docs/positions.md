@@ -46,7 +46,8 @@
   by path regexes the project owns.
 - **Why:** a specialist on every task is expensive noise; a specialist missing on the task that
   needed it is a hole. Path triggers make the choice explicit and reviewable.
-- **Cost:** a trigger that is too narrow misses a change; `/gtm:tune` and the final review catch it.
+- **Cost:** a trigger that is too narrow misses a change;
+  `/gtm:tune` catches it, and the final review does on a branch that has one.
 - **Enforced by:** `deliver-task` and the Specialists section of `.gtm/team.md`.
 
 ## 7. One strong model, effort by role

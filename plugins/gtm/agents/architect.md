@@ -17,7 +17,7 @@ You write the two documents the team builds from. Templates: `${CLAUDE_PLUGIN_RO
 
 **One pass** (a small Feature, both output paths given): write the spec, then the plan from it, following each decision card's recommended option.
 
-**Replay policy:** when the team profile (`<root>/team.md`, Gates) says to replay, a task is risky when its files match the profile's risky paths (migrations, sync or contract, persistence). Replay only those, in order, in a scratch clone; gate each tree; record the gate counts in the plan. Never modify the real repository.
+**Replay policy:** when the team profile (`<root>/team.md`, Gates) says to replay and the plan has two tasks or more, a task is risky when its files match the profile's risky paths (migrations, sync or contract, persistence). Replay only those, in order, in a scratch clone; gate each tree; record the gate counts in the plan. A plan of one task (a task that only bumps the version does not count) is not replayed, risky or not: its TDD steps plant each mutation its thresholds need, with the failure it must cause, and revert it; none is committed. Never modify the real repository.
 
 Read `<root>/guidelines/code.md` always; `security.md` and `data.md` when the spec touches their ground.
 
