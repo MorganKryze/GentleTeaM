@@ -53,16 +53,16 @@ Ground rules: as in the `gtm` skill §0.
      from `/gtm:spec`. Its `open` findings went to a fix round that grew the Fix past the ceiling
      and were not re-reviewed; `open` may also hold `<role> returned no review`. The spec states
      each as a requirement with its test, a missing review as owed, so the final review checks it.
-5. Tiers (a profile with `review cadence` only; a Fix keeps the steps above). After each task, read
-   `git -c core.quotePath=false diff --name-only "<base>..<head>" --no-renames` (a rename as both
-   paths, never the planned or reported list): a per-task specialist's trigger on a standard task →
-   Heads-up, `review: "range"` on its range, guarded from then on; a triggered specialist missing
-   from a guarded task's `reviewers` reviews that range alone. `GATED`: `verify.gate` on its head,
-   red → `BLOCKED` with step 4's card; its progress line reads `GATED` until a clean deferred review
-   covers its range. A wave (a §3 wave, or consecutive standard tasks, ended by a guarded one) ends
-   with `review: "range"` from base to head after every merge, `files` from git; before §4, `review:
-   "branch"` fork point to `HEAD`. `OPEN`, `BLOCKED`, no review → step 4's card, minors to the
-   ledger only. A resume runs each owed review before §4. A Heads-up per `read as per-task` log.
+5. Tiers (with `review cadence` only; not a Fix), on git's list, never the planned or reported one.
+   After each task, `git -c core.quotePath=false diff --name-only "<base>..<head>" --no-renames`:
+   a per-task specialist's trigger on a standard task → Heads-up, `review: "range"` on its range,
+   guarded from then on; a triggered specialist not in a guarded task's `reviewers` reviews it
+   alone. `GATED`: `verify.gate` on its head, red → `BLOCKED` with step 4's card; its progress line
+   reads `GATED` until a clean deferred review with the `reviewer` covers its range. A wave (a §3
+   wave, or consecutive standard tasks, ended by a guarded task or the plan's last) gets `review:
+   "range"` on its range after its merges; before §4, `review: "branch"` fork point to `HEAD`; each
+   with `files` from git. `OPEN`, `BLOCKED`, no review → step 4's card, minors to the ledger. A
+   resume runs each owed review before §4. A Heads-up per `read as per-task` log.
 
 ## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
 1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
@@ -87,7 +87,7 @@ Skip it only when all of these hold:
 - the plan has one task (one that only bumps the version and renames the CHANGELOG section, its
   `git -c core.quotePath=false diff --name-only --no-renames` listing those two files alone,
   does not count);
-- every task, the release one included, returned `CLEAN` at 0 fix rounds;
+- every task, the release one included, returned `CLEAN` at 0 fix rounds (`GATED`: last bullet);
 - the tasks' ranges chain from the branch's fork point to `HEAD`: the first base is `git merge-base
   <git.base> HEAD`, each next base is the previous task's head, `HEAD` is the last task's head (no
   hand commit or escalated Fix's commit outside a task); a wave is one link: its tasks share its
@@ -95,9 +95,9 @@ Skip it only when all of these hold:
 - in every task, each specialist whose trigger matches `git -c core.quotePath=false diff
   --name-only --no-renames <task base>..<task head>` (a rename lists both paths) is in that
   task's `reviewers` (the workflow picks them from the files the implementer reports);
-- a standard task counts only through deferred reviews run fork point to `HEAD`, each clean at 0
-  fix rounds, none owed; when it runs, the final review reviews in full what no task review saw:
-  standard tasks' ranges and commits in no task or wave range (`GATED` is never a `CLEAN` here).
+- a standard task counts if a clean `review: "range"` with `reviewer` covers its range and deferred
+  reviews span fork point to `HEAD`, each clean at 0 fix rounds, none owed; else the final review
+  reads in full what no task review saw: standard ranges, commits in no task or wave range.
 
 Then dispatch no reviewer, write `final review skipped: one task, clean at 0 fix rounds` in the
 `run` line and the report, leave this slug's minors for `/gtm:retro` and write no `resolved` line.
