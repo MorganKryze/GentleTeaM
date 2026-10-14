@@ -24,6 +24,7 @@ covers it.>
 ## Tasks
 
 ### Task 1: <goal in one line> [P]
+**Tier:** <guarded | standard>
 `[P]` = parallel-safe (disjoint files, no shared interface change). Omit when not.
 
 **Files:** Create: `…` · Modify: `…`
