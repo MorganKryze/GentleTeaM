@@ -13,7 +13,8 @@ Ground rules: as in the `gtm` skill §0.
 - From `team.md`: `team` = `{ role: {model, effort} }` for every role; `triggers` = the specialists
   that are `on`, with their regexes; `fixRounds`; `fixCeiling`, the N of the Gates line
   `Fix track ceiling: N files`; the budgets, Gates lines `budget per task` and `budget per
-  branch` (`<minutes> min, <tokens>k tokens`; absent or `none`: no budget).
+  branch` (`<minutes> min, <tokens>k tokens`; absent or `none`: no budget); `cadence`, the Gates
+  line `review cadence` (absent: none); `standardRounds`, `fix rounds per standard review: N` (1).
 - Progress file: `<root>/reports/<slug>/progress.md`, one line per task run, any result (reruns
   append): status, fix rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each line
   (design, spec, plan, task run, final review, re-review, re-run review, fix wave) ends `· <s> s ·
@@ -29,7 +30,9 @@ Ground rules: as in the `gtm` skill §0.
    constraints, the spec path, the validated board, the guidelines it touches.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report:
    "<root>/reports/<slug>/task-<n>.md", branch, base: <head before this task>, worktree (in a wave
-   only, else omitted, never "none"), mockup, triggers, team, fixRounds, fixCeiling, track }`.
+   only, else omitted, never "none"), mockup, triggers, team, fixRounds, fixCeiling, track, tier,
+   cadence, standardRounds, review, head, files }`: `tier` the plan's, `guarded` once any progress
+   line of that task says guarded (a resume included); `review`, `head`, `files` for step 5 only.
 3. Measure it, whatever its result: the run id (`wf_...` in the result's diagnostics) on
    `^wf_[0-9a-f-]+$`, the one folder `<config>/projects/*/*/subagents/workflows/<id>` (`<config>`
    = `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`), `node "${CLAUDE_PLUGIN_ROOT}/scripts/role-split.mjs"
@@ -50,6 +53,16 @@ Ground rules: as in the `gtm` skill §0.
      from `/gtm:spec`. Its `open` findings went to a fix round that grew the Fix past the ceiling
      and were not re-reviewed; `open` may also hold `<role> returned no review`. The spec states
      each as a requirement with its test, a missing review as owed, so the final review checks it.
+5. Tiers (a profile with `review cadence` only; a Fix keeps the steps above). After each task, read
+   `git -c core.quotePath=false diff --name-only "<base>..<head>"` (a rename as both paths, never
+   the planned or reported list): a per-task specialist's trigger on a standard task → Heads-up,
+   `review: "range"` on its range, guarded from then on; on a guarded task, a triggered specialist
+   missing from its `reviewers` reviews that range alone. `GATED`: run `verify.gate` on its head,
+   red → `BLOCKED` with step 4's card; its progress line reads `GATED` until a clean deferred review
+   covers its range. A wave (a §3 wave, or consecutive standard tasks, ended by a guarded one) ends
+   with `review: "range"` from its base to its head after every merge, `files` from git; before §4,
+   `review: "branch"` fork point to `HEAD`. `OPEN`, `BLOCKED`, no review → step 4's card, minors to
+   the ledger only. A resume runs each owed review before §4. A Heads-up per `read as per-task` log.
 
 ## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
 1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
@@ -58,9 +71,9 @@ Ground rules: as in the `gtm` skill §0.
    once, §2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`; let all return;
    write each one's progress line (no wave total line), measure each as §2 step 3 says.
 2. Before each merge, branch/head are as last recorded and tasks' `git -c core.quotePath=false diff
-   --name-only --no-renames "<base>..<branch>-t<n>"` lists disjoint. Merge each `CLEAN` branch in
-   plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the head, gate once. Per
-   merged task, only when `<root>` is out of the repo, or `git -C "<wt>" status --porcelain
+   --name-only --no-renames "<base>..<branch>-t<n>"` lists disjoint. Merge each `CLEAN` or `GATED`
+   branch in plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the head, gate once.
+   Per merged task, only when `<root>` is out of the repo, or `git -C "<wt>" status --porcelain
    --ignored -unormal -- "<root>"` (repo path) exits 0 and lists nothing: `git worktree remove
    "<wt>"`, `git branch -d "<branch>-t<n>"`. A check that fails keeps the worktree.
 3. A branch name off `^[A-Za-z0-9._/-]+$` (before step 1), a moved branch/head, overlap, conflict,
@@ -81,7 +94,10 @@ Skip it only when all of these hold:
   base, the next base is the head after its merges, which stay in range;
 - in every task, each specialist whose trigger matches `git -c core.quotePath=false diff
   --name-only --no-renames <task base>..<task head>` (a rename lists both paths) is in that
-  task's `reviewers` (the workflow picks them from the files the implementer reports).
+  task's `reviewers` (the workflow picks them from the files the implementer reports);
+- a standard task counts only through deferred reviews run fork point to `HEAD`, each clean at 0
+  fix rounds, none owed; when it runs, the final review reviews in full what no task review saw:
+  standard tasks' ranges and commits in no task or wave range (`GATED` is never a `CLEAN` here).
 
 Then dispatch no reviewer, write `final review skipped: one task, clean at 0 fix rounds` in the
 `run` line and the report, leave this slug's minors for `/gtm:retro` and write no `resolved` line.
@@ -97,14 +113,15 @@ fixed, keep the others. Each dispatch writes its progress line and is measured a
 
 ## 5. Record and report
 - Ledger: one `run` line (`tasks N · fix rounds per task · findings per reviewer (critical /
-  important / minor) · design rounds and score`), ending with `measured <W>m <T>k <A>a: <phase>
-  <w>m <t>k <a>a, ...; roles <role> <p>%, ...` from every progress line (a task's runs summed):
-  phases design, spec, plan, tasks (re-run reviews in), final (re-reviews in), fix (fix waves),
-  in that order, a phase not run omitted; minutes to one decimal, tokens in thousands; all
-  summed, but a wave's minutes are its longest task's; a sum holding a `?` is `?`. `roles`: roles
-  at 5% or more, `role-split.mjs` over the folder of each progress line's `· run <id>` (id checked
-  and folder found as §2 step 3 says) plus `--also <role>:<s>:<tokens>` per dispatch (architect,
-  final-reviewer, implementer, a re-run review's role); any `?` → `roles ?`. Then each ruling taken.
+  important / minor) · tiers <g>g <s>s · design rounds and score`, escalated counts guarded), ending
+  with `measured <W>m <T>k <A>a: <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ...` from every
+  progress line (a task's runs summed): phases design, spec, plan, tasks (re-run reviews in), final
+  (re-reviews in), fix (fix waves), in that order, a phase not run omitted; minutes to one decimal,
+  tokens in thousands; all summed, but a wave's minutes are its longest task's; a sum holding a `?`
+  is `?`. `roles`: roles at 5% or more, `role-split.mjs` over the folder of each progress line's
+  `· run <id>` (id checked and folder found as §2 step 3 says) plus `--also <role>:<s>:<tokens>` per
+  dispatch (architect, final-reviewer, implementer, a re-run review's role); any `?` → `roles ?`.
+  Then each ruling taken.
 - Report to the human, per the briefing format: TL;DR (ready or not, the measure: tasks clean,
   gate result, final verdict), one table (task, result, reviewers, cost) with a total row,
   deferred minors count, each budget Heads-up again, a Heads-up if anything deviated, **Rulings

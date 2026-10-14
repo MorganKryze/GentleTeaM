@@ -1,7 +1,7 @@
 export const meta = {
   name: 'deliver-task',
   description: 'Implement one plan task, run only the reviews its diff needs, fix until clean (default 3 fix rounds)',
-  whenToUse: 'Each task of an approved plan, or a Fix. args: {brief, report, branch, base, worktree?, mockup?, track?, triggers?: {role: [regex]}, team?: {role: {model, effort}}, fixRounds?, fixCeiling?}',
+  whenToUse: 'Each task of an approved plan, or a Fix. args: {brief, report, branch, base, worktree?, mockup?, track?, triggers?: {role: [regex]}, team?: {role: {model, effort}}, fixRounds?, fixCeiling?, tier?, cadence?, standardRounds?, review?: range|branch, head?, files?}',
   phases: [{ title: 'Implement' }, { title: 'Review' }, { title: 'Fix' }],
 }
 
@@ -82,6 +82,17 @@ for (const [role, list] of Object.entries(A.triggers || {})) {
     }
   })
 }
+const ground = (files) => Object.keys(triggers).filter((r) => files.some((f) => triggers[r].some((re) => re.test(f))))
+// A role reviews per task unless the profile says per-wave or per-branch. An unknown cadence, or a
+// lighter one for the security or data reviewer, reads as per-task.
+const CADENCE = {}
+for (const r of new Set(['reviewer', ...Object.keys(triggers), ...Object.keys(A.cadence || {})])) {
+  const c = (A.cadence || {})[r]
+  const light = (c === 'per-wave' || c === 'per-branch') && !['security-reviewer', 'data-reviewer'].includes(r)
+  CADENCE[r] = light ? c : 'per-task'
+  if (c !== undefined && c !== CADENCE[r]) log(`Cadence ${c} for ${r} read as per-task`)
+}
+const per = (files, c) => ground(files).filter((r) => CADENCE[r] === c)
 
 // A reviewer whose dispatch throws (its structured result lost) gets one more dispatch on a
 // budget, with the same diff, findings, model and effort; a second throw is logged and left to the
@@ -110,13 +121,13 @@ async function retried(prompt, opts) {
 }
 
 phase('Implement')
-const impl = await attempt(
+// A deferred review implements nothing: its range and the files git lists in it are given.
+const impl = A.review ? { head: A.head, files: A.files || [] } : await attempt(
   `Implement this task on branch ${A.branch} (base ${A.base}).\nBrief (read it first): ${A.brief}\nReport file: ${A.report}\nReturn head = the commit after your work, files = repo-relative paths changed since ${A.base}.${WT}`,
   as('implementer', { schema: IMPL, label: 'implement', phase: 'Implement' }),
 )
 if (!impl || impl.status === 'BLOCKED') return { status: 'BLOCKED', impl }
 
-const ground = (files) => Object.keys(triggers).filter((r) => files.some((f) => triggers[r].some((re) => re.test(f))))
 // A Fix escalates on size alone, counted over every file it has changed so far. On security or
 // data ground it stays a Fix and that specialist reviews it, as on any task.
 const ceiling = A.fixCeiling ?? 3
@@ -129,7 +140,18 @@ function escalation(files, at) {
 let changed = impl.files
 const early = escalation(changed, impl.head)
 if (early) return early
-const reviewers = ['reviewer', ...ground(impl.files)]
+// A standard task off every per-task role's ground gets no review of its own: its range waits for
+// the deferred one. Anything else, a Fix, or a profile with the reviewer per task, is guarded.
+const guardedBy = per(impl.files, 'per-task')
+const standard = !A.review && A.tier === 'standard' && A.track !== 'fix' && CADENCE.reviewer !== 'per-task'
+if (standard && !guardedBy.length) return { status: 'GATED', tier: 'standard', head: impl.head, files: impl.files }
+if (standard) log(`Tier rises to guarded: ${guardedBy.join(', ')}`)
+const T = A.tier === 'standard' && !A.review ? { tier: 'guarded' } : {}
+const reviewers = A.review === 'branch' ? per(impl.files, 'per-branch')
+  : A.review ? ['reviewer', ...ground(impl.files).filter((r) => CADENCE[r] !== 'per-branch')]
+  : ['reviewer', ...ground(impl.files)]
+// A deferred review gets the standard fix rounds, the profile's once guarded ground is in it.
+let limit = A.review && !guardedBy.length ? (A.standardRounds ?? 1) : ROUNDS
 log(`Reviews for this task: ${reviewers.join(', ')}`)
 
 let head = impl.head
@@ -143,12 +165,12 @@ const stats = {}
 const unreviewed = []
 let open = []
 let round = 0
-for (; round <= ROUNDS; round++) {
+for (; round <= limit; round++) {
   phase('Review')
   const results = await parallel(
     pending.map((p) => () =>
       retried(
-        `${round ? 'Re-review the fix round' : 'Review the task'}: diff ${scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
+        `${round && !p.whole ? 'Re-review the fix round' : `Review the ${A.review ? 'range' : 'task'}`}: diff ${p.whole ? `${A.base}..${head}` : scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
           (A.mockup ? `\nValidated mockup: ${A.mockup}` : '') +
           (p.findings ? `\nYour findings this fix must address. Return each with status "addressed" or "open", then only new breakage in the fix diff; approve when none is left open. Each finding sent keeps its severity until it is addressed:\n${JSON.stringify(p.findings, null, 2)}` : '') +
           SCOPE(`${A.base}..${head}`) + WT,
@@ -185,14 +207,14 @@ for (; round <= ROUNDS; round++) {
       still.push({ r, findings: blocking })
     }
   })
-  if (!open.length && !unreviewed.length) return { status: 'CLEAN', head, fixRounds: round, reviewers, stats, minors }
-  if (!open.length || round === ROUNDS) break
+  if (!open.length && !unreviewed.length) return { status: 'CLEAN', head, fixRounds: round, reviewers, stats, minors, ...T }
+  if (!open.length || round === limit) break
   log(`Fix round ${round + 1}: ${open.length} finding(s)`)
   const fix = await attempt(
     `Fix these review findings on branch ${A.branch} (head ${head}), test-first, one commit per fix; append a fix section to ${A.report}.\nBrief: ${A.brief}\nFindings:\n${JSON.stringify(open, null, 2)}\nReturn head = the commit after your fixes, files = paths changed in the fixes.${WT}`,
     as('implementer', { schema: IMPL, effort: raised(round + 1), label: `fix · round ${round + 1}`, phase: 'Fix' }),
   )
-  if (!fix || fix.status === 'BLOCKED') return { status: 'BLOCKED', head, open: [...open, ...unreviewed], stats, minors }
+  if (!fix || fix.status === 'BLOCKED') return { status: 'BLOCKED', head, open: [...open, ...unreviewed], stats, minors, ...T }
   changed = [...new Set([...changed, ...fix.files])]
   // The findings this fix round got are not re-reviewed yet: they go with the escalation, so the
   // Feature flow checks them instead of losing them.
@@ -202,11 +224,14 @@ for (; round <= ROUNDS; round++) {
   // on every track: a Fix has no final review, and a task's own review should not wait for it.
   for (const r of ground(fix.files)) {
     if (unreviewed.some((f) => f.by === r)) continue
-    if (!still.some((p) => p.r === r)) still.push({ r, findings: null })
+    // In a deferred review, a fix on guarded ground gets that specialist on the whole range.
+    const whole = Boolean(A.review) && CADENCE[r] === 'per-task'
+    if (whole) limit = ROUNDS
+    if (!still.some((p) => p.r === r)) still.push({ r, findings: null, whole })
     if (!reviewers.includes(r)) reviewers.push(r)
   }
   scope = `${head}..${fix.head}`
   head = fix.head
   pending = still
 }
-return { status: 'OPEN', head, fixRounds: round, open: [...open, ...unreviewed], reviewers, stats, minors }
+return { status: 'OPEN', head, fixRounds: round, open: [...open, ...unreviewed], reviewers, stats, minors, ...T }
