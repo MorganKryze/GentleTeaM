@@ -54,15 +54,15 @@ Ground rules: as in the `gtm` skill §0.
      and were not re-reviewed; `open` may also hold `<role> returned no review`. The spec states
      each as a requirement with its test, a missing review as owed, so the final review checks it.
 5. Tiers (a profile with `review cadence` only; a Fix keeps the steps above). After each task, read
-   `git -c core.quotePath=false diff --name-only "<base>..<head>"` (a rename as both paths, never
-   the planned or reported list): a per-task specialist's trigger on a standard task → Heads-up,
-   `review: "range"` on its range, guarded from then on; on a guarded task, a triggered specialist
-   missing from its `reviewers` reviews that range alone. `GATED`: run `verify.gate` on its head,
+   `git -c core.quotePath=false diff --name-only "<base>..<head>" --no-renames` (a rename as both
+   paths, never the planned or reported list): a per-task specialist's trigger on a standard task →
+   Heads-up, `review: "range"` on its range, guarded from then on; a triggered specialist missing
+   from a guarded task's `reviewers` reviews that range alone. `GATED`: `verify.gate` on its head,
    red → `BLOCKED` with step 4's card; its progress line reads `GATED` until a clean deferred review
    covers its range. A wave (a §3 wave, or consecutive standard tasks, ended by a guarded one) ends
-   with `review: "range"` from its base to its head after every merge, `files` from git; before §4,
-   `review: "branch"` fork point to `HEAD`. `OPEN`, `BLOCKED`, no review → step 4's card, minors to
-   the ledger only. A resume runs each owed review before §4. A Heads-up per `read as per-task` log.
+   with `review: "range"` from base to head after every merge, `files` from git; before §4, `review:
+   "branch"` fork point to `HEAD`. `OPEN`, `BLOCKED`, no review → step 4's card, minors to the
+   ledger only. A resume runs each owed review before §4. A Heads-up per `read as per-task` log.
 
 ## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
 1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
