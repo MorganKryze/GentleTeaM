@@ -5,6 +5,14 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- A documentation site at https://morgankryze.github.io/GentleTeaM/, built with docmd and
+  deployed from main: five paths (Start here, Tutorial, Guides, Reference, Why) and five diagrams.
+
+### Changed
+- The README is reduced to what GTM is, install, cost and the link to the site; the old docs
+  pages moved into the site.
+
 ## [0.6.0] - 2026-10-13
 
 ### Added

@@ -78,5 +78,13 @@ for (const test of ['footprint-check.test.mjs', 'role-split.test.mjs', 'workflow
   catch (e) { fail(file, (e.stderr || '').toString().trim() || e.message) }
 }
 
+// The site's lasting source lines need no build and no network: the built-site lines run in the
+// Pages workflow; the lines that judge a branch against main are not part of the gate.
+{
+  const file = join(root, 'scripts', 'site-checks.test.mjs')
+  try { execFileSync(process.execPath, [file, root, '--source', '--lasting'], { stdio: 'pipe' }) }
+  catch (e) { fail(file, ((e.stdout || '').toString() + (e.stderr || '').toString()).trim() || e.message) }
+}
+
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log('gtm: manifests, agents, skills, workflows, workflow scenarios, footprint check and role split OK')
+console.log('gtm: manifests, agents, skills, workflows, workflow scenarios, footprint check, role split and site sources OK')

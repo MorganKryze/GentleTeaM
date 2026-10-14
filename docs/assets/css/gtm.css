@@ -1,0 +1,925 @@
+/* GentleTeaM docs theme for docmd 0.9.7. One idea: amber marks the reader's turn, nothing else.
+   Tokens follow guidelines/design.md section 4; dark overrides sit under :root[data-theme=dark]. */
+
+@font-face {
+  font-family: "Inter Tight";
+  src: url("../fonts/inter-tight-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  src: url("../fonts/instrument-serif-latin-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../fonts/jetbrains-mono-latin-wght-normal.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Tokens ---------- */
+:root {
+  --paper: #fbfaf7;
+  --surface: #ffffff;
+  --ink: #16181d;
+  --muted: #5f6670;
+  --rule: #e4e1da;
+  --line: #858b93;          /* diagram strokes and link underlines: 3.3:1 on surface */
+  --you: #9a5b00;
+  --on-you: #fbfaf7;
+  --you-text: #8f5400;
+  --you-soft: #f6e7cf;
+  --tint: #f3f1ec;          /* table heads, hover */
+
+  --bg-color: var(--paper);
+  --text-color: var(--ink);
+  --text-heading: var(--ink);
+  --text-muted: var(--muted);
+  --link-color: var(--ink);
+  --link-color-hover: var(--ink);
+  --accent-color: var(--ink);
+  --primary-color: var(--ink);
+  --border-color: var(--rule);
+  --border-color-hover: var(--line);
+  --border-color-codeblock: var(--rule);
+  --header-bg: color-mix(in srgb, var(--paper) 88%, transparent);
+  --header-border: var(--rule);
+  --sidebar-bg: var(--paper);
+  --sidebar-text: var(--ink);
+  --sidebar-link-active-bg: var(--tint);
+  --sidebar-link-active-text: var(--ink);
+  --sidebar-group-bg: transparent;
+  --code-bg: var(--surface);
+  --code-text: var(--ink);
+  --glow-color: transparent;
+  --glow-color-strong: transparent;
+  --halo-soft: none;
+  --shadow-sm: none;
+  --scrollbar-thumb: var(--rule);
+
+  --font-family-sans: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-size-base: 17px;
+  --radius: 10px;
+  --measure: 31rem;         /* 66-73 characters of Inter Tight at 17 px, counted at 1280 */
+}
+:root[data-theme=dark] {
+  --paper: #0f1115;
+  --surface: #171a20;
+  --ink: #ecebe6;
+  --muted: #9aa0a6;
+  --rule: #2a2e36;
+  --line: #6f7680;          /* 3.4:1 on surface */
+  --you: #e8a33d;
+  --on-you: #0f1115;
+  --you-text: #f0b35a;
+  --you-soft: #3a2a12;
+  --tint: #1d2128;
+  --scrollbar-thumb: var(--rule);
+  --scrollbar-thumb-hover: var(--line);
+}
+
+/* ---------- Base type ---------- */
+html, body { background: var(--paper); }
+body {
+  font-family: var(--font-family-sans);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink);
+  font-feature-settings: "ss01" 0, "cv11" 1;
+  -webkit-font-smoothing: antialiased;
+}
+:root[data-theme=dark] .content-area:before { display: none; }
+
+.main-content h1, .main-content h2, .main-content h3 {
+  color: var(--ink);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  border: 0;
+}
+.main-content h1 { font-size: 2.6rem; font-weight: 700; letter-spacing: -0.025em; margin: 0.25rem 0 1.25rem; }
+.main-content h2 { font-size: 1.66rem; font-weight: 650; margin: 3.25rem 0 1rem; padding: 0; }
+.main-content h3 { font-size: 1.3rem; font-weight: 650; margin: 2rem 0 0.5rem; }
+.main-content p, .main-content li, .main-content td { font-size: 1.0625rem; }
+.main-content .table-wrapper td, .main-content .table-wrapper th { font-size: 1rem; }
+.main-content > p,
+.main-content > ul,
+.main-content > ol { max-width: var(--measure); }
+.main-content strong { font-weight: 650; }
+
+/* Home: the promise is the title */
+.main-content h1:not(.docmd-focus-title) {
+  font-size: 3.25rem;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  max-width: 15em;
+  margin-top: 1.5rem;
+}
+
+/* Inline code */
+.main-content :not(pre) > code {
+  font-family: var(--font-family-mono);
+  font-size: 0.86em;
+  background: var(--tint);
+  color: var(--ink);
+  border: 0;
+  border-radius: 6px;
+  padding: 0.12em 0.4em;
+}
+
+/* Links: ink with a quiet underline. Amber stays for the reader's turn. */
+.main-content a:not(.docmd-button):not(.heading-anchor):not(.step-permalink) {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+.main-content a:not(.docmd-button):not(.heading-anchor):hover { text-decoration-color: var(--ink); text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- Chrome ---------- */
+.skip-link { min-height: 44px; display: inline-flex; align-items: center; }
+.docmd-copy-widgets { display: none !important; }
+.page-header {
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--rule);
+  backdrop-filter: blur(8px);
+}
+.page-header .header-title { font-weight: 600; font-size: 0.95rem; color: var(--muted); }
+.docmd-breadcrumbs, .docmd-breadcrumbs a { color: var(--muted); font-size: 0.9rem; }
+.docmd-breadcrumbs .active { color: var(--muted); }
+.content-area { padding-top: 1.5rem; }
+
+.sidebar { background: var(--paper); border-right: 1px solid var(--rule); }
+.sidebar-header h1, .sidebar-header h1 a,
+.sidebar-header .sidebar-title, .sidebar-header .sidebar-title a {
+  display: inline-block; margin: 0; padding: 0; line-height: 1.2;
+  color: var(--ink) !important;
+  font-weight: 750;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  background: none !important;
+  -webkit-text-fill-color: currentColor;
+}
+.sidebar nav li .nav-label {
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--ink);
+  margin-top: 0.6rem;
+}
+.sidebar-nav a { color: var(--muted); font-size: 0.95rem; min-height: 40px; display: flex; align-items: center; border-radius: 8px; }
+.sidebar-nav a:hover { color: var(--ink); background: var(--tint); }
+.sidebar-nav a.active, .sidebar-nav li.active > a {
+  color: var(--ink) !important;
+  font-weight: 600;
+  background: var(--tint) !important;
+}
+.sidebar-nav .submenu { border-left: 1px solid var(--rule) !important; }
+.sidebar-nav li.active > a:before, .sidebar-nav a.active:before { background: var(--ink) !important; }
+.docmd-search-trigger, .theme-toggle-button {
+  background: var(--surface) !important;
+  border: 1px solid var(--rule) !important;
+  color: var(--muted) !important;
+  border-radius: 999px !important;
+  min-height: 40px;
+}
+.theme-toggle-button { min-width: 40px; }
+
+.toc-title { text-transform: none !important; letter-spacing: 0 !important; font-weight: 600; color: var(--ink); font-size: 0.9rem; }
+.toc-link { color: var(--muted) !important; font-size: 0.88rem; }
+.toc-link.active, .toc-link:hover { color: var(--ink) !important; background: none !important; }
+.toc-link.active { font-weight: 600; }
+[class*="toc"] summary, .mobile-toc, .docmd-mobile-toc { text-transform: none !important; letter-spacing: 0 !important; }
+
+.page-footer, .docmd-footer { border-top: 1px solid var(--rule); background: var(--paper); color: var(--muted); font-size: 0.9rem; }
+.page-footer a { color: var(--muted) !important; }
+
+/* ---------- Summary block (top of every page) ---------- */
+.callout-summary {
+  background: none;
+  border: 0;
+  border-left: 3px solid var(--rule);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.15rem 0 0.15rem 1.1rem;
+  margin: 0 0 2rem;
+  max-width: var(--measure);
+}
+.callout-summary ul { list-style: none; margin: 0; padding: 0; }
+.callout-summary li { margin: 0.15rem 0; font-size: 0.95rem; color: var(--ink); }
+.callout-summary li strong { font-weight: 600; color: var(--muted); }
+
+/* ---------- Callouts: neutral by default ---------- */
+.callout {
+  --callout-color: var(--rule);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: none;
+  max-width: var(--measure);
+}
+/* The summary rail wins over the neutral border above */
+.callout.callout-summary { border: 0; border-left: 3px solid var(--rule); background: none; }
+.callout-title { font-weight: 650; color: var(--ink); font-size: 1rem; }
+.callout-content p + p { margin-top: 0.5rem; }
+
+/* What you will see: the real text GTM prints, as text */
+.callout-see { padding: 0.9rem 1rem 0.8rem; margin: 1rem 0; }
+.callout-see .callout-title { color: var(--muted); font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; }
+.callout-see .docmd-code-block-wrapper { margin: 0 0 0.6rem; border-color: var(--rule); background: var(--paper); }
+.callout-see pre, .callout-see pre code {
+  white-space: pre-wrap !important;
+  word-break: normal;
+  overflow-wrap: anywhere;
+  font-size: 0.82rem !important;
+  line-height: 1.55;
+  background: var(--paper) !important;
+}
+.callout-see .callout-content > p:last-child { color: var(--muted); font-size: 0.86rem; }
+
+/* Your reply: the reader's turn, so amber */
+.callout-you {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--you);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0 0;
+}
+.callout-you .callout-title { color: var(--you-text); font-size: 0.9rem; margin-bottom: 0.15rem; }
+
+/* Next: one button forward, one plain link back */
+.callout-next {
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 2rem 0 0;
+  margin: 3.5rem 0 1rem;
+  max-width: none;
+}
+.callout-next .callout-content p { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.5rem; margin: 0; }
+.callout-next .callout-content a:not(.docmd-button) { min-height: 44px; display: inline-flex; align-items: center; }
+
+/* ---------- Buttons ---------- */
+a.docmd-button, .docmd-button {
+  background: var(--you);
+  color: var(--on-you) !important;
+  border: 1px solid var(--you);
+  border-radius: 999px;
+  min-height: 48px;
+  padding: 0 1.5rem;
+  font-weight: 650;
+  font-size: 1rem;
+  box-shadow: none !important;
+  transform: none !important;
+  margin: 0.25rem 0.5rem 0.25rem 0;
+}
+a.docmd-button:hover { filter: none; background: color-mix(in srgb, var(--you) 88%, var(--ink)); }
+/* A second button in a row is the quiet one */
+.docmd-button + .docmd-button,
+p > .docmd-button + br + .docmd-button {
+  background: transparent;
+  color: var(--ink) !important;
+  border-color: var(--line);
+}
+.docmd-button + .docmd-button:hover { background: var(--tint); }
+
+/* ---------- Code blocks ---------- */
+.docmd-code-block-wrapper {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: none;
+  max-width: var(--measure);
+}
+.docmd-code-block-wrapper pre, .main-content pre {
+  background: var(--surface) !important;
+  font-family: var(--font-family-mono);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+.main-content pre code { font-family: var(--font-family-mono); color: var(--ink); }
+
+/* Text blocks show what GTM prints: no syntax colours */
+.main-content pre code.language-text *, .main-content pre code.language-text { color: var(--ink) !important; font-style: normal !important; }
+
+/* ---------- Tables scroll in their own box ---------- */
+.table-wrapper {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  box-shadow: none;
+  margin: 1rem 0 1.5rem;
+  /* scroll hint: a soft edge appears only where more columns hide */
+  background:
+    linear-gradient(to right, var(--surface) 30%, transparent) left / 2.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--surface) 30%, transparent) right / 2.5rem 100% no-repeat local,
+    linear-gradient(to right, color-mix(in srgb, var(--ink) 14%, transparent), transparent) left / 0.9rem 100% no-repeat scroll,
+    linear-gradient(to left, color-mix(in srgb, var(--ink) 14%, transparent), transparent) right / 0.9rem 100% no-repeat scroll,
+    var(--surface);
+}
+.table-wrapper table { border-collapse: collapse; width: 100%; margin: 0; font-size: 0.94rem; background: transparent; border: 0; }
+.table-wrapper th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--tint) 70%, transparent);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.65rem 0.9rem;
+  white-space: nowrap;
+}
+.table-wrapper td { padding: 0.65rem 0.9rem; border-top: 1px solid var(--rule); vertical-align: top; background: transparent; }
+.table-wrapper tr:first-child td { border-top: 0; }
+.table-wrapper td:first-child { font-weight: 600; }
+.table-wrapper tbody tr:hover { background: none; }
+
+/* ---------- Steps ---------- */
+.docmd-container.steps { padding: 0; margin: 1rem 0; }
+.docmd-container.steps-reset ol.steps-list { padding-left: 3rem; margin: 1.5rem 0; }
+.docmd-container.steps-reset ol.steps-list:before { left: 1rem; width: 1px; background: var(--rule); }
+.docmd-container.steps-reset ol.steps-list > li.step-item {
+  padding: 0.2rem 0 0 0.25rem;
+  margin-bottom: 2.25rem;
+  max-width: var(--measure);
+}
+.docmd-container.steps-reset ol.steps-list > li.step-item:before {
+  left: -3rem;
+  top: 0.15rem;
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.9rem;
+  font-weight: 650;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+.docmd-container.steps-reset ol.steps-list > li.step-item:hover:before { border-color: var(--line); box-shadow: none; }
+.docmd-container.steps-reset ol.steps-list > li.step-item .step-permalink { display: none !important; }
+.step-title { font-size: 1.3rem !important; font-weight: 650 !important; letter-spacing: -0.01em; margin-bottom: 0.4rem !important; line-height: 1.3; }
+.step-body > p { margin: 0 0 0.5rem; }
+
+/* The step where the reader decides */
+.docmd-container.steps-reset ol.steps-list > li.step-item:has(.callout-you) {
+  background: var(--you-soft);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem 1.1rem;
+}
+.docmd-container.steps-reset ol.steps-list > li.step-item:has(.callout-you):before {
+  background: var(--you);
+  border-color: var(--you);
+  color: var(--on-you);
+  top: 1rem;
+}
+
+/* ---------- Tabs ---------- */
+.docmd-tabs { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); box-shadow: none; padding: 0; max-width: var(--measure); }
+.docmd-tabs-nav { background: var(--paper); border-bottom: 1px solid var(--rule); }
+.docmd-tabs-nav-item { min-height: 48px; padding: 0 1.25rem; color: var(--muted); font-weight: 600; border-bottom-width: 2px; }
+.docmd-tabs-nav-item.active { color: var(--ink); border-bottom-color: var(--ink); background: var(--surface); }
+.docmd-tabs-content { padding: 1rem 1.25rem 1.25rem; }
+
+/* ---------- Cards: only for real choices ---------- */
+.card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: none;
+  padding: 1.1rem 1.25rem 1.2rem;
+  transition: border-color 0.15s ease;
+}
+.card:hover { transform: none; border-color: var(--line); }
+.card .card-title {
+  margin: 0 0 0.35rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  min-height: 0;
+  font-size: 1.2rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.card .card-title a { color: var(--ink) !important; text-decoration: none !important; }
+.card .card-title a:after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); }
+.card .card-title a:focus-visible { outline: none; }
+.card:has(a:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
+.card .card-content { color: var(--muted); font-size: 0.95rem; }
+
+.docmd-container.grids { gap: 0.75rem; background: transparent !important; }
+.docmd-container.grid-item { background: transparent !important; }
+.docmd-container.grid-item { padding: 0; }
+.grids:has(.card) { grid-template-columns: repeat(6, 1fr); max-width: 46rem; }
+.grids:has(.card) > .grid-item:nth-child(-n+2) { grid-column: span 3; }
+.grids:has(.card) > .grid-item:nth-child(n+3) { grid-column: span 2; }
+
+/* ---------- Diagrams (Mermaid) themed from the tokens, both modes ---------- */
+.mermaid-controls { display: none !important; }
+.main-content .docmd-mermaid-container, .main-content .mermaid {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 1.25rem 0.75rem;
+  margin: 1rem 0 0.75rem;
+  max-width: var(--measure);
+  overflow-x: auto;
+  cursor: default !important;
+}
+.mermaid-wrapper { overflow: visible !important; height: auto !important; }
+.mermaid svg, .mermaid-wrapper svg { max-width: 100% !important; max-height: none !important; height: auto !important; transform: none !important; }
+.mermaid svg .node .label-container,
+.mermaid svg .node .label-container path,
+.mermaid svg .node > rect,
+.mermaid svg .node > polygon,
+.mermaid svg .node > path,
+.mermaid svg .node > circle {
+  fill: var(--paper) !important;
+  stroke: var(--line) !important;
+  stroke-width: 1px !important;
+}
+.mermaid svg .node .nodeLabel,
+.mermaid svg .node .nodeLabel p,
+.mermaid svg .node .label,
+.mermaid svg .node foreignObject div { color: var(--ink) !important; fill: var(--ink) !important; }
+.mermaid svg .node.you .label-container,
+.mermaid svg .node.you .label-container path,
+.mermaid svg .node.you > rect,
+.mermaid svg .node.you > path,
+.mermaid svg .node.you > polygon { fill: var(--you) !important; stroke: var(--you) !important; }
+.mermaid svg .node.you .nodeLabel,
+.mermaid svg .node.you .nodeLabel p,
+.mermaid svg .node.you foreignObject div { color: var(--on-you) !important; }
+.mermaid svg .flowchart-link, .mermaid svg .edgePath path { stroke: var(--line) !important; stroke-width: 1.25px !important; }
+.mermaid svg marker path, .mermaid svg .marker, .mermaid svg .arrowheadPath { fill: var(--line) !important; stroke: var(--line) !important; }
+.mermaid svg .edgeLabel, .mermaid svg .edgeLabel p, .mermaid svg .edgeLabel span,
+.mermaid svg .labelBkg { background-color: var(--surface) !important; color: var(--muted) !important; }
+.mermaid svg .edgeLabel rect, .mermaid svg .labelBkg { fill: var(--surface) !important; opacity: 1 !important; fill-opacity: 1 !important; }
+/* Caption under a diagram: the paragraph that starts "How to read it" */
+.main-content .mermaid + p, .main-content .docmd-mermaid-container + p { color: var(--muted); font-size: 0.92rem; margin-top: 0;  max-width: 28rem; }
+/* captions run at 0.92rem, so a narrower box keeps them under 75 characters */
+
+/* ---------- Small screens ---------- */
+@media (max-width: 768px) {
+  .content-area { padding: 1rem 1rem 1rem !important; }
+  .main-content h1 { font-size: 2.1rem; }
+  .main-content h1:not(.docmd-focus-title) { font-size: 2.3rem; margin-top: 0.5rem; }
+  .main-content h2 { font-size: 1.45rem; margin-top: 2.5rem; }
+  .heading-anchor { display: none !important; }
+  .grids:has(.card) { grid-template-columns: 1fr; }
+  .grids:has(.card) > .grid-item:nth-child(n) { grid-column: auto; }
+  .docmd-container.steps-reset ol.steps-list { padding-left: 2.6rem; }
+  .docmd-container.steps-reset ol.steps-list:before { left: 0.85rem; }
+  .docmd-container.steps-reset ol.steps-list > li.step-item:before { left: -2.6rem; width: 1.75rem; height: 1.75rem; }
+  .docmd-container.steps-reset ol.steps-list > li.step-item:has(.callout-you) { padding: 0.9rem 0.85rem 1rem; }
+  .main-content .docmd-mermaid-container, .main-content .mermaid { padding: 1rem 0.25rem; }
+  .sidebar-menu-button { min-width: 44px; min-height: 44px; display: inline-flex !important; align-items: center; justify-content: center; }
+  .sidebar-toggle-button { min-width: 44px; min-height: 44px; }
+  .docmd-tabs-nav-item { padding: 0 1rem; }
+  a.docmd-button { width: 100%; justify-content: center; margin-right: 0; }
+  .main-content h1:not(.docmd-focus-title) { font-size: 2rem; }
+  /* Tables: wide five-column tables and three-column tables scroll in their box rather than
+     wrapping a cell to five lines */
+  .table-wrapper table { min-width: 30rem; }
+  .table-wrapper table:has(th:nth-child(5)) { min-width: 50rem; }
+  /* The first column takes 9rem (more only for a name that cannot break): the table's spare width
+     goes to the other columns, so the second one starts on screen */
+  .table-wrapper th:first-child { width: 9rem; }
+  /* Commands wrap in their block, the copy button stays visible and clear of the text */
+  .main-content pre, .main-content pre code { white-space: pre-wrap !important; overflow-wrap: anywhere; }
+  .docmd-code-block-wrapper pre { padding-right: 3.25rem !important; }
+  .copy-code-button { opacity: 1 !important; min-width: 44px; min-height: 44px; top: 0.25rem !important; right: 0.25rem !important; }
+  /* Targets of 44 px in the header and menu */
+  .sidebar-header h1 a, .sidebar-header .sidebar-title a { display: inline-flex; align-items: center; min-height: 44px; }
+  .sidebar-nav a { min-height: 44px; }
+  .docmd-search-trigger, .theme-toggle-button { min-height: 44px; min-width: 44px; }
+  .search-keys { display: none !important; }
+  .toc-link { min-height: 44px; display: flex !important; align-items: center; white-space: normal !important; }
+  .toc-container { height: 46px; }
+  .toc-container.mobile-expanded { height: auto !important; }
+  .toc-container .toc-title { display: flex !important; align-items: center; justify-content: space-between; min-height: 44px; padding: 0 1rem !important; margin: 0; box-sizing: border-box; }
+  .callout-next a.docmd-button { width: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+/* Diagram labels use a system grotesk: Mermaid sizes its boxes before the self-hosted font has
+   loaded, so a web font here clips labels at random. Same family in measure and render. */
+.mermaid svg, .mermaid svg * { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important; }
+.mermaid svg .node text, .mermaid svg .node tspan { fill: var(--ink) !important; }
+.mermaid svg .node.you text, .mermaid svg .node.you tspan { fill: var(--on-you) !important; }
+.mermaid svg .edgeLabel text, .mermaid svg .edgeLabel tspan { fill: var(--muted) !important; }
+
+/* ======================================================================================
+   Round 4: devices borrowed from five reference docs sites (inspiration.md), never their
+   brand. Amber still means "you" and nothing else.
+   ====================================================================================== */
+:root { --grid-line: color-mix(in srgb, var(--rule) 75%, transparent); --wide: 42rem; }
+
+/* Titles: large, lighter weight, tight tracking (Next.js) */
+.main-content h1 { font-size: 2.9rem; font-weight: 560; letter-spacing: -0.035em; line-height: 1.08; margin: 0.5rem 0 1.5rem; }
+.main-content h2 { font-weight: 600; letter-spacing: -0.02em; }
+.main-content h3 { font-weight: 600; }
+/* Home: one large statement, generous space (Linear) */
+.main-content > h1:not(.docmd-focus-title) {
+  font-size: 3.7rem; font-weight: 560; letter-spacing: -0.04em; line-height: 1.04;
+  max-width: 13.5em; margin: 3rem 0 2rem;
+}
+.callout-summary + p { font-size: 1.2rem; line-height: 1.55; max-width: 34rem; color: var(--ink); }
+.callout-summary { margin-bottom: 2.25rem; }
+
+/* Pages that carry their own map need no "On this page" column */
+.content-layout:has(.gtm-tracker) .toc-sidebar,
+.content-layout:has(.main-content > h1:not(.docmd-focus-title)) .toc-sidebar,
+.content-layout:has(.gtm-cost) .toc-sidebar { display: none !important; }
+
+/* Copy Context kept, as a quiet hairline pill (Next.js "Copy page") */
+.docmd-copy-widgets { display: flex !important; margin-left: auto; }
+.docmd-copy-raw-btn { display: none !important; }
+.docmd-copy-context-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem; min-height: 36px; padding: 0 0.9rem;
+  border: 1px solid var(--rule) !important; border-radius: 999px !important; background: var(--surface) !important;
+  color: var(--muted) !important; font-size: 0.85rem; font-weight: 550; box-shadow: none !important;
+}
+.docmd-copy-context-btn:hover { color: var(--ink) !important; border-color: var(--line) !important; }
+
+/* Figure cards: a faint grid, a hairline frame, the caption as the card's footer (Next.js) */
+.main-content .docmd-mermaid-container, .main-content .mermaid {
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: -1px -1px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  margin-bottom: 0;
+  padding: 1.75rem 0.75rem;
+}
+.main-content .mermaid + p, .main-content .docmd-mermaid-container + p {
+  max-width: var(--measure);
+  box-sizing: border-box;
+  margin: 0 0 2rem;
+  padding: 0.7rem 2.5rem 0.8rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-top: 0;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+/* Home: the figure is wider, to read at a glance; its caption keeps a short line */
+.content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content .docmd-mermaid-container,
+.content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content .mermaid,
+.content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content .mermaid + p,
+.content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content .docmd-mermaid-container + p { max-width: var(--wide); }
+.content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content .mermaid + p,
+.content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content .docmd-mermaid-container + p { padding-right: calc(var(--wide) - 29rem); }
+
+/* Short headed blocks (Linear): Home's three statements, Why's positions */
+.main-content h3 { font-size: 1.3rem; letter-spacing: -0.015em; margin: 2.25rem 0 0.5rem; }
+.gtm-cost { color: var(--muted); font-size: 0.95rem !important; margin: 0.4rem 0 0; }
+.content-layout:has(.gtm-cost) .main-content h3 { margin-top: 3.25rem; font-size: 1.4rem; }
+
+/* The five paths: a quiet index, one hairline row each */
+.docmd-container.grids:has(.card) { display: block; max-width: var(--wide); border-top: 1px solid var(--rule); margin-top: 1rem; }
+.grids:has(.card) > .grid-item { margin: 0; }
+.card {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); align-items: baseline; column-gap: 1.25rem;
+  background: transparent; border: 0; border-bottom: 1px solid var(--rule); border-radius: 0;
+  padding: 1rem 2.75rem 1rem 0.25rem; min-height: 44px;
+}
+.card:hover { background: var(--tint); border-color: var(--rule); }
+.card::after { content: "\2192"; position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 1.05rem; }
+.card:hover::after { color: var(--ink); }
+.card .card-title { font-size: 1.1rem; margin: 0; }
+.card .card-title a:after { border-radius: 0; }
+.card .card-content p { margin: 0; font-size: 1rem; }
+
+/* Terminal cards: a label bar, then the text GTM prints (Tailwind) */
+.callout-term, .callout-see {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 0; overflow: hidden; max-width: var(--measure); margin: 1rem 0 1.25rem;
+}
+.callout-term .callout-title, .callout-see .callout-title {
+  display: flex; align-items: center; gap: 0.55rem; margin: 0; padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--rule); background: var(--tint);
+  color: var(--muted); font-size: 0.85rem; font-weight: 600;
+}
+.callout-term .callout-title::before, .callout-see .callout-title::before {
+  content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%; border: 1px solid var(--line); flex: none;
+}
+.callout-term .callout-content, .callout-see .callout-content { padding: 0; }
+.callout-term .docmd-code-block-wrapper, .callout-see .docmd-code-block-wrapper { border: 0; border-radius: 0; margin: 0; background: var(--surface); max-width: none; }
+.callout-term pre, .callout-see pre, .callout-see pre code, .callout-term pre code { background: var(--surface) !important; margin: 0; }
+.callout-see pre, .callout-see pre code { font-size: 0.8rem !important; }
+.callout-see .callout-content > p:last-child {
+  margin: 0; padding: 0.5rem 1rem 0.6rem; border-top: 1px solid var(--rule); font-size: 0.82rem; color: var(--muted);
+}
+
+/* Tutorial tracker (Astro): six steps, the three checkpoints amber, where you are in ink */
+.gtm-tracker { margin: 0 0 2.75rem; padding: 0; }
+.gtm-tracker-title { margin: 0 0 0.65rem !important; font-size: 0.9rem !important; font-weight: 600; color: var(--muted); }
+.gtm-tracker ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0.5rem; }
+.gtm-tracker li { margin: 0; }
+.main-content .gtm-tracker li > a {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 1fr auto auto; column-gap: 0.55rem; row-gap: 0.15rem; height: 100%; box-sizing: border-box;
+  min-height: 44px; padding: 0.6rem 0.65rem; border: 1px solid var(--rule); border-radius: 8px;
+  background: var(--surface); color: var(--ink) !important; text-decoration: none !important;
+}
+.main-content .gtm-tracker li > a:hover { border-color: var(--line); }
+.gtm-tracker .n {
+  grid-row: 1; align-self: start; width: 1.6rem; height: 1.6rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--line); font-size: 0.8rem; font-weight: 650; color: var(--ink); background: var(--paper);
+}
+.gtm-tracker .t { grid-row: 1; grid-column: 2; align-self: center; font-size: 0.88rem; font-weight: 600; line-height: 1.25; }
+.gtm-tracker .w, .gtm-tracker .s { grid-column: 1 / -1; font-size: 0.78rem; line-height: 1.3; color: var(--muted); }
+.gtm-tracker .w { margin-top: 0.35rem; }
+.gtm-tracker .is-you a { border-color: var(--you); }
+.gtm-tracker .is-you .n { background: var(--you); border-color: var(--you); color: var(--on-you); }
+.gtm-tracker .is-you .s { color: var(--you-text); font-weight: 600; }
+.gtm-tracker-roles { margin: 0.6rem 0 0 !important; font-size: 0.9rem !important; color: var(--muted); }
+.gtm-tracker-roles a { color: var(--ink) !important; }
+
+/* Steps as rows: marker, text on the left, the terminal card on the right (Stripe, Tailwind) */
+.docmd-container.steps-reset ol.steps-list:before { display: none; }
+.docmd-container.steps-reset ol.steps-list > li.step-item:before {
+  content: counter(list-counter, decimal-leading-zero) !important;
+  border-radius: 8px; font-family: var(--font-family-mono); font-size: 0.78rem; font-weight: 600;
+}
+.docmd-container.steps-reset ol.steps-list > li.step-item + li.step-item { border-top: 1px solid var(--rule); padding-top: 2rem; }
+.docmd-container.steps-reset ol.steps-list > li.step-item + li.step-item:before { top: 2.15rem; }
+.docmd-container.steps-reset ol.steps-list > li.step-item { margin-bottom: 2rem; }
+/* A checkpoint row: amber marker and amber-edged card, no tinted slab */
+.docmd-container.steps-reset ol.steps-list > li.step-item:has(.callout-you) { background: none; border-radius: 0; padding: 0.2rem 0 0 0.25rem; }
+.docmd-container.steps-reset ol.steps-list > li.step-item + li.step-item:has(.callout-you) { padding-top: 2rem; }
+.docmd-container.steps-reset ol.steps-list > li.step-item:has(.callout-you):before { top: 0.15rem; }
+.docmd-container.steps-reset ol.steps-list > li.step-item + li.step-item:has(.callout-you):before { top: 2.15rem; }
+li.step-item:has(.callout-you) .callout-see { border-color: color-mix(in srgb, var(--you) 45%, var(--rule)); border-left: 3px solid var(--you); }
+.step-title { font-size: 1.2rem !important; font-weight: 600 !important; }
+@media (min-width: 1100px) {
+  .content-layout:has(.gtm-tracker) .main-content { max-width: 60rem; }
+  .docmd-container.steps-reset ol.steps-list > li.step-item {
+    max-width: none; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 22.5rem); column-gap: 2.5rem; align-items: start;
+  }
+  li.step-item > .step-title { grid-column: 1; }
+  li.step-item > .step-body { display: contents; }
+  li.step-item > .step-body > * { grid-column: 1; }
+  li.step-item > .step-body > .callout-see { grid-column: 2; grid-row: 1 / span 6; margin: 0; max-width: none; }
+}
+
+/* Closing checklist (Astro): ticking is the reader's act, so the tick is amber */
+.gtm-check { list-style: none; padding: 0 !important; margin: 0.75rem 0 0; max-width: var(--measure); border-top: 1px solid var(--rule); }
+.gtm-check li { margin: 0 !important; border-bottom: 1px solid var(--rule); }
+.gtm-check label { display: flex; gap: 0.8rem; align-items: center; min-height: 48px; padding: 0.55rem 0.25rem; cursor: pointer; font-size: 1.0625rem; }
+.gtm-check input { width: 1.15rem; height: 1.15rem; margin: 0; flex: none; accent-color: var(--you); }
+
+/* Reference tables: hairline rows, names as code chips (Next.js) */
+.table-wrapper {
+  border: 0; border-radius: 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+  background:
+    linear-gradient(to right, var(--paper) 30%, transparent) left / 2.5rem 100% no-repeat local,
+    linear-gradient(to left, var(--paper) 30%, transparent) right / 2.5rem 100% no-repeat local,
+    linear-gradient(to right, color-mix(in srgb, var(--ink) 14%, transparent), transparent) left / 0.9rem 100% no-repeat scroll,
+    linear-gradient(to left, color-mix(in srgb, var(--ink) 14%, transparent), transparent) right / 0.9rem 100% no-repeat scroll,
+    var(--paper);
+}
+.table-wrapper th { background: transparent; color: var(--muted); font-weight: 550; font-size: 0.88rem; padding: 0.6rem 0.9rem 0.6rem 0; }
+.table-wrapper td { padding: 0.7rem 0.9rem 0.7rem 0; }
+.table-wrapper td:first-child { font-weight: 550; }
+/* A name in a first cell (a code chip: field, command, role) never breaks; a sentence wraps */
+.table-wrapper td:first-child code { white-space: nowrap; }
+.main-content .table-wrapper td code {
+  font-size: 0.84rem; background: var(--tint); border: 1px solid var(--rule); border-radius: 5px; padding: 0.1em 0.4em;
+}
+
+/* The .gtm/ folder as an illustrated file tree (Next.js folder card) */
+.gtm-tree {
+  margin: 1rem 0 0; max-width: var(--wide); box-sizing: border-box; padding: 1.75rem 1.5rem;
+  border: 1px solid var(--rule); border-bottom: 0; border-radius: var(--radius) var(--radius) 0 0;
+  background-color: var(--surface);
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 22px 22px; background-position: -1px -1px;
+}
+.gtm-tree ul { list-style: none; margin: 0 auto !important; padding: 0.3rem 0 !important; max-width: 32rem; background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; }
+.gtm-tree li { display: flex; align-items: center; gap: 0.75rem; margin: 0 !important; padding: 0.5rem 0.9rem 0.5rem 2.1rem; border-top: 1px solid var(--rule); font-size: 0.92rem; line-height: 1.35; position: relative; }
+.gtm-tree li:first-child { border-top: 0; padding-left: 0.9rem; }
+.gtm-tree li:not(:first-child)::before { content: ""; position: absolute; left: 1.05rem; top: 1.12rem; width: 0.7rem; border-top: 1px solid var(--line); }
+.gtm-tree li:not(:first-child)::after { content: ""; position: absolute; left: 1.05rem; top: -1px; bottom: 0; border-left: 1px solid var(--line); }
+.gtm-tree li:last-child::after { bottom: auto; height: calc(1.12rem + 1px); }
+.gtm-tree code { background: none !important; padding: 0 !important; font-size: 0.86rem !important; color: var(--muted) !important; white-space: nowrap; }
+.gtm-tree li:first-child code { color: var(--ink) !important; font-weight: 650; }
+.gtm-tree li.you { background: var(--you-soft); }
+.gtm-tree li.you code { color: var(--ink) !important; font-weight: 650; }
+.gtm-tree li.you .why { color: var(--ink); }
+.gtm-tree .why { color: var(--muted); font-size: 0.85rem; flex: 1; min-width: 0; }
+.gtm-tree .badge { margin-left: auto; flex: none; font-size: 0.78rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap; }
+.gtm-tree li.you .badge { background: var(--you); border-color: var(--you); color: var(--on-you); }
+.gtm-tree figcaption {
+  margin: 1.75rem -1.5rem -1.75rem; padding: 0.7rem 2.5rem 0.8rem 1rem; background: var(--surface);
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); border-radius: 0 0 var(--radius) var(--radius);
+  color: var(--muted); font-size: 0.92rem;
+}
+.gtm-tree { border-bottom: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
+
+/* Previous / Next as big cards on every page (Astro) */
+.page-navigation {
+  display: grid !important; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: var(--wide);
+  margin: 4.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--rule);
+}
+.page-navigation > a {
+  display: flex !important; align-items: center; gap: 0.9rem; min-height: 5.75rem; box-sizing: border-box;
+  padding: 1rem 1.25rem; border: 1px solid var(--rule) !important; border-radius: var(--radius); background: var(--surface) !important;
+  color: var(--ink) !important; text-decoration: none !important; box-shadow: none !important; transform: none !important;
+}
+.page-navigation > a:hover { border-color: var(--line) !important; }
+.page-navigation .next-page { grid-column: 2; justify-content: flex-end; text-align: right; }
+.page-navigation small { display: block; color: var(--muted); font-size: 0.88rem; font-weight: 500; margin-bottom: 0.1rem; }
+.page-navigation strong { display: block; font-size: 1.25rem; font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; color: var(--ink); }
+.page-navigation svg { color: var(--muted); flex: none; width: 1.1rem; height: 1.1rem; }
+.page-navigation .next-page-placeholder, .page-navigation .prev-page-placeholder { display: none; }
+
+@media (max-width: 768px) {
+  .main-content h1 { font-size: 2.15rem; }
+  .main-content > h1:not(.docmd-focus-title) { font-size: 2.45rem; margin: 1rem 0 1.5rem; }
+  .callout-summary + p { font-size: 1.1rem; }
+  .docmd-copy-context-btn { min-height: 44px; }
+  .card { grid-template-columns: minmax(0, 1fr); row-gap: 0.15rem; padding: 0.85rem 2.75rem 0.85rem 0.25rem; }
+  .gtm-tracker ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .page-navigation { grid-template-columns: 1fr; margin-top: 3rem; }
+  .page-navigation .next-page { grid-column: 1; grid-row: 1; }
+  .gtm-tree { padding: 1rem 0.75rem; }
+  .gtm-tree figcaption { margin: 1rem -0.75rem -1rem; padding-right: 1rem; }
+  .gtm-tree li { flex-wrap: wrap; row-gap: 0.1rem; padding-right: 0.7rem; }
+  .gtm-tree .why { order: 3; flex-basis: 100%; }
+  .table-wrapper table:has(th:nth-child(4)) { min-width: 40rem; }
+  .main-content .mermaid + p, .main-content .docmd-mermaid-container + p { padding-right: 1rem !important; }
+}
+/* Why is the last page of the path: its own pager leads back to the start */
+.content-layout:has(.gtm-cost) .page-navigation:not(.gtm-pager) { display: none !important; }
+.page-navigation .arrow { color: var(--muted); font-size: 1.1rem; flex: none; }
+.page-navigation > a { max-width: none !important; min-width: 0 !important; width: 100%; }
+.page-footer-actions { border-top: 0; padding: 0; margin: 0; }
+.callout-summary + p { font-size: 1.3rem; max-width: 37rem; line-height: 1.5; }
+.table-wrapper { max-width: var(--wide); }
+/* Home and Why read as one centred column (Linear) */
+@media (min-width: 1100px) {
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content,
+  .content-layout:has(.gtm-cost) .main-content { max-width: var(--wide); margin-inline: auto; }
+}
+.callout-see pre, .callout-term pre { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; padding: 0.9rem 1rem !important; }
+.callout-term pre { padding-right: 3.25rem !important; }
+@media (max-width: 768px) {
+  /* The terminal card takes the row's full width under the marker */
+  li.step-item .callout-see { margin-left: -2.6rem; }
+  .callout-see pre, .callout-see pre code { font-size: 0.78rem !important; }
+}
+/* Every page shows its title as a large h1 (docmd hides it outside focus mode) */
+.main-content h1.docmd-focus-title { display: block; border: 0; padding: 0; margin: 0.75rem 0 1.75rem; }
+.content-layout:has(.main-content > h1:not(.docmd-focus-title)) h1.docmd-focus-title { display: none; }
+@media (max-width: 768px) {
+  .main-content .docmd-mermaid-container, .main-content .mermaid { padding: 1rem 0.2rem; }
+}
+
+/* Search dialog: the site's tokens in both modes, a 44 px close button, an AA placeholder.
+   No amber here: searching is not a decision. The drop shadow is the one §4 allows. */
+.docmd-search-box, :root[data-theme=dark] .docmd-search-box { background-color: var(--surface) !important; border-color: var(--rule) !important; color: var(--ink); }
+.docmd-search-header { border-bottom-color: var(--rule) !important; }
+.docmd-search-header svg, :root[data-theme=dark] .docmd-search-header svg { color: var(--muted) !important; }
+#docmd-search-input { color: var(--ink) !important; }
+#docmd-search-input::placeholder { color: var(--muted) !important; opacity: 1; }
+.docmd-search-close {
+  flex: none; min-width: 44px; min-height: 44px; align-items: center; justify-content: center;
+  margin: -0.5rem -0.6rem -0.5rem 0; border-radius: 999px; color: var(--muted) !important;
+}
+.docmd-search-close:hover, .docmd-search-close:focus-visible { color: var(--ink) !important; background: var(--tint) !important; }
+.search-result-item.selected, .search-result-item:focus, .search-result-item:hover { background-color: var(--tint) !important; border-left-color: var(--ink) !important; }
+.search-result-title { color: var(--ink) !important; }
+.search-result-preview, .search-initial, .search-no-results { color: var(--muted) !important; }
+.search-result-preview mark, :root[data-theme=dark] .search-result-preview mark { background: none !important; color: var(--ink) !important; font-weight: 650; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 2px; }
+.search-result-confidence { background: var(--tint) !important; color: var(--muted) !important; }
+.docmd-search-footer { background-color: var(--surface) !important; border-top-color: var(--rule) !important; color: var(--muted) !important; }
+@media (max-width: 768px) { .docmd-search-modal { background-color: var(--surface) !important; } }
+
+/* ======================================================================================
+   Round 5 (decided 2026-10-13): Instrument Serif on every page's h1, and wide screens that
+   use their width. Prose keeps its 60-75 character measure; type grows with the screen and
+   wide elements (figures, tables, step rows, the file tree) take the full content width.
+   ====================================================================================== */
+
+/* Fluid type: the root grows from 16 px at 1280 to 18.8 px at 2560, so the 17 px body reaches
+   20 px and every rem (the measure included) scales with it: the measure stays 66-73 characters. */
+html { font-size: clamp(16px, calc(13.176px + 0.2206vw), 18.824px); }
+:root { --font-size-base: 1.0625rem; }
+body { font-size: 1.0625rem; }
+
+/* Every page's h1 in the display serif. One weight exists (400): no synthetic bold. Instrument
+   Serif is a condensed face: positive tracking, wider word spaces and open leading let it breathe
+   (the human found it compressed at negative tracking, 2026-10-13). */
+.main-content h1,
+.main-content h1.docmd-focus-title {
+  font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+  font-weight: 400; font-synthesis: none; font-feature-settings: normal;
+  font-size: 3.5rem; line-height: 1.14; letter-spacing: 0.012em; word-spacing: 0.06em;
+  text-wrap: balance; max-width: 18em;
+}
+.main-content > h1:not(.docmd-focus-title) {
+  font-size: 4.75rem; line-height: 1.08; letter-spacing: 0.01em; word-spacing: 0.06em; max-width: 13.5em;
+}
+@media (max-width: 768px) {
+  .main-content h1, .main-content h1.docmd-focus-title { font-size: 2.6rem; line-height: 1.14; letter-spacing: 0.012em; }
+  .main-content > h1:not(.docmd-focus-title) { font-size: 3rem; line-height: 1.1; letter-spacing: 0.01em; }
+}
+@media (max-width: 400px) {
+  .main-content > h1:not(.docmd-focus-title) { font-size: 2.8rem; }
+}
+
+/* Headed blocks (Home's three statements, Why's six positions): one column up to 1440 */
+.docmd-container.grids:not(:has(.card)) { display: block; max-width: var(--measure); margin: 0; }
+.grids:not(:has(.card)) > .grid-item { display: block; padding: 0; }
+.grids:not(:has(.card)) > .grid-item > :first-child { margin-top: 2.25rem; }
+.content-layout:has(.gtm-cost) .grids:not(:has(.card)) > .grid-item > h3 { margin-top: 3.25rem; }
+
+/* Wide screens: from 1440 the container grows to about 1600 px of content plus the sidebars */
+@media (min-width: 1440px) {
+  :root { --wide: 100%; }
+  .content-area { max-width: 104rem; padding: 1.75rem 3rem 1rem 3.5rem; }
+  .content-layout { gap: 3.5rem; }
+
+  /* Figure cards break out of the prose column; the caption keeps a prose-length line */
+  .main-content .docmd-mermaid-container, .main-content .mermaid { max-width: none; }
+  .main-content .mermaid + p, .main-content .docmd-mermaid-container + p,
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content .mermaid + p,
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content .docmd-mermaid-container + p {
+    max-width: none; padding-right: max(2.5rem, calc(100% - 28rem));
+  }
+
+  /* Tutorial: tracker and step rows at full width; the text keeps the measure, the terminal
+     card takes the rest */
+  .content-layout:has(.gtm-tracker) .main-content { max-width: none; }
+  .docmd-container.steps-reset ol.steps-list > li.step-item {
+    grid-template-columns: minmax(0, var(--measure)) minmax(0, 1fr); column-gap: 3.5rem;
+  }
+  .callout-see pre, .callout-see pre code { font-size: 0.86rem !important; }
+
+  /* File tree: a wider list inside the full-width card */
+  .gtm-tree ul { max-width: 46rem; }
+
+  /* Headed blocks side by side, three to a row, each under the measure */
+  .docmd-container.grids:not(:has(.card)) { max-width: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 2.5rem; margin-top: 0.5rem; }
+  .grids:not(:has(.card)) > .grid-item { border-top: 1px solid var(--rule); margin-top: 2rem; }
+  .grids:not(:has(.card)) > .grid-item > h3, .content-layout:has(.gtm-cost) .grids:not(:has(.card)) > .grid-item > h3 { margin-top: 1.25rem; }
+
+  /* The five paths: one row of five cells instead of five rows */
+  .docmd-container.grids:has(.card) { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-bottom: 1px solid var(--rule); }
+  .grids:has(.card) > .grid-item:nth-child(n) { grid-column: auto; }
+  .grids:has(.card) > .grid-item + .grid-item .card { border-left: 1px solid var(--rule); }
+  .card { display: block; height: 100%; box-sizing: border-box; border-bottom: 0; padding: 1.1rem 2.75rem 1.25rem 1rem; }
+  .card .card-title { margin-bottom: 0.35rem; }
+  .card::after { top: 1.45rem; transform: none; }
+}
+
+/* ======================================================================================
+   Lists, the home figure row, the one-pager rule and small accessibility fixes.
+   ====================================================================================== */
+
+/* Lists keep the prose measure on their items, not on the list box: the bullet's indent no
+   longer eats ten characters of every line. */
+.main-content > ul, .main-content > ol { max-width: none; }
+.main-content > ul > li, .main-content > ol > li { max-width: var(--measure); }
+
+/* A page with its own pager shows only that one. */
+.content-layout:has(.gtm-pager) .page-navigation:not(.gtm-pager) { display: none !important; }
+
+/* Pager labels: docmd fades them to 80 %, under AA on the light card. */
+.page-navigation .prev-page small, .page-navigation .next-page small { opacity: 1; color: var(--muted); }
+
+/* The "Last updated" line opens the commit history from the keyboard: a 44 px target. */
+.git-last-updated.has-history { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* Edge labels: SVG paints with fill, but contrast tools read color and background-color, where
+   Mermaid leaves a light grey under the label. Both follow the tokens. */
+.mermaid svg .edgeLabel text, .mermaid svg .edgeLabel tspan { color: var(--muted) !important; }
+.mermaid svg .edgeLabel rect { background-color: var(--surface) !important; }
+
+/* Home from 1440: the figure card and its caption first, the three explanations beside it.
+   The content column is a flex column, so a two-column grid replaces it on this page only. */
+@media (min-width: 1440px) {
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content {
+    display: grid; grid-template-columns: 31rem minmax(0, 1fr); column-gap: 2.5rem;
+    grid-auto-flow: row dense; align-content: start;
+  }
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > * { grid-column: 1 / -1; min-width: 0; }
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > :is(.mermaid, .docmd-mermaid-container),
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > :is(.mermaid, .docmd-mermaid-container) + p { grid-column: 1; }
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > :is(.mermaid, .docmd-mermaid-container) ~ .grids:not(:has(.card)) {
+    grid-column: 2; grid-row: span 2; align-self: start; column-gap: 2rem; margin-top: 1rem;
+  }
+  .content-layout:has(.main-content > h1:not(.docmd-focus-title)) .main-content > :is(.mermaid, .docmd-mermaid-container) ~ .grids:not(:has(.card)) > .grid-item { margin-top: 0; }
+}
