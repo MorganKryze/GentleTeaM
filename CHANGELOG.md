@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-10-14
+
 ### Added
 - Risk tiers: a task the plan marks standard runs the implementer and the gate, then waits for
   a deferred review: the reviewer once per wave, ux-qa once per branch, one fix round each. A
