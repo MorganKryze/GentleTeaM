@@ -1,0 +1,170 @@
+{
+  "title": "GentleTeaM",
+  "url": "https://morgankryze.github.io/GentleTeaM",
+  "src": "docs",
+  "out": "site",
+  "engine": "js",
+  "layout": {
+    "spa": true,
+    "header": {
+      "enabled": true
+    },
+    "sidebar": {
+      "collapsible": true,
+      "defaultCollapsed": false
+    },
+    "optionsMenu": {
+      "position": "sidebar-top",
+      "components": {
+        "search": true,
+        "themeSwitch": true
+      }
+    },
+    "footer": {
+      "style": "minimal",
+      "content": "GentleTeaM, AGPL-3.0. Source on GitHub.",
+      "branding": false
+    }
+  },
+  "theme": {
+    "name": "default",
+    "appearance": "system",
+    "codeHighlight": true,
+    "customCss": [
+      "/assets/css/gtm.css"
+    ]
+  },
+  "minify": true,
+  "autoTitleFromH1": false,
+  "copyCode": true,
+  "pageNavigation": true,
+  "navigation": [
+    {
+      "title": "Start here",
+      "collapsible": false,
+      "children": [
+        {
+          "title": "What GTM is",
+          "path": "/"
+        },
+        {
+          "title": "Install",
+          "path": "/start/install/"
+        }
+      ]
+    },
+    {
+      "title": "Tutorial",
+      "collapsible": false,
+      "children": [
+        {
+          "title": "Your first Feature",
+          "path": "/tutorial/first-feature/"
+        }
+      ]
+    },
+    {
+      "title": "Guides",
+      "collapsible": false,
+      "children": [
+        {
+          "title": "Which size is my change?",
+          "path": "/guides/which-size/"
+        },
+        {
+          "title": "Change your team settings",
+          "path": "/guides/team-settings/"
+        },
+        {
+          "title": "Work on a repository that is not yours",
+          "path": "/guides/not-your-repo/"
+        },
+        {
+          "title": "It is too slow or too costly: what now?",
+          "path": "/guides/too-slow/"
+        },
+        {
+          "title": "Use GTM with other plugins",
+          "path": "/guides/other-plugins/"
+        }
+      ]
+    },
+    {
+      "title": "Reference",
+      "collapsible": false,
+      "children": [
+        {
+          "title": "Roles",
+          "path": "/reference/roles/"
+        },
+        {
+          "title": "Commands",
+          "path": "/reference/commands/"
+        },
+        {
+          "title": "Settings",
+          "path": "/reference/settings/"
+        },
+        {
+          "title": "How the team works",
+          "path": "/reference/how-the-team-works/"
+        },
+        {
+          "title": "The .gtm/ folder",
+          "path": "/reference/gtm-folder/"
+        },
+        {
+          "title": "Glossary",
+          "path": "/reference/glossary/"
+        },
+        {
+          "title": "Contributing",
+          "path": "/reference/contributing/"
+        }
+      ]
+    },
+    {
+      "title": "Why",
+      "collapsible": false,
+      "children": [
+        {
+          "title": "Why GTM exists",
+          "path": "/why/"
+        },
+        {
+          "title": "Principles",
+          "path": "/why/principles/"
+        },
+        {
+          "title": "Positions",
+          "path": "/why/positions/"
+        },
+        {
+          "title": "Where GTM comes from",
+          "path": "/why/credits/"
+        }
+      ]
+    },
+    {
+      "title": "GitHub",
+      "path": "https://github.com/MorganKryze/GentleTeaM",
+      "icon": "github",
+      "external": true
+    }
+  ],
+  "plugins": {
+    "seo": {
+      "defaultDescription": "A team of agents designs, builds and reviews your change in Claude Code. You make three decisions."
+    },
+    "ai": false,
+    "git": {
+      "commitHistory": false
+    }
+  },
+  "markdown": {
+    "breaks": false
+  },
+  "customJs": [
+    "/assets/js/gtm.js"
+  ]
+}

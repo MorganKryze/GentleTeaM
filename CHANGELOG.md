@@ -8,6 +8,8 @@ versions follow [SemVer](https://semver.org/).
 ## [0.7.0] - 2026-10-14
 
 ### Added
+- A documentation site at https://morgankryze.github.io/GentleTeaM/, built with docmd and
+  deployed from main: five paths (Start here, Tutorial, Guides, Reference, Why) and five diagrams.
 - Risk tiers: a task the plan marks standard runs the implementer and the gate, then waits for
   a deferred review: the reviewer once per wave, ux-qa once per branch, one fix round each. A
   guarded task keeps today's loop. The tier is read on git's diff of the task and only rises:
@@ -15,6 +17,10 @@ versions follow [SemVer](https://semver.org/).
 - Migration: nothing to migrate; a profile without `review cadence` keeps today's loop. To opt
   in, add the `review cadence` and `fix rounds per standard review` Gates lines from the team
   template.
+
+### Changed
+- The README is reduced to what GTM is, install, cost and the link to the site; the old docs
+  pages moved into the site.
 
 ## [0.6.0] - 2026-10-13
 
