@@ -16,7 +16,7 @@ Ground rules: as in the `gtm` skill §0.
   branch` (`<minutes> min, <tokens>k tokens`; absent or `none`: no budget); `cadence`, the Gates
   line `review cadence` (absent: none); `standardRounds`, `fix rounds per standard review: N` (1).
 - Progress file: `<root>/reports/<slug>/progress.md`, one line per task run, any result (reruns
-  append): status, fix rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each line
+  append): status, tier, fix rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each line
   (design, spec, plan, task run, final review, re-review, re-run review, fix wave) ends `· <s> s ·
   <t>k · <a> agents`: the `duration_ms`, `subagent_tokens` and `agent_count` Claude Code gives per
   run (a dispatch is 1 agent), `?` if unreported, never an estimate; workflows add `· run <id>`.
