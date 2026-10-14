@@ -35,7 +35,7 @@ Four parts, read by every command and every role.
 | --- | --- | --- |
 | Correction rounds per task | 3 | past three, the plan is wrong, not the code: you choose what happens next |
 | File limit for a fix | 3 files | a change above it grows into a Feature with a spec |
-| Mockup threshold | 8/10, no must-fix finding | a screen below it is redrawn |
+| Mockup threshold | 8/10, nothing left that the critic says must be fixed | a screen below it is redrawn |
 | Mockup rounds | 3 | a screen is redrawn at most three times |
 
 A correction round is the implementer fixing open findings, then the same reviewers checking again;

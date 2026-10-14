@@ -67,7 +67,8 @@ team's work, settled between the team's roles without you.
 
 A [Feature](/reference/glossary/#feature) is one capability on one branch. You look at the
 mockups, approve the ten-line summary of the spec, and give the go. A
-[Fix](/reference/glossary/#fix), the small change, skips the first two.
+[Fix](/reference/glossary/#fix), the small change, has two: you approve a three-line design,
+then give the go.
 
 :::
 

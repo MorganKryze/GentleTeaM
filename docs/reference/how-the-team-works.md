@@ -51,6 +51,11 @@ whose trigger matched a task's changed paths but who did not review it brings th
 - **Fresh context:** reviewers see the brief, the report and the diff, never the implementer's
   reasoning.
 
+Specialists are called in by the path patterns in your
+[team settings](/reference/glossary/#team-settings), matched against the files the implementer
+reports changing: a file it leaves out triggers nothing. On a Feature the final review reads the
+whole branch and catches it; a Fix has no final review.
+
 ## Who re-reviews a correction, and when does a finding stop counting?
 
 Re-reviews go only to the reviewers who flagged something and to every specialist whose ground
