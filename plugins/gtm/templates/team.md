@@ -1,4 +1,4 @@
-# Team profile
+# Team settings
 
 > How this project weighs its work: which roles think hardest, which specialists exist, how strict
 > the gates are. Proposed at `/gtm:init`, approved by the human, revisited with `/gtm:tune`.
@@ -19,13 +19,13 @@ Weights: low · normal · high. They justify everything below.
 
 ## Roles
 Model: `opus`, `sonnet`, `haiku`, `fable`, a full model id, or `inherit`. Effort: `low`, `medium`,
-`high`, `xhigh`, `max`. The implementer's fix rounds raise its effort one level per round.
+`high`, `xhigh`, `max`. The implementer's correction rounds raise its effort one level per round.
 
 | Role | Model | Effort | Why | Decided |
 | --- | --- | --- | --- | --- |
 | analyst | opus | medium | clarifies once per request | YYYY-MM-DD |
 | designer | opus | medium | the critic catches what it misses | YYYY-MM-DD |
-| design-critic | opus | high | measured judgment gates every board | YYYY-MM-DD |
+| design-critic | opus | high | measured judgment gates every mockup page | YYYY-MM-DD |
 | architect | opus | high | a wrong plan costs every task after it | YYYY-MM-DD |
 | implementer | opus | low | the plan carries the thinking; reviews catch the rest | YYYY-MM-DD |
 | reviewer | opus | medium | runs on every task | YYYY-MM-DD |
@@ -56,7 +56,7 @@ type.
 - budget per branch: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD
 
 A budget is `none` or `<minutes> min, <tokens>k tokens`. Past 1.5× of one, `/gtm:deliver` raises a
-Heads-up and goes on; no budget changes a verdict, a fix round or the order of tasks. A profile
+Heads-up and goes on; no budget changes a verdict, a correction round or the order of tasks. A profile
 without these lines reads as `none`. A profile without `review cadence` runs every task guarded,
 as before 0.7.0: nothing to migrate, add the line to opt in.
 

@@ -129,8 +129,8 @@ nobody should restate their priorities every session.
 
 An insecure or data-losing change never ships, whatever the size or the deadline: these failures
 cannot be apologised away or rolled back. A schema, migration or sign-in change is a Feature from
-the start, the security and data reviewers check every change on their ground, and the final
-review reads security and data first.
+the start, the security and data reviewers check every change on their ground, their findings
+always block the task, and the final review reads security and data first.
 
 <p class="gtm-cost">Cost: specialist reviews at the highest effort, and now and then a blocked task.</p>
 

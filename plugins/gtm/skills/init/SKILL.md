@@ -1,6 +1,6 @@
 ---
 name: init
-description: Bootstrap GTM in a project - drafts the brief, config, team profile, conventions and guidelines from the codebase, confirms them through a short interview, and sets stealth mode and whether .gtm/ stays out of git. Use once per project, or to refresh a stale setup.
+description: Bootstrap GTM in a project - drafts the brief, config, team settings, conventions and guidelines from the codebase, confirms them through a short interview, and sets stealth mode and whether .gtm/ stays out of git. Use once per project, or to refresh a stale setup.
 argument-hint: "[root path, default .gtm]"
 ---
 # Set up GTM in this project
@@ -31,13 +31,13 @@ default detail level (brief / standard / deep / ask), emoji (off / light / gener
 Write the answers in (`language`, `briefing` in `config.yml`); remove every `[CHECK]` except on
 verify commands not run at init, which `/gtm:deliver` confirms on its first run.
 
-## 3. Team profile (one message)
+## 3. Team settings (one message)
 From the brief, propose `team.md`: priorities weighted low / normal / high (security, data
 integrity, UX and accessibility, performance, delivery speed, usage and cost sensitivity), then per
-role model and effort, which specialists exist and their path triggers, fix rounds, the design
-threshold, and whether the plan replays risky tasks. Derive, do not guess:
+role model and effort, which specialists exist and their path triggers, correction rounds, the design
+threshold, and whether the plan dry-runs risky tasks. Derive, do not guess:
 - several accounts, a server or secrets → security high: security-reviewer on, effort xhigh;
-- stored or synced personal records → data integrity high: data-reviewer on, risky replay on;
+- stored or synced personal records → data integrity high: data-reviewer on, dry runs of risky tasks on;
 - screens used daily or by many → UX high: ux-qa on, design threshold 8 or more;
 - usage or cost sensitivity high → lower the effort of the high-volume roles (implementer,
   reviewer) first; never lower a role that guards a high priority.
@@ -90,7 +90,7 @@ project's own log already uses (cite the evidence). `guidelines/voice.md` is man
 | **A** commit it | except `reports/` and `mockups/`, excluded locally |
 | **B** keep it local | all of it in `.git/info/exclude` |
 
-**I recommend: A**, the brief, team profile and ledger are the team's memory; reviews stay local.
+**I recommend: A**, the brief, team settings and ledger are the team's memory; reviews stay local.
 **Cost if wrong:** A leaves shared files to tidy later; B starts a teammate with no memory.
 
 Apply the choice through `.git/info/exclude`, replacing the entry from §1 (never `.gitignore`

@@ -34,6 +34,10 @@ pull request small, and update the CHANGELOG and the version together.
 ## Which checks must pass?
 
 `node scripts/validate.mjs` and `claude plugin validate .` must pass; CI runs both on every push.
+`validate.mjs` also checks the documentation site's sources (`scripts/site-checks.test.mjs
+--source`). On every pull request the Pages workflow builds the site and runs the full checks:
+links, and in a browser the overflow, 44 px targets, reading measure, contrast, tables and axe
+(`scripts/site-measure.test.mjs`); it deploys from main.
 `validate.mjs` also runs each workflow against scripted agents (`scripts/workflows.test.mjs`): a
 new workflow needs a scenario there, and a changed default or threshold changes one.
 

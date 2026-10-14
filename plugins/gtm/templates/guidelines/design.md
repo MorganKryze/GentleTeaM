@@ -1,7 +1,7 @@
 # Design guideline
 
 > When to read: designer and design critic, always; ux-qa when a diff touches screens.
-> Authority: the human's validated boards. Real tokens live in <path to the project's tokens>.
+> Authority: the human's validated mockup pages. Real tokens live in <path to the project's tokens>.
 
 ## 1. Three words
 **Breathing room, readability, accessibility.** Every screen is judged on these first.
@@ -29,17 +29,17 @@ primary, primary-soft. Radius, borders, shadows. Navigation per form factor.>
 <One line per pattern the human approved: name, where it lives, what it looks like.>
 
 ## 5. How mockups are made (designer)
-- HTML mockups under `design.mockups/<slug>/`, reusing the shared CSS of earlier boards.
+- HTML mockups under `design.mockups/<slug>/`, reusing the shared CSS of earlier mockup pages.
 - Render with `design.render` (or `npx playwright screenshot --viewport-size=<w>,<h>
   file://<html> <png>`), then look at the PNG and fix what is wrong before handing back.
-- One board per topic; every new screen in light and dark; a caption under each frame saying what
+- One mockup page per topic; every new screen in light and dark; a caption under each frame saying what
   it shows and the decision it embodies; realistic data in the human's language, no lorem ipsum.
-- The board's top line lists the decisions the human must make, each with a recommendation.
+- The mockup page's top line lists the decisions the human must make, each with a recommendation.
 
 ## 6. How the critic scores
 Score /10, must-fix list, should-fix list. Measured, not felt:
 - Overflow: load the HTML at each frame width; no element's `scrollWidth` exceeds its frame.
 - Targets: interactive elements at least 44 px at frame scale.
 - Contrast: compute WCAG ratios of the token pairs used.
-- Rules §2 one by one; patterns §4 reused where they apply; consistency with previous boards.
+- Rules §2 one by one; patterns §4 reused where they apply; consistency with previous mockup pages.
 - 10 ships as is; 8 minor polish only; below 8 or any must-fix means another round.

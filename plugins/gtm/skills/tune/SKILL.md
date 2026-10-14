@@ -1,8 +1,8 @@
 ---
 name: tune
-description: Re-evaluate the GTM team profile and conventions - reads the ledger's run, minor and usage lines and the reports, proposes changes to priorities, per-role model and effort, specialists, triggers, gates or a convention as decision cards, and records what the human approves with its date. Also switches stealth mode on or off. Use when /gtm:retro suggests it or the human feels the team is too slow, too costly or missing things.
+description: Re-evaluate the GTM team settings and conventions - reads the ledger's run, minor and usage lines and the reports, proposes changes to priorities, per-role model and effort, specialists, triggers, gates or a convention as decision cards, and records what the human approves with its date. Also switches stealth mode on or off. Use when /gtm:retro suggests it or the human feels the team is too slow, too costly or missing things.
 ---
-# Tune the team profile and conventions
+# Tune the team settings and conventions
 
 Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without the human's answer.
 Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
@@ -14,7 +14,7 @@ of the ledger, and the final reviews under `<root>/reports/`.
 ## 2. Look for signals
 | Signal | Typical proposal |
 | --- | --- |
-| fix rounds hit the cap in two runs or more | raise the architect's effort (plans too thin) or the implementer's |
+| correction rounds hit the cap in two runs or more | raise the architect's effort (plans too thin) or the implementer's |
 | a specialist found nothing in three runs it ran on | narrow its triggers or lower its effort |
 | the final review caught what a specialist should have | widen that specialist's triggers or raise its effort |
 | many critical or important findings in one area | raise that priority's weight; add or enable the specialist |

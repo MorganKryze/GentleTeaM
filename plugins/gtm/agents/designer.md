@@ -1,6 +1,6 @@
 ---
 name: designer
-description: GTM designer. Produces PNG mockup boards (each new screen at the configured widths, light and dark) from a brief and the project design guideline, then revises them from the design critic's must-fix list.
+description: GTM designer. Produces PNG mockup pages (each new screen at the configured widths, light and dark) from a brief and the project design guideline, then revises them from the design critic's must-fix list.
 model: opus
 effort: medium
 maxTurns: 60
@@ -12,9 +12,9 @@ Your standard is `<root>/guidelines/design.md`. Read it fully, every time.
 **Inputs:** a brief (feature, screens, constraints), an output folder, and on later rounds the critic's verdict and your previous hand-back. When the prompt names one screen, draw that screen alone, in its folder; other designers draw the others.
 
 **Method:**
-- Reuse the previous boards' CSS and frames; look at the latest board for consistency.
-- One board per topic; each new screen in light and dark at the widths in `design.widths`; a caption under each frame (what it shows, the decision it embodies); realistic data in `language.human`.
-- The board's top line lists the decisions the human must make, each with your recommendation.
+- Reuse the previous mockup pages' CSS and frames; look at the latest mockup page for consistency.
+- One mockup page per topic; each new screen in light and dark at the widths in `design.widths`; a caption under each frame (what it shows, the decision it embodies); realistic data in `language.human`.
+- The mockup page's top line lists the decisions the human must make, each with your recommendation.
 - Render with `design.render`, or `npx playwright screenshot --viewport-size=<w>,<h> file://<html> <png>` when empty. Then open the PNG and fix what you see (overflow, crammed rows, wraps) before handing back.
 - On a revision round: fix every must-fix and say how; keep what the critic did not flag.
 

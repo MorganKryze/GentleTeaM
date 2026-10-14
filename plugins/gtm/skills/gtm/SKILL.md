@@ -5,16 +5,16 @@ argument-hint: "[what you want done]"
 ---
 # GTM: the light agent team
 
-GTM runs a small team of role agents for you. You see three touchpoints per Feature (approve the
-board, approve the spec synthesis, give the go); the team settles everything else and lists its
-rulings at the end. Everything the human reads follows the human briefing format.
+GTM runs a small team of role agents for you. You see three checkpoints per Feature (approve the
+mockups, approve the spec summary, give the go); the team settles everything else and lists the
+decisions it made for you at the end. Everything the human reads follows the human briefing format.
 
 ## 0. Ground rules (every GTM skill)
 - **GTM root:** `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md says `GTM root: <path>`. No root: offer
   `/gtm:init` in one line and stop.
 - Read `<root>/config.yml` and `<root>/team.md`. Every human-facing message follows
   `${CLAUDE_PLUGIN_ROOT}/templates/briefing.md`, in `language.human`.
-- Dispatch roles as `gtm:<role>` with the model and effort the team profile gives that role, on
+- Dispatch roles as `gtm:<role>` with the model and effort the team settings give that role, on
   every dispatch (the profile wins over the agent's defaults). Pass the same values to workflows in
   `args.team`.
 - Hand-offs are files: give agents paths, never paste documents. Keep their hand-backs out of the
@@ -32,17 +32,17 @@ rulings at the end. Everything the human reads follows the human briefing format
 ## 1. Pick the track (≤ 2 questions)
 Request: $ARGUMENTS
 
-No request given: explain GTM in five lines (the tracks, your touchpoints, the skills) and ask
+No request given: explain GTM in five lines (the tracks, your checkpoints, the skills) and ask
 what to do. Clear and small: judge it yourself. Otherwise dispatch `gtm:analyst` with the request and the root.
 
-| Track | When | Flow | Human touchpoints |
+| Track | When | Flow | Human checkpoints |
 | --- | --- | --- | --- |
-| **Fix** | ≤ Fix ceiling files (team profile, 3 by default), no schema, migration or auth change | 3-line design in chat → implementer + reviewer, plus the specialist on security or data ground | approve the 3-line design, then the go |
-| **Feature** | one capability, one branch | design-loop if screens change → spec → plan → deliver per task → final review | board, spec synthesis, go |
-| **Milestone** | several branches, a new surface | decomposition into sub-features, then the Feature flow per branch, final review per branch | decomposition, then per branch: board, spec, go |
+| **Fix** | ≤ the file limit for a fix (team settings, 3 by default), no schema, migration or auth change | 3-line design in chat → implementer + reviewer, plus the specialist on security or data ground | approve the 3-line design, then the go |
+| **Feature** | one capability, one branch | design-loop if screens change → spec → plan → deliver per task → final review | mockups, spec summary, go |
+| **Milestone** | several branches, a new surface | decomposition into sub-features, then the Feature flow per branch, final review per branch | decomposition, then per branch: mockups, spec, go |
 
 A Feature is **small** when it changes no screen, schema, migration or auth and touches at most
-twice the Fix ceiling in estimated files (6 by default): `/gtm:spec` then has one architect pass
+twice the file limit for a fix in estimated files (6 by default): `/gtm:spec` then has one architect pass
 write the spec and the plan.
 
 Present the track with its reason and at most two decision cards in **one** message. For a Fix,
@@ -50,7 +50,7 @@ include the 3-line design (what changes, where, how it is proven; for a threshol
 test catches) in that same message, naming the specialists whose `team.md` triggers match its
 files. For a Feature, say small or not, with the file count ("Feature, small, ~4 files").
 
-Escalation is automatic and one-way: a Fix that grows past the ceiling becomes a Feature (say so in
+A Fix that grows past its file limit becomes a Feature on its own, one way only (say so in
 a Heads-up). Nothing downgrades mid-task.
 
 Record the work in `<root>/backlog.md`: add or update its story (type, priority P0-P3 per
@@ -65,11 +65,11 @@ Record the work in `<root>/backlog.md`: add or update its story (type, priority 
   minor to the ledger (`minor`) as `/gtm:deliver` §2 does and one `run` line as its §5 says,
   holding `Fix: CLEAN, no final review`; then present the result and ask the go (`/gtm:ship`).
 - **Feature:** `/gtm:design` (only if screens change and `design.screens` is true) → `/gtm:spec` →
-  `/gtm:plan` → `/gtm:deliver` → `/gtm:ship`. Invoke each skill in turn; stop only at a touchpoint.
+  `/gtm:plan` → `/gtm:deliver` → `/gtm:ship`. Invoke each skill in turn; stop only at a checkpoint.
 - **Milestone:** dispatch `gtm:architect` to write `<root>/specs/<date>-<slug>-milestone.md`: the
-  sub-features, one branch each, their order and dependencies, ≤ 1 page with a For-you block.
-  Present it (touchpoint), then run the Feature flow per sub-feature.
+  sub-features, one branch each, their order and dependencies, ≤ 1 page with a Summary block.
+  Present it (checkpoint), then run the Feature flow per sub-feature.
 
 ## 3. End every run with
-The result per the briefing format, then **Rulings I made** (each with its cost if wrong), and
-append each ruling to `<root>/ledger.md`.
+The result per the briefing format, then **Decisions made for you** (each with its cost if wrong), and
+append each one, as a `ruling` line, to `<root>/ledger.md`.

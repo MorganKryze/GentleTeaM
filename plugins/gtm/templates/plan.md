@@ -3,8 +3,8 @@
 > Spec: <path> (binding). Branch: <name> from <base> at <sha>. Date: <YYYY-MM-DD>.
 > Ledger lessons applied: <entries read at plan time, by date>.
 
-## For you
-<At most ten lines: how many tasks, which are risky and were replayed, what the human must know.
+## Summary
+<At most ten lines: how many tasks, which are risky and had a dry run, what the human must know.
 Usually nothing to decide here: the spec settled it. Last line, the estimate, as in the spec:
 `<n> tasks × <m> min + <phase> <m> min, ... ≈ <W> min, <T>k tokens (medians of the last <k>
 measured runs)`, or `no measured run yet`.>
@@ -18,7 +18,7 @@ measured runs)`, or `no measured run yet`.>
 <The three to five places a reviewer must look hardest, each pointing at the task and test that
 covers it.>
 
-## Rulings where the spec is silent
+## Decisions made where the spec is silent
 1. <ruling> (cost if wrong: …)
 
 ## Tasks
@@ -29,7 +29,7 @@ covers it.>
 
 **Files:** Create: `…` · Modify: `…`
 **Interfaces:** Consumes: `…` · Produces: `…` (signatures)
-**Risky:** <no | yes: migration / contract / persistence; replayed on <date>, gate counts>
+**Risky:** <no | yes: migration / contract / persistence; dry run on <date>, gate counts>
 
 - [ ] Step 1: write the failing test `<test name>`; run `<command>`; expect FAIL because …
 - [ ] Step 2: implement …

@@ -3,7 +3,7 @@ name: ship
 description: Prepare a GTM branch for the human's go - gate check, PR text, footprint check in stealth mode, then push, merge, tag or release only what the human explicitly approves, plus release notes and live QA after deployment. Use when /gtm:deliver reports the branch ready.
 argument-hint: "[branch or slug]"
 ---
-# Ship (touchpoint 3: the go)
+# Ship (checkpoint 3: the go)
 
 Ground rules: as in the `gtm` skill §0. Nothing is pushed, merged, tagged or released without the
 human's explicit go **in this conversation**, for that exact action.
@@ -16,10 +16,10 @@ The final review says ready, or the last `run` line a delivery wrote for this sl
 `git log --format=%B`).
 
 ## 2. Write the PR text
-`<root>/reports/<slug>/pr.md`, written as `<root>/guidelines/voice.md` says: a Conventional title; a body with the For-you summary, what changed
-for the user, how it was proven (tests, gate, review verdicts), the rulings, the deferred minors.
+`<root>/reports/<slug>/pr.md`, written as `<root>/guidelines/voice.md` says: a Conventional title; a body with the Summary, what changed
+for the user, how it was proven (tests, gate, review verdicts), the decisions made for you, the deferred minors.
 Never name anything in `git.never_name`. With `stealth: on`, the body takes the shape of the
-project's own recent PRs, with none of GTM's section names (For you, rulings, deferred minors).
+project's own recent PRs, with none of GTM's section names (Summary, decisions made for you, deferred minors).
 
 ## 2b. Footprint check (stealth on only)
 Run, and quote the result:

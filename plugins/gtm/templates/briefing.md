@@ -1,6 +1,6 @@
 # Human briefing format
 
-Every message, board, synthesis or report meant for the human follows this format, in the human's
+Every message, mockup page, synthesis or report meant for the human follows this format, in the human's
 language (`language.human` in the GTM config). Agents' internal reports do not; they follow their
 own hand-back contract.
 
@@ -59,7 +59,7 @@ decision without a recommendation; prefer the long-term option.
 A third option is a third row. The labels are written in `language.human`: in French, "Décision",
 "Option", "Ce que ça implique", "Mon avis", "Si c'est faux".
 
-## Rulings I made
+## Decisions made for you
 
 At the end of a run, every decision the orchestrator or an agent took without asking is listed,
 one line each, so the human can overturn any of them:

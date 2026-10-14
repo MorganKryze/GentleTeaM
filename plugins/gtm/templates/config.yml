@@ -11,14 +11,14 @@ root: .gtm
 stealth: off
 
 language:
-  human: en          # briefings, specs' "For you", board captions, decision cards
+  human: en          # briefings, specs' Summary, mockup page captions, decision cards
   code: en           # plans, reports, commits, code comments
 
 briefing:
   # brief | standard | deep | ask. "ask" = one quick question before presenting, then the answer is
   # stored below under remembered.<kind> and reused.
   detail: ask
-  remembered: {}     # e.g. { board: brief, spec: standard, plan: brief, review: brief }
+  remembered: {}     # e.g. { mockup page: brief, spec: standard, plan: brief, review: brief }
   # off | light | generous. light = a few status markers in conversation (✅ ⚠️ 🔒 ❌), never
   # decorative. Whatever the setting: none in docs, specs, plans or ledgers; the README may use a few.
   emoji: light
@@ -53,12 +53,12 @@ footprint:
   skip: []                        # writing tells the project's own voice uses: em-dash, emoji, stock,
                                   # filler, triad, bullets
 
-# Specialists, their triggers, risky paths, fix rounds and the design threshold are weights, not
-# mechanics: they live in the team profile (<root>/team.md), next to their reasons.
+# Specialists, their triggers, risky paths, correction rounds and the design threshold are weights, not
+# mechanics: they live in the team settings (<root>/team.md), next to their reasons.
 
 design:
   screens: true                   # false = the project has no UI; design-loop never runs
-  mockups: .gtm/mockups           # HTML + PNG boards
+  mockups: .gtm/mockups           # HTML + PNG mockup pages
   render: ""                      # "<cmd> {html} {png} {width}"; empty = npx playwright screenshot
   widths: [360, 390, 1280]
 

@@ -1,9 +1,9 @@
 ---
 name: plan
-description: Write the GTM task plan with the architect from an approved spec - per task files, interfaces, TDD steps, verify command, parallel-safe tags - applying the ledger's lessons and replaying only risky tasks in a scratch clone. No human touchpoint unless something deviates.
+description: Write the GTM task plan with the architect from an approved spec - per task files, interfaces, TDD steps, verify command, parallel-safe tags - applying the ledger's lessons and replaying only risky tasks in a scratch clone. No human checkpoint unless something deviates.
 argument-hint: "[spec path or slug]"
 ---
-# Plan (no touchpoint)
+# Plan (no checkpoint)
 
 Ground rules: as in the `gtm` skill §0. The spec must say `Status: approved`; otherwise run
 `/gtm:spec` first.
@@ -12,8 +12,8 @@ Ground rules: as in the `gtm` skill §0. The spec must say `Status: approved`; o
 The spec's Status ends with `plan kept from the one pass` and the plan exists: dispatch no
 architect, go to §2. Otherwise (no one pass, a card answered otherwise, the spec changed),
 dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: the spec path, the
-validated board, the output path `<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, and the
-team profile's Gates (replay risky tasks: yes/no; risky paths). Template:
+validated mockup page, the output path `<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, and the
+team settings' Gates (replay risky tasks: yes/no; risky paths). Template:
 `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. When it returns, write its progress line (`plan`) as
 `/gtm:deliver` §1 says, and one more after each correction round and each revision (§2); a
 phase's lines are summed in the run line.
@@ -24,14 +24,14 @@ phase's lines are summed in the run line.
 - `[P]` only on tasks whose files, CHANGELOG included, are disjoint within their parallel wave (two
   or more consecutive `[P]` tasks); a lone `[P]` task runs as any other.
 - Every task has `Tier: guarded | standard`: guarded when one of its Files matches a trigger of a
-  specialist the team profile's `review cadence` keeps per-task (a role left out, an unknown
+  specialist the team settings' `review cadence` keeps per-task (a role left out, an unknown
   value, or a lighter security-reviewer or data-reviewer: per-task; no cadence line: every task
   guarded); a missing or wrong one goes back.
 - Every EARS line of the spec maps to at least one task's test.
-- Risky tasks replayed as the architect's Replay policy says, with gate counts recorded; a plan
-  of one task is not replayed, its TDD steps plant the mutations instead.
+- Risky tasks dry-run as the architect's Dry-run policy says, with gate counts recorded; a plan
+  of one task gets no dry run, its TDD steps plant the mutations instead.
 - The plan lists the ledger lessons it applied.
-- The For-you holds the estimate line. Past 1.5× of the spec's (minutes or tokens): a Heads-up
+- The Summary holds the estimate line. Past 1.5× of the spec's (minutes or tokens): a Heads-up
   and a decision card (go on / revise the plan), with your recommendation.
 One round of corrections with the architect if a check fails.
 
