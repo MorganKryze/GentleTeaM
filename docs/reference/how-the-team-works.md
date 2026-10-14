@@ -68,6 +68,19 @@ a defect the task's diff did not introduce is `minor`, unless it is critical, a 
 a data-integrity defect. A minor finding does not block a task; it is logged and triaged by the
 final review.
 
+## How much review does each task get?
+
+Each task in the plan has a tier, matched to its risk. A task is **guarded** when one of its files
+matches the paths of a specialist your [team settings](/reference/glossary/#team-settings) keep
+per task; the security and data reviewers always are. It gets the full loop: a review after the
+task, every triggered specialist, up to three correction rounds. Every other task is
+**standard**: the implementer runs the checks before each commit, and one review covers the whole
+wave of consecutive standard tasks, with one correction round at most; findings that do not
+block go to the logbook. The `review cadence` line in `team.md` sets how often each reviewer runs:
+per task, per wave, or once per branch for ux-qa. Without that line every task is guarded, as
+before GTM 0.7.0. A standard task that turns out to touch a per-task specialist's paths is
+reviewed on its range and stays guarded from then on.
+
 ## How hard does the implementer think on each correction round?
 
 A task gets 3 [correction rounds](/reference/glossary/#correction-round) at most by default. Each

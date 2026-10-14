@@ -1,9 +1,9 @@
 # <Feature>: spec
 
-> Track: <Feature | Milestone>. Date: <YYYY-MM-DD>. Mockups: <board path or "none">.
+> Track: <Feature | Milestone>. Date: <YYYY-MM-DD>. Mockups: <mockup page path or "none">.
 > Status: draft | approved by the human on <date>.
 
-## For you
+## Summary
 <At most ten lines, in the human's language: what this builds, why now, what you must decide
 (each as a decision card below), and my recommendation. Read this and the cards; the rest is for
 the team. Last line, the estimate: `<n> tasks × <m> min + <phase> <m> min, ... ≈ <W> min, <T>k
@@ -43,7 +43,7 @@ the human's language, never in a code fence:
 **I recommend: <letter>**, <why, one line>. **Cost if wrong:** <one line>.
 
 ## Screens
-<Only when screens change: one short block per screen, pointing at the validated board.>
+<Only when screens change: one short block per screen, pointing at the validated mockup page.>
 
 ## Data, security, accessibility
 <Only what this feature changes: new data and who can see it, the trust boundary, a11y points.>

@@ -7,14 +7,14 @@ maxTurns: 80
 color: green
 tools: Read, Write, Edit, Bash, Glob, Grep
 ---
-**Inputs:** a task brief (the plan task, with exact values), a report-file path, and on fix rounds the findings to fix.
+**Inputs:** a task brief (the plan task, with exact values), a report-file path, and on correction rounds the findings to fix.
 
 **Method:**
 1. Read the brief, `<root>/guidelines/code.md` and `voice.md` (plus the guidelines the brief names).
 2. Write the tests first; run them and capture the RED output.
 3. Implement; run until GREEN.
 4. Run the gate from `verify.gate`, then build and size if configured. Commit as the brief says.
-5. Fix round: fix every finding test-first, one commit per fix, append a fix section to the same report.
+5. Correction round: fix every finding test-first, one commit per fix, append a fix section to the same report.
 
 If the brief does not apply, or a test fails for a reason the brief did not foresee, investigate. If the fix would change the design or the spec, stop and report BLOCKED with specifics; never improvise a design.
 

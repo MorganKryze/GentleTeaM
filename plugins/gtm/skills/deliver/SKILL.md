@@ -1,9 +1,9 @@
 ---
 name: deliver
-description: Deliver an approved GTM plan - runs the deliver-task workflow over each task in order (implementer, reviewer, triggered specialists, fix rounds), keeps the ledger, runs the final review with one fix wave, and reports with the rulings taken. Use after /gtm:plan.
+description: Deliver an approved GTM plan - runs the deliver-task workflow over each task in order (implementer, reviewer, triggered specialists, correction rounds), keeps the ledger, runs the final review with one fix wave, and reports with the rulings taken. Use after /gtm:plan.
 argument-hint: "[plan path or slug]"
 ---
-# Deliver (ends at touchpoint 3: the go)
+# Deliver (ends at checkpoint 3: the go)
 
 Ground rules: as in the `gtm` skill §0.
 
@@ -16,7 +16,7 @@ Ground rules: as in the `gtm` skill §0.
   branch` (`<minutes> min, <tokens>k tokens`; absent or `none`: no budget); `cadence`, the Gates
   line `review cadence` (absent: none); `standardRounds`, `fix rounds per standard review: N` (1).
 - Progress file: `<root>/reports/<slug>/progress.md`, one line per task run, any result (reruns
-  append): status, tier, fix rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each line
+  append): status, tier, correction rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each line
   (design, spec, plan, task run, final review, re-review, re-run review, fix wave) ends `· <s> s ·
   <t>k · <a> agents`: the `duration_ms`, `subagent_tokens` and `agent_count` Claude Code gives per
   run (a dispatch is 1 agent), `?` if unreported, never an estimate; workflows add `· run <id>`.
@@ -27,7 +27,7 @@ Ground rules: as in the `gtm` skill §0.
 
 ## 2. Each task, in plan order
 1. Write `<root>/reports/<slug>/task-<n>-brief.md`: the task verbatim, the plan's global
-   constraints, the spec path, the validated board, the guidelines it touches.
+   constraints, the spec path, the validated mockup page, the guidelines it touches.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report:
    "<root>/reports/<slug>/task-<n>.md", branch, base: <head before this task>, worktree (in a wave
    only, else omitted, never "none"), mockup, triggers, team, fixRounds, fixCeiling, track, tier,
@@ -40,17 +40,17 @@ Ground rules: as in the `gtm` skill §0.
    or a non-zero exit: `roles ?`, the totals kept. Past 1.5× of the per-task budget (minutes or
    tokens), or the branch's total so far past 1.5× of the per-branch one: one Heads-up per
    crossing (task or phase, measure, budget, largest role), a ledger `usage` line `over budget:
-   <the same>`, and go on. No budget or measure changes a verdict, a fix round, a dispatch, a
+   <the same>`, and go on. No budget or measure changes a verdict, a correction round, a dispatch, a
    skip or the order of tasks.
 4. Read the result:
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line (as §1 says), go on.
-   - `OPEN` (fix rounds exhausted, or a reviewer gave no review) or `BLOCKED`: its progress line
+   - `OPEN` (correction rounds exhausted, or a reviewer gave no review) or `BLOCKED`: its progress line
      (as §1 says), then stop the loop. A Heads-up and one decision card (re-run the missing
      review: that role alone on the task's `<base>..<head>` with its open findings, its line
      written and measured as step 3 says / revise the plan / accept with the open findings logged
      / take over by hand), with your recommendation. Resume from this task after the answer.
    - `ESCALATE` (Fix only): append each minor to the ledger (`minor`), then continue as a Feature
-     from `/gtm:spec`. Its `open` findings went to a fix round that grew the Fix past the ceiling
+     from `/gtm:spec`. Its `open` findings went to a correction round that grew the Fix past the ceiling
      and were not re-reviewed; `open` may also hold `<role> returned no review`. The spec states
      each as a requirement with its test, a missing review as owed, so the final review checks it.
 5. Tiers (with `review cadence` only; not a Fix), on git's list, never the planned or reported one.
@@ -87,7 +87,7 @@ Skip it only when all of these hold:
 - the plan has one task (one that only bumps the version and renames the CHANGELOG section, its
   `git -c core.quotePath=false diff --name-only --no-renames` listing those two files alone,
   does not count);
-- every task, the release one included, returned `CLEAN` at 0 fix rounds (`GATED`: last bullet);
+- every task, the release one included, returned `CLEAN` at 0 correction rounds (`GATED`: last bullet);
 - the tasks' ranges chain from the branch's fork point to `HEAD`: the first base is `git merge-base
   <git.base> HEAD`, each next base is the previous task's head, `HEAD` is the last task's head (no
   hand commit or escalated Fix's commit outside a task); a wave is one link: its tasks share its
@@ -96,7 +96,7 @@ Skip it only when all of these hold:
   --name-only --no-renames <task base>..<task head>` (a rename lists both paths) is in that
   task's `reviewers` (the workflow picks them from the files the implementer reports);
 - a standard task counts if a clean `review: "range"` with `reviewer` covers its range and deferred
-  reviews span fork point to `HEAD`, each clean at 0 fix rounds, none owed; else the final review
+  reviews span fork point to `HEAD`, each clean at 0 correction rounds, none owed; else the final review
   reads in full what no task review saw: standard ranges, commits in no task or wave range.
 
 Then dispatch no reviewer, write `final review skipped: one task, clean at 0 fix rounds` in the
@@ -104,7 +104,7 @@ Then dispatch no reviewer, write `final review skipped: one task, clean at 0 fix
 
 Otherwise dispatch `gtm:final-reviewer` with the spec, the plan, the branch range, the ledger and
 the report path `<root>/reports/<slug>/final.md`. `fix-first` → one fix wave: dispatch
-`gtm:implementer` with the must-fix list at a fix round's effort (one level above its profile, at
+`gtm:implementer` with the must-fix list at a correction round's effort (one level above its profile, at
 most `xhigh`; an effort off that ladder, such as `max`, kept), then `gtm:final-reviewer` once more
 on the fix range only, one level below its profile effort when that range's `git -c
 core.quotePath=false diff --name-only --no-renames` matches no specialist trigger (`low` at least,
@@ -112,7 +112,7 @@ core.quotePath=false diff --name-only --no-renames` matches no specialist trigge
 fixed, keep the others. Each dispatch writes its progress line and is measured as §2 step 3 says.
 
 ## 5. Record and report
-- Ledger: one `run` line (`tasks N · fix rounds per task · findings per reviewer (critical /
+- Ledger: one `run` line (`tasks N · correction rounds per task · findings per reviewer (critical /
   important / minor) · tiers <g>g <s>s · design rounds and score`, escalated counts guarded), ending
   with `measured <W>m <T>k <A>a: <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ...` from every
   progress line (a task's runs summed): phases design, spec, plan, tasks (re-run reviews in), final

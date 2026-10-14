@@ -5,6 +5,14 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Plain words in everything GTM shows you: checkpoints (were touchpoints), mockups (boards),
+  the summary (For you), decisions made for you (rulings), team settings (team profile),
+  correction rounds (fix rounds), the file limit for a fix (Fix ceiling), dry runs (replays).
+  File names, commands, config fields and the lines skills read are unchanged; nothing to migrate.
+- Docs: risk tiers explained (how much review each task gets, the `review cadence` line); the
+  site checks guard the new words in the plugin's headings and know both correction-round defaults.
+
 ## [0.7.0] - 2026-10-14
 
 ### Added

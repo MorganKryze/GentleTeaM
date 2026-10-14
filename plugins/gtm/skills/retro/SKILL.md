@@ -12,7 +12,7 @@ Ground rules: as in the `gtm` skill §0.
 ledger. Guideline edits follow `<root>/guidelines/voice.md`.
 
 ## 2. Distil
-- **Lessons:** what would have saved a fix round, a blocked task or a final-review finding. One line
+- **Lessons:** what would have saved a correction round, a blocked task or a final-review finding. One line
   each, phrased as a rule to keep (`- <date> · <slug> · lesson · <rule>`). At most five; fewer is
   better. Skip what a test or a lint rule now enforces.
 - **Guidelines:** a lesson seen in two branches or more belongs in a guideline. Propose the edit
@@ -21,7 +21,7 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
 - **Superseded:** strike entries a newer one contradicts; never delete.
 
 ## 3. Spot patterns for /gtm:tune
-Suggest `/gtm:tune` in one line when the `run` lines show: fix rounds hitting the cap in two runs
+Suggest `/gtm:tune` in one line when the `run` lines show: correction rounds hitting the cap in two runs
 or more; a specialist that found nothing across three runs it ran on; a final-review finding a
 specialist should have caught; design loops ending at the last round; `usage` notes about limits.
 

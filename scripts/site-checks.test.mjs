@@ -399,6 +399,7 @@ check('A11', () => {
   const f = [];
   const team = read('plugins/gtm/templates/team.md') || '';
   const rounds = +(team.match(/fix rounds per task: (\d+)/) || [])[1];
+  const standard = +(team.match(/fix rounds per standard review: (\d+)/) || [])[1];
   const ceiling = +(team.match(/Fix track ceiling: (\d+) files/) || [])[1];
   const threshold = +(team.match(/design threshold: (\d+)\/10/) || [])[1];
   const agents = readdirSync(join(repo, 'plugins/gtm/agents')).filter(n => n.endsWith('.md'));
@@ -406,7 +407,12 @@ check('A11', () => {
   const num = s => (/^\d+$/.test(s) ? +s : words[s.toLowerCase()]);
   const all = PAGES.map(([, , file]) => [file, prose(page(file) || '', { mermaid: true })]);
   for (const [file, t] of all) {
-    for (const m of t.matchAll(/\b(\d+|one|two|three|four|five)\s+correction rounds?\b/gi)) if (num(m[1]) !== rounds) f.push(`${file}: "${m[0]}", default is ${rounds}`);
+    // Two defaults since 0.7.0: per task, and per standard review (a sentence about a wave or a standard task).
+    for (const m of t.matchAll(/\b(\d+|one|two|three|four|five)\s+correction rounds?\b/gi)) {
+      const sentence = t.slice(Math.max(0, t.lastIndexOf('.', m.index) + 1), t.indexOf('.', m.index) + 1 || undefined);
+      const want = /\b(standard|wave)\b/i.test(sentence) ? standard : rounds;
+      if (num(m[1]) !== want) f.push(`${file}: "${m[0]}", default is ${want}`);
+    }
     for (const m of t.matchAll(/\b(\d+|three|four|five)[- ]files? (limit|at most)|file limit[^.]{0,40}?\b(\d+) files?/gi)) { const n = num(m[1] || m[3]); if (n !== ceiling) f.push(`${file}: "${m[0]}", default is ${ceiling}`); }
     for (const m of t.matchAll(/\b(\d+)\/10\b/g)) if (+m[1] !== threshold) f.push(`${file}: "${m[0]}", default is ${threshold}/10`);
     for (const m of t.matchAll(/\b(\d+|ten|eleven|twelve)\s+(role agents|roles)\b/gi)) if (num(m[1]) !== agents.length) f.push(`${file}: "${m[0]}", there are ${agents.length} agents`);
@@ -696,6 +702,23 @@ check('A33', () => {
   return f;
 });
 
+// The plugin's human-facing headings keep the site's plain words (B1): the briefing template, the
+// templates' and skills' headings. Parsed lines (team.md Gates, workflow statuses) are not headings.
+check('vocab', () => {
+  const f = [];
+  const retired = /\b(touchpoints?|boards?|(?<!made )for[- ]you|rulings?|team profile|fix rounds?|fix ceiling|replay)\b/i;
+  const dir = join(repo, 'plugins', 'gtm');
+  const files = ['templates/briefing.md', 'templates/spec.md', 'templates/plan.md', 'templates/team.md',
+    ...readdirSync(join(dir, 'skills')).map(d => `skills/${d}/SKILL.md`)];
+  for (const rel of files) {
+    if (!existsSync(join(dir, rel))) continue;
+    readFileSync(join(dir, rel), 'utf8').split('\n').forEach((l, i) => {
+      const m = /^#{1,6} /.test(l) && l.match(retired);
+      if (m) f.push(`plugins/gtm/${rel}:${i + 1}: "${m[0]}" in a heading`);
+    });
+  }
+  return f;
+});
 check('A34', () => {
   const f = [];
   const t = page('tutorial/first-feature.md') || '';
