@@ -78,9 +78,9 @@ Ground rules: as in the `gtm` skill §0.
    "<wt>"`, `git branch -d "<branch>-t<n>"`. A check that fails keeps the worktree.
 3. A branch name off `^[A-Za-z0-9._/-]+$` (before step 1), a moved branch/head, overlap, conflict,
    red gate, a failed check or files in a worktree's `<root>`: merge no more, keep it and unmerged
-   worktrees, undo nothing without the human. `OPEN`/`BLOCKED`: `CLEAN` siblings merge, no later
-   task starts. Heads-up, §2's card. On resume, that task reruns in its worktree, base its head,
-   and merges as step 2 says, checks included; the rest go on.
+   worktrees, undo nothing without the human. `OPEN`/`BLOCKED`: `CLEAN` or `GATED` siblings merge,
+   no later task starts. Heads-up, §2's card. On resume, that task reruns in its worktree, base its
+   head, and merges as step 2 says, checks included; the rest go on.
 
 ## 4. Final review (once per branch)
 Skip it only when all of these hold:
