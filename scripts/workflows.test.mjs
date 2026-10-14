@@ -922,6 +922,26 @@ const deliver = [
     returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: ['ux-qa'], stats: {}, minors: [] },
     dispatches: [{ agentType: 'gtm:ux-qa', label: 'ux-qa' }],
   },
+  {
+    name: 'branch review: no per-branch ground dispatches nobody, reviewers empty',
+    args: { review: 'branch', base: 'b0', head: 'h9', files: ['docs/a.md'], cadence: CAD, triggers: TRIGGERS },
+    reply: () => ok,
+    returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: [], stats: {}, minors: [] },
+    dispatches: [],
+  },
+  ...[
+    ['a mode spelt otherwise', { review: 'none', head: 'h9', files: ['docs/a.md'] }],
+    ['no head', { review: 'range', files: ['docs/a.md'] }],
+    ['no files', { review: 'range', head: 'h9' }],
+    ['no files on a branch review', { review: 'branch', head: 'h9' }],
+    ['files not a list', { review: 'range', head: 'h9', files: 'docs/a.md' }],
+  ].map(([what, a]) => ({
+    name: `deferred review: ${what} is BLOCKED, nobody dispatched`,
+    args: { base: 'b0', cadence: CAD, triggers: TRIGGERS, ...a },
+    reply: () => ok,
+    returns: { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files' },
+    dispatches: [],
+  })),
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).

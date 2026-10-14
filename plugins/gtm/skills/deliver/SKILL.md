@@ -32,7 +32,7 @@ Ground rules: as in the `gtm` skill §0.
    "<root>/reports/<slug>/task-<n>.md", branch, base: <head before this task>, worktree (in a wave
    only, else omitted, never "none"), mockup, triggers, team, fixRounds, fixCeiling, track, tier,
    cadence, standardRounds, review, head, files }`: `tier` the plan's, `guarded` once any progress
-   line of that task says guarded (a resume included); `review`, `head`, `files` for step 5 only.
+   line of it says guarded (on a resume too); `review`, `head`, `files`: step 5 only, never "none".
 3. Measure it, whatever its result: the run id (`wf_...` in the result's diagnostics) on
    `^wf_[0-9a-f-]+$`, the one folder `<config>/projects/*/*/subagents/workflows/<id>` (`<config>`
    = `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`), `node "${CLAUDE_PLUGIN_ROOT}/scripts/role-split.mjs"

@@ -121,8 +121,13 @@ async function retried(prompt, opts) {
 }
 
 phase('Implement')
-// A deferred review implements nothing: its range and the files git lists in it are given.
-const impl = A.review ? { head: A.head, files: A.files || [] } : await attempt(
+// A deferred review implements nothing: its range and the files git lists in it are given. A mode,
+// range or file list missing fails closed, as nothing reviewed is never a clean range.
+if (A.review !== undefined && (!['range', 'branch'].includes(A.review) || !A.base || !A.head || !Array.isArray(A.files))) {
+  log(`Deferred review ${A.review} not run: review range|branch, base, head and files are required`)
+  return { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files' }
+}
+const impl = A.review ? { head: A.head, files: A.files } : await attempt(
   `Implement this task on branch ${A.branch} (base ${A.base}).\nBrief (read it first): ${A.brief}\nReport file: ${A.report}\nReturn head = the commit after your work, files = repo-relative paths changed since ${A.base}.${WT}`,
   as('implementer', { schema: IMPL, label: 'implement', phase: 'Implement' }),
 )
