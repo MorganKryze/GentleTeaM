@@ -916,6 +916,22 @@ const deliver = [
     prompts: { 'data-reviewer · round 1': ['Review the range: diff b0..h1'] },
   },
   {
+    name: 'range review: git\'s files on security ground bring its reviewer, profile rounds (A3, W1-W3)',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['docs/a.md', 'scripts/x.mjs'], cadence: CAD, triggers: TRIGGERS },
+    reply: implementer([], (d) => (d.label.startsWith('security-reviewer') && d.label !== 'security-reviewer · round 2' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer', 'security-reviewer'], minors: [],
+      stats: { 'security-reviewer': { critical: 0, important: 2, minor: 0 } },
+    },
+    dispatches: [
+      reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 2' },
+    ],
+  },
+  {
     name: 'branch review: only the per-branch roles its files trigger',
     args: { review: 'branch', base: 'b0', head: 'h9', files: ['docs/a.md', 'ui/a.css'], cadence: CAD, triggers: TRIGGERS },
     reply: () => ok,
