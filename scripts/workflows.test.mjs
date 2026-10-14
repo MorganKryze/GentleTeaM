@@ -75,6 +75,7 @@ const bad = { verdict: 'fix', findings: [badFinding], summary: 'fix' }
 const critical = { severity: 'critical', file: 'scripts/x.mjs', summary: 'injection' }
 const typo = { severity: 'minor', summary: 'typo' }
 const TRIGGERS = { 'security-reviewer': ['^scripts/'], 'data-reviewer': ['^templates/'], 'ux-qa': ['^ui/'] }
+const CAD = { reviewer: 'per-wave', 'ux-qa': 'per-branch', 'security-reviewer': 'per-task', 'data-reviewer': 'per-task' }
 const srcFiles = (n) => Array.from({ length: n }, (_, i) => `src/${i}.js`)
 const implement = (agentType = 'gtm:implementer', extra = {}) => ({ agentType, label: 'implement', ...extra })
 const reviewer = (label = 'reviewer', extra = {}) => ({ agentType: 'gtm:reviewer', label, ...extra })
@@ -811,6 +812,152 @@ const deliver = [
     ],
     unprompted: Object.fromEntries(['implement', 'reviewer', 'fix · round 1', 'reviewer · round 1'].map((l) => [l, ['Worktree', 'cd ']])),
   },
+  {
+    name: 'standard: a task off per-task ground is GATED, no review',
+    args: { tier: 'standard', cadence: CAD, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], () => bad),
+    returns: { status: 'GATED', tier: 'standard', head: 'h0', files: ['docs/a.md'] },
+    dispatches: [implement()],
+  },
+  {
+    name: 'standard: reported files on security ground run the full loop, guarded',
+    args: { tier: 'standard', cadence: CAD, triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [], tier: 'guarded' },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' }],
+    log: ['Tier rises to guarded', 'security-reviewer'],
+  },
+  {
+    name: 'standard: a tier spelt otherwise is guarded',
+    args: { tier: 'Standard', cadence: CAD, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+  },
+  {
+    name: 'standard: a docs Fix keeps its review (W10)',
+    args: { tier: 'standard', track: 'fix', cadence: CAD, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [], tier: 'guarded' },
+    dispatches: [implement(), reviewer()],
+  },
+  {
+    name: 'standard: no cadence line runs today\'s loop',
+    args: { tier: 'standard', triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [], tier: 'guarded' },
+    dispatches: [implement(), reviewer()],
+  },
+  {
+    name: 'standard: an invalid trigger makes its ground every path (W13)',
+    args: { tier: 'standard', cadence: CAD, triggers: { 'security-reviewer': ['('] } },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [], tier: 'guarded' },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' }],
+  },
+  {
+    name: 'standard: a lighter cadence for the security reviewer reads per-task (W13)',
+    args: { tier: 'standard', cadence: { ...CAD, 'security-reviewer': 'per-wave' }, triggers: TRIGGERS },
+    reply: implementer(['scripts/x.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [], tier: 'guarded' },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' }],
+    log: ['Cadence per-wave for security-reviewer read as per-task'],
+  },
+  {
+    name: 'standard: an unknown cadence reads per-task (W13)',
+    args: { tier: 'standard', cadence: { ...CAD, 'ux-qa': 'weekly' }, triggers: TRIGGERS },
+    reply: implementer(['ui/a.css'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'ux-qa'], stats: {}, minors: [], tier: 'guarded' },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:ux-qa', label: 'ux-qa' }],
+    log: ['Cadence weekly for ux-qa read as per-task'],
+  },
+  {
+    name: 'range review: one reviewer over the whole wave, per-branch roles left out (W7)',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['docs/a.md', 'ui/a.css'], cadence: CAD, triggers: TRIGGERS },
+    reply: () => ok,
+    returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [reviewer()],
+    prompts: { reviewer: ['Review the range: diff b0..h9'] },
+  },
+  {
+    name: 'range review: one standard fix round, then OPEN',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['docs/a.md'], cadence: CAD, triggers: TRIGGERS },
+    reply: implementer([], () => bad),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], open: [{ ...badFinding, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } }, minors: [],
+    },
+    dispatches: [reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+  },
+  {
+    name: 'range review: a null review stops OPEN (W8)',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['docs/a.md'], cadence: CAD, triggers: TRIGGERS },
+    reply: () => null,
+    returns: {
+      status: 'OPEN', head: 'h9', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [],
+      open: [{ severity: 'important', summary: 'reviewer returned no review', by: 'reviewer' }],
+    },
+    dispatches: [reviewer()],
+  },
+  {
+    name: 'range review: a fix on guarded ground gets its specialist on the whole range, profile rounds (W9)',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['docs/a.md'], cadence: CAD, triggers: TRIGGERS },
+    reply: implementer([], (d) => (d.label === 'reviewer' || d.label === 'data-reviewer · round 1' ? bad : ok), ['templates/team.md']),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer', 'data-reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 }, 'data-reviewer': { critical: 0, important: 1, minor: 0 } },
+    },
+    dispatches: [
+      reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' },
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' },
+      { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 2' },
+    ],
+    prompts: { 'data-reviewer · round 1': ['Review the range: diff b0..h1'] },
+  },
+  {
+    name: 'range review: git\'s files on security ground bring its reviewer, profile rounds (A3, W1-W3)',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['docs/a.md', 'scripts/x.mjs'], cadence: CAD, triggers: TRIGGERS },
+    reply: implementer([], (d) => (d.label.startsWith('security-reviewer') && d.label !== 'security-reviewer · round 2' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer', 'security-reviewer'], minors: [],
+      stats: { 'security-reviewer': { critical: 0, important: 2, minor: 0 } },
+    },
+    dispatches: [
+      reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' },
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 2' },
+    ],
+  },
+  {
+    name: 'branch review: only the per-branch roles its files trigger',
+    args: { review: 'branch', base: 'b0', head: 'h9', files: ['docs/a.md', 'ui/a.css'], cadence: CAD, triggers: TRIGGERS },
+    reply: () => ok,
+    returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: ['ux-qa'], stats: {}, minors: [] },
+    dispatches: [{ agentType: 'gtm:ux-qa', label: 'ux-qa' }],
+  },
+  {
+    name: 'branch review: no per-branch ground dispatches nobody, reviewers empty',
+    args: { review: 'branch', base: 'b0', head: 'h9', files: ['docs/a.md'], cadence: CAD, triggers: TRIGGERS },
+    reply: () => ok,
+    returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: [], stats: {}, minors: [] },
+    dispatches: [],
+  },
+  ...[
+    ['a mode spelt otherwise', { review: 'none', head: 'h9', files: ['docs/a.md'] }],
+    ['no head', { review: 'range', files: ['docs/a.md'] }],
+    ['no files', { review: 'range', head: 'h9' }],
+    ['no files on a branch review', { review: 'branch', head: 'h9' }],
+    ['files not a list', { review: 'range', head: 'h9', files: 'docs/a.md' }],
+  ].map(([what, a]) => ({
+    name: `deferred review: ${what} is BLOCKED, nobody dispatched`,
+    args: { base: 'b0', cadence: CAD, triggers: TRIGGERS, ...a },
+    reply: () => ok,
+    returns: { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files' },
+    dispatches: [],
+  })),
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).

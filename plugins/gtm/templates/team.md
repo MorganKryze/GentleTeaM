@@ -46,16 +46,19 @@ type.
 
 ## Gates
 - fix rounds per task: 3 · why: past three, the plan is wrong, not the code · YYYY-MM-DD
+- fix rounds per standard review: 1 · why: a standard review fixes once, minors go to the ledger · YYYY-MM-DD
 - Fix track ceiling: 3 files · why: above it, the change deserves a spec · YYYY-MM-DD
 - design threshold: 8/10, zero must-fix · why: <reason> · YYYY-MM-DD
 - design rounds: 3 · why: <reason> · YYYY-MM-DD
 - replay risky tasks: yes · risky paths `migrations?/`, `(sync|contract|schema)`, `(db|store|storage)/` · why: <reason> · YYYY-MM-DD
 - budget per task: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD
+- review cadence: reviewer per-wave, ux-qa per-branch, security-reviewer per-task, data-reviewer per-task · why: a role left out reviews per task; security and data reviewers never lighter · YYYY-MM-DD
 - budget per branch: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD
 
 A budget is `none` or `<minutes> min, <tokens>k tokens`. Past 1.5× of one, `/gtm:deliver` raises a
 Heads-up and goes on; no budget changes a verdict, a fix round or the order of tasks. A profile
-without these lines reads as `none`.
+without these lines reads as `none`. A profile without `review cadence` runs every task guarded,
+as before 0.7.0: nothing to migrate, add the line to opt in.
 
 ## History
 Changes made by `/gtm:tune`, newest last: `- YYYY-MM-DD · <setting>: <old> → <new> · <why>`.
