@@ -5,6 +5,15 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Risk tiers: a task the plan marks standard runs the implementer and the gate, then waits for
+  a deferred review: the reviewer once per wave, ux-qa once per branch, one fix round each. A
+  guarded task keeps today's loop. The tier is read on git's diff of the task and only rises:
+  security or data ground makes a task guarded, and those two reviewers stay per task.
+- Migration: nothing to migrate; a profile without `review cadence` keeps today's loop. To opt
+  in, add the `review cadence` and `fix rounds per standard review` Gates lines from the team
+  template.
+
 ## [0.6.0] - 2026-10-13
 
 ### Added
