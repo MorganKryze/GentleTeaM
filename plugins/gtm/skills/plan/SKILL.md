@@ -24,8 +24,9 @@ phase's lines are summed in the run line.
 - `[P]` only on tasks whose files, CHANGELOG included, are disjoint within their parallel wave (two
   or more consecutive `[P]` tasks); a lone `[P]` task runs as any other.
 - Every task has `Tier: guarded | standard`: guarded when one of its Files matches a trigger of a
-  specialist the team profile's `review cadence` keeps per-task (a role left out: per-task; no
-  cadence line: every task guarded); a missing or wrong one goes back.
+  specialist the team profile's `review cadence` keeps per-task (a role left out, an unknown
+  value, or a lighter security-reviewer or data-reviewer: per-task; no cadence line: every task
+  guarded); a missing or wrong one goes back.
 - Every EARS line of the spec maps to at least one task's test.
 - Risky tasks replayed as the architect's Replay policy says, with gate counts recorded; a plan
   of one task is not replayed, its TDD steps plant the mutations instead.
