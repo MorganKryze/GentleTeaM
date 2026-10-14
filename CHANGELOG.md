@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.7.1] - 2026-10-14
+
 ### Changed
 - Plain words in everything GTM shows you: checkpoints (were touchpoints), mockups (boards),
   the summary (For you), decisions made for you (rulings), team settings (team profile),
