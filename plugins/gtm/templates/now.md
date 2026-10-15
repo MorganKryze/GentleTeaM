@@ -9,21 +9,23 @@
   at most 100 columns; no table, no code fence.
 - Only the JSON's fields reach the page: statuses, counts, times, durations, names. Never a
   finding, a commit message, a prompt or a hand-back. A `?` from the script stays `?`.
-- Line 1: `# <slug> · <HH:MM of updated>`. Rebuilt by `/gtm:status`: add ` · rebuilt`.
+- Line 1: `# <slug> · <HH:MM of updated>`.
 - First `>` line, the breadcrumb: `<epic> › <branch> › <phase> › task <n>/<N> · <clock>`. Leave
   out the epic when it is null, the task outside delivery, the clock when `eta.clock` is null.
 - What runs: one `- <kind> <name> since <HH:MM> (<ageMin> min)` line per `running` item; when
   `mayHaveStopped`, add `, may have stopped: last change <lastChangeMin> min ago`. Under it, the
   line `  <since> · <worktree>`: the item's `since` as given (full date and time) and the worktree
   passed in its `--running` (none: leave out ` · <worktree>`), so `/gtm:status` can pass it back.
-  Then one `- worktree <name> (<branch>)` line per worktree. An empty `running` reads "nothing";
-  a rebuild by `/gtm:status` reads "what runs: unknown", the worktree lines still listed.
+  Then one `- worktree <name> (<branch>)` line per worktree. An empty `running` reads "nothing".
 - What waits: "nothing", or `<kind> · task <task> · <question>`, the question cut at 80
   characters, written by the writer in its own words (never pasted text).
 - ETA: `<minutes> min, ends about <clock> (median of <runs> runs)`. `eta.none`: "no measured run
   yet". `afterAnswer`: `<minutes> min after your answer`, no clock. `tasks` null: "after the plan".
 - Events: the `events` list as given, newest first, at most three.
 - Other branches: one line each, `- <branch> › <phase> › task <task> · updated <HH:MM>`.
+- Rebuilt by `/gtm:status` (no `--running`, no `--waiting`): line 1 ends with ` · rebuilt`; what
+  runs reads "what runs: unknown", the worktree lines still listed; what waits reads "what waits:
+  unknown"; no clock in the breadcrumb or the ETA, since an answer may be pending.
 
 ## Example
 
