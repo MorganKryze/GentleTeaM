@@ -11,6 +11,8 @@ import { execFileSync } from 'node:child_process'
 
 const SAFE = /^[A-Za-z0-9._/-]+$/
 const WINDOW = 5, EVENTS = 3, LABEL = 60, STOPPED = 2
+// Event words: one SAFE token, or a status phrase from this closed list; any other text prints `?`.
+const PHRASES = ['re-review ready', 'second re-review ready']
 const PHASES = ['mockups', 'spec', 'plan', 'delivery', 'final review', 'correction', 'go', 'shipped']
 const safe = (s) => (typeof s === 'string' && SAFE.test(s) ? s : '?')
 const label = (s) => [...s.replace(/[\x00-\x1f\x7f-\x9f]/g, '').trim()].slice(0, LABEL).join('')
@@ -84,7 +86,7 @@ function facts(s) {
     else if (step === 'fix') phase = 'final review'
     else { unknown = true; continue }
     const name = { design: 'mockups', final: 'final review', fix: 'correction' }[step] || step
-    events.push(`${name}: ${done ? 'done' : SAFE.test(word.replace(/ /g, '')) ? word : '?'}`)
+    events.push(`${name}: ${done ? 'done' : SAFE.test(word) || PHRASES.includes(word) ? word : '?'}`)
   }
   const doneTasks = Object.values(status).filter((w) => /^(CLEAN|GATED)$/.test(w)).length
   if (phase === 'delivery' && typeof of === 'number' && doneTasks >= of) phase = 'final review'
@@ -158,6 +160,6 @@ const out = {
   worktrees: trees.slice(1).map(({ name, branch }) => ({ name, branch })), events: mine ? mine.events.slice(-EVENTS) : [], stale, others,
 }
 if (out.waiting && out.waiting.task === '?' && !opt.waiting.includes(',')) out.waiting.task = null
-const hasUnknown = (v) => v === '?' || (v && typeof v === 'object' && Object.values(v).some(hasUnknown))
+const hasUnknown = (v) => v === '?' || (typeof v === 'string' && v.endsWith(': ?')) || (v && typeof v === 'object' && Object.values(v).some(hasUnknown))
 console.log(JSON.stringify(out, null, 2))
 process.exit(hasUnknown(out) ? 1 : 0)

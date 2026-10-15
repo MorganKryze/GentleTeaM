@@ -64,7 +64,7 @@ for (const name of readdirSync(fixtures).sort()) {
   let got
   try { got = JSON.parse(r.stdout) } catch { errors.push(`${name}: stdout is not JSON`); continue }
   subset(name, got, want.facts)
-  if (/rm -rf|must-fix|\$\(/.test(r.stdout)) errors.push(`${name}: message text reached the output`)
+  if (/rm -rf|must-fix|\$\(|ignore all|sk live|git push/.test(r.stdout)) errors.push(`${name}: message text reached the output`)
   if (snapshot(join(repo, 'root')) !== before) errors.push(`${name}: the script changed a file in the root`)
   if (execFileSync('git', ['status', '--porcelain'], { cwd: repo, encoding: 'utf8' }) !== status) errors.push(`${name}: the script changed git status`)
 }
