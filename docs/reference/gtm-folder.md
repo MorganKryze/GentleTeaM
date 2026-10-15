@@ -4,12 +4,12 @@ description: Every file GTM keeps in your project, what it holds, and which ones
 ---
 
 ::: callout summary
-- **You will learn:** what each file in `.gtm/` holds, and the five you actually read.
+- **You will learn:** what each file in `.gtm/` holds, and the six you actually read.
 - **Reading time:** 3 minutes, or look up one row.
 - **Before this:** [Roles](/reference/roles/), for who writes what.
 :::
 
-GTM keeps everything it writes in one folder at the root of your project, `.gtm/`. You read five
+GTM keeps everything it writes in one folder at the root of your project, `.gtm/`. You read six
 entries; the team reads the rest. A project may move the folder, or keep it out of git, and says
 so in its `CLAUDE.md`.
 
