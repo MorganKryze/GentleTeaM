@@ -18,7 +18,8 @@ const safe = (s) => (typeof s === 'string' && SAFE.test(s) ? s : '?')
 const label = (s) => [...s.replace(/[\x00-\x1f\x7f-\x9f]/g, '').trim()].slice(0, LABEL).join('')
 const read = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : null)
 const mtime = (f) => (existsSync(f) ? statSync(f).mtimeMs : null)
-const git = (cwd, args) => { try { return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) } catch { return null } }
+// Optional locks off: git status then never takes index.lock nor rewrites a tree's index.
+const git = (cwd, args) => { try { return execFileSync('git', ['--no-optional-locks', ...args], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) } catch { return null } }
 const round = (x) => Math.round(x * 10) / 10
 const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2 }
 
