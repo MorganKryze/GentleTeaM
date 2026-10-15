@@ -1,0 +1,27 @@
+{
+  "exit": 0,
+  "facts": {
+    "slug": "where-am-i",
+    "task": {
+      "n": 3,
+      "of": 5
+    },
+    "others": [
+      {
+        "slug": "b1",
+        "branch": "fix/b1",
+        "phase": "delivery",
+        "task": {
+          "n": 2,
+          "of": 2
+        }
+      }
+    ],
+    "worktrees": [
+      {
+        "name": "GentleTeaM-wt-followups",
+        "branch": "fix/b1"
+      }
+    ]
+  }
+}

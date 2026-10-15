@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Checks what `claude plugin validate` does not: agent and skill frontmatter, workflow syntax,
-// that the plugin version has a CHANGELOG entry, the footprint check and the role split against
-// their fixtures, and runs each workflow against scripted agents (scripts/workflows.test.mjs).
+// that the plugin version has a CHANGELOG entry, the footprint check, the role split and the run
+// view's facts against their fixtures, and runs each workflow against scripted agents
+// (scripts/workflows.test.mjs).
 // No dependencies.
 import { readFileSync, readdirSync, writeFileSync, mkdtempSync } from 'node:fs'
 import { join, basename } from 'node:path'
@@ -72,7 +73,7 @@ for (const name of readdirSync(join(plugin, 'workflows'))) {
   try { execFileSync(process.execPath, ['--check', wrapped], { stdio: 'pipe' }) } catch (e) { fail(file, e.stderr.toString().split('\n').slice(0, 5).join(' ')) }
 }
 
-for (const test of ['footprint-check.test.mjs', 'role-split.test.mjs', 'workflows.test.mjs']) {
+for (const test of ['footprint-check.test.mjs', 'role-split.test.mjs', 'now-facts.test.mjs', 'workflows.test.mjs']) {
   const file = join(root, 'scripts', test)
   try { execFileSync(process.execPath, [file], { stdio: 'pipe' }) }
   catch (e) { fail(file, (e.stderr || '').toString().trim() || e.message) }

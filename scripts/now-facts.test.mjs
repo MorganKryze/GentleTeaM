@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+// Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
+// scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
+// dirty, args }) and expected.json ({ exit, facts }, facts matched as a subset). The test builds a
+// throwaway repository around the root (git keeps no repository inside a fixture), runs the
+// script at a fixed time, and checks it changed no file and no git status. Run by
+// scripts/validate.mjs. No dependencies.
+import { readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync } from 'node:fs'
+import { join, relative } from 'node:path'
+import { tmpdir } from 'node:os'
+import { execFileSync, spawnSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
+
+const root = new URL('..', import.meta.url).pathname
+const fixtures = join(root, 'scripts/fixtures/now-facts')
+const script = join(root, 'plugins/gtm/scripts/now-facts.mjs')
+const NOW = Date.parse('2026-10-15T10:00:00Z')
+const ago = (min) => new Date(NOW - min * 60000)
+const errors = []
+
+function git(cwd, args, env = {}) {
+  execFileSync('git', args, { cwd, stdio: 'pipe', env: { ...process.env, ...env } })
+}
+function snapshot(dir) {
+  const h = createHash('sha256')
+  const walk = (d) => readdirSync(d, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).forEach((e) => {
+    const p = join(d, e.name)
+    if (e.isDirectory()) walk(p); else h.update(relative(dir, p)).update(readFileSync(p))
+  })
+  walk(dir)
+  return h.digest('hex')
+}
+function subset(name, got, want, path = 'facts') {
+  if (want === null || typeof want !== 'object') {
+    if (JSON.stringify(got) !== JSON.stringify(want)) errors.push(`${name}: ${path} is ${JSON.stringify(got)}, want ${JSON.stringify(want)}`)
+    return
+  }
+  if (got === null || typeof got !== 'object') return errors.push(`${name}: ${path} is ${JSON.stringify(got)}, want an object`)
+  if (Array.isArray(want) && got.length !== want.length) errors.push(`${name}: ${path} has ${got.length} items, want ${want.length}`)
+  for (const k of Object.keys(want)) subset(name, got[k], want[k], `${path}.${k}`)
+}
+
+for (const name of readdirSync(fixtures).sort()) {
+  const dir = join(fixtures, name)
+  const a = JSON.parse(readFileSync(join(dir, 'args.json'), 'utf8'))
+  const want = JSON.parse(readFileSync(join(dir, 'expected.json'), 'utf8'))
+  const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-'))
+  const repo = join(tmp, 'repo')
+  cpSync(join(dir, 'root'), join(repo, 'root'), { recursive: true })
+  const date = { GIT_AUTHOR_DATE: ago(60).toISOString(), GIT_COMMITTER_DATE: ago(60).toISOString() }
+  git(repo, ['init', '-q', '-b', 'main'])
+  appendFileSync(join(repo, '.git/info/exclude'), '/root/\n')
+  writeFileSync(join(repo, 'README.md'), 'fixture\n')
+  git(repo, ['add', 'README.md'])
+  git(repo, ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'init'], date)
+  git(repo, ['checkout', '-q', '-b', a.branch || 'main'])
+  for (const w of a.worktrees || []) git(repo, ['worktree', 'add', '-q', '-b', w.branch, join(tmp, w.name)])
+  if (a.dirty) { writeFileSync(join(repo, a.dirty.file), 'changed\n'); utimesSync(join(repo, a.dirty.file), ago(a.dirty.min), ago(a.dirty.min)) }
+  for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(repo, 'root', f), ago(min), ago(min))
+  const before = snapshot(join(repo, 'root')), status = execFileSync('git', ['status', '--porcelain'], { cwd: repo, encoding: 'utf8' })
+  const args = (a.args || []).map((x) => x.replace(/\{ago:(\d+)\}/g, (_, m) => ago(+m).toISOString()))
+  const r = spawnSync(process.execPath, [script, '--root', join(repo, 'root'), '--now', new Date(NOW).toISOString(), ...args], { encoding: 'utf8', env: { ...process.env, TZ: 'UTC' } })
+  if (r.status !== want.exit) errors.push(`${name}: exit ${r.status}, want ${want.exit} ${r.stderr.trim()}`)
+  let got
+  try { got = JSON.parse(r.stdout) } catch { errors.push(`${name}: stdout is not JSON`); continue }
+  subset(name, got, want.facts)
+  if (/rm -rf|must-fix|\$\(/.test(r.stdout)) errors.push(`${name}: message text reached the output`)
+  if (snapshot(join(repo, 'root')) !== before) errors.push(`${name}: the script changed a file in the root`)
+  if (execFileSync('git', ['status', '--porcelain'], { cwd: repo, encoding: 'utf8' }) !== status) errors.push(`${name}: the script changed git status`)
+}
+
+if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
+console.log(`now-facts: ${readdirSync(fixtures).length} scenarios OK`)
