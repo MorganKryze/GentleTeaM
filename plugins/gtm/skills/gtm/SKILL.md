@@ -35,11 +35,13 @@ decisions it made for you at the end. Everything the human reads follows the hum
   Write it only in the main checkout (`git rev-parse --git-dir` equals `git rev-parse
   --git-common-dir`), never in a worktree. Read the NOW.md there first: tracked (`git ls-files
   --error-unmatch` succeeds) or line 1 not the template's `# <slug> · <HH:MM>`, it is the user's.
-  Untracked and `<root>/NOW.md.bak` absent: rename it to that, with a Heads-up; otherwise write
-  no run view and say why in one Heads-up. Root inside the repository and `git check-ignore -q
-  <root>/NOW.md` fails: add `/<root>/NOW.md` on its own line to the file `git rev-parse
-  --git-path info/exclude` names (never `.gitignore`): create its folder if missing, and add a
-  newline first when the file does not end with a newline. Say so in one Heads-up.
+  Untracked and `<root>/NOW.md.bak` absent: rename it to that, with a Heads-up. Before that, when
+  `git check-ignore -q` succeeds for `<root>/NOW.md` and fails for the `.bak`, add
+  `/<root>/NOW.md.bak` as `/<root>/NOW.md` is added below; if that fails, do not rename. No
+  rename: write no run view and say why in one Heads-up. Root inside the repository and `git
+  check-ignore -q <root>/NOW.md` fails: add `/<root>/NOW.md` on its own line to the file `git
+  rev-parse --git-path info/exclude` names (never `.gitignore`): create its folder if missing,
+  and add a newline first when the file does not end with a newline. Say so in one Heads-up.
 - Nothing is pushed, merged, tagged or released without the human's explicit go.
 
 ## 1. Pick the track (≤ 2 questions)
