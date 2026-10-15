@@ -4,6 +4,12 @@ Every message, mockup page, synthesis or report meant for the human follows this
 language (`language.human` in the GTM config). Agents' internal reports do not; they follow their
 own hand-back contract.
 
+## Breadcrumb line
+
+While `<root>/NOW.md` exists and its phase is not shipped, every message to the human starts with
+its breadcrumb line (the first `>` line, see `templates/now.md`), before the TL;DR, a short answer
+included. No NOW.md, or a shipped phase: no breadcrumb.
+
 ## Scale guard (read first)
 
 If the answer fits in under five lines, the TL;DR is the whole answer: no headings, no sections, no
