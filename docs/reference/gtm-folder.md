@@ -30,6 +30,7 @@ one learned.
 <li class="you"><code>backlog.md</code><span class="why">what is planned next</span><span class="badge">read it</span></li>
 <li class="you dir"><code>specs/</code><span class="why">the summary you approve</span><span class="badge">read it</span></li>
 <li class="you dir"><code>mockups/</code><span class="why">the screens you approve</span><span class="badge">read it</span></li>
+<li class="you"><code>NOW.md</code><span class="why">where the run is now</span><span class="badge">read it</span></li>
 <li><code>config.yml</code><span class="why">paths and commands</span><span class="badge">skip it</span></li>
 <li><code>conventions.md</code><span class="why">rules per area</span><span class="badge">skip it</span></li>
 <li class="dir"><code>guidelines/</code><span class="why">one file per area</span><span class="badge">skip it</span></li>
@@ -49,6 +50,7 @@ one learned.
 | `backlog.md` | the larger pieces of work, their priority and status | `/gtm:gtm`, `/gtm:ship` |
 | `specs/` | one [spec](/reference/glossary/#spec) per Feature, opened by your summary | architect |
 | `mockups/` | the [mockups](/reference/glossary/#mockups), as HTML and PNG | designer |
+| `NOW.md` | where the run is now: phase, task, what runs, when it should end | the orchestrator, `/gtm:status` |
 | `config.yml` | paths, check commands, git rules, languages | `/gtm:init` |
 | `conventions.md` | the project's rules, with one guideline file per area | `/gtm:init`, `/gtm:retro` |
 | `plans/` | one plan per Feature: tasks, files, test steps | architect |
