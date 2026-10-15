@@ -59,6 +59,9 @@ for (const dir of readdirSync(join(plugin, 'skills'))) {
   if (fm.name && fm.name !== dir) fail(file, 'name differs from directory')
   if (fm.description && fm.description.length > 1024) fail(file, 'description over 1024 characters')
 }
+const runView = readFileSync(join(plugin, 'skills/gtm/SKILL.md'), 'utf8').replace(/\s+/g, ' ')
+for (const w of ['show-toplevel', 'exact line `/<rel>/NOW.md` absent', 'only when you added the line', 'the first time in a session only'])
+  if (!runView.includes(w)) fail(join(plugin, 'skills/gtm/SKILL.md'), `run view rule lacks "${w}"`)
 const tmp = mkdtempSync(join(tmpdir(), 'gtm-'))
 for (const name of readdirSync(join(plugin, 'workflows'))) {
   const file = join(plugin, 'workflows', name)

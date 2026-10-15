@@ -36,13 +36,16 @@ decisions it made for you at the end. Everything the human reads follows the hum
   --git-common-dir`), never in a worktree. Read the NOW.md there first: tracked (`git ls-files
   --error-unmatch` succeeds) or line 1 neither the template's `# <slug> · <HH:MM>` nor that
   ending in ` · rebuilt`, it is the user's.
-  Untracked and `<root>/NOW.md.bak` absent: rename it to that, with a Heads-up. Before that, when
-  `git check-ignore -q` succeeds for `<root>/NOW.md` and fails for the `.bak`, add
-  `/<root>/NOW.md.bak` as `/<root>/NOW.md` is added below; if that fails, do not rename. No
-  rename: write no run view and say why in one Heads-up. Root inside the repository and `git
-  check-ignore -q <root>/NOW.md` fails: add `/<root>/NOW.md` on its own line to the file `git
-  rev-parse --git-path info/exclude` names (never `.gitignore`): create its folder if missing,
-  and add a newline first when the file does not end with a newline. Say so in one Heads-up.
+  `<rel>`: the root's path from `git rev-parse --show-toplevel` (an absolute root made relative
+  to it); run the git commands below from that top. Untracked and `<root>/NOW.md.bak` absent:
+  rename it to that, with a Heads-up. Before that, when `git check-ignore -q <rel>/NOW.md`
+  succeeds and fails for `<rel>/NOW.md.bak`, add `/<rel>/NOW.md.bak` as `/<rel>/NOW.md` is added
+  below; rename only when `git check-ignore -q` then succeeds for the `.bak`. No rename: write no
+  run view, and say why in one Heads-up the first time in a session only. Root inside the
+  repository, NOW.md untracked, `git check-ignore -q <rel>/NOW.md` failing and the exact line
+  `/<rel>/NOW.md` absent from the file `git rev-parse --git-path info/exclude` names: add it on
+  its own line (never `.gitignore`), create the folder if missing, and add a newline first when
+  the file does not end with one. Say so in one Heads-up, only when you added the line.
 - Nothing is pushed, merged, tagged or released without the human's explicit go.
 
 ## 1. Pick the track (≤ 2 questions)

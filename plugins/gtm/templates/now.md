@@ -23,9 +23,9 @@
   yet". `afterAnswer`: `<minutes> min after your answer`, no clock. `tasks` null: "after the plan".
 - Events: the `events` list as given, newest first, at most three.
 - Other branches: one line each, `- <branch> › <phase> › task <task> · updated <HH:MM>`.
-- Rebuilt by `/gtm:status` (no `--running`, no `--waiting`): line 1 ends with ` · rebuilt`; what
-  runs reads "what runs: unknown", the worktree lines still listed; what waits reads "what waits:
-  unknown"; no clock in the breadcrumb or the ETA, since an answer may be pending.
+- Rebuilt by `/gtm:status` (no `--running`, no `--waiting`): line 1 ends with ` · rebuilt`, in
+  English whatever `language.human` (the `gtm` skill §0 reads it); what runs reads "what runs:
+  unknown", the worktree lines still listed; what waits reads "what waits: unknown"; no clock in the breadcrumb or the ETA, since an answer may be pending.
 
 ## Example
 
