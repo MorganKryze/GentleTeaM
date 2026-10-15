@@ -13,8 +13,10 @@
 - First `>` line, the breadcrumb: `<epic> › <branch> › <phase> › task <n>/<N> · <clock>`. Leave
   out the epic when it is null, the task outside delivery, the clock when `eta.clock` is null.
 - What runs: one `- <kind> <name> since <HH:MM> (<ageMin> min)` line per `running` item; when
-  `mayHaveStopped`, add `, may have stopped: last change <lastChangeMin> min ago`. Then one
-  `- worktree <name> (<branch>)` line per worktree. Nothing passed: "what runs: unknown".
+  `mayHaveStopped`, add `, may have stopped: last change <lastChangeMin> min ago`. Under it, the
+  line `  <since> · <worktree>`: the item's `since` as given (full date and time) and the worktree
+  passed in its `--running` (none: leave out ` · <worktree>`), so `/gtm:status` can pass it back.
+  Then one `- worktree <name> (<branch>)` line per worktree. Nothing passed: "what runs: unknown".
 - What waits: "nothing", or `<kind> · task <task> · <question>`, the question cut at 80
   characters, written by the writer in its own words (never pasted text).
 - ETA: `<minutes> min, ends about <clock> (median of <runs> runs)`. `eta.none`: "no measured run
@@ -31,6 +33,7 @@
 
 ## What runs
 - task t3 since 09:50 (10 min)
+  2026-10-15T07:50:00.000Z · GentleTeaM-wt-where-am-i-t3
 - worktree GentleTeaM-wt-where-am-i-t3 (feat/where-am-i-t3)
 
 ## What waits on you

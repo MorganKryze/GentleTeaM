@@ -9,9 +9,10 @@ Ground rules: as in the `gtm` skill §0. This skill writes nothing but `<root>/N
 exclude line §0 describes: no dispatch, no workflow, no branch, worktree, progress, logbook or
 backlog change.
 
-1. Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs" --root <root>`, adding one `--running`
-   per running line of the current NOW.md (kind, name, start time, worktree) so liveness is
-   computed again.
+1. Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs" --root <root>`, adding one
+   `--running <kind>,<name>,<since>,<worktree>` per running item of the current NOW.md so
+   liveness is computed again: kind and name from its `- ` line, since and worktree from the
+   second line under it, copied as written (no worktree there: leave it out).
 2. `stale` empty: show NOW.md as it is, with the running lines from this run's JSON (ages and
    "may have stopped" recomputed).
 3. `stale` not empty (NOW.md missing, older than a source, or naming a branch or worktree that is
