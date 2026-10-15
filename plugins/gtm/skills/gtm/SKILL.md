@@ -34,7 +34,8 @@ decisions it made for you at the end. Everything the human reads follows the hum
   `--running` and `--waiting` you know), shape from `${CLAUDE_PLUGIN_ROOT}/templates/now.md`.
   Write it only in the main checkout (`git rev-parse --git-dir` equals `git rev-parse
   --git-common-dir`), never in a worktree. Read the NOW.md there first: tracked (`git ls-files
-  --error-unmatch` succeeds) or line 1 not the template's `# <slug> · <HH:MM>`, it is the user's.
+  --error-unmatch` succeeds) or line 1 neither the template's `# <slug> · <HH:MM>` nor that
+  ending in ` · rebuilt`, it is the user's.
   Untracked and `<root>/NOW.md.bak` absent: rename it to that, with a Heads-up. Before that, when
   `git check-ignore -q` succeeds for `<root>/NOW.md` and fails for the `.bak`, add
   `/<root>/NOW.md.bak` as `/<root>/NOW.md` is added below; if that fails, do not rename. No
