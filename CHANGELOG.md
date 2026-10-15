@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-15
+
 ### Added
 - `NOW.md`: a short page in the GTM folder that says where a run is, rewritten at each step and
   never tracked by git.
