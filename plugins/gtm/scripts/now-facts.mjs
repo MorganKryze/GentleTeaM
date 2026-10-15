@@ -29,6 +29,7 @@ for (let i = 0; i < argv.length; i += 2) {
   if (k === 'running') opt.running.push(v); else opt[k] = v
 }
 if (!opt.root) { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>]'); process.exit(2) }
+if (opt.slug !== undefined && !/^[a-z0-9-]+$/.test(opt.slug)) { console.error('now-facts.mjs: --slug takes [a-z0-9-] only'); process.exit(2) }
 const root = resolve(opt.root)
 const now = opt.now ? Date.parse(opt.now) : Date.now()
 const repo = (git(root, ['rev-parse', '--show-toplevel']) || '').trim() || null
