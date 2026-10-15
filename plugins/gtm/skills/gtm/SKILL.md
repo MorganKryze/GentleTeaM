@@ -27,6 +27,22 @@ decisions it made for you at the end. Everything the human reads follows the hum
   GTM, its root, roles, skills, plans, ledger or workflows; no attribution trailer; no line in the
   tracked CLAUDE.md or AGENTS.md; branches follow `git.branch`, the project's own pattern; text
   follows `<root>/guidelines/voice.md`. `/gtm:ship` runs the footprint check before anything leaves.
+- **Run view:** in every track (a Fix included), rewrite `<root>/NOW.md` whole, never append,
+  as the last write of the step: before each dispatch or workflow run, after each progress line,
+  when a checkpoint or decision card is shown or answered, and when a skill ends or stops its run.
+  Facts from `node "${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs" --root <root>` (add the
+  `--running` and `--waiting` you know), shape from `${CLAUDE_PLUGIN_ROOT}/templates/now.md`.
+  Write it only in the main checkout (`git rev-parse --git-dir` equals `git rev-parse
+  --git-common-dir`), never in a worktree. Read the NOW.md there first: tracked (`git ls-files
+  --error-unmatch` succeeds) or line 1 neither the template's `# <slug> · <HH:MM>` nor that
+  ending in ` · rebuilt`, it is the user's.
+  Untracked and `<root>/NOW.md.bak` absent: rename it to that, with a Heads-up. Before that, when
+  `git check-ignore -q` succeeds for `<root>/NOW.md` and fails for the `.bak`, add
+  `/<root>/NOW.md.bak` as `/<root>/NOW.md` is added below; if that fails, do not rename. No
+  rename: write no run view and say why in one Heads-up. Root inside the repository and `git
+  check-ignore -q <root>/NOW.md` fails: add `/<root>/NOW.md` on its own line to the file `git
+  rev-parse --git-path info/exclude` names (never `.gitignore`): create its folder if missing,
+  and add a newline first when the file does not end with a newline. Say so in one Heads-up.
 - Nothing is pushed, merged, tagged or released without the human's explicit go.
 
 ## 1. Pick the track (≤ 2 questions)
