@@ -236,7 +236,7 @@ check('A2', () => {
     else if (!re.test(t)) f.push(`${src} "${sec}" -> ${file}: no ${re}`);
   }
   const cmds = page('reference/commands.md') || '';
-  for (const s of ['gtm', 'init', 'design', 'spec', 'plan', 'deliver', 'ship', 'retro', 'tune', 'brief-me']) {
+  for (const s of ['gtm', 'init', 'design', 'spec', 'plan', 'deliver', 'ship', 'retro', 'tune', 'brief-me', 'status']) {
     if (!new RegExp(`/gtm:${s}\\b`).test(cmds)) f.push(`commands.md lacks /gtm:${s}`);
   }
   return f;
@@ -511,8 +511,13 @@ check('A16', () => {
     if (badge === 'read it') read.push(name);
     if ((badge === 'read it') !== /class="[^"]*\byou\b/.test(l)) f.push(`${name}: badge and amber row disagree`);
   }
-  const want = ['brief.md', 'team.md', 'backlog.md', 'specs/', 'mockups/'];
+  const want = ['brief.md', 'team.md', 'backlog.md', 'specs/', 'mockups/', 'NOW.md'];
   if (JSON.stringify(read.sort()) !== JSON.stringify(want.sort())) f.push(`read it on ${read.join(', ')}, want ${want.join(', ')}`);
+  const words = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8 };
+  for (const m of t.matchAll(/\b(one|two|three|four|five|six|seven|eight)\s+(?:you actually read|entries)\b|\bread\s+(one|two|three|four|five|six|seven|eight)\s+entries\b/gi)) {
+    const n = words[(m[1] || m[2]).toLowerCase()];
+    if (n !== read.length) f.push(`"${m[0]}", the tree marks ${read.length} read it`);
+  }
   return f;
 });
 
@@ -708,7 +713,7 @@ check('vocab', () => {
   const f = [];
   const retired = /\b(touchpoints?|boards?|(?<!made )for[- ]you|rulings?|team profile|fix rounds?|fix ceiling|replay)\b/i;
   const dir = join(repo, 'plugins', 'gtm');
-  const files = ['templates/briefing.md', 'templates/spec.md', 'templates/plan.md', 'templates/team.md',
+  const files = ['templates/briefing.md', 'templates/spec.md', 'templates/plan.md', 'templates/team.md', 'templates/now.md',
     ...readdirSync(join(dir, 'skills')).map(d => `skills/${d}/SKILL.md`)];
   for (const rel of files) {
     if (!existsSync(join(dir, rel))) continue;
