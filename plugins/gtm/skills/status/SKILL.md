@@ -5,18 +5,18 @@ disable-model-invocation: true
 ---
 # Status: where the run stands
 
-Ground rules: as in the `gtm` skill §0. This skill writes nothing but `<root>/NOW.md` and the
-exclude line §0 describes: no dispatch, no workflow, no branch, worktree, progress, logbook or
-backlog change.
+Ground rules: as in the `gtm` skill §0. This skill writes nothing but `<root>/NOW.md` and what
+§0 adds to it (the `NOW.md.bak` rename, the exclude line): no dispatch, no workflow, no branch,
+worktree, progress, logbook or backlog change.
 
 1. Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs" --root <root>`, adding one
    `--running <kind>,<name>,<since>,<worktree>` per running item of the current NOW.md so
    liveness is computed again: kind and name from its `- ` line, since and worktree from the
    second line under it, copied as written (no worktree there: leave it out).
-2. `stale` empty: show NOW.md as it is, with the running lines from this run's JSON (ages and
-   "may have stopped" recomputed).
-3. `stale` not empty (NOW.md missing, older than a source, or naming a branch or worktree that is
-   gone): rebuild it from the JSON alone, passing no `--running` or `--waiting`, as the rebuild
-   rule of `templates/now.md` says; write it as §0 says and show it, naming the `stale` reasons in
-   one Heads-up.
+2. `stale` empty and NOW.md GTM's (§0): show it as it is, with the running lines from this run's
+   JSON (ages and "may have stopped" recomputed).
+3. Otherwise (NOW.md missing, the user's, older than a source, or naming a branch or worktree that
+   is gone): rebuild it from the JSON alone, passing no `--running` or `--waiting`, as the
+   rebuild rule of `templates/now.md` says; write it as §0 says and show it, naming the `stale`
+   reasons in one Heads-up.
 4. Exit 1 from the script: show the `?` facts as `?`; never guess them.
