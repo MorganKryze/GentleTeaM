@@ -16,7 +16,8 @@
   `mayHaveStopped`, add `, may have stopped: last change <lastChangeMin> min ago`. Under it, the
   line `  <since> · <worktree>`: the item's `since` as given (full date and time) and the worktree
   passed in its `--running` (none: leave out ` · <worktree>`), so `/gtm:status` can pass it back.
-  Then one `- worktree <name> (<branch>)` line per worktree. Nothing passed: "what runs: unknown".
+  Then one `- worktree <name> (<branch>)` line per worktree. An empty `running` reads "nothing";
+  a rebuild by `/gtm:status` reads "what runs: unknown", the worktree lines still listed.
 - What waits: "nothing", or `<kind> · task <task> · <question>`, the question cut at 80
   characters, written by the writer in its own words (never pasted text).
 - ETA: `<minutes> min, ends about <clock> (median of <runs> runs)`. `eta.none`: "no measured run
