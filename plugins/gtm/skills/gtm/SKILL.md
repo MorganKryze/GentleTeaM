@@ -27,6 +27,25 @@ decisions it made for you at the end. Everything the human reads follows the hum
   GTM, its root, roles, skills, plans, ledger or workflows; no attribution trailer; no line in the
   tracked CLAUDE.md or AGENTS.md; branches follow `git.branch`, the project's own pattern; text
   follows `<root>/guidelines/voice.md`. `/gtm:ship` runs the footprint check before anything leaves.
+- **Run view:** in every track (a Fix included), rewrite `<root>/NOW.md` whole, never append,
+  as the last write of the step: before each dispatch or workflow run, after each progress line,
+  when a checkpoint or decision card is shown or answered, and when a skill ends or stops its run.
+  Facts from `node "${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs" --root <root>` (add the
+  `--running` and `--waiting` you know), shape from `${CLAUDE_PLUGIN_ROOT}/templates/now.md`.
+  Write it only in the main checkout (`git rev-parse --git-dir` equals `git rev-parse
+  --git-common-dir`), never in a worktree. Read the NOW.md there first: tracked (`git ls-files
+  --error-unmatch` succeeds) or line 1 neither the template's `# <slug> · <HH:MM>` nor that
+  ending in ` · rebuilt`, it is the user's.
+  `<rel>`: the root's path from `git rev-parse --show-toplevel` (an absolute root made relative
+  to it); run the git commands below from that top. Untracked and `<root>/NOW.md.bak` absent:
+  rename it to that, with a Heads-up. Before that, when `git check-ignore -q <rel>/NOW.md`
+  succeeds and fails for `<rel>/NOW.md.bak`, add `/<rel>/NOW.md.bak` as `/<rel>/NOW.md` is added
+  below; rename only when `git check-ignore -q` then succeeds for the `.bak`. No rename: write no
+  run view, and say why in one Heads-up the first time in a session only. Root inside the
+  repository, NOW.md untracked, `git check-ignore -q <rel>/NOW.md` failing and the exact line
+  `/<rel>/NOW.md` absent from the file `git rev-parse --git-path info/exclude` names: add it on
+  its own line (never `.gitignore`), create the folder if missing, and add a newline first when
+  the file does not end with one. Say so in one Heads-up, only when you added the line.
 - Nothing is pushed, merged, tagged or released without the human's explicit go.
 
 ## 1. Pick the track (≤ 2 questions)

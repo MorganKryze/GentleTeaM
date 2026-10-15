@@ -1,0 +1,17 @@
+{
+  "exit": 0,
+  "facts": {
+    "phase": "correction",
+    "task": null,
+    "next": "correction",
+    "events": [
+      "t1: CLEAN",
+      "t2: CLEAN",
+      "final review: fix-first"
+    ],
+    "eta": {
+      "minutes": 1.2,
+      "clock": "10:01"
+    }
+  }
+}

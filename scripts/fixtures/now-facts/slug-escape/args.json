@@ -1,0 +1,13 @@
+{
+  "branch": "feat/where-am-i",
+  "mtimes": {
+    "NOW.md": 1,
+    "ledger.md": 5,
+    "backlog.md": 5,
+    "reports/where-am-i/progress.md": 5
+  },
+  "args": [
+    "--slug",
+    "../where-am-i"
+  ]
+}

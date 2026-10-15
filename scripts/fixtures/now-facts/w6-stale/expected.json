@@ -1,0 +1,9 @@
+{
+  "exit": 0,
+  "facts": {
+    "stale": [
+      "older than progress.md",
+      "worktree gone: GentleTeaM-wt-where-am-i-t3"
+    ]
+  }
+}

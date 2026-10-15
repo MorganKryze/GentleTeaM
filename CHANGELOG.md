@@ -5,6 +5,17 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-10-15
+
+### Added
+- `NOW.md`: a short page in the GTM folder that says where a run is, rewritten at each step and
+  never tracked by git.
+- `/gtm:status`: shows where a run is and rebuilds `NOW.md` after a crash.
+- The breadcrumb line: one line atop each message that says where the run is.
+- The facts script: reads the backlog, progress, logbook and git, and writes nothing.
+
+Nothing to migrate: a new local file, no file or field renamed.
+
 ## [0.7.1] - 2026-10-14
 
 ### Changed

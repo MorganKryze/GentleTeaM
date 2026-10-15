@@ -1,0 +1,28 @@
+{
+  "exit": 0,
+  "facts": {
+    "slug": "where-am-i",
+    "branch": "feat/where-am-i",
+    "epic": "Proportional assurance: control follows risk and every singl",
+    "phase": "delivery",
+    "task": {
+      "n": 3,
+      "of": 5
+    },
+    "next": "task 3",
+    "nextStory": "L · usage-aware: limits and credit pick the model and effort",
+    "stale": [],
+    "waiting": null,
+    "eta": {
+      "minutes": 36.5,
+      "clock": "10:36",
+      "runs": 2,
+      "perTask": 7,
+      "parts": {
+        "tasks": 21,
+        "final": 14.3,
+        "fix": 1.2
+      }
+    }
+  }
+}

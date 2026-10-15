@@ -4,12 +4,12 @@ description: Every /gtm command, what it does, when to run it and what it asks o
 ---
 
 ::: callout summary
-- **You will learn:** what each of the ten commands does, when to run it and what it asks of you.
+- **You will learn:** what each of the eleven commands does, when to run it and what it asks of you.
 - **Reading time:** 4 minutes, or look up one row.
 - **Before this:** [Which size is my change?](/guides/which-size/) for the tracks.
 :::
 
-GTM adds ten commands to Claude Code. You type the first one; it routes you to the others.
+GTM adds eleven commands to Claude Code. You type the first one; it routes you to the others.
 Each command dispatches the roles it needs and comes back to you only at a
 [checkpoint](/reference/glossary/#checkpoint).
 
@@ -27,6 +27,18 @@ Each command dispatches the roles it needs and comes back to you only at a
 | `/gtm:retro` | turns a delivered branch's reports into one-line lessons, proposes guideline changes for recurring ones, closes resolved findings | after shipping, or when the logbook grows noisy | your yes or no on each guideline change |
 | `/gtm:tune` | re-evaluates the team settings and conventions from the logbook and the reports; switches stealth on or off | when `/gtm:retro` suggests it, or the team feels too slow, too costly or misses things | your yes or no on each proposed change, as a decision card |
 | `/gtm:brief-me` | re-presents any GTM file (spec, plan, mockups, review, report, logbook, team settings) at the detail you choose | whenever you want to understand a file without reading it | the file, and brief, standard or deep |
+| `/gtm:status` | shows where a run is; rebuilds that view after a crash | any time during a run | nothing |
+
+## How do I see where a run is?
+
+Three places tell you, without asking the team:
+
+- **`NOW.md`:** a short page in the GTM folder, rewritten at each step: the phase, the task, what
+  runs and what waits, and when the run should end. Keep it open in your editor.
+- **`/gtm:status`:** shows the same page in the chat, and rebuilds it after a crash.
+- **The line atop each message:** one line that says where the run is before the message starts.
+
+`NOW.md` is never tracked by git: GTM keeps it out of your commits.
 
 ## What do the commands run underneath?
 

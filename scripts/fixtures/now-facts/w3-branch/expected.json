@@ -1,0 +1,12 @@
+{
+  "exit": 1,
+  "facts": {
+    "worktrees": [
+      {
+        "name": "wt-a",
+        "branch": "?"
+      }
+    ],
+    "phase": "delivery"
+  }
+}
