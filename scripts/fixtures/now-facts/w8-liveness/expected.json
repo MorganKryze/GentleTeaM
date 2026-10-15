@@ -1,0 +1,22 @@
+{
+  "exit": 0,
+  "facts": {
+    "running": [
+      {
+        "kind": "task",
+        "name": "t3",
+        "ageMin": 50,
+        "lastChangeMin": 41,
+        "mayHaveStopped": true
+      },
+      {
+        "ageMin": 15,
+        "mayHaveStopped": true
+      },
+      {
+        "ageMin": 13,
+        "mayHaveStopped": false
+      }
+    ]
+  }
+}

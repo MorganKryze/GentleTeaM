@@ -1,0 +1,21 @@
+{
+  "branch": "feat/where-am-i",
+  "mtimes": {
+    "NOW.md": 1,
+    "ledger.md": 5,
+    "backlog.md": 5,
+    "reports/where-am-i/progress.md": 5
+  },
+  "dirty": {
+    "file": "work.txt",
+    "min": 41
+  },
+  "args": [
+    "--running",
+    "task,t3,{ago:50}",
+    "--running",
+    "task,t4,{ago:15}",
+    "--running",
+    "task,t5,{ago:13}"
+  ]
+}

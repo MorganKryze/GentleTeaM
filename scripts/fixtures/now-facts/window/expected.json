@@ -1,0 +1,21 @@
+{
+  "exit": 0,
+  "facts": {
+    "eta": {
+      "minutes": 28,
+      "clock": null,
+      "runs": 5,
+      "perTask": 3,
+      "parts": {
+        "tasks": 3,
+        "final": 25,
+        "fix": 0
+      },
+      "afterAnswer": true
+    },
+    "waiting": {
+      "kind": "card",
+      "task": "t3"
+    }
+  }
+}
