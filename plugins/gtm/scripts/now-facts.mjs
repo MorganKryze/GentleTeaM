@@ -80,8 +80,10 @@ const runs = ledger.split('\n').filter((l) => /^- \d{4}-\d\d-\d\d · [^·]+ · r
 })
 const med = (k) => { const xs = runs.map((r) => r[k]).filter((x) => x != null); return xs.length ? round(median(xs)) : null }
 
-// A spec or plan is slug s's when its whole name is `<date>-<s>.md`, or with part `<date>-<s>-<part>.md`.
-const named = (n, s, part) => new RegExp(`^\\d{4}-\\d\\d-\\d\\d-${s}${part ? '(-[A-Za-z0-9]+)?' : ''}\\.md$`).test(n)
+// A spec or plan is slug s's when its whole name is `<date>-<s>.md`, or with part `<date>-<s>-<part>.md`
+// for a part a skill writes (gtm/SKILL.md, Milestone); any other suffix may be another story's.
+const PARTS = ['milestone']
+const named = (n, s, part) => new RegExp(`^\\d{4}-\\d\\d-\\d\\d-${s}${part ? `(-(${PARTS.join('|')}))?` : ''}\\.md$`).test(n)
 
 function facts(s) {
   const progressFile = join(root, 'reports', s, 'progress.md')
