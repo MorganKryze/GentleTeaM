@@ -30,7 +30,9 @@ JavaScript syntax, matched against repository-relative paths.
 | `briefing.remembered` | the detail chosen per kind of file | `{}` | the same |
 | `briefing.emoji` | `off`, `light` or `generous`; never in docs, specs, plans or [logbook](/reference/glossary/#logbook) | `light` | the same |
 | `verify.prefix` | prepended to every command, such as a wrapper that keeps exit codes | `""` | the implementer |
-| `verify.lint`, `typecheck`, `test`, `build`, `size`, `e2e` | the project's commands; empty when it lacks one | `""` | the implementer, the reviewers |
+| `verify.lint`, `typecheck`, `test`, `build`, `e2e` | the project's commands; empty when it lacks one | `""` | the implementer, the reviewers |
+| `verify.size` | the project's size check, failing past its budget; run at task end | `""` | the implementer, the reviewers |
+| `verify.ui` | the command that runs the UI gate test (`ui-gate.spec.mjs`): accessibility, overflow, touch targets and dark theme on every route, width and theme; empty keeps ux-qa checking them by hand | `""` | the implementer, `ux-qa` |
 | `verify.gate` | the commands run before every commit; build, size and e2e run at task end | `[lint, typecheck, test]` | the implementer |
 | `git.base` | the base branch | `main` | every command that branches or merges |
 | `git.branch` | the branch name pattern | `"<slug>"` | `/gtm:deliver` |
@@ -45,6 +47,7 @@ JavaScript syntax, matched against repository-relative paths.
 | `design.screens` | `false` when the project has no screens; the design loop never runs | `true` | `/gtm:gtm`, `/gtm:design` |
 | `design.mockups` | where the mockups are kept, HTML and PNG | `.gtm/mockups` | the designer, the design critic |
 | `design.render` | `"<cmd> {html} {png} {width}"`; empty uses a Playwright screenshot | `""` | the designer |
+| `design.kit` | the path of a validated design kit; a [Feature](/reference/glossary/#feature) whose screens use only its patterns is designed in code, with no mockups | `""` | `/gtm:gtm`, the analyst, `ux-qa` |
 | `design.widths` | the screen widths drawn and measured | `[360, 390, 1280]` | the designer, `ux-qa` |
 | `qa.live_url` | the live site checked after you deploy; empty skips the check | `""` | `release-qa` |
 | `qa.account` | where the test account's credentials live, never the values | `""` | `release-qa` |
@@ -60,7 +63,7 @@ defaults in the role files.
 | Priorities | security, data integrity, UX and accessibility, performance, delivery speed, usage and cost sensitivity: `low`, `normal` or `high` | `normal` for all six | `/gtm:init`, `/gtm:tune`, the architect |
 | Roles | each role's model (`opus`, `sonnet`, `haiku`, `fable`, a full model id or `inherit`) and effort (`low` to `max`) | `opus`, with the efforts in [Roles](/reference/roles/) | every command that dispatches a role |
 | Specialists | `security-reviewer`, `data-reviewer`, `ux-qa`: `on` or `off`, and the path regexes that call each one in | all `on`, with example triggers to adapt | `/gtm:deliver` |
-| Limits (the `## Gates` section) | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky, `budget per task`, `budget per branch` and `review cadence` | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver`, `/gtm:tune` |
+| Limits (the `## Gates` section) | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky, `budget per task`, `budget per branch`, `tasks per branch` and `review cadence` | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver`, `/gtm:tune` |
 | History | one line per change made by `/gtm:tune`: date, setting, old and new value, why | empty | `/gtm:tune`, `/gtm:retro` |
 
 The limits and their defaults: a task gets 3
@@ -75,6 +78,8 @@ correction round. The two budgets, `budget per task` and `budget per branch`, ar
 or `<minutes> min, <tokens>k tokens`, and start at `none`; a profile without these lines reads as
 `none`. Past 1.5 times a budget, `/gtm:deliver` raises a Heads-up, notes it in the ledger and goes
 on: no budget changes a verdict, a correction round or the order of tasks. After three measured
-runs with no budget, `/gtm:tune` proposes both at the medians of those runs.
+runs with no budget, `/gtm:tune` proposes both at the medians of those runs. The
+`tasks per branch` line caps a plan at 8 tasks by default, a release-only task not counted; a
+plan over it goes back to the architect once, then you choose on a card to split or accept.
 
 To change any of them, see [Change your team settings](/guides/team-settings/).

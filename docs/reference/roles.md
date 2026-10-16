@@ -46,6 +46,12 @@ The words in the table and below it:
 | `final-reviewer` | the whole branch against the spec; read-only | xhigh | once per branch |
 | `release-qa` | the live journey after you deploy | low | after deployment |
 
+When `verify.ui` is set, a committed test checks accessibility, overflow, touch targets and the
+dark theme of every route at each commit. `ux-qa` then runs once per branch: it takes the test's
+result, captures only the screens the branch touched and compares them with the mockups, in at
+most 30 tool calls. A screen it could not compare is a `minor`; a new route the test lacks is
+`important`.
+
 ## What happens when a reviewer finds something?
 
 ```mermaid

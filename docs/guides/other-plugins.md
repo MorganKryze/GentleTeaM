@@ -71,6 +71,32 @@ and auto-memory. A memory plugin with its own hooks duplicates both and costs co
 
 :::
 
+## How does GTM share the status line?
+
+Claude Code shows your plan's limits only to the status line. To read them, `/gtm:init` offers a
+usage step that runs before your status line, whether it is claude-hud's or your own. Your
+command is kept byte for byte and still prints what it printed. With the breadcrumb option, the
+status line also shows the first line of `NOW.md`, until the branch ships.
+
+The step writes one file, `<config>/gtm/usage.json`, where `<config>` is your Claude Code
+folder (`~/.claude` by default). It holds two or three percentages and their reset times: the
+5-hour and 7-day windows, and the spend limit when there is one. No session id, path, cost or
+message text. Your credit balance is not visible to it, so GTM cannot warn you about credit.
+
+It only changes your user settings, never a project's, and not on Windows. To undo it, run the
+command init printed:
+
+```text
+node "<config>/gtm/usage-line.mjs" --uninstall "<config>/settings.json"
+```
+
+Your old status line comes back as it was.
+
+## Who owns Playwright and axe?
+
+The UI test that `/gtm:init` can add uses Playwright and axe. They stay your project's
+dependencies: GTM installs nothing, and the test runs with your project's own command.
+
 ## What about their licences?
 
 Trail of Bits skills are CC-BY-SA-4.0, fine for local use. Taskmaster carries a Commons Clause:

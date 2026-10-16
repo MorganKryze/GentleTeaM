@@ -36,6 +36,7 @@ one learned.
 <li class="dir"><code>guidelines/</code><span class="why">one file per area</span><span class="badge">skip it</span></li>
 <li class="dir"><code>plans/</code><span class="why">tasks for the team</span><span class="badge">skip it</span></li>
 <li class="dir"><code>reports/</code><span class="why">full agent reports</span><span class="badge">skip it</span></li>
+<li><code>handoff.md</code><span class="why">a stopped run, in reports/</span><span class="badge">skip it</span></li>
 <li><code>ledger.md</code><span class="why">the logbook</span><span class="badge">skip it</span></li>
 </ul>
 <figcaption>How to read it: the rows marked read it, on a tinted ground, are yours; the grey rows are written and read by the team.</figcaption>
@@ -55,6 +56,7 @@ one learned.
 | `conventions.md` | the project's rules, with one guideline file per area | `/gtm:init`, `/gtm:retro` |
 | `plans/` | one plan per Feature: tasks, files, test steps | architect |
 | `reports/` | each agent's full report, and the pull request text | every role |
+| `reports/<branch>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
 | `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
 
 ## What does a new project start with?
@@ -75,5 +77,8 @@ first branch, and the four folders fill as you work.
   ledger.md       empty until the first branch
   specs/ plans/ reports/ mockups/
 ```
+
+A file whose name ends in `.partial` is a spec or plan that was being written when you ran
+`/gtm:pause`. GTM never reads it again; keep it, compare it or delete it.
 
 To see each file appear as a Feature runs, follow [your first Feature](/tutorial/first-feature/).
