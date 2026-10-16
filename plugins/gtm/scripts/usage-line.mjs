@@ -11,7 +11,7 @@
 //            used %, reset, minutes to it, age, flag. No reading: `none`; past 30 min: `stale`.
 // <config> = ${CLAUDE_CONFIG_DIR:-$HOME/.claude}. No network, no git. No dependencies.
 import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, copyFileSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { join, dirname, resolve } from 'node:path'
 import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 
@@ -40,7 +40,7 @@ function stepMode() {
         const m = existsSync(join(dir, f)) && readFileSync(join(dir, f), 'utf8').match(/^GTM root: *(\S+)\s*$/m)
         if (m) { root = m[1]; break }
       }
-      const now = join(dir, root, 'NOW.md')
+      const now = resolve(dir, root, 'NOW.md')
       const line = existsSync(now) && readFileSync(now, 'utf8').split('\n').find((l) => l.startsWith('>'))
       if (line && !/ › shipped\b/.test(line)) out.push(clean(line.slice(1)))
     }

@@ -105,6 +105,14 @@ try {
     b.run(['--uninstall', b.settings])
     check('breadcrumb undo', JSON.parse(readFileSync(b.settings, 'utf8')).statusLine.command === 'cat >/dev/null; echo OLD')
   }
+  { // Breadcrumb under an absolute root, as init allows in CLAUDE.local.md.
+    const b = box(), abs = join(b.dir, 'outside')
+    mkdirSync(abs)
+    writeFileSync(join(b.project, 'CLAUDE.local.md'), `GTM root: ${abs}\n`)
+    writeFileSync(join(abs, 'NOW.md'), '> Epic › feat/y › plan\n')
+    const r = b.run(['--breadcrumb', '--quiet'], status(b, 'f1-status.json'))
+    check('breadcrumb absolute root', r.stdout === 'Epic › feat/y › plan\n', JSON.stringify(r.stdout))
+  }
   { // F8: the reader.
     const b = box(), at = '2026-10-15T10:00:00Z', w = (o) => { mkdirSync(join(b.config, 'gtm'), { recursive: true }); writeFileSync(b.store, JSON.stringify(o)) }
     check('F8 none', b.run(['--read', '--now', at]).stdout === 'none\n')
