@@ -22,7 +22,9 @@ no git command that writes; it pushes, commits and removes nothing.
    in `changed`, left in place.
 6. Write `reports/<slug>/handoff.md` whole from `${CLAUDE_PLUGIN_ROOT}/templates/handoff.md`,
    from steps 3 to 5 and the facts JSON of step 5's command rerun after the renames, without
-   `--since` (worktrees and their `changes`, `resume`).
+   `--since` (worktrees and their `changes`, `resume`). A handoff already there: read it first
+   and carry forward each `.partial` it lists that still exists, and its pause under "Earlier
+   pauses".
 7. Append to the ledger `<date> · <slug> · ruling · paused on the human's request: <phase>, <n>
    stopped, <k> worktrees kept; resume from reports/<slug>/handoff.md`.
 8. Rewrite NOW.md as the `gtm` skill §0 says, then tell the human the `resume` command to type.
