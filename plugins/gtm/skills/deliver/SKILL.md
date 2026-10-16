@@ -33,8 +33,8 @@ Ground rules: as in the `gtm` skill §0.
 
 ## 2. Each task, in plan order
 1. Write `<root>/reports/<slug>/task-<n>-brief.md`: the task verbatim,
-   the global constraints it names, by number, and paths to the plan, the spec, the validated mockup
-   page and the guidelines it touches; nothing else.
+   the global constraints it names, by number (none named: all the plan's), and paths to the plan,
+   the spec, the validated mockup page and the guidelines it touches; nothing else.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report: "<root>/reports/<slug>/task-<n>.md",
    branch, base: <head before this task>, worktree (in a wave only), mockup, triggers, team,
    fixRounds, fixCeiling, track, tier, cadence, standardRounds, review, head, files }`, an arg not
