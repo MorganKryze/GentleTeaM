@@ -10,7 +10,16 @@
 //   --read [--ledger <file>] [--tokens <k left>] [--minutes <left>] [--now <ISO>]   per window:
 //            used %, reset, minutes to it, age, flag. No reading: `none`; past 30 min: `stale`.
 // <config> = ${CLAUDE_CONFIG_DIR:-$HOME/.claude}. No network, no git. No dependencies.
-import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, copyFileSync, realpathSync, statSync, chmodSync } from 'node:fs'
+import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, copyFileSync, realpathSync, statSync, chmodSync, openSync, readSync, closeSync } from 'node:fs'
+
+// The first 64 KiB of a plain file, or '' (a FIFO, device or missing file is never read).
+const head = (f) => {
+  try {
+    if (!statSync(f).isFile()) return ''
+    const fd = openSync(f, 'r'), b = Buffer.alloc(1 << 16), n = readSync(fd, b, 0, b.length, 0)
+    closeSync(fd); return b.toString('utf8', 0, n)
+  } catch { return '' }
+}
 import { join, dirname, resolve } from 'node:path'
 import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
@@ -37,11 +46,11 @@ function stepMode() {
     if (typeof dir === 'string') {
       let root = '.gtm'
       for (const f of ['CLAUDE.local.md', 'CLAUDE.md']) {
-        const m = existsSync(join(dir, f)) && readFileSync(join(dir, f), 'utf8').match(/^GTM root: *(\S+)\s*$/m)
+        const m = head(join(dir, f)).match(/^GTM root: *(\S+)\s*$/m)
         if (m) { root = m[1]; break }
       }
       const now = resolve(dir, root, 'NOW.md')
-      const line = existsSync(now) && readFileSync(now, 'utf8').split('\n').find((l) => l.startsWith('>'))
+      const line = head(now).split('\n').find((l) => l.startsWith('>'))
       if (line && !/ › shipped\b/.test(line)) out.push(clean(line.slice(1)))
     }
   }

@@ -131,6 +131,22 @@ try {
     const r = b.run(['--breadcrumb', '--quiet'], status(b, 'f1-status.json'))
     check('breadcrumb absolute root', r.stdout === 'Epic › feat/y › plan\n', JSON.stringify(r.stdout))
   }
+  { // A NOW.md or CLAUDE.md that is not a plain file is skipped fast; the old output still shows.
+    const b = box()
+    mkdirSync(join(b.project, '.gtm'))
+    symlinkSync('/dev/zero', join(b.project, '.gtm/NOW.md'))
+    writeFileSync(b.settings, JSON.stringify({ statusLine: { type: 'command', command: "cat >/dev/null; echo OLD" } }))
+    b.run(['--install', b.settings, '--breadcrumb'])
+    const cmd = JSON.parse(readFileSync(b.settings, 'utf8')).statusLine.command
+    const t0 = Date.now(), r = spawnSync('sh', ['-c', cmd], { input: status(b, 'f1-status.json'), encoding: 'utf8', timeout: 5000, env: { ...process.env, CLAUDE_CONFIG_DIR: b.config } })
+    check('breadcrumb /dev/zero NOW.md', r.stdout === 'OLD\n' && Date.now() - t0 < 3000 && existsSync(b.store), `${Date.now() - t0} ms ${JSON.stringify(r.stdout)}`)
+    symlinkSync('/dev/zero', join(b.project, 'CLAUDE.local.md'))
+    const t1 = Date.now(), q = spawnSync('sh', ['-c', cmd], { input: status(b, 'f1-status.json'), encoding: 'utf8', timeout: 5000, env: { ...process.env, CLAUDE_CONFIG_DIR: b.config } })
+    check('breadcrumb /dev/zero CLAUDE.local.md', q.stdout === 'OLD\n' && Date.now() - t1 < 3000, `${Date.now() - t1} ms ${JSON.stringify(q.stdout)}`)
+    rmSync(join(b.project, '.gtm/NOW.md')); rmSync(join(b.project, 'CLAUDE.local.md'))
+    writeFileSync(join(b.project, '.gtm/NOW.md'), '> Epic › feat/z › spec\n' + 'x'.repeat(1 << 20) + '\n')
+    check('breadcrumb large NOW.md', b.sh(cmd, status(b, 'f1-status.json')).stdout === 'Epic › feat/z › spec\nOLD\n')
+  }
   { // F8: the reader.
     const b = box(), at = '2026-10-15T10:00:00Z', w = (o) => { mkdirSync(join(b.config, 'gtm'), { recursive: true }); writeFileSync(b.store, JSON.stringify(o)) }
     check('F8 none', b.run(['--read', '--now', at]).stdout === 'none\n')
