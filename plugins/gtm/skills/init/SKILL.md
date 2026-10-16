@@ -11,7 +11,7 @@ under ten minutes of the human's time; the analyst guesses (1-2 min, say so), th
 ## 1. Draft
 - Root: `$ARGUMENTS` or `.gtm/`. If it exists, never overwrite: list what is missing or stale and
   offer to fill only that. Until §5 is answered, list the root in `.git/info/exclude`.
-- Dispatch `gtm:analyst` in **init mode** with the root: it detects and drafts as its method says.
+- Dispatch `gtm:analyst` in **init mode** with the root and the files it holds: it drafts the rest.
 - Create `specs/`, `plans/`, `reports/`, `ledger.md` and `backlog.md` (from the templates).
 
 ## 2. Interview (one message, ≤ 5 questions)
