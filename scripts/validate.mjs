@@ -61,6 +61,9 @@ for (const dir of readdirSync(join(plugin, 'skills'))) {
 const runView = readFileSync(join(plugin, 'skills/gtm/SKILL.md'), 'utf8').replace(/\s+/g, ' ')
 for (const w of ['show-toplevel', 'exact line `/<rel>/NOW.md` absent', 'only when you added the line', 'the first time in a session only'])
   if (!runView.includes(w)) fail(join(plugin, 'skills/gtm/SKILL.md'), `run view rule lacks "${w}"`)
+const waves = readFileSync(join(plugin, 'skills/deliver/SKILL.md'), 'utf8').replace(/\s+/g, ' ')
+for (const w of ['is the head on its last progress line', 'not yet an ancestor of `HEAD`', 'merges each wave with an unmerged task', 'never its head'])
+  if (!waves.includes(w)) fail(join(plugin, 'skills/deliver/SKILL.md'), `wave merge rule lacks "${w}"`)
 const tmp = mkdtempSync(join(tmpdir(), 'gtm-'))
 for (const name of readdirSync(join(plugin, 'workflows'))) {
   const file = join(plugin, 'workflows', name)

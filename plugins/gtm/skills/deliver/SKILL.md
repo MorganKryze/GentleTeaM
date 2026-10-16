@@ -24,8 +24,8 @@ Ground rules: as in the `gtm` skill §0.
   <t>k · <a> agents` from Claude Code's `duration_ms`, `subagent_tokens`, `agent_count` (a dispatch
   is 1 agent), `?` if unreported, never an estimate; workflows add `· run <id>`.
 - `[CHECK]` verify commands in `config.yml`: run each once on the branch with `verify.prefix`; it
-  runs → remove the mark; it cannot run or fails on the untouched base → before any task, a Heads-up
-  and a card (correct the command / drop it / accept the failure as pre-existing, logged).
+  runs → remove the mark; it cannot run or fails on the untouched base → stop before any task: a
+  Heads-up and a card (correct the command / drop it / accept the failure as pre-existing, logged).
 - Resume (progress lines exist): skip tasks last `CLEAN` or `GATED`; rerun each `PAUSED` one whole,
   `base` its line's, never its head (unlike §3 step 3), in its worktree if any, a wave's as one
   wave; then §3 step 2 merges each wave with an unmerged task, `PAUSED` or not; a `PAUSED` final
@@ -47,7 +47,7 @@ Ground rules: as in the `gtm` skill §0.
    `roles ?`, totals kept. No budget or measure changes a verdict, a correction round, a dispatch, a
    skip or the order of tasks; past 1.5× a budget (a task's minutes or tokens; the branch's total so
    far): one Heads-up per crossing (task or phase, measure, budget, largest role),
-   a ledger `usage` line `over budget: <the same>` unless that slug and task has one; go on.
+   a ledger `usage` line `over budget: <the same>` unless that slug and crossing has one; go on.
 4. Read the result:
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line, go on.
    - `OPEN` (correction rounds exhausted, or a reviewer gave no review) or `BLOCKED`: its progress
@@ -75,12 +75,12 @@ Ground rules: as in the `gtm` skill §0.
    existing path or branch stops the wave), absolute `<root>` paths in brief and args. Run their
    workflows at once (§2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`), let
    all return, write each one's progress line (no wave total) and measure each (§2 step 3).
-2. Before each merge, branch/head are as last recorded and tasks' files (§1) of
-   `<base>..<branch>-t<n>` disjoint. Merge each `CLEAN` or `GATED` branch not yet an ancestor of
-   `HEAD`, in plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the head, gate
-   once. Per merged task, only when `<root>` is out of the repo, or `git -C "<wt>" status
-   --porcelain --ignored -unormal -- "<root>"` (repo path) exits 0 and lists nothing: `git worktree
-   remove "<wt>"`, `git branch -d "<branch>-t<n>"`. A check that fails keeps the worktree.
+2. Before each merge, branch/head are as last recorded, the tip of `<branch>-t<n>` is the head on
+   its last progress line, and tasks' files (§1) of `<base>..<branch>-t<n>` disjoint. Merge each
+   `CLEAN` or `GATED` branch not yet an ancestor of `HEAD`, in plan order (`git merge --no-ff
+   --no-edit "<branch>-t<n>"`), record the head, gate once. Per merged task, only when `<root>` is
+   out of the repo, or `git -C "<wt>" status --porcelain --ignored -unormal -- "<root>"` (repo path)
+   exits 0 and lists nothing: `git worktree remove "<wt>"`, `git branch -d "<branch>-t<n>"`.
 3. A branch name off `^[A-Za-z0-9._/-]+$` (before step 1), a moved branch/head, overlap, conflict,
    red gate, a failed check or files in a worktree's `<root>`: merge no more, keep it and unmerged
    worktrees, undo nothing without the human. `OPEN`/`BLOCKED`: `CLEAN` or `GATED` siblings merge,
