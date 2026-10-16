@@ -19,6 +19,7 @@ of the ledger, and the final reviews under `<root>/reports/`.
 | the final review caught what a specialist should have | widen that specialist's triggers or raise its effort |
 | many critical or important findings in one area | raise that priority's weight; add or enable the specialist |
 | design loops end at the last round | raise the designer's effort, or revisit the threshold with the human |
+| a `limits: lighter` ruling taken in two branches | make it lasting: those roles' model and effort in `team.md` |
 | `usage` notes about limits | lower the effort of high-volume roles first (implementer, reviewer); never a role guarding a high priority |
 | a priority changed in the brief | re-derive the roles it drives |
 | a role holds 40% of the tokens or more (`roles`) in two measured runs | lower its effort, or narrow its triggers if a specialist |
