@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Gathers the facts of a run's one-page view (NOW.md) from the GTM root and git, and prints them
-// as JSON: breadcrumb parts, task n/N, worktrees, last events, waiting kind, next step, ETA,
-// staleness and last change; a pause's phase, handoff and resume command, uncommitted changes per
+// Gathers the facts of a run's one-page view (NOW.md) from the GTM root and git, and prints them as
+// JSON: breadcrumb parts, task n/N, worktrees, last events, waiting kind, next step, ETA, staleness
+// and last change; a pause's phase, handoff and resume command, uncommitted or ignored entries per
 // worktree, and with --since the slug's root files changed since a time. It reads files and runs
 // git with argument arrays; it writes nothing and prints no message text: names outside SAFE and
 // unknown shapes print `?` and exit 1.
@@ -49,7 +49,9 @@ for (const k of ['final review', 'correction']) RESUME[k] = RESUME.delivery
 const trees = (repo && git(repo, ['worktree', 'list', '--porcelain']) || '').split('\n\n').filter(Boolean).map((b) => {
   const path = (b.match(/^worktree (.+)$/m) || [])[1] || ''
   const ref = (b.match(/^branch refs\/heads\/(.+)$/m) || [])[1] || ''
-  const changes = path ? (git(path, ['status', '--porcelain', '-z', '--untracked-files=normal']) || '').split('\0').filter((e) => /^.. /.test(e)).length : 0
+  // What a removal would lose, ignored files included (a GTM root in a worktree); `?` if git fails.
+  const st = path ? git(path, ['status', '--porcelain', '-z', '--ignored', '--untracked-files=normal']) : null
+  const changes = st === null ? '?' : st.split('\0').filter((e) => /^.. /.test(e)).length
   return { path, name: safe(basename(path)), branch: ref ? safe(ref) : '?', changes }
 })
 
@@ -117,9 +119,9 @@ function facts(s) {
   if (new RegExp(`^- \\d{4}-\\d\\d-\\d\\d · ${s} · run · shipped`, 'm').test(ledger)) phase = 'shipped'
   const task = phase !== 'delivery' ? null : typeof of === 'number' ? { n: doneTasks + 1, of } : '?'
   const cmd = paused && RESUME[paused] ? RESUME[paused](s, { plan, spec }) : null
-  const resumes = typeof cmd === 'string' && /^\/gtm:[a-z]+( [A-Za-z0-9._/-]+)?$/.test(cmd) ? cmd : '?'
+  const command = typeof cmd === 'string' && /^\/gtm:[a-z]+( [A-Za-z0-9._/-]+)?$/.test(cmd) ? cmd : '?'
   const handoff = existsSync(join(root, 'reports', s, 'handoff.md')) ? `reports/${s}/handoff.md` : '?'
-  if (paused !== null) return { phase: unknown ? '?' : 'paused', resumes: unknown ? '?' : paused, resume: resumes, handoff, task: unknown || paused === '?' ? '?' : paused !== 'delivery' ? null : task, of, doneTasks, events, progressFile }
+  if (paused !== null) return { phase: unknown ? '?' : 'paused', resumes: unknown ? '?' : paused, resume: command, handoff, task: unknown || paused === '?' ? '?' : paused !== 'delivery' ? null : task, of, doneTasks, events, progressFile }
   return { phase: unknown ? '?' : phase, task: unknown ? '?' : task, of, doneTasks, events, progressFile }
 }
 

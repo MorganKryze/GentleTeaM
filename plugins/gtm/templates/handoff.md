@@ -27,7 +27,8 @@ One line per pause before this one, carried forward: `- paused at <ISO> · <phas
 · waited <kind or nothing>`. None: "none".
 
 ## Worktrees and run branches
-One line each: `- <worktree> (<branch>) · <changes> uncommitted · merged | not merged`.
+One line each: `- <worktree> (<branch>) · <changes> uncommitted or ignored · merged | not merged`;
+`?` when git could not read it: keep the worktree. A removal deletes ignored files too.
 
 ## Resume
 - command: `<resume>` (from `now-facts.mjs`; `?` when it cannot be built)
