@@ -17,8 +17,8 @@ let n = 0
 function box() {
   const dir = join(tmp, String(n++)), config = join(dir, 'config'), project = join(dir, 'project')
   mkdirSync(config, { recursive: true }); mkdirSync(project, { recursive: true })
-  const run = (args, input = '', file = script) => spawnSync(process.execPath, [file, ...args], { input, encoding: 'utf8', env: { ...process.env, CLAUDE_CONFIG_DIR: config } })
-  const sh = (command, input) => spawnSync('sh', ['-c', command], { input, encoding: 'utf8', env: { ...process.env, CLAUDE_CONFIG_DIR: config } })
+  const run = (args, input = '', file = script) => spawnSync(process.execPath, [file, ...args], { input, cwd: dir, encoding: 'utf8', env: { ...process.env, CLAUDE_CONFIG_DIR: config } })
+  const sh = (command, input) => spawnSync('sh', ['-c', command], { input, cwd: dir, encoding: 'utf8', env: { ...process.env, CLAUDE_CONFIG_DIR: config } })
   return { dir, config, project, run, sh, store: join(config, 'gtm/usage.json'), settings: join(config, 'settings.json') }
 }
 const check = (name, ok, detail = '') => { if (!ok) errors.push(`${name}${detail ? `: ${detail}` : ''}`) }
@@ -129,6 +129,12 @@ try {
     writeFileSync(b.settings, fx(f))
     const r = b.run(['--install', b.settings])
     check(name, r.status !== 0 && readFileSync(b.settings, 'utf8') === fx(f) && !existsSync(join(b.config, 'gtm')), `${r.status}`)
+  }
+  for (const old of ['echo OLD \\', 'cat <<EOF\nOLD\nEOF']) { // The { } group cannot hold these: refused, nothing written.
+    const b = box(), text = JSON.stringify({ statusLine: { type: 'command', command: old } }, null, 2) + '\n'
+    writeFileSync(b.settings, text)
+    const r = b.run(['--install', b.settings])
+    check(`refused ${JSON.stringify(old)}`, r.status === 1 && readFileSync(b.settings, 'utf8') === text && !existsSync(join(b.config, 'gtm')), `${r.status}`)
   }
   { // F7: the old output shows when the step fails or is gone.
     const b = box()

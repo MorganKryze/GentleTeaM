@@ -6,7 +6,8 @@
 //            Always exits 0: a status line must never break.
 //   --install <settings.json> [--breadcrumb]   copy this file to <config>/gtm/ and chain it before
 //            the old statusLine command, kept byte for byte in a `{ }` group that gets the whole
-//            stdin; a rerun changes nothing.
+//            stdin; a rerun changes nothing. An old command ending in `\` or holding `<<` is
+//            refused (exit 1, nothing written).
 //   --uninstall <settings.json>                put the old command back (or remove the step alone).
 //   --read [--ledger <file>] [--tokens <k left>] [--minutes <left>] [--now <ISO>]   per window:
 //            used %, reset, minutes to it, age, flag. No reading: `none`; past 30 min: `stale`.
@@ -97,10 +98,12 @@ function install(file) {
   settings(file, (s) => {
     const sl = s.statusLine
     if (sl !== undefined && (sl === null || typeof sl !== 'object' || sl.type !== 'command' || typeof sl.command !== 'string')) { console.error('usage-line: statusLine is not a command; nothing written'); process.exit(1) }
+    const old = sl ? strip(sl.command) : null
+    // A trailing `\` would join the closing `}` to the old command; a heredoc can swallow it.
+    if (old && (/\\\s*$/.test(old) || old.includes('<<'))) { console.error('usage-line: the old status line ends in a backslash or holds a heredoc, which the { } group cannot hold; nothing written'); process.exit(1) }
     mkdirSync(dirname(step), { recursive: true })
     const self = fileURLToPath(import.meta.url)
     if (self !== step) { copyFileSync(self, `${step}.tmp`); renameSync(`${step}.tmp`, step) }
-    const old = sl ? strip(sl.command) : null
     const command = old === null || old === '' ? alone : `${prefix}${old}\n}`
     if (sl && sl.command === command) return undefined
     return { ...s, statusLine: { ...(sl || {}), type: 'command', command } }
