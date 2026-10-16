@@ -10,7 +10,7 @@
 //   --read [--ledger <file>] [--tokens <k left>] [--minutes <left>] [--now <ISO>]   per window:
 //            used %, reset, minutes to it, age, flag. No reading: `none`; past 30 min: `stale`.
 // <config> = ${CLAUDE_CONFIG_DIR:-$HOME/.claude}. No network, no git. No dependencies.
-import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, copyFileSync } from 'node:fs'
+import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, copyFileSync, realpathSync, statSync, chmodSync } from 'node:fs'
 import { join, dirname, resolve } from 'node:path'
 import { homedir } from 'node:os'
 import { fileURLToPath } from 'node:url'
@@ -21,7 +21,7 @@ const STALE_MIN = 30, RUNS = 5, MIN_RUNS = 2, CRUMB = 100
 const config = process.env.CLAUDE_CONFIG_DIR || join(homedir(), '.claude')
 const store = join(config, 'gtm', 'usage.json'), step = join(config, 'gtm', 'usage-line.mjs')
 const argv = process.argv.slice(2), flag = (k) => argv.includes(k), val = (k) => (argv.includes(k) ? argv[argv.indexOf(k) + 1] : undefined)
-const atomic = (file, text) => { mkdirSync(dirname(file), { recursive: true }); const t = `${file}.${process.pid}.tmp`; writeFileSync(t, text); renameSync(t, file) }
+const atomic = (file, text, mode) => { mkdirSync(dirname(file), { recursive: true }); const t = `${file}.${process.pid}.tmp`; writeFileSync(t, text, { mode: mode ?? 0o666 }); if (mode !== undefined) chmodSync(t, mode); renameSync(t, file) }
 const iso = (r) => { const t = typeof r === 'number' ? r * 1000 : typeof r === 'string' ? Date.parse(r) : NaN; return Number.isFinite(t) ? new Date(t).toISOString() : null }
 const clean = (s) => [...s.replace(/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu, '').trim()].slice(0, CRUMB).join('')
 const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2 }
@@ -64,7 +64,10 @@ function settings(file, edit) {
   if (s === null || typeof s !== 'object' || Array.isArray(s)) { console.error('usage-line: settings are not an object; nothing written'); process.exit(1) }
   const next = edit(s)
   if (next === undefined) return
-  atomic(file, JSON.stringify(next, null, 2) + '\n')
+  // Write through a symlink to its target and keep the old mode (0600 for a new file): the
+  // settings can hold secrets, and a dotfiles link must stay a link.
+  const real = existsSync(file) ? realpathSync(file) : file
+  atomic(real, JSON.stringify(next, null, 2) + '\n', existsSync(real) ? statSync(real).mode & 0o7777 : 0o600)
 }
 function install(file) {
   const q = quote(step)

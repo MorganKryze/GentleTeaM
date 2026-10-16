@@ -3,7 +3,7 @@
 // the breadcrumb and the undo. Each case runs with CLAUDE_CONFIG_DIR in a temporary folder,
 // removed after the run; the composed status line runs in `sh`. Run by scripts/validate.mjs.
 // No dependencies.
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, existsSync, rmSync, readdirSync, utimesSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, existsSync, rmSync, readdirSync, utimesSync, chmodSync, statSync, lstatSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { spawnSync } from 'node:child_process'
@@ -68,6 +68,24 @@ try {
     check('F5 runs alone', out.stdout === '5h 82% · 7d 41%\n', out.stdout + out.stderr)
     b.run(['--uninstall', b.settings])
     check('F5 undo', !('statusLine' in JSON.parse(readFileSync(b.settings, 'utf8'))))
+  }
+  { // The settings keep their mode and their symlink through an install and an undo.
+    const b = box(), mode = () => (statSync(b.settings).mode & 0o777).toString(8)
+    writeFileSync(b.settings, fx('f4-claude-hud.json')); chmodSync(b.settings, 0o600)
+    b.run(['--install', b.settings])
+    check('mode kept on install', mode() === '600', mode())
+    b.run(['--uninstall', b.settings])
+    check('mode kept on undo', mode() === '600', mode())
+    const c = box()
+    c.run(['--install', c.settings])
+    check('mode 600 for a new file', (statSync(c.settings).mode & 0o777) === 0o600, (statSync(c.settings).mode & 0o777).toString(8))
+    const d = box(), target = join(d.dir, 'dotfiles.json')
+    writeFileSync(target, fx('f4-claude-hud.json')); symlinkSync(target, d.settings)
+    d.run(['--install', d.settings])
+    check('symlink kept on install', lstatSync(d.settings).isSymbolicLink() && readlinkSync(d.settings) === target && readFileSync(target, 'utf8').includes('usage-line.mjs'))
+    check('no temp beside the link', readdirSync(d.dir).sort().join() === 'config,dotfiles.json,project' && readdirSync(d.config).sort().join() === 'gtm,settings.json', readdirSync(d.dir).join() + ' ' + readdirSync(d.config).join())
+    d.run(['--uninstall', d.settings])
+    check('symlink kept on undo', lstatSync(d.settings).isSymbolicLink() && readFileSync(target, 'utf8') === JSON.stringify(JSON.parse(fx('f4-claude-hud.json')), null, 2) + '\n')
   }
   for (const [name, f] of [['F6 broken JSON', 'f6-broken.json'], ['F6 not a command', 'f6-not-command.json']]) {
     const b = box()
