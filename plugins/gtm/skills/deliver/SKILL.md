@@ -16,7 +16,8 @@ Ground rules: as in the `gtm` skill §0.
   Gates lines `budget per task` and `budget per branch` (`<minutes> min, <tokens>k tokens`; absent
   or `none`: none); `cadence`, `review cadence` (absent: none); `standardRounds`, `fix rounds per
   standard review: N` (1). A ledger `ruling` `limits: lighter …` for this slug
-  overrides the roles it names in `team`, on every dispatch (resumes too).
+  overrides the roles it names in `team`, on every dispatch (resumes too), unless struck through or
+  beyond what `gtm` §0's card A allows (then ignored, a Heads-up).
 - Progress: `<root>/reports/<slug>/progress.md`, one line per run, any result (reruns append):
   status, tier, correction rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each run's
   line (design, spec, plan, task, final review, re-review, re-run review, fix wave) ends `· <s> s ·
