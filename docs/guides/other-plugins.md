@@ -86,7 +86,7 @@ message text. Your credit balance is not visible to it, so GTM cannot warn you a
 It only changes your user settings, never a project's, and not on Windows. To undo it, run the
 command init printed:
 
-```sh
+```text
 node "<config>/gtm/usage-line.mjs" --uninstall "<config>/settings.json"
 ```
 

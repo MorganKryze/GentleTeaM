@@ -391,6 +391,8 @@ check('A10', () => {
     if (t === null) continue;
     for (const m of unfront(t).matchAll(/!\[([^\]]*)\]\(([^)]+)\)/g)) if (m[1].trim().split(/\s+/).length < 3) f.push(`${file}: image ${m[2]} alt "${m[1]}"`);
     for (const m of unfront(t).matchAll(/<img\b[^>]*>/g)) if (!/\balt="[^"]{8,}"/.test(m[0])) f.push(`${file}: ${m[0].slice(0, 60)} lacks alt text`);
+    // gtm.css sets no highlight colours, so a highlighted block fails contrast: text or mermaid only.
+    for (const m of unfront(t).matchAll(/^(?:```+|~~~+)[ \t]*([\w-]+)/gm)) if (!['text', 'mermaid'].includes(m[1])) f.push(`${file}: a \`${m[1]}\` code block is highlighted; use text`);
   }
   if (existsSync(join(repo, 'site', 'index.html'))) {
     for (const p of walk(join(repo, 'site')).filter(p => p.endsWith('.html'))) {
