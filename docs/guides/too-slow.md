@@ -4,7 +4,7 @@ description: What GTM costs, measured, and the levers that make a change cheaper
 ---
 
 ::: callout summary
-- **You will learn:** what a change costs, and ten levers that lower it, each with its risk.
+- **You will learn:** what a change costs, and nine levers that lower it, each with its risk.
 - **Reading time:** 4 minutes.
 - **Before this:** [Change your team settings](/guides/team-settings/).
 :::
@@ -72,7 +72,6 @@ Each lever saves something and risks something. Most change your
 | Keep plans to 8 tasks or fewer, each a vertical slice (`tasks per branch`) | the fixed cost each task pays: brief, review, report | a slice too big for one review; the reviewer splits its findings |
 | Keep task briefs short: the task, the constraints it touches, paths to the rest | the tokens each implementer reads | a rule the brief points at but the implementer skips; the review catches it |
 | Set `design.kit` so screens built only from the kit are designed in code | a designer and a critic per screen: 20 to 25 minutes each | a screen you approve from captures rather than mockups |
-| Run the size check (`verify.size`) at every commit | GTM's own cost per session, held under its budget | nothing; a description that grows past it fails the check |
 | Read summaries with `/gtm:brief-me` | your reading time: it shows any document at brief, standard or deep detail | a detail you would have caught in the full text |
 
 ## Where does the time go in a Feature?

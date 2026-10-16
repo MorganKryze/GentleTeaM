@@ -408,7 +408,7 @@ check('A11', () => {
   const ceiling = +(team.match(/Fix track ceiling: (\d+) files/) || [])[1];
   const threshold = +(team.match(/design threshold: (\d+)\/10/) || [])[1];
   const agents = readdirSync(join(repo, 'plugins/gtm/agents')).filter(n => n.endsWith('.md'));
-  const words = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, ten: 10, eleven: 11, twelve: 12 };
+  const words = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
   const num = s => (/^\d+$/.test(s) ? +s : words[s.toLowerCase()]);
   const all = PAGES.map(([, , file]) => [file, prose(page(file) || '', { mermaid: true })]);
   // The session figure is size.mjs's total rounded to 10 (absent before the size check lands).
@@ -445,6 +445,11 @@ check('A11', () => {
   }
   if (tokens && !all.some(([, t]) => new RegExp(`\\b${tokens} tokens\\b`).test(t))) f.push(`no page states about ${tokens} tokens per session`);
   if (!all.some(([, t]) => new RegExp(`\\b${threshold}/10\\b`).test(t))) f.push(`no page states the ${threshold}/10 design threshold`);
+  // The cost guide's summary counts its lever table.
+  const slow = unfront(page('guides/too-slow.md') || '');
+  const said = (slow.match(/\b(\d+|\w+) levers that lower it\b/) || [])[1];
+  const table = (slow.split(/^## /m).find(s => s.startsWith('Which levers')) || '').split('\n').filter(l => /^\| (?!Lever \||---)/.test(l));
+  if (said && num(said) !== table.length) f.push(`too-slow.md: "${said} levers", the table has ${table.length}`);
   return f;
 });
 
