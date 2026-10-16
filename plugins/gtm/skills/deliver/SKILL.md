@@ -9,7 +9,7 @@ Ground rules: as in the `gtm` skill §0.
 
 ## 1. Prepare
 - Branch: create it from `git.base` as `git.branch` says (the orchestrator does this once; agents
-  never switch branches). Note the base commit. A name off `^[A-Za-z0-9._/-]+$` stops a wave (§3).
+  never switch branches). Note the base commit.
 - From `team.md`: `team` = `{ role: {model, effort} }` for every role; `triggers` = the specialists
   that are `on`, with their regexes; `fixRounds`; `fixCeiling`, the N of the Gates line
   `Fix track ceiling: N files`; the budgets, Gates lines `budget per task` and `budget per
@@ -37,7 +37,9 @@ Ground rules: as in the `gtm` skill §0.
    `^wf_[0-9a-f-]+$`, the one folder `<config>/projects/*/*/subagents/workflows/<id>` (`<config>`
    = `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`), `node "${CLAUDE_PLUGIN_ROOT}/scripts/role-split.mjs"
    --json "<folder>"`, its first role the largest. An id off that pattern, no folder or several,
-   or a non-zero exit: `roles ?`, the totals kept. Past 1.5× of the per-task budget (minutes or
+   or a non-zero exit: `roles ?`, the totals kept. Roles: `role-split.mjs` over the folder of each
+   progress line's `· run <id>`, plus `--also <role>:<s>:<tokens>` per dispatch (architect,
+   final-reviewer, implementer, a re-run review's role). Past 1.5× of the per-task budget (minutes or
    tokens), or the branch's total so far past 1.5× of the per-branch one: one Heads-up per
    crossing (task or phase, measure, budget, largest role), a ledger `usage` line `over budget:
    <the same>`, and go on. No budget or measure changes a verdict, a correction round, a dispatch, a
@@ -112,16 +114,8 @@ core.quotePath=false diff --name-only --no-renames` matches no specialist trigge
 fixed, keep the others. Each dispatch writes its progress line and is measured as §2 step 3 says.
 
 ## 5. Record and report
-- Ledger: one `run` line (`tasks N · correction rounds per task · findings per reviewer (critical /
-  important / minor) · tiers <g>g <s>s · design rounds and score`, escalated counts guarded), ending
-  with `measured <W>m <T>k <A>a: <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ...` from every
-  progress line (a task's runs summed): phases design, spec, plan, tasks (re-run reviews in), final
-  (re-reviews in), fix (fix waves), in that order, a phase not run omitted; minutes to one decimal,
-  tokens in thousands; all summed, but a wave's minutes are its longest task's; a sum holding a `?`
-  is `?`. `roles`: roles at 5% or more, `role-split.mjs` over the folder of each progress line's
-  `· run <id>` (id checked and folder found as §2 step 3 says) plus `--also <role>:<s>:<tokens>` per
-  dispatch (architect, final-reviewer, implementer, a re-run review's role); any `?` → `roles ?`.
-  Then each ruling taken.
+- Ledger: one `run` line as `${CLAUDE_PLUGIN_ROOT}/templates/ledger.md` says (the plugin's
+  template, never the project's copy), from every progress line; then each ruling taken.
 - Report to the human, per the briefing format: TL;DR (ready or not, the measure: tasks clean,
   gate result, final verdict), one table (task, result, reviewers, cost) with a total row,
   deferred minors count, each budget Heads-up again, a Heads-up if anything deviated, **Rulings
