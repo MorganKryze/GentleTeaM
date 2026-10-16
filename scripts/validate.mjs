@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-// Checks what `claude plugin validate` does not: agent and skill frontmatter, workflow syntax,
-// that the plugin version has a CHANGELOG entry, the footprint check, the role split and the run
-// view's facts against their fixtures, and runs each workflow against scripted agents
-// (scripts/workflows.test.mjs).
-// No dependencies.
-import { readFileSync, readdirSync, writeFileSync, mkdtempSync } from 'node:fs'
+// Checks what `claude plugin validate` does not: agent and skill frontmatter, workflow syntax and
+// the CHANGELOG entry for the plugin version. Then runs every scripts/*.test.mjs (fixture tests,
+// workflow scenarios, the site's lasting source lines) but the built-site measure, and removes its
+// temporary folder. No dependencies.
+import { readFileSync, readdirSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs'
 import { join, basename } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync } from 'node:child_process'
@@ -76,19 +75,16 @@ for (const name of readdirSync(join(plugin, 'workflows'))) {
   try { execFileSync(process.execPath, ['--check', wrapped], { stdio: 'pipe' }) } catch (e) { fail(file, e.stderr.toString().split('\n').slice(0, 5).join(' ')) }
 }
 
-for (const test of ['footprint-check.test.mjs', 'role-split.test.mjs', 'now-facts.test.mjs', 'workflows.test.mjs']) {
-  const file = join(root, 'scripts', test)
-  try { execFileSync(process.execPath, [file], { stdio: 'pipe' }) }
-  catch (e) { fail(file, (e.stderr || '').toString().trim() || e.message) }
-}
+rmSync(tmp, { recursive: true, force: true })
 
-// The site's lasting source lines need no build and no network: the built-site lines run in the
-// Pages workflow; the lines that judge a branch against main are not part of the gate.
-{
-  const file = join(root, 'scripts', 'site-checks.test.mjs')
-  try { execFileSync(process.execPath, [file, root, '--source', '--lasting'], { stdio: 'pipe' }) }
-  catch (e) { fail(file, ((e.stdout || '').toString() + (e.stderr || '').toString()).trim() || e.message) }
+// One loop for every test. The site checks read sources only (the built-site lines run in the
+// Pages workflow); the site measure needs a build and a browser, so CI runs it there.
+const ARGS = { 'site-checks.test.mjs': [root, '--source', '--lasting'] }
+for (const test of readdirSync(join(root, 'scripts')).filter((f) => f.endsWith('.test.mjs') && f !== 'site-measure.test.mjs').sort()) {
+  const file = join(root, 'scripts', test)
+  try { execFileSync(process.execPath, [file, ...(ARGS[test] || [])], { stdio: 'pipe' }) }
+  catch (e) { fail(file, '\n' + (((e.stdout || '') + (e.stderr || '')).toString().trim() || e.message)) }
 }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log('gtm: manifests, agents, skills, workflows, workflow scenarios, footprint check, role split and site sources OK')
+console.log('gtm: manifests, agents, skills, workflow syntax and every scripts/*.test.mjs OK')
