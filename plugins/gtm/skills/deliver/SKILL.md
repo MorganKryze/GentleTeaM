@@ -27,9 +27,9 @@ Ground rules: as in the `gtm` skill §0.
   runs → remove the mark; it cannot run or fails on the untouched base → before any task, a Heads-up
   and a card (correct the command / drop it / accept the failure as pre-existing, logged).
 - Resume (progress lines exist): skip tasks last `CLEAN` or `GATED`; rerun each `PAUSED` one whole,
-  `base` its line's, never its head (unlike §3 step 3), in its worktree if any; a wave's `PAUSED`
-  tasks run as one wave, then its tasks merge as §3 step 2 says; a `PAUSED` final review or fix wave
-  reruns whole from its base; a card open at the pause (the handoff's "what waited") is shown again.
+  `base` its line's, never its head (unlike §3 step 3), in its worktree if any, a wave's as one
+  wave; then §3 step 2 merges each wave with an unmerged task, `PAUSED` or not; a `PAUSED` final
+  review or fix wave reruns whole from its base; the handoff's "what waited" card shows again.
 
 ## 2. Each task, in plan order
 1. Write `<root>/reports/<slug>/task-<n>-brief.md`: the task verbatim,
