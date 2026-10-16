@@ -2,8 +2,8 @@
 // Gathers the facts of a run's one-page view (NOW.md) from the GTM root and git, and prints them
 // as JSON: breadcrumb parts, task n/N, worktrees, last events, waiting kind, next step, ETA,
 // staleness and last change; a pause's phase, handoff and resume command, uncommitted changes per
-// worktree, and with --since the root files changed since a time. It reads files and runs git
-// with argument arrays; it writes nothing and prints no message text: names outside SAFE and
+// worktree, and with --since the slug's root files changed since a time. It reads files and runs
+// git with argument arrays; it writes nothing and prints no message text: names outside SAFE and
 // unknown shapes print `?` and exit 1.
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
 //        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] No dependencies.
@@ -183,11 +183,16 @@ const out = {
   ...(phase === 'paused' ? { resumes: mine.resumes, resume: mine.resume, handoff: mine.handoff } : {}),
   worktrees: trees.slice(1).map(({ name, branch, changes }) => ({ name, branch, changes })), events: mine ? mine.events.slice(-EVENTS) : [], stale, others,
 }
-// With --since: the root's specs, plans and this run's reports changed at or after that time,
-// progress and handoff aside (a pause renames or lists them; a resume never reads them).
+// With --since: this slug's specs and plans and this run's reports changed at or after that time,
+// progress and handoff aside (a pause renames or lists them; a resume never reads them). A spec or
+// plan is the slug's when it ends `-<slug>.md` or `-<slug>-<part>.md`, unless a longer backlog slug
+// claims it; another story's files never reach the list.
+const ends = (n, s) => n.endsWith(`-${s}.md`) || new RegExp(`-${s}-[A-Za-z0-9]+\\.md$`).test(n)
+const longer = stories.filter((x) => x.slug && x.slug.startsWith(`${slug}-`))
+const ours = (n) => ends(n, slug) && !longer.some((x) => ends(n, x.slug))
 if (since !== null) {
-  const dirs = ['specs', 'plans', ...(slug === '?' ? [] : [`reports/${slug}`])]
-  out.changed = dirs.flatMap((d) => (existsSync(join(root, d)) ? readdirSync(join(root, d), { withFileTypes: true }).filter((e) => e.isFile()).map((e) => `${d}/${e.name}`) : []))
+  const dirs = slug === '?' ? [] : ['specs', 'plans', `reports/${slug}`]
+  out.changed = dirs.flatMap((d) => (existsSync(join(root, d)) ? readdirSync(join(root, d), { withFileTypes: true }).filter((e) => e.isFile() && (d.startsWith('reports/') || ours(e.name))).map((e) => `${d}/${e.name}`) : []))
     .filter((f) => !/\/(progress|handoff)\.md$/.test(f) && mtime(join(root, f)) >= since).map(safe).sort()
 }
 if (out.waiting && out.waiting.task === '?' && !opt.waiting.includes(',')) out.waiting.task = null
