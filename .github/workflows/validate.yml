@@ -15,8 +15,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Frontmatter, workflow syntax, changelog
+      - name: Frontmatter, workflow syntax, changelog and every script test
         run: node scripts/validate.mjs
+      - name: Session size (tokens each session loads)
+        run: node plugins/gtm/scripts/size.mjs
       # `claude plugin validate` reads local files only and needs no login or API key.
       - name: Marketplace and plugin manifests
         run: |
