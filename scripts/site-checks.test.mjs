@@ -418,7 +418,7 @@ check('A11', () => {
     let out = '';
     try { out = execFileSync(process.execPath, [sizer, '--plugin', join(repo, 'plugins/gtm')], { encoding: 'utf8' }); }
     catch (e) { out = (e.stdout || '').toString(); }
-    const total = +(out.match(/^(\d+)\s+total\b/m) || [])[1];
+    const total = +(out.match(/^\s*(\d+)\s+total\b/m) || [])[1];
     if (total) tokens = (Math.round(total / 10) * 10).toLocaleString('en-GB');
     else f.push('size.mjs printed no total');
   }
