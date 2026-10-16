@@ -80,10 +80,13 @@ const runs = ledger.split('\n').filter((l) => /^- \d{4}-\d\d-\d\d · [^·]+ · r
 })
 const med = (k) => { const xs = runs.map((r) => r[k]).filter((x) => x != null); return xs.length ? round(median(xs)) : null }
 
+// A spec or plan is slug s's when its whole name is `<date>-<s>.md`, or with part `<date>-<s>-<part>.md`.
+const named = (n, s, part) => new RegExp(`^\\d{4}-\\d\\d-\\d\\d-${s}${part ? '(-[A-Za-z0-9]+)?' : ''}\\.md$`).test(n)
+
 function facts(s) {
   const progressFile = join(root, 'reports', s, 'progress.md')
   const lines = (read(progressFile) || '').split('\n').filter((l) => l.startsWith('- '))
-  const latest = (dir) => (existsSync(join(root, dir)) ? readdirSync(join(root, dir), { withFileTypes: true }).filter((d) => d.isFile() && d.name.endsWith(`-${s}.md`)).map((d) => d.name).sort().pop() : undefined)
+  const latest = (dir) => (existsSync(join(root, dir)) ? readdirSync(join(root, dir), { withFileTypes: true }).filter((d) => d.isFile() && named(d.name, s)).map((d) => d.name).sort().pop() : undefined)
   const plan = latest('plans'), spec = latest('specs')
   const of = plan ? (readFileSync(join(root, 'plans', plan), 'utf8').match(/^### Task \d+\b/gm) || []).length || '?' : null
   const status = {}, events = []
@@ -185,15 +188,13 @@ const out = {
 }
 // With --since: this slug's specs and plans and this run's reports changed at or after that time,
 // progress and handoff aside (a pause renames or lists them; a resume never reads them). A spec or
-// plan is the slug's when it ends `-<slug>.md` or `-<slug>-<part>.md`, unless a longer backlog slug
-// claims it; another story's files never reach the list. A spec or plan whose phase is over (the
-// phase, or the one a pause resumes, comes after it) is approved and never listed; an unknown phase
-// lists none.
+// plan is the slug's when `named` takes it, part allowed, and no longer backlog slug claims it;
+// another story's files never reach the list. A spec or plan whose phase is over (the phase, or the
+// one a pause resumes, comes after it) is approved and never listed; an unknown phase lists none.
 const stage = PHASES.indexOf(phase === 'paused' ? mine.resumes : phase)
 const open = { specs: stage >= 0 && stage <= PHASES.indexOf('spec'), plans: stage >= 0 && stage <= PHASES.indexOf('plan') }
-const ends = (n, s) => n.endsWith(`-${s}.md`) || new RegExp(`-${s}-[A-Za-z0-9]+\\.md$`).test(n)
 const longer = stories.filter((x) => x.slug && x.slug.startsWith(`${slug}-`))
-const ours = (n) => ends(n, slug) && !longer.some((x) => ends(n, x.slug))
+const ours = (n) => named(n, slug, true) && !longer.some((x) => named(n, x.slug, true))
 if (since !== null) {
   const dirs = slug === '?' ? [] : ['specs', 'plans', `reports/${slug}`]
   out.changed = dirs.flatMap((d) => (existsSync(join(root, d)) ? readdirSync(join(root, d), { withFileTypes: true }).filter((e) => e.isFile() && (d.startsWith('reports/') || (open[d] && ours(e.name)))).map((e) => `${d}/${e.name}`) : []))
