@@ -25,8 +25,8 @@ generous; default light). Write the answers into `config.yml` (`language`, `brie
   recommend A. On A or B run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --install
   "<config>/settings.json"` (`--breadcrumb` on A; `<config>` =
   `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`) and show its `undo:` line. It edits the user settings only,
-  never the project's or local ones. Already chained (the command names `usage-line.mjs`): rerun it,
-  no card.
+  never the project's or local ones. Already chained (the command names `usage-line.mjs`): rerun it
+  with the flags it holds (`--breadcrumb` when the command has it), no card.
 - `design.screens` true, screens served over HTTP, no `verify.ui`: one card, A add / B not now,
   listing routes, `design.widths`, light and dark, the loads, start and install commands. On A, copy
   `${CLAUDE_PLUGIN_ROOT}/templates/ui-gate.spec.mjs` beside the project's tests (else `tests/`),
