@@ -24,6 +24,14 @@ if (check.status !== 0) {
   process.exit(1)
 }
 
+// Every failure line the template writes must show its selector to the check below, even with
+// spaces or colons in it (`html, body`, `main > a:nth-of-type(2)`). Runs without Playwright.
+const namesSelector = (message) => / · (?:light|dark) · \S.*?: \S/.test(message)
+for (const [, line] of readFileSync(template, 'utf8').matchAll(/failures\.push\(`(\$\{where\} · [^`]*)`/g)) {
+  const sample = line.replace('${where}', '/a.html · 360px · dark').replace(/\$\{[^}]*\}/g, 'main > a:nth-of-type(2)')
+  if (!namesSelector(sample)) errors.push(`template: "${line}" hides its selector from the check`)
+}
+
 function packageDir(name) {
   const from = process.env.PLAYWRIGHT_PATH ? join(process.env.PLAYWRIGHT_PATH, 'x.js') : join(root, 'x.js')
   const paths = createRequire(from).resolve.paths(name) || []
@@ -32,6 +40,10 @@ function packageDir(name) {
 }
 const pw = packageDir('@playwright/test')
 const axe = packageDir('@axe-core/playwright')
+if (errors.length) {
+  for (const e of errors) console.error(`ui-gate: ${e}`)
+  process.exit(1)
+}
 if (!pw || !axe) {
   console.log('ui-gate: skipped, Playwright not found')
   process.exit(0)
@@ -126,7 +138,7 @@ try {
         for (const part of [route, `${width}px`, theme]) {
           if (!got.message.includes(part)) errors.push(`${name}: "${title}" failure does not name ${part}`)
         }
-        if (!/·\s\S+:/.test(got.message)) errors.push(`${name}: "${title}" failure names no selector`)
+        if (!namesSelector(got.message)) errors.push(`${name}: "${title}" failure names no selector`)
       }
     }
     if (name === 'dark-same' && !out.tests['/dark-same.html 360 dark']?.message.includes('dark theme not applied')) {
