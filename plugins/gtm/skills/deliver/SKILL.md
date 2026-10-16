@@ -28,8 +28,8 @@ Ground rules: as in the `gtm` skill §0.
   and a card (correct the command / drop it / accept the failure as pre-existing, logged).
 - Resume (progress lines exist): skip tasks last `CLEAN` or `GATED`; rerun each `PAUSED` one whole,
   `base` its line's, never its head (unlike §3 step 3), in its worktree if any; a wave's `PAUSED`
-  tasks run as one wave, merged as §3 step 2 says; a `PAUSED` final review or fix wave reruns whole
-  from its base; a card open at the pause (the handoff's "what waited") is shown again.
+  tasks run as one wave, then its tasks merge as §3 step 2 says; a `PAUSED` final review or fix wave
+  reruns whole from its base; a card open at the pause (the handoff's "what waited") is shown again.
 
 ## 2. Each task, in plan order
 1. Write `<root>/reports/<slug>/task-<n>-brief.md`: the task verbatim,
@@ -76,11 +76,11 @@ Ground rules: as in the `gtm` skill §0.
    workflows at once (§2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`), let
    all return, write each one's progress line (no wave total) and measure each (§2 step 3).
 2. Before each merge, branch/head are as last recorded and tasks' files (§1) of
-   `<base>..<branch>-t<n>` disjoint. Merge each `CLEAN` or `GATED` branch in plan order (`git merge
-   --no-ff --no-edit "<branch>-t<n>"`), record the head, gate once. Per merged task, only when
-   `<root>` is out of the repo, or `git -C "<wt>" status --porcelain --ignored -unormal -- "<root>"`
-   (repo path) exits 0 and lists nothing: `git worktree remove "<wt>"`, `git branch -d
-   "<branch>-t<n>"`. A check that fails keeps the worktree.
+   `<base>..<branch>-t<n>` disjoint. Merge each `CLEAN` or `GATED` branch not yet an ancestor of
+   `HEAD`, in plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`), record the head, gate
+   once. Per merged task, only when `<root>` is out of the repo, or `git -C "<wt>" status
+   --porcelain --ignored -unormal -- "<root>"` (repo path) exits 0 and lists nothing: `git worktree
+   remove "<wt>"`, `git branch -d "<branch>-t<n>"`. A check that fails keeps the worktree.
 3. A branch name off `^[A-Za-z0-9._/-]+$` (before step 1), a moved branch/head, overlap, conflict,
    red gate, a failed check or files in a worktree's `<root>`: merge no more, keep it and unmerged
    worktrees, undo nothing without the human. `OPEN`/`BLOCKED`: `CLEAN` or `GATED` siblings merge,
