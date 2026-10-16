@@ -41,6 +41,11 @@ links, and in a browser the overflow, 44 px targets, reading measure, contrast, 
 `validate.mjs` also runs each workflow against scripted agents (`scripts/workflows.test.mjs`): a
 new workflow needs a scenario there, and a changed default or threshold changes one.
 
+The size check, `node plugins/gtm/scripts/size.mjs`, counts what GTM adds to every session: about
+1,470 tokens in 0.9.0, against a budget of 1,500 held in the script. CI runs it on every push and
+fails above the budget. A change that must grow a description raises the budget in its own
+commit, saying why; the docs then state the new figure.
+
 ## How do versions move?
 
 SemVer, in `plugins/gtm/.claude-plugin/plugin.json` only, never in the marketplace entry. Bump it

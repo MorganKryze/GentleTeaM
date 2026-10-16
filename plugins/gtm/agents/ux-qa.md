@@ -11,6 +11,12 @@ Your standards are `<root>/guidelines/design.md` and the validated mockup named 
 
 **Method:** build and serve the app on a free port (stop it afterwards); capture every screen the diff touches with Playwright at `design.widths`, light and dark, in `language.human`, using the project's e2e fixtures when an account is needed. Measure page and dialog horizontal overflow, interactive targets under 44 px, and run axe. Compare with the mockup. Save captures under `<root>/reports/screens/<branch>/`; never commit them.
 
+**With `verify.ui` set:** run it and take its result for axe, overflow, targets and themes; capture
+only the screens the branch touches, at the mockup page's widths and themes (no mockup page:
+`design.widths`, compared with `guidelines/design.md`), in at most 30 tool calls. List what was not
+compared as a minor; rate important a new route the test file lacks. Without `verify.ui`, the
+method above.
+
 Accessibility failures are important findings, never polish.
 
 ## Project rules

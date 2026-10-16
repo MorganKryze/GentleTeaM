@@ -21,6 +21,8 @@
   characters, written by the writer in its own words (never pasted text).
 - ETA: `<minutes> min, ends about <clock> (median of <runs> runs)`. `eta.none`: "no measured run
   yet". `afterAnswer`: `<minutes> min after your answer`, no clock. `tasks` null: "after the plan".
+- Paused (phase `paused`): breadcrumb `<epic> › <branch> › paused › task <n>/<N>`, no clock;
+  what waits reads "resume with `<resume>`" and, under it, the `handoff` path.
 - Events: the `events` list as given, newest first, at most three.
 - Other branches: one line each, `- <branch> › <phase> › task <task> · updated <HH:MM>`.
 - Rebuilt by `/gtm:status` (no `--running`, no `--waiting`): line 1 ends with ` · rebuilt`, in

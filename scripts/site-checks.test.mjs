@@ -152,7 +152,7 @@ const TERMS = [
   ['File limit for a fix', /file limits? for a fix/i, /Fix track ceiling/], ['Dry run', /dry runs?/i],
   ['Brief', /\bBrief\b/], ['Tune', /\bTune\b/], ['Stealth', /\bstealth\b/i], ['Fix', /\bFix(es)?\b/],
   ['Feature', /\bFeatures?\b/], ['Milestone', /\bMilestones?\b/], ['Retro', /\bRetro\b/],
-  ['Decision card', /decision cards?/i],
+  ['Decision card', /decision cards?/i], ['Handoff', /\bhandoff\b/i, /`handoff\.md`/],
 ];
 const INTERNAL = ['hand-off', 'hand-back', 'gate', 'minor', 'GTM root', 'footprint check', 'EARS', 'NEEDS CLARIFICATION'];
 const RETIRED = [ // retired word, its search pattern, the plain word it points to
@@ -236,7 +236,7 @@ check('A2', () => {
     else if (!re.test(t)) f.push(`${src} "${sec}" -> ${file}: no ${re}`);
   }
   const cmds = page('reference/commands.md') || '';
-  for (const s of ['gtm', 'init', 'design', 'spec', 'plan', 'deliver', 'ship', 'retro', 'tune', 'brief-me', 'status']) {
+  for (const s of ['gtm', 'init', 'design', 'spec', 'plan', 'deliver', 'ship', 'retro', 'tune', 'brief-me', 'status', 'pause']) {
     if (!new RegExp(`/gtm:${s}\\b`).test(cmds)) f.push(`commands.md lacks /gtm:${s}`);
   }
   return f;
@@ -283,7 +283,12 @@ const glossary = () => {
 
 check('A5', () => {
   const f = [];
-  const { entries } = glossary();
+  const { t, entries } = glossary();
+  // An explicit anchor must be its heading's slug, or links built from the term break (W7).
+  for (const m of t.matchAll(/^#{2,3} (.+?)\s*\{#([^}]*)\}\s*$/gm)) {
+    const slug = m[1].toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-');
+    if (m[2] !== slug) f.push(`"${m[1]}": anchor {#${m[2]}}, its slug is ${slug}`);
+  }
   for (const [term, , must] of TERMS) {
     const body = entries[term];
     if (body === undefined) { f.push(`no "### ${term}" entry`); continue; }
@@ -386,6 +391,8 @@ check('A10', () => {
     if (t === null) continue;
     for (const m of unfront(t).matchAll(/!\[([^\]]*)\]\(([^)]+)\)/g)) if (m[1].trim().split(/\s+/).length < 3) f.push(`${file}: image ${m[2]} alt "${m[1]}"`);
     for (const m of unfront(t).matchAll(/<img\b[^>]*>/g)) if (!/\balt="[^"]{8,}"/.test(m[0])) f.push(`${file}: ${m[0].slice(0, 60)} lacks alt text`);
+    // gtm.css sets no highlight colours, so a highlighted block fails contrast: text or mermaid only.
+    for (const m of unfront(t).matchAll(/^(?:```+|~~~+)[ \t]*([\w-]+)/gm)) if (!['text', 'mermaid'].includes(m[1])) f.push(`${file}: a \`${m[1]}\` code block is highlighted; use text`);
   }
   if (existsSync(join(repo, 'site', 'index.html'))) {
     for (const p of walk(join(repo, 'site')).filter(p => p.endsWith('.html'))) {
@@ -403,9 +410,20 @@ check('A11', () => {
   const ceiling = +(team.match(/Fix track ceiling: (\d+) files/) || [])[1];
   const threshold = +(team.match(/design threshold: (\d+)\/10/) || [])[1];
   const agents = readdirSync(join(repo, 'plugins/gtm/agents')).filter(n => n.endsWith('.md'));
-  const words = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, ten: 10, eleven: 11, twelve: 12 };
+  const words = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
   const num = s => (/^\d+$/.test(s) ? +s : words[s.toLowerCase()]);
   const all = PAGES.map(([, , file]) => [file, prose(page(file) || '', { mermaid: true })]);
+  // The session figure is size.mjs's total rounded to 10 (absent before the size check lands).
+  const sizer = join(repo, 'plugins/gtm/scripts/size.mjs');
+  let tokens = null;
+  if (existsSync(sizer)) {
+    let out = '';
+    try { out = execFileSync(process.execPath, [sizer, '--plugin', join(repo, 'plugins/gtm')], { encoding: 'utf8' }); }
+    catch (e) { out = (e.stdout || '').toString(); }
+    const total = +(out.match(/^\s*(\d+)\s+total\b/m) || [])[1];
+    if (total) tokens = (Math.round(total / 10) * 10).toLocaleString('en-GB');
+    else f.push('size.mjs printed no total');
+  }
   for (const [file, t] of all) {
     // Two defaults since 0.7.0: per task, and per standard review (a sentence about a wave or a standard task).
     for (const m of t.matchAll(/\b(\d+|one|two|three|four|five)\s+correction rounds?\b/gi)) {
@@ -416,7 +434,7 @@ check('A11', () => {
     for (const m of t.matchAll(/\b(\d+|three|four|five)[- ]files? (limit|at most)|file limit[^.]{0,40}?\b(\d+) files?/gi)) { const n = num(m[1] || m[3]); if (n !== ceiling) f.push(`${file}: "${m[0]}", default is ${ceiling}`); }
     for (const m of t.matchAll(/\b(\d+)\/10\b/g)) if (+m[1] !== threshold) f.push(`${file}: "${m[0]}", default is ${threshold}/10`);
     for (const m of t.matchAll(/\b(\d+|ten|eleven|twelve)\s+(role agents|roles)\b/gi)) if (num(m[1]) !== agents.length) f.push(`${file}: "${m[0]}", there are ${agents.length} agents`);
-    for (const m of t.matchAll(/\b(about|around) ([\d,]+) tokens\b/gi)) if (m[2] !== '1,300') f.push(`${file}: "${m[0]}", the measured figure is 1,300`);
+    if (tokens) for (const m of t.matchAll(/\b(about|around) ([\d,]+) tokens\b/gi)) if (m[2] !== tokens) f.push(`${file}: "${m[0]}", the measured figure is ${tokens}`);
   }
   const roles = page('reference/roles.md') || '';
   for (const a of agents) {
@@ -427,8 +445,13 @@ check('A11', () => {
     if (!row) f.push(`roles.md has no row for \`${name}\``);
     else if (!new RegExp(`\\|\\s*${effort}\\b`).test(row)) f.push(`roles.md row ${name} lacks its default effort ${effort}`);
   }
-  if (!all.some(([, t]) => /\b1,300 tokens\b/.test(t))) f.push('no page states about 1,300 tokens per session');
+  if (tokens && !all.some(([, t]) => new RegExp(`\\b${tokens} tokens\\b`).test(t))) f.push(`no page states about ${tokens} tokens per session`);
   if (!all.some(([, t]) => new RegExp(`\\b${threshold}/10\\b`).test(t))) f.push(`no page states the ${threshold}/10 design threshold`);
+  // The cost guide's summary counts its lever table.
+  const slow = unfront(page('guides/too-slow.md') || '');
+  const said = (slow.match(/\b(\d+|\w+) levers that lower it\b/) || [])[1];
+  const table = (slow.split(/^## /m).find(s => s.startsWith('Which levers')) || '').split('\n').filter(l => /^\| (?!Lever \||---)/.test(l));
+  if (said && num(said) !== table.length) f.push(`too-slow.md: "${said} levers", the table has ${table.length}`);
   return f;
 });
 
@@ -713,7 +736,7 @@ check('vocab', () => {
   const f = [];
   const retired = /\b(touchpoints?|boards?|(?<!made )for[- ]you|rulings?|team profile|fix rounds?|fix ceiling|replay)\b/i;
   const dir = join(repo, 'plugins', 'gtm');
-  const files = ['templates/briefing.md', 'templates/spec.md', 'templates/plan.md', 'templates/team.md', 'templates/now.md',
+  const files = ['templates/briefing.md', 'templates/spec.md', 'templates/plan.md', 'templates/team.md', 'templates/now.md', 'templates/handoff.md',
     ...readdirSync(join(dir, 'skills')).map(d => `skills/${d}/SKILL.md`)];
   for (const rel of files) {
     if (!existsSync(join(dir, rel))) continue;

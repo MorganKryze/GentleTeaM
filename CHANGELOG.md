@@ -5,6 +5,29 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-16
+
+### Added
+- The usage step: `/gtm:init` can chain it before your status line to read the 5-hour and 7-day
+  limits; a phase that would pass one waits on a limits card (lighter for this branch, keep, pause).
+- `/gtm:pause` stops a run and keeps every commit, worktree and file, writes `handoff.md`;
+  `/gtm:gtm` and `/gtm:status` give the command that resumes it.
+- The UI gate test (`ui-gate.spec.mjs`) and `verify.ui`: axe, overflow, targets and dark theme
+  on every route, width and theme at each commit.
+- The size check (`size.mjs`): what each session loads, about 1,470 tokens, budget 1,500.
+- The `tasks per branch` Gates line: plans of at most 8 vertical slices.
+- Design in code: with `design.kit`, screens built only from the kit skip the mockups.
+
+### Changed
+- `/gtm:init` and `/gtm:deliver` are shorter: each rule is stated once.
+- `ux-qa` runs once per branch with `verify.ui`, taking the gate's result and comparing captures.
+- `validate.mjs` runs every script test in one loop.
+
+### Fixed
+- 28 small defects found in review: wording, ledger line formats, plan and deliver edge cases.
+
+Nothing to migrate; re-run `/gtm:init` for the usage step and the UI gate.
+
 ## [0.8.0] - 2026-10-15
 
 ### Added

@@ -1,0 +1,1 @@
+{ "exit": 1, "facts": { "worktrees": [{ "name": "wt-t3", "branch": "feat/where-am-i-t3", "changes": "?" }] } }

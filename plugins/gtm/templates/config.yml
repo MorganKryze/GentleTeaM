@@ -32,6 +32,8 @@ verify:
   build: ""
   size: ""
   e2e: ""
+  ui: ""             # the committed UI gate test (/gtm:init offers it for web screens); add `ui`
+                     # to gate to run it before every commit. Empty = no UI gate, as before 0.9.0
   gate: [lint, typecheck, test]   # run before every commit; build/size/e2e at task end
 
 git:
@@ -61,6 +63,9 @@ design:
   mockups: .gtm/mockups           # HTML + PNG mockup pages
   render: ""                      # "<cmd> {html} {png} {width}"; empty = npx playwright screenshot
   widths: [360, 390, 1280]
+  kit: ""                         # path to a validated design kit (e.g. guidelines/design.md);
+                                  # empty = none. With one and ux-qa on, a screen of known
+                                  # patterns skips the loop
 
 qa:
   live_url: ""                    # release-qa target after the human deploys; empty = skip

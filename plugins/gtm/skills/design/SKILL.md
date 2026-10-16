@@ -6,7 +6,8 @@ argument-hint: "[feature slug or brief]"
 # Design loop (checkpoint 1: approve the mockups)
 
 Ground rules: as in the `gtm` skill §0 (root, config, team settings, briefing format, detail level).
-Skip this skill when `design.screens` is false or no screen changes; say so in one line.
+Skip this skill when `design.screens` is false, no screen changes, or the Feature is
+designed in code (`gtm` skill §1); say so in one line.
 
 ## 1. Brief the designer
 Write `<root>/mockups/<slug>/brief.md` (≤ 20 lines): the feature, a `Screens` list of one
