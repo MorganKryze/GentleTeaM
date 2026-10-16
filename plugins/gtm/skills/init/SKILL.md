@@ -31,7 +31,7 @@ generous; default light). Write the answers into `config.yml` (`language`, `brie
   listing routes, `design.widths`, light and dark, the loads, start and install commands. On A, copy
   `${CLAUDE_PLUGIN_ROOT}/templates/ui-gate.spec.mjs` beside the project's tests (else `tests/`),
   fill its top block, set `verify.ui` `[CHECK]`, add `ui` to `verify.gate`; install, run and commit
-  nothing.
+  nothing. A `ui-gate.spec.mjs` already in the project: keep it untouched, only set `verify.ui`.
 
 ## 3. Team settings (one message)
 From the brief, propose `team.md`: priorities weighted low / normal / high (security, data
