@@ -42,12 +42,11 @@ Ground rules: as in the `gtm` skill §0.
 3. Measure it, any result: its run id (`wf_...` in the diagnostics) on `^wf_[0-9a-f-]+$`, the one
    folder `"<config>"/projects/*/*/subagents/workflows/<id>` (`<config>` =
    `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`), `node "${CLAUDE_PLUGIN_ROOT}/scripts/role-split.mjs"
-   --json "<folder>"` plus `--also <role>:<s>:<tokens>` per dispatch (architect, final-reviewer,
-   implementer, a re-run review's role), first role the largest; no match, no folder or several, or
-   a non-zero exit: `roles ?`, totals kept. No budget or measure changes a verdict, a correction
-   round, a dispatch, a skip or the order of tasks; past 1.5× a budget (a task's minutes or tokens;
-   the branch's total so far): one Heads-up per crossing (task or phase, measure, budget, largest
-   role), a ledger `usage` line `over budget: <the same>` unless that slug and task has one; go on.
+   --json "<folder>"`, first role the largest; no match, no folder or several, or a non-zero exit:
+   `roles ?`, totals kept. No budget or measure changes a verdict, a correction round, a dispatch, a
+   skip or the order of tasks; past 1.5× a budget (a task's minutes or tokens; the branch's total so
+   far): one Heads-up per crossing (task or phase, measure, budget, largest role),
+   a ledger `usage` line `over budget: <the same>` unless that slug and task has one; go on.
 4. Read the result:
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line, go on.
    - `OPEN` (correction rounds exhausted, or a reviewer gave no review) or `BLOCKED`: its progress
