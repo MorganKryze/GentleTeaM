@@ -45,11 +45,26 @@ decisions it made for you at the end. Everything the human reads follows the hum
   repository, NOW.md untracked, `git check-ignore -q <rel>/NOW.md` failing and the exact line
   `/<rel>/NOW.md` absent from the file `git rev-parse --git-path info/exclude` names: add it on
   its own line (never `.gitignore`), create the folder if missing, and add a newline first when
-  the file does not end with one. Say so in one Heads-up, only when you added the line.
+  the file does not end with one. Say so in one Heads-up, only when you added the line. A `?` in
+  the facts or a failed write never holds up a dispatch.
+- **Limits:** when a phase starts (design, spec, plan, a task or wave, the final review, a fix
+  wave), run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --read --ledger <root>/ledger.md`
+  with `--tokens` and `--minutes` left (the plan's estimate, else the spec's, less the branch's
+  measures; no estimate: leave both out). At a branch's first phase, append a ledger `usage`
+  line `limits at start: 5h <p>% resets <ISO> · 7d <q>% resets <ISO>`. A `flag` line: one
+  Heads-up and one card per window and reset in a branch, and the phase waits for the answer:
+  A lighter for this branch (at most two of implementer, reviewer, architect, designer, largest
+  `roles` share first, all `?`: implementer and reviewer, to `sonnet` `low`, old → new), B keep,
+  C `/gtm:pause` until the reset; no saving promised. A: a ledger `ruling` `limits: lighter
+  <role> <old> → sonnet low, …` quoting the answer, for this slug's dispatches, resumes
+  included; `team.md` unchanged. `none`: nothing; `stale` or `?`: one Heads-up per session.
 - Nothing is pushed, merged, tagged or released without the human's explicit go.
 
 ## 1. Pick the track (≤ 2 questions)
 Request: $ARGUMENTS
+
+Facts with phase `paused` (`now-facts.mjs`): before anything else, one line naming the slug
+and its `resume` command; on yes, run it.
 
 No request given: explain GTM in five lines (the tracks, your checkpoints, the skills) and ask
 what to do. Clear and small: judge it yourself. Otherwise dispatch `gtm:analyst` with the request and the root.
@@ -69,6 +84,10 @@ include the 3-line design (what changes, where, how it is proven; for a threshol
 test catches) in that same message, naming the specialists whose `team.md` triggers match its
 files. For a Feature, say small or not, with the file count ("Feature, small, ~4 files").
 
+A Feature whose screens use only `design.kit`'s patterns (the analyst says so), with ux-qa on:
+the track message says "design in code" and why, and the route skips `/gtm:design`. A new
+pattern or direction, the human's ask, no kit or ux-qa off: the design loop as today.
+
 A Fix that grows past its file limit becomes a Feature on its own, one way only (say so in
 a Heads-up). Nothing downgrades mid-task.
 
@@ -81,8 +100,9 @@ Record the work in `<root>/backlog.md`: add or update its story (type, priority 
   (args as `/gtm:deliver` builds them). `ESCALATE` → read it as `/gtm:deliver` §2 says; the
   commits stay. `OPEN` or `BLOCKED` → stop, and read it as `/gtm:deliver` §2 says. Any result:
   its progress line and measure as `/gtm:deliver` §1 and §2 step 3 say. `CLEAN` → append each
-  minor to the ledger (`minor`) as `/gtm:deliver` §2 does and one `run` line as its §5 says,
-  holding `Fix: CLEAN, no final review`; then present the result and ask the go (`/gtm:ship`).
+  minor to the ledger (`minor`) as `/gtm:deliver` §2 does and one `run` line as its §5 says
+  (its phase `tasks`, one task), holding `Fix: CLEAN, no final review`; then present the result
+  and ask the go (`/gtm:ship`).
 - **Feature:** `/gtm:design` (only if screens change and `design.screens` is true) → `/gtm:spec` →
   `/gtm:plan` → `/gtm:deliver` → `/gtm:ship`. Invoke each skill in turn; stop only at a checkpoint.
 - **Milestone:** dispatch `gtm:architect` to write `<root>/specs/<date>-<slug>-milestone.md`: the

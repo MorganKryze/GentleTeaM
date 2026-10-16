@@ -9,10 +9,11 @@
 > budget passed).
 > A `run` line: `tasks N · correction rounds per task · findings per reviewer (critical /
 > important / minor) · tiers <g>g <s>s · design rounds and score · measured <W>m <T>k <A>a:
-> <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ...`, escalated counts guarded, from every
-> progress line, a task's runs summed (a `GATED` line has no rounds);
+> <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ... · limits 5h +<a>% 7d +<b>%`, escalated
+> counts guarded, from every progress line, a task's runs summed (a `GATED` line has no rounds);
 > phases design, spec, plan, tasks (re-run and deferred reviews in), final (re-reviews in), fix,
 > in that order, a phase not run left out; minutes to one decimal, tokens in thousands; all
 > summed, a wave's minutes are its longest task's; a sum holding a `?` is `?`, a progress line
 > without measures reads `?`, a wave's merge-commit line is skipped; `roles` as `/gtm:deliver` §2
-> step 3 measures them, roles at 5% or more, any `?` → `roles ?`.
+> step 3 measures them, roles at 5% or more, any `?` → `roles ?`; `limits` the difference
+> from the branch's `limits at start` usage line, `?` across a reset or with no reading.
