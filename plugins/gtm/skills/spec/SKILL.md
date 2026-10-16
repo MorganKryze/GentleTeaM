@@ -12,14 +12,15 @@ Dispatch `gtm:architect` (spec mode) with: the request, the track, the validated
 any), decisions already taken, an escalated Fix's `open` findings (each one a requirement with
 its test, a missing review as owed, as `/gtm:deliver` §2 says), and the output path
 `<root>/specs/<YYYY-MM-DD>-<slug>.md`.
-Template: `${CLAUDE_PLUGIN_ROOT}/templates/spec.md`. When it returns, write its progress line
+Template: `${CLAUDE_PLUGIN_ROOT}/templates/spec.md`. When it returns, append its progress line
 (`spec`) as `/gtm:deliver` §1 says, and one more after
 each send-back (§2) and each reopening (§3); a phase's lines are summed in the run line.
 
 A small Feature (`gtm` skill §1, as the track pick said): dispatch it once, in one-pass mode,
 adding the plan inputs of `/gtm:plan` §1; it writes the spec, then the plan, following each card's
 recommended option; its progress line reads `spec+plan`. That line
-counts as the run line's `spec` phase, no `plan` phase recorded.
+counts as the run line's `spec` phase; a later plan rewrite (`/gtm:plan` §1) appends its own
+`plan` line.
 
 ## 2. Check before showing anything
 - The Summary block exists, ≤ 10 lines, in `language.human`, and holds the estimate line;
@@ -34,7 +35,7 @@ Show the Summary block, its estimate line included, and the open decision cards.
 unless the detail level asks for it. The human answers the cards; write the answers into the
 Decisions table, set `Status: approved by the human on <date>`. Rulings the architect took go to
 the ledger. In one pass, when every card is answered as recommended and the spec is unchanged
-since the one pass wrote the plan (no §2 correction round, no other edit), end that line with
-`; plan kept from the one pass`.
+since the one pass wrote the plan (no §2 correction round, no edit but this step's Decisions and
+Status), end that line with `; plan kept from the one pass`.
 
 Changing the spec later reopens this checkpoint, and drops that ending.
