@@ -63,8 +63,9 @@ design:
   mockups: .gtm/mockups           # HTML + PNG mockup pages
   render: ""                      # "<cmd> {html} {png} {width}"; empty = npx playwright screenshot
   widths: [360, 390, 1280]
-  kit: ""                         # path to a validated design kit (e.g. guidelines/design.md); empty =
-                                  # none. With one and ux-qa on, a screen of known patterns skips the loop
+  kit: ""                         # path to a validated design kit (e.g. guidelines/design.md);
+                                  # empty = none. With one and ux-qa on, a screen of known
+                                  # patterns skips the loop
 
 qa:
   live_url: ""                    # release-qa target after the human deploys; empty = skip
