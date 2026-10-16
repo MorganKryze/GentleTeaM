@@ -10,9 +10,10 @@ Usually nothing to decide here: the spec settled it. Last line, the estimate, as
 measured runs)`, or `no measured run yet`.>
 
 ## Global constraints
-- Gate before every commit: <commands from config, with prefix>.
-- Commits: <rules from config>. Tests in the same commit as their code.
-- <Budgets, copy rules, a11y rules that bind every task.>
+Each one numbered, so a task names the ones it touches.
+- C1 Gate before every commit: <commands from config, with prefix>.
+- C2 Commits: <rules from config>. Tests in the same commit as their code.
+- C3 <Budgets, copy rules, a11y rules that bind every task.>
 
 ## Review focus
 <The three to five places a reviewer must look hardest, each pointing at the task and test that
@@ -23,13 +24,14 @@ covers it.>
 
 ## Tasks
 
-### Task 1: <goal in one line> [P]
-**Tier:** <guarded | standard>
+### Task 1: <goal in one line, a vertical slice> [P]
 `[P]` = parallel-safe (disjoint files, no shared interface change). Omit when not.
 
+**Constraints:** C1, C3
 **Files:** Create: `…` · Modify: `…`
-**Interfaces:** Consumes: `…` · Produces: `…` (signatures)
+**Tier:** <guarded | standard>
 **Risky:** <no | yes: migration / contract / persistence; dry run on <date>, gate counts>
+**Interfaces:** Consumes: `…` · Produces: `…` (signatures)
 
 - [ ] Step 1: write the failing test `<test name>`; run `<command>`; expect FAIL because …
 - [ ] Step 2: implement …
