@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-16
+
 ### Added
 - The usage step: `/gtm:init` can chain it before your status line to read the 5-hour and 7-day
   limits; a phase that would pass one waits on a limits card (lighter for this branch, keep, pause).
