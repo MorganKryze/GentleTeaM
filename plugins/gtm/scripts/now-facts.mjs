@@ -186,13 +186,17 @@ const out = {
 // With --since: this slug's specs and plans and this run's reports changed at or after that time,
 // progress and handoff aside (a pause renames or lists them; a resume never reads them). A spec or
 // plan is the slug's when it ends `-<slug>.md` or `-<slug>-<part>.md`, unless a longer backlog slug
-// claims it; another story's files never reach the list.
+// claims it; another story's files never reach the list. A spec or plan whose phase is over (the
+// phase, or the one a pause resumes, comes after it) is approved and never listed; an unknown phase
+// lists none.
+const stage = PHASES.indexOf(phase === 'paused' ? mine.resumes : phase)
+const open = { specs: stage >= 0 && stage <= PHASES.indexOf('spec'), plans: stage >= 0 && stage <= PHASES.indexOf('plan') }
 const ends = (n, s) => n.endsWith(`-${s}.md`) || new RegExp(`-${s}-[A-Za-z0-9]+\\.md$`).test(n)
 const longer = stories.filter((x) => x.slug && x.slug.startsWith(`${slug}-`))
 const ours = (n) => ends(n, slug) && !longer.some((x) => ends(n, x.slug))
 if (since !== null) {
   const dirs = slug === '?' ? [] : ['specs', 'plans', `reports/${slug}`]
-  out.changed = dirs.flatMap((d) => (existsSync(join(root, d)) ? readdirSync(join(root, d), { withFileTypes: true }).filter((e) => e.isFile() && (d.startsWith('reports/') || ours(e.name))).map((e) => `${d}/${e.name}`) : []))
+  out.changed = dirs.flatMap((d) => (existsSync(join(root, d)) ? readdirSync(join(root, d), { withFileTypes: true }).filter((e) => e.isFile() && (d.startsWith('reports/') || (open[d] && ours(e.name)))).map((e) => `${d}/${e.name}`) : []))
     .filter((f) => !/\/(progress|handoff)\.md$/.test(f) && mtime(join(root, f)) >= since).map(safe).sort()
 }
 if (out.waiting && out.waiting.task === '?' && !opt.waiting.includes(',')) out.waiting.task = null
