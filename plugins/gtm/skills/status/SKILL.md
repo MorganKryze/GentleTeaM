@@ -24,4 +24,5 @@ worktree, progress, logbook or backlog change.
    source, or naming a branch or worktree that is gone): rebuild it from the JSON alone, passing
    no `--running` or `--waiting`, as the rebuild rule of `templates/now.md` says; write it as §0
    says and show it, naming the `stale` reasons in one Heads-up.
-5. Exit 1 from the script: show the `?` facts as `?`; never guess them.
+5. Phase `paused`: show, after the view, the `resume` command to type; this writes nothing new.
+6. Exit 1 from the script: show the `?` facts as `?`; never guess them.

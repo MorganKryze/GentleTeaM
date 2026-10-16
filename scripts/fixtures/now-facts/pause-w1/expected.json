@@ -1,0 +1,3 @@
+{ "exit": 0, "facts": { "phase": "paused", "resumes": "delivery", "task": { "n": 2, "of": 5 }, "next": "resume",
+  "resume": "/gtm:deliver root/plans/2026-10-15-where-am-i.md", "handoff": "reports/where-am-i/handoff.md",
+  "eta": { "minutes": 43.5, "clock": null }, "events": ["t1: CLEAN", "t2: PAUSED", "paused"] } }

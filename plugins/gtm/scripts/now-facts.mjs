@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 // Gathers the facts of a run's one-page view (NOW.md) from the GTM root and git, and prints them
 // as JSON: breadcrumb parts, task n/N, worktrees, last events, waiting kind, next step, ETA,
-// staleness and last change. It reads files and runs git with argument arrays; it writes nothing
-// and prints no message text: names outside SAFE and unknown shapes print `?` and exit 1.
+// staleness and last change; a pause's phase, handoff and resume command, uncommitted changes per
+// worktree, and with --since the slug's root files changed since a time. It reads files and runs
+// git with argument arrays; it writes nothing and prints no message text: names outside SAFE and
+// unknown shapes print `?` and exit 1.
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
-//        [--running <kind>,<name>,<ISO>[,<worktree>]]... No dependencies.
-import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
-import { join, basename, resolve } from 'node:path'
+//        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] No dependencies.
+import { readFileSync, readdirSync, statSync, existsSync, realpathSync } from 'node:fs'
+import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
 
 const SAFE = /^[A-Za-z0-9._/-]+$/
@@ -33,12 +35,22 @@ if (opt.slug !== undefined && !/^[a-z0-9-]+$/.test(opt.slug)) { console.error('n
 const root = resolve(opt.root)
 const now = opt.now ? Date.parse(opt.now) : Date.now()
 const repo = (git(root, ['rev-parse', '--show-toplevel']) || '').trim() || null
+const since = opt.since === undefined ? null : Date.parse(opt.since)
+if (Number.isNaN(since)) { console.error('now-facts.mjs: --since takes an ISO date-time'); process.exit(2) }
+// The root as the human types it in a command: relative to the repository top when inside it.
+const real = existsSync(root) ? realpathSync(root) : root
+const rel = repo && !relative(repo, real).startsWith('..') ? relative(repo, real) || '.' : root
+// What a pause resumes, per the phase it stopped in.
+const RESUME = { mockups: () => '/gtm:design', spec: (s) => `/gtm:spec ${s}`, plan: (s, f) => f.spec && `/gtm:plan ${rel}/specs/${f.spec}`,
+  delivery: (s, f) => f.plan && `/gtm:deliver ${rel}/plans/${f.plan}`, go: () => '/gtm:ship' }
+for (const k of ['final review', 'correction']) RESUME[k] = RESUME.delivery
 
 // Worktrees, the main checkout first: { path, name, branch }.
 const trees = (repo && git(repo, ['worktree', 'list', '--porcelain']) || '').split('\n\n').filter(Boolean).map((b) => {
   const path = (b.match(/^worktree (.+)$/m) || [])[1] || ''
   const ref = (b.match(/^branch refs\/heads\/(.+)$/m) || [])[1] || ''
-  return { path, name: safe(basename(path)), branch: ref ? safe(ref) : '?' }
+  const changes = path ? (git(path, ['status', '--porcelain', '-z', '--untracked-files=normal']) || '').split('\0').filter((e) => /^.. /.test(e)).length : 0
+  return { path, name: safe(basename(path)), branch: ref ? safe(ref) : '?', changes }
 })
 
 // Backlog: stories with their epic, status and slug (from the Spec cell).
@@ -68,18 +80,28 @@ const runs = ledger.split('\n').filter((l) => /^- \d{4}-\d\d-\d\d · [^·]+ · r
 })
 const med = (k) => { const xs = runs.map((r) => r[k]).filter((x) => x != null); return xs.length ? round(median(xs)) : null }
 
+// A spec or plan is slug s's when its whole name is `<date>-<s>.md`, or with part `<date>-<s>-<part>.md`
+// for a part a skill writes (gtm/SKILL.md, Milestone); any other suffix may be another story's.
+const PARTS = ['milestone']
+const named = (n, s, part) => new RegExp(`^\\d{4}-\\d\\d-\\d\\d-${s}${part ? `(-(${PARTS.join('|')}))?` : ''}\\.md$`).test(n)
+
 function facts(s) {
   const progressFile = join(root, 'reports', s, 'progress.md')
   const lines = (read(progressFile) || '').split('\n').filter((l) => l.startsWith('- '))
-  const plan = readdirSync(join(root, 'plans'), { withFileTypes: true }).filter((d) => d.isFile() && d.name.endsWith(`-${s}.md`)).map((d) => d.name).sort().pop()
+  const latest = (dir) => (existsSync(join(root, dir)) ? readdirSync(join(root, dir), { withFileTypes: true }).filter((d) => d.isFile() && named(d.name, s)).map((d) => d.name).sort().pop() : undefined)
+  const plan = latest('plans'), spec = latest('specs')
   const of = plan ? (readFileSync(join(root, 'plans', plan), 'utf8').match(/^### Task \d+\b/gm) || []).length || '?' : null
   const status = {}, events = []
-  let phase = 'spec', unknown = false
+  let phase = 'spec', unknown = false, paused = null
   for (const l of lines) {
     const [step, second = ''] = l.slice(2).split(' · ')
     const word = (second.split(' (')[0] || '').trim()
     const done = /^(\d+ s|\?)$/.test(word)
-    if (step === 'design') phase = 'spec'
+    // `- paused · <phase>` starts a pause; any later line ends it. A PAUSED line moves no phase.
+    if (step === 'paused') { paused = PHASES.slice(0, -1).includes(second.trim()) ? second.trim() : '?'; events.push('paused'); continue }
+    paused = null
+    if (word === 'PAUSED') { if (/^t\d+$/.test(step)) status[step] = word }
+    else if (step === 'design') phase = 'spec'
     else if (step === 'spec') phase = 'plan'
     else if (step === 'plan') phase = 'delivery'
     else if (/^t\d+$/.test(step)) { status[step] = word; phase = 'delivery' }
@@ -94,6 +116,10 @@ function facts(s) {
   if (phase === 'delivery' && typeof of === 'number' && doneTasks >= of) phase = 'final review'
   if (new RegExp(`^- \\d{4}-\\d\\d-\\d\\d · ${s} · run · shipped`, 'm').test(ledger)) phase = 'shipped'
   const task = phase !== 'delivery' ? null : typeof of === 'number' ? { n: doneTasks + 1, of } : '?'
+  const cmd = paused && RESUME[paused] ? RESUME[paused](s, { plan, spec }) : null
+  const resumes = typeof cmd === 'string' && /^\/gtm:[a-z]+( [A-Za-z0-9._/-]+)?$/.test(cmd) ? cmd : '?'
+  const handoff = existsSync(join(root, 'reports', s, 'handoff.md')) ? `reports/${s}/handoff.md` : '?'
+  if (paused !== null) return { phase: unknown ? '?' : 'paused', resumes: unknown ? '?' : paused, resume: resumes, handoff, task: unknown || paused === '?' ? '?' : paused !== 'delivery' ? null : task, of, doneTasks, events, progressFile }
   return { phase: unknown ? '?' : phase, task: unknown ? '?' : task, of, doneTasks, events, progressFile }
 }
 
@@ -102,14 +128,14 @@ const story = stories.find((x) => x.slug === slug)
 const epic = story && story.section.epic ? story.section.name : null
 const nextStory = story ? (stories.filter((x) => x.section === story.section).find((x) => x.status === 'todo' && x.type !== 'epic') || {}).label || null : null
 const phase = mine ? mine.phase : '?'
-const next = { delivery: mine?.task?.n ? `task ${mine.task.n}` : '?', 'final review': 'final review', correction: 'correction', go: 'go', shipped: null, spec: 'spec', plan: 'plan', mockups: 'mockups' }[phase] ?? '?'
+const next = { paused: 'resume', delivery: mine?.task?.n ? `task ${mine.task.n}` : '?', 'final review': 'final review', correction: 'correction', go: 'go', shipped: null, spec: 'spec', plan: 'plan', mockups: 'mockups' }[phase] ?? '?'
 
 // ETA: remaining tasks (the running one in full) × the per-task median, plus each later phase.
 let eta
 const waitingKind = opt.waiting ? opt.waiting.split(',')[0] : null
 if (!runs.length) eta = { none: 'no measured run yet', clock: null }
 else {
-  const left = PHASES.indexOf(phase), parts = {}
+  const left = PHASES.indexOf(phase === 'paused' ? mine.resumes : phase), parts = {}
   if (left >= 0 && left <= PHASES.indexOf('plan')) for (const k of ['spec', 'plan'].slice(Math.max(0, left - 1))) parts[k] = med(k)
   if (left >= 0 && left <= PHASES.indexOf('delivery')) parts.tasks = typeof mine.of === 'number' ? round((mine.of - mine.doneTasks) * med('task')) : null
   if (left >= 0 && left <= PHASES.indexOf('final review')) parts.final = med('final')
@@ -117,7 +143,7 @@ else {
   const vals = Object.values(parts)
   const minutes = left < 0 || vals.some((v) => v == null) ? '?' : round(vals.reduce((a, b) => a + b, 0))
   const at = new Date(now + (typeof minutes === 'number' ? minutes : 0) * 60000)
-  const clock = waitingKind || minutes === '?' ? null : `${String(at.getHours()).padStart(2, '0')}:${String(at.getMinutes()).padStart(2, '0')}`
+  const clock = waitingKind || phase === 'paused' || minutes === '?' ? null : `${String(at.getHours()).padStart(2, '0')}:${String(at.getMinutes()).padStart(2, '0')}`
   eta = { minutes, clock, runs: runs.length, perTask: med('task'), parts, afterAnswer: !!waitingKind }
 }
 
@@ -159,7 +185,22 @@ const others = active.filter((x) => x.slug !== slug && (existsSync(join(root, 'r
 const out = {
   updated: new Date(now).toISOString(), slug, branch: slug === '?' ? '?' : branchOf(slug), epic, phase, task: mine ? mine.task : '?',
   next, nextStory, eta, running, waiting: waitingKind ? { kind: safe(waitingKind), task: safe(opt.waiting.split(',')[1] || '') } : null,
-  worktrees: trees.slice(1).map(({ name, branch }) => ({ name, branch })), events: mine ? mine.events.slice(-EVENTS) : [], stale, others,
+  ...(phase === 'paused' ? { resumes: mine.resumes, resume: mine.resume, handoff: mine.handoff } : {}),
+  worktrees: trees.slice(1).map(({ name, branch, changes }) => ({ name, branch, changes })), events: mine ? mine.events.slice(-EVENTS) : [], stale, others,
+}
+// With --since: this slug's specs and plans and this run's reports changed at or after that time,
+// progress and handoff aside (a pause renames or lists them; a resume never reads them). A spec or
+// plan is the slug's when `named` takes it, part allowed, and no longer backlog slug claims it;
+// another story's files never reach the list. A spec or plan whose phase is over (the phase, or the
+// one a pause resumes, comes after it) is approved and never listed; an unknown phase lists none.
+const stage = PHASES.indexOf(phase === 'paused' ? mine.resumes : phase)
+const open = { specs: stage >= 0 && stage <= PHASES.indexOf('spec'), plans: stage >= 0 && stage <= PHASES.indexOf('plan') }
+const longer = stories.filter((x) => x.slug && x.slug.startsWith(`${slug}-`))
+const ours = (n) => named(n, slug, true) && !longer.some((x) => named(n, x.slug, true))
+if (since !== null) {
+  const dirs = slug === '?' ? [] : ['specs', 'plans', `reports/${slug}`]
+  out.changed = dirs.flatMap((d) => (existsSync(join(root, d)) ? readdirSync(join(root, d), { withFileTypes: true }).filter((e) => e.isFile() && (d.startsWith('reports/') || (open[d] && ours(e.name)))).map((e) => `${d}/${e.name}`) : []))
+    .filter((f) => !/\/(progress|handoff)\.md$/.test(f) && mtime(join(root, f)) >= since).map(safe).sort()
 }
 if (out.waiting && out.waiting.task === '?' && !opt.waiting.includes(',')) out.waiting.task = null
 const hasUnknown = (v) => v === '?' || (typeof v === 'string' && v.endsWith(': ?')) || (v && typeof v === 'object' && Object.values(v).some(hasUnknown))
