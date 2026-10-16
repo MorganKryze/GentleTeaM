@@ -56,6 +56,10 @@ every task is done.
 ### Fix {#fix}
 A change of at most 3 files with no schema or sign-in change, run by `/gtm:gtm`.
 
+### Handoff {#handoff}
+`handoff.md`, written by `/gtm:pause`: what was stopped, what waited, the worktrees kept and the
+command that resumes.
+
 ### Logbook {#logbook}
 `ledger.md`, in `.gtm/`: one line per lesson, decision or deferred finding, kept across changes.
 

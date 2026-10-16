@@ -73,6 +73,9 @@ Run `/plugin marketplace update gentleteam`, or `claude plugin update gtm@gentle
 shell. Background auto-update is off by default; turn it on per marketplace in `/plugin`,
 Marketplaces. GTM sets a version, so you stay on the one you installed until a release bumps it.
 
+After updating to 0.9.0, re-run `/gtm:init` once: it offers the usage step that reads your
+plan's limits, and, for a project with screens, the UI test. Nothing else needs migrating.
+
 ## How do I pin a version?
 
 Add the marketplace at a git ref rather than at its default branch: a tag such as

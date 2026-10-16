@@ -136,5 +136,5 @@ GTM spends agent time to save your attention. Measured on GTM's own changes:
 | a docs fix and one workflow argument, 2 tasks | Feature | 11 min | GTM 0.3.0 |
 | a workflow change, 3 tasks | Feature | 58 min | GTM 0.2.0 |
 
-Installed and idle, GTM adds about 1,300 tokens to a session. A Feature uses more of your plan
+Installed and idle, GTM adds about 1,470 tokens to a session. A Feature uses more of your plan
 than asking Claude Code directly; a Fix is the cheap path.

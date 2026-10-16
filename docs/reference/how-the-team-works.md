@@ -117,6 +117,38 @@ before delivery: a [dry run](/reference/glossary/#dry-run), for plans of two tas
 one-task plan plants its mutations in its test steps instead. Which paths are risky is set in
 `team.md`.
 
+## How is a plan kept small?
+
+The architect plans at most the `tasks per branch` line of `team.md` (8 by default), a
+release-only task not counted. Each task is a vertical slice, a screen or a flow, and one unit of
+review. A plan over the limit goes back once, then you choose on a card to split it or accept it.
+
+Each task names the numbered global constraints of the plan it touches. Its brief holds the task
+word for word, those constraints, and paths to the rest: the implementer reads less, and the rule
+stays in one place.
+
+## When is a screen designed in code?
+
+When `design.kit` names a validated kit and `ux-qa` is on, a Feature whose screens use only the
+kit's patterns skips the mockups. `/gtm:gtm` says "design in code" and why; `ux-qa` captures the
+screens at `design.widths`, and you approve those captures with the go. A new pattern, a new
+direction, your own request, no kit or `ux-qa` off: the mockups run as before.
+
+## How is a run stopped and resumed?
+
+`/gtm:pause` stops what runs and keeps every commit, worktree and file; a half-written spec or
+plan becomes `.partial`. It writes `handoff.md` and a `paused` line in the branch's progress.
+On resume, `/gtm:deliver` skips the tasks already clean, and reruns each stopped task whole from
+the base its line names, never from its head. A stopped final review or fix wave reruns whole
+too, so nothing stopped ends clean without a full review.
+
+## How is GTM's own size held?
+
+The size check, `node plugins/gtm/scripts/size.mjs`, sums what each session loads from GTM: the
+name and description of each agent and model-invocable skill, and each workflow's name,
+description and when-to-use line, at one token per four characters. It lists them largest
+first and fails above its budget. The gate and CI run it on every push.
+
 ## How does each branch make the next one cheaper?
 
 The [logbook](/reference/glossary/#logbook), `ledger.md`, is append-only, one line per entry:
