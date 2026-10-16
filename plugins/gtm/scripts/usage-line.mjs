@@ -5,12 +5,14 @@
 //            --breadcrumb also prints NOW.md's first `>` line; --quiet drops the usage line.
 //            Always exits 0: a status line must never break.
 //   --install <settings.json> [--breadcrumb]   copy this file to <config>/gtm/ and chain it before
-//            the old statusLine command, kept byte for byte; a rerun changes nothing.
+//            the old statusLine command, kept byte for byte in a `{ }` group that gets the whole
+//            stdin; a rerun changes nothing.
 //   --uninstall <settings.json>                put the old command back (or remove the step alone).
 //   --read [--ledger <file>] [--tokens <k left>] [--minutes <left>] [--now <ISO>]   per window:
 //            used %, reset, minutes to it, age, flag. No reading: `none`; past 30 min: `stale`.
+// A missing settings path or a bad --now is a usage error (exit 2).
 // <config> = ${CLAUDE_CONFIG_DIR:-$HOME/.claude}. No network, no git. No dependencies.
-import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, copyFileSync, realpathSync, statSync, chmodSync, openSync, readSync, closeSync } from 'node:fs'
+import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync, copyFileSync, realpathSync, statSync, lstatSync, chmodSync, openSync, readSync, closeSync } from 'node:fs'
 
 // The first 64 KiB of a plain file, or '' (a FIFO, device or missing file is never read).
 const head = (f) => {
@@ -31,11 +33,13 @@ const config = process.env.CLAUDE_CONFIG_DIR || join(homedir(), '.claude')
 const store = join(config, 'gtm', 'usage.json'), step = join(config, 'gtm', 'usage-line.mjs')
 const argv = process.argv.slice(2), flag = (k) => argv.includes(k), val = (k) => (argv.includes(k) ? argv[argv.indexOf(k) + 1] : undefined)
 const atomic = (file, text, mode) => { mkdirSync(dirname(file), { recursive: true }); const t = `${file}.${process.pid}.tmp`; writeFileSync(t, text, { mode: mode ?? 0o666 }); if (mode !== undefined) chmodSync(t, mode); renameSync(t, file) }
-const iso = (r) => { const t = typeof r === 'number' ? r * 1000 : typeof r === 'string' ? Date.parse(r) : NaN; return Number.isFinite(t) ? new Date(t).toISOString() : null }
+const iso = (r) => { const d = new Date(typeof r === 'number' ? r * 1000 : typeof r === 'string' ? Date.parse(r) : NaN); return Number.isFinite(d.getTime()) ? d.toISOString() : null }
 const clean = (s) => [...s.replace(/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu, '').trim()].slice(0, CRUMB).join('')
 const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2 }
 const round = (x) => Math.round(x * 10) / 10
 const quote = (p) => (/["$`\\\n]/.test(p) ? null : `"${p}"`)
+const usage = (msg) => { console.error(`usage-line: ${msg}`); process.exit(2) }
+const path = (k) => { const p = val(k); if (!p || p.startsWith('--')) usage(`${k} needs a settings file path`); return p }
 
 function stepMode() {
   let input = {}
@@ -62,12 +66,16 @@ function stepMode() {
   }
   if (Object.keys(limits).length) {
     atomic(store, JSON.stringify({ v: 1, at: new Date().toISOString(), ...limits }) + '\n')
-    if (!flag('--quiet')) out.push(Object.entries(limits).filter(([k]) => k !== 'spend_limit').map(([k, w]) => `${WINDOWS[k]} ${Math.round(w.used_percentage)}%`).join(' · '))
+    const line = Object.entries(limits).filter(([k]) => k !== 'spend_limit').map(([k, w]) => `${WINDOWS[k]} ${Math.round(w.used_percentage)}%`).join(' · ')
+    if (line && !flag('--quiet')) out.push(line)
   }
   if (out.length) console.log(out.join('\n'))
 }
 
 function settings(file, edit) {
+  let link = false
+  try { link = lstatSync(file).isSymbolicLink() } catch {}
+  if (link && !existsSync(file)) { console.error(`usage-line: ${file} links to a missing file; nothing written`); process.exit(1) }
   let s
   try { s = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : {} } catch { console.error(`usage-line: ${file} does not parse; nothing written`); process.exit(1) }
   if (s === null || typeof s !== 'object' || Array.isArray(s)) { console.error('usage-line: settings are not an object; nothing written'); process.exit(1) }
@@ -80,11 +88,12 @@ function settings(file, edit) {
 }
 function install(file) {
   const q = quote(step)
-  if (!q) { console.error('usage-line: the config folder path holds a quote, $, ` or \; nothing written'); process.exit(1) }
+  const qf = quote(file)
+  if (!q || !qf) { console.error('usage-line: the config folder or settings path holds a quote, $, ` or \\; nothing written'); process.exit(1) }
   const crumb = flag('--breadcrumb')
   const alone = `node ${q}${crumb ? ' --breadcrumb' : ''}`
-  const prefix = crumb ? `i=$(cat); printf '%s' "$i" | node ${q} --breadcrumb --quiet 2>/dev/null; printf '%s' "$i" | `
-    : `i=$(cat); printf '%s' "$i" | node ${q} >/dev/null 2>&1; printf '%s' "$i" | `
+  const prefix = crumb ? `i=$(cat); printf '%s' "$i" | node ${q} --breadcrumb --quiet 2>/dev/null; printf '%s' "$i" | {\n`
+    : `i=$(cat); printf '%s' "$i" | node ${q} >/dev/null 2>&1; printf '%s' "$i" | {\n`
   settings(file, (s) => {
     const sl = s.statusLine
     if (sl !== undefined && (sl === null || typeof sl !== 'object' || sl.type !== 'command' || typeof sl.command !== 'string')) { console.error('usage-line: statusLine is not a command; nothing written'); process.exit(1) }
@@ -92,15 +101,15 @@ function install(file) {
     const self = fileURLToPath(import.meta.url)
     if (self !== step) { copyFileSync(self, `${step}.tmp`); renameSync(`${step}.tmp`, step) }
     const old = sl ? strip(sl.command) : null
-    const command = old === null || old === '' ? alone : prefix + old
+    const command = old === null || old === '' ? alone : `${prefix}${old}\n}`
     if (sl && sl.command === command) return undefined
     return { ...s, statusLine: { ...(sl || {}), type: 'command', command } }
   })
-  console.log(`undo: node ${q} --uninstall "${file}"`)
+  console.log(`undo: node ${q} --uninstall ${qf}`)
 }
 // The old command under any form of the prefix this script writes; '' for the step alone.
 function strip(cmd) {
-  const m = cmd.match(/^i=\$\(cat\); printf '%s' "\$i" \| node "[^"]*usage-line\.mjs"(?: --breadcrumb --quiet 2>\/dev\/null| >\/dev\/null 2>&1); printf '%s' "\$i" \| ([\s\S]*)$/)
+  const m = cmd.match(/^i=\$\(cat\); printf '%s' "\$i" \| node "[^"]*usage-line\.mjs"(?: --breadcrumb --quiet 2>\/dev\/null| >\/dev\/null 2>&1); printf '%s' "\$i" \| \{\n([\s\S]*)\n\}$/)
   if (m) return m[1]
   return /^node "[^"]*usage-line\.mjs"( --breadcrumb)?$/.test(cmd) ? '' : cmd
 }
@@ -117,7 +126,8 @@ function uninstall(file) {
 }
 
 function read() {
-  const now = val('--now') ? Date.parse(val('--now')) : Date.now()
+  const now = flag('--now') ? Date.parse(val('--now')) : Date.now()
+  if (!Number.isFinite(now)) usage('--now needs an ISO date')
   if (!existsSync(store)) { console.log('none'); return 0 }
   let u
   try { u = JSON.parse(readFileSync(store, 'utf8')) } catch { console.log('?'); return 1 }
@@ -137,7 +147,7 @@ function read() {
     const w = u[k]
     if (!w) continue
     const reset = Date.parse(w.resets_at), toReset = Number.isFinite(reset) ? Math.max(0, Math.round((reset - now) / 60000)) : null
-    const used = toReset === 0 ? 0 : w.used_percentage
+    const used = Number.isFinite(reset) && reset <= now ? 0 : w.used_percentage
     let flagged, projected = null
     if (rates[k] != null && Number.isFinite(tokens) && Number.isFinite(minutes) && minutes > 0) {
       projected = round(used + rates[k] * (tokens / 100) * Math.min(1, (toReset ?? minutes) / minutes))
@@ -150,7 +160,7 @@ function read() {
   return 0
 }
 
-if (flag('--install')) install(val('--install'))
-else if (flag('--uninstall')) uninstall(val('--uninstall'))
+if (flag('--install')) install(path('--install'))
+else if (flag('--uninstall')) uninstall(path('--uninstall'))
 else if (flag('--read')) process.exit(read())
 else { try { stepMode() } catch {} process.exit(0) }

@@ -51,7 +51,7 @@ try {
     const r2 = b.run(['--install', b.settings]), twice = readFileSync(b.settings, 'utf8')
     const after = JSON.parse(once)
     check('F4 exit', r1.status === 0 && r2.status === 0, r1.stderr)
-    check('F4 old command kept', after.statusLine.command.endsWith(`| ${before.statusLine.command}`) && after.statusLine.command.startsWith("i=$(cat); printf '%s' \"$i\" | node \""))
+    check('F4 old command kept', after.statusLine.command.endsWith(`| {\n${before.statusLine.command}\n}`) && after.statusLine.command.startsWith("i=$(cat); printf '%s' \"$i\" | node \""))
     const { statusLine: s1, ...rest1 } = after, { statusLine: s0, ...rest0 } = before
     try { deepStrictEqual(rest1, rest0); deepStrictEqual({ ...s1, command: 0 }, { ...s0, command: 0 }) } catch { check('F4 other keys deep-equal', false) }
     check('F4 rerun no-op', once === twice)
@@ -59,6 +59,43 @@ try {
     check('F4 undo shown', r1.stdout.includes('--uninstall'))
     b.run(['--uninstall', b.settings])
     try { deepStrictEqual(JSON.parse(readFileSync(b.settings, 'utf8')), before) } catch { check('F4 undo restores', false) }
+  }
+  for (const old of ['input=$(cat); echo "OLD:$input" | head -c 20', 'true; head -c 20']) { // A compound old command reads the whole stdin.
+    const b = box(), text = JSON.stringify({ statusLine: { type: 'command', command: old } }, null, 2) + '\n'
+    writeFileSync(b.settings, text)
+    const before = b.sh(old, status(b, 'f1-status.json')).stdout
+    b.run(['--install', b.settings])
+    const cmd = JSON.parse(readFileSync(b.settings, 'utf8')).statusLine.command
+    const after = b.sh(cmd, status(b, 'f1-status.json'))
+    check(`compound ${old}: same output`, before.length === 20 && after.stdout === before && existsSync(b.store), JSON.stringify(after.stdout + after.stderr))
+    b.run(['--uninstall', b.settings])
+    check(`compound ${old}: undo byte-identical`, readFileSync(b.settings, 'utf8') === text, readFileSync(b.settings, 'utf8'))
+  }
+  for (const args of [['--install'], ['--install', '--breadcrumb'], ['--uninstall'], ['--uninstall', '--x']]) { // A missing path is a usage error.
+    const b = box(), r = b.run(args)
+    check(`usage ${args.join(' ')}`, r.status === 2 && !existsSync(join(b.config, 'gtm')) && readdirSync(b.config).length === 0 && readdirSync(b.dir).sort().join() === 'config,project', `${r.status} ${readdirSync(b.config).join()}`)
+  }
+  { // A settings path the undo line cannot quote is refused before any write.
+    const b = box(), odd = join(b.config, 'a"b.json')
+    const r = b.run(['--install', odd])
+    check('settings path quoted', r.status === 1 && readdirSync(b.config).length === 0, `${r.status} ${readdirSync(b.config).join()}`)
+  }
+  { // A dangling settings symlink is refused: the link stays a link, nothing is written.
+    const b = box(), target = join(b.dir, 'missing.json')
+    symlinkSync(target, b.settings)
+    const r = b.run(['--install', b.settings])
+    check('dangling link refused', r.status === 1 && lstatSync(b.settings).isSymbolicLink() && !existsSync(target) && !existsSync(join(b.config, 'gtm')), `${r.status}`)
+    const u = b.run(['--uninstall', b.settings])
+    check('dangling link on undo', u.status === 1 && lstatSync(b.settings).isSymbolicLink() && !existsSync(target), `${u.status}`)
+  }
+  { // Only spend_limit: stored, no empty line printed.
+    const b = box(), r = b.run([], JSON.stringify({ rate_limits: { spend_limit: { used_percentage: 12 } } }))
+    check('spend only', r.status === 0 && r.stdout === '' && existsSync(b.store), JSON.stringify(r.stdout))
+  }
+  { // An out-of-range reset keeps the reading, with no reset.
+    const b = box(), r = b.run([], JSON.stringify({ rate_limits: { five_hour: { used_percentage: 50, resets_at: 1e300 }, seven_day: { used_percentage: 5, resets_at: '275760-09-14T00:00:00Z' } } }))
+    const u = existsSync(b.store) ? JSON.parse(readFileSync(b.store, 'utf8')) : {}
+    check('reset out of range', r.stdout === '5h 50% · 7d 5%\n' && u.five_hour?.resets_at === null && u.seven_day?.resets_at === null, JSON.stringify(r.stdout) + JSON.stringify(u))
   }
   { // F5: no settings file, no status line: the step alone.
     const b = box(), r = b.run(['--install', b.settings])
@@ -155,6 +192,13 @@ try {
     check('F8 passed reset', /^5h 0% · resets 2026-10-15T09:55:00.000Z · in 0 min\n/.test(r.stdout), r.stdout)
     check('F8 threshold 7d', /^7d 92% · resets 2026-10-18T10:00:00.000Z · in 4320 min · flag$/m.test(r.stdout), r.stdout)
     check('F8 age', /^read 10 min ago$/m.test(r.stdout))
+    w({ v: 1, at, five_hour: { used_percentage: 95, resets_at: '2026-10-15T10:00:20Z' } })
+    const soon = b.run(['--read', '--now', at]).stdout
+    check('F8 reset in 20 s not passed', /^5h 95% · resets 2026-10-15T10:00:20.000Z · in 0 min · flag$/m.test(soon), soon)
+    for (const bad of [['--now', 'garbage'], ['--now']]) {
+      const r = b.run(['--read', ...bad])
+      check(`F8 bad ${bad.join(' ')}`, r.status === 2 && r.stdout === '', `${r.status} ${r.stdout}`)
+    }
     w({ v: 1, at: '2026-10-15T09:29:00Z', five_hour: { used_percentage: 10, resets_at: null } })
     check('F8 stale', /^stale · read 31 min ago$/m.test(b.run(['--read', '--now', at]).stdout))
     w({ v: 2, at })
