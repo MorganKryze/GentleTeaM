@@ -50,14 +50,15 @@ decisions it made for you at the end. Everything the human reads follows the hum
 - **Limits:** when a phase starts (design, spec, plan, a task or wave, the final review, a fix
   wave), run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --read --ledger <root>/ledger.md`
   with `--tokens` and `--minutes` left (the plan's estimate, else the spec's, less the branch's
-  measures; no estimate: leave both out). At a branch's first phase, append a ledger `usage`
-  line `limits at start: 5h <p>% resets <ISO> · 7d <q>% resets <ISO>`. A `flag` line: one
-  Heads-up and one card per window and reset in a branch, and the phase waits for the answer:
-  A lighter for this branch (at most two of implementer, reviewer, architect, designer, largest
-  `roles` share first, all `?`: implementer and reviewer, to `sonnet` `low`, old → new), B keep,
-  C `/gtm:pause` until the reset; no saving promised. A: a ledger `ruling` `limits: lighter
-  <role> <old> → sonnet low, …` quoting the answer, for this slug's dispatches, resumes
-  included; `team.md` unchanged. `none`: nothing; `stale` or `?`: one Heads-up per session.
+  measures; no estimate: leave both out). When this slug has none and the reading is not `stale`,
+  `?` or `none`, append a ledger `usage` line `limits at start: 5h <p>% resets <ISO> · 7d <q>%
+  resets <ISO>`. A `flag` line: one Heads-up and one card per window and reset in a branch, and the
+  phase waits for the answer: A lighter for this branch (at most two of implementer, reviewer,
+  architect, designer, largest `roles` share first, all `?`: implementer and reviewer, to `sonnet`
+  `low`, old → new), B keep, C `/gtm:pause` until the reset; no saving promised. A: a ledger
+  `ruling` `limits: lighter <role> <old> → sonnet low, …` quoting the answer, for this slug's
+  dispatches, resumes included; `team.md` unchanged. `none`: nothing; `stale` or `?`: one Heads-up
+  per session.
 - Nothing is pushed, merged, tagged or released without the human's explicit go.
 
 ## 1. Pick the track (≤ 2 questions)

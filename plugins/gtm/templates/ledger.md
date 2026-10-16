@@ -17,5 +17,5 @@
 > without measures reads `?`, a wave's merge-commit line is skipped; `roles` as `/gtm:deliver` §2
 > step 3 measures them, once over every progress line's `· run <id>` folder plus `--also
 > <role>:<s>:<tokens>` per dispatch (architect, final-reviewer, implementer, a re-run review's
-> role), roles at 5% or more, any `?` → `roles ?`; `limits` the difference from the branch's
+> role), roles at 5% or more, any `?` → `roles ?`; `limits` the difference from the branch's first
 > `limits at start` usage line, `?` across a reset or with no reading.
