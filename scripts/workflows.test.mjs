@@ -106,6 +106,22 @@ const deliver = [
     dispatches: [implement(), reviewer()],
   },
   {
+    name: 'fix: fixCeiling "5 files", 6 files escalate',
+    args: { track: 'fix', fixCeiling: '5 files' },
+    reply: implementer(srcFiles(6), () => ok),
+    returns: { status: 'ESCALATE', reason: '6 files > 5', head: 'h0', files: srcFiles(6) },
+    dispatches: [implement()],
+    log: ['Fix escalates to Feature: 6 files > 5'],
+  },
+  {
+    name: 'fix: fixCeiling "3files" is unreadable, so a Fix escalates',
+    args: { track: 'fix', fixCeiling: '3files' },
+    reply: implementer(srcFiles(1), () => ok),
+    returns: { status: 'ESCALATE', reason: 'fix ceiling 3files is not a number of files', head: 'h0', files: srcFiles(1) },
+    dispatches: [implement()],
+    log: ['Fix escalates to Feature: fix ceiling 3files is not a number of files'],
+  },
+  {
     name: 'fix: an unreadable fixCeiling escalates every Fix, saying why',
     args: { track: 'fix', fixCeiling: 'lots' },
     reply: implementer(srcFiles(1), () => ok),
