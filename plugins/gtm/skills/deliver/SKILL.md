@@ -67,7 +67,7 @@ Ground rules: as in the `gtm` skill §0.
    tasks up to a guarded task or the plan's last) gets `review: "range"` on its range after its
    merges; before §4, `review: "branch"` fork point to `HEAD`; each with `files` from git. `OPEN`,
    `BLOCKED`, no review → step 4's card, minors to the ledger (a re-run appends none twice). A
-   resume runs each owed review before §4. A Heads-up per `read as per-task` log.
+   resume runs each owed review before §4. A Heads-up per `Cadence` log.
 
 ## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
 1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
