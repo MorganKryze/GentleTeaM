@@ -17,7 +17,7 @@ const WINDOW = 5, EVENTS = 3, LABEL = 60, STOPPED = 2
 const PHRASES = ['re-review ready', 'second re-review ready']
 const PHASES = ['mockups', 'spec', 'plan', 'delivery', 'final review', 'correction', 'go', 'shipped']
 const safe = (s) => (typeof s === 'string' && SAFE.test(s) ? s : '?')
-const label = (s) => [...s.replace(/[\x00-\x1f\x7f-\x9f]/g, '').trim()].slice(0, LABEL).join('')
+const label = (s) => [...s.replace(/[\x00-\x1f\x7f-\x9f\p{Cf}\u2028\u2029]/gu, '').trim()].slice(0, LABEL).join('')
 const read = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : null)
 const mtime = (f) => (existsSync(f) ? statSync(f).mtimeMs : null)
 // Optional locks off: git status then never takes index.lock nor rewrites a tree's index.
