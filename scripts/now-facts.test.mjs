@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
 // scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
-// dirty: { file, min, worktree? }, args }) and expected.json ({ exit, facts }, facts matched as a
-// subset). The test builds a throwaway repository around the root (git keeps no repository
-// inside a fixture), with no global or system git config, and removes it after the run; runs the
-// script at a fixed time, and checks it changed no file, no git index and no git status. Run by
-// scripts/validate.mjs. No dependencies.
+// dirty: { file, min, worktree? }, rootName?, args }) and expected.json ({ exit, facts }, facts
+// matched as a subset; rootName names the root folder, root by default). The test builds a
+// throwaway repository around the root (git keeps no repository inside a fixture), with no
+// global or system git config, and removes it after the run; runs the script at a fixed time,
+// and checks it changed no file, no git index and no git status. Run by scripts/validate.mjs.
+// No dependencies.
 import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -55,11 +56,11 @@ for (const name of readdirSync(fixtures).sort()) {
   const want = JSON.parse(readFileSync(join(dir, 'expected.json'), 'utf8'))
   const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-'))
   try {
-    const repo = join(tmp, 'repo')
-    cpSync(join(dir, 'root'), join(repo, 'root'), { recursive: true })
+    const repo = join(tmp, 'repo'), gtm = join(repo, a.rootName || 'root')
+    cpSync(join(dir, 'root'), gtm, { recursive: true })
     const date = { GIT_AUTHOR_DATE: ago(60).toISOString(), GIT_COMMITTER_DATE: ago(60).toISOString() }
     git(repo, ['init', '-q', '-b', 'main'])
-    appendFileSync(join(repo, '.git/info/exclude'), '/root/\n')
+    appendFileSync(join(repo, '.git/info/exclude'), `/${a.rootName || 'root'}/\n`)
     writeFileSync(join(repo, 'README.md'), 'fixture\n')
     git(repo, ['add', 'README.md'])
     git(repo, ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'init'], date)
@@ -68,18 +69,18 @@ for (const name of readdirSync(fixtures).sort()) {
     if (a.dirty) { const d = join(a.dirty.worktree ? join(tmp, a.dirty.worktree) : repo, a.dirty.file); mkdirSync(dirname(d), { recursive: true }); writeFileSync(d, 'changed\n'); utimesSync(d, ago(a.dirty.min), ago(a.dirty.min)) }
     if (a.broken) writeFileSync(join(tmp, a.broken, '.git'), 'gitdir: /nonexistent\n')
     for (const p of [repo, ...(a.worktrees || []).map((w) => join(tmp, w.name))]) utimesSync(join(p, 'README.md'), ago(30), ago(30))
-    for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(repo, 'root', f), ago(min), ago(min))
-    const before = snapshot(join(repo, 'root')), index = indexes(repo)
+    for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(gtm, f), ago(min), ago(min))
+    const before = snapshot(gtm), index = indexes(repo)
     const status = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env })
     const args = (a.args || []).map((x) => x.replace(/\{ago:(\d+)\}/g, (_, m) => ago(+m).toISOString()))
-    const r = spawnSync(process.execPath, [script, '--root', join(repo, 'root'), '--now', new Date(NOW).toISOString(), ...args], { encoding: 'utf8', env: { ...env, TZ: 'UTC' } })
+    const r = spawnSync(process.execPath, [script, '--root', gtm, '--now', new Date(NOW).toISOString(), ...args], { encoding: 'utf8', env: { ...env, TZ: 'UTC' } })
     if (r.status !== want.exit) errors.push(`${name}: exit ${r.status}, want ${want.exit} ${r.stderr.trim()}`)
     if (want.facts === undefined) continue
     let got
     try { got = JSON.parse(r.stdout) } catch { errors.push(`${name}: stdout is not JSON`); continue }
     subset(name, got, want.facts)
     if (/rm -rf|must-fix|\$\(|ignore all|sk live|git push/.test(r.stdout)) errors.push(`${name}: message text reached the output`)
-    if (snapshot(join(repo, 'root')) !== before) errors.push(`${name}: the script changed a file in the root`)
+    if (snapshot(gtm) !== before) errors.push(`${name}: the script changed a file in the root`)
     if (indexes(repo) !== index) errors.push(`${name}: the script wrote a git index`)
     if (execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env }) !== status) errors.push(`${name}: the script changed git status`)
   } finally {

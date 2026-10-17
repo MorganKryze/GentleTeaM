@@ -99,6 +99,69 @@ const rounds = (n, each) => Array.from({ length: n }, (_, i) => each(i + 1)).fla
 
 const deliver = [
   {
+    name: 'fix: fixCeiling "5 files" reads 5, 5 files stay a Fix',
+    args: { track: 'fix', fixCeiling: '5 files' },
+    reply: implementer(srcFiles(5), () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+  },
+  {
+    name: 'fix: fixCeiling "5 files", 6 files escalate',
+    args: { track: 'fix', fixCeiling: '5 files' },
+    reply: implementer(srcFiles(6), () => ok),
+    returns: { status: 'ESCALATE', reason: '6 files > 5', head: 'h0', files: srcFiles(6) },
+    dispatches: [implement()],
+    log: ['Fix escalates to Feature: 6 files > 5'],
+  },
+  {
+    name: 'fix: fixCeiling "3files" is unreadable, so a Fix escalates',
+    args: { track: 'fix', fixCeiling: '3files' },
+    reply: implementer(srcFiles(1), () => ok),
+    returns: { status: 'ESCALATE', reason: 'fix ceiling 3files is not a number of files', head: 'h0', files: srcFiles(1) },
+    dispatches: [implement()],
+    log: ['Fix escalates to Feature: fix ceiling 3files is not a number of files'],
+  },
+  {
+    name: 'fix: an unreadable fixCeiling escalates every Fix, saying why',
+    args: { track: 'fix', fixCeiling: 'lots' },
+    reply: implementer(srcFiles(1), () => ok),
+    returns: { status: 'ESCALATE', reason: 'fix ceiling lots is not a number of files', head: 'h0', files: srcFiles(1) },
+    dispatches: [implement()],
+    log: ['Fix escalates to Feature: fix ceiling lots is not a number of files'],
+  },
+  {
+    name: 'cadence: the reviewer per-branch reads per-wave, so the range review keeps it',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['docs/a.md'], cadence: { ...CAD, reviewer: 'per-branch' }, triggers: TRIGGERS },
+    reply: () => ok,
+    returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [reviewer()],
+    log: ['Cadence per-branch for reviewer read as per-wave'],
+  },
+  {
+    name: 'cadence: not a role map reads per-task for every role, one log line',
+    args: { tier: 'standard', cadence: 'per-wave', triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [], tier: 'guarded' },
+    dispatches: [implement(), reviewer()],
+    log: ['Cadence is not a role map, read as per-task for every role'],
+    unlogged: ['Cadence p', 'for 0 '],
+  },
+  {
+    name: 'range review: a fix on guarded ground never lowers the standard rounds',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['docs/a.md'], cadence: CAD, triggers: TRIGGERS, fixRounds: 1, standardRounds: 2 },
+    reply: implementer([], (d) => (/^reviewer( · round 1)?$/.test(d.label) ? bad : ok), ['templates/team.md']),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer', 'data-reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
+    },
+    dispatches: [
+      reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' },
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' },
+      reviewer('reviewer · round 2'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 2' },
+    ],
+  },
+  {
     name: 'clean: a minor finding starts no fix',
     args: {},
     reply: implementer(['src/a.js'], () => ({ verdict: 'approve', findings: [{ severity: 'minor', summary: 'typo' }], summary: 'ok' })),
@@ -500,7 +563,7 @@ const deliver = [
     reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [typo], summary: 'fix' } : ok)),
     returns: {
       status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
-      stats: { reviewer: { critical: 0, important: 0, minor: 1 } },
+      stats: { reviewer: { critical: 0, important: 1, minor: 1 } },
       minors: [{ ...typo, by: 'reviewer' }],
     },
     dispatches: [
@@ -519,7 +582,7 @@ const deliver = [
         severity: 'important', by: 'reviewer',
         summary: 'reviewer asked for a fix without a blocking finding: execSync builds a shell string at x.mjs:12',
       }],
-      stats: {}, minors: [],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } }, minors: [],
     },
     dispatches: [
       implement(), reviewer(),
@@ -736,7 +799,7 @@ const deliver = [
     returns: {
       status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
       open: [{ severity: 'important', summary: 'reviewer asked for a fix without a blocking finding: still wrong', by: 'reviewer' }],
-      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } }, minors: [],
     },
     dispatches: [
       implement(), reviewer(),

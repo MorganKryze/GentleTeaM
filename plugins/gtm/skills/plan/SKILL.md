@@ -13,7 +13,7 @@ The spec's Status ends with `plan kept from the one pass` and the plan exists: d
 architect, go to §2. Otherwise (no one pass, a card answered otherwise, the spec changed),
 dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: the spec path, the
 validated mockup page, the output path `<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, and the
-team settings' Gates (replay risky tasks: yes/no; risky paths). Template:
+team settings' Gates (replay risky tasks: yes/no; risky paths; `tasks per branch`). Template:
 `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. When it returns, append its progress line (`plan`) as
 `/gtm:deliver` §1 says, and one more after each correction round and each revision (§2); a
 phase's lines are summed in the run line.
@@ -44,5 +44,5 @@ One round of corrections with the architect if a check fails.
 
 ## 3. Continue
 Do not present the plan. Go straight to `/gtm:deliver`, unless the plan deviates from the spec (a
-Heads-up and a decision card), its estimate passes 1.5× of the spec's (§2), or the human asked
-to see it (`/gtm:brief-me`).
+Heads-up and a decision card), its task count passes the cap (§2's split / accept card), its
+estimate passes 1.5× of the spec's (§2), or the human asked to see it (`/gtm:brief-me`).
