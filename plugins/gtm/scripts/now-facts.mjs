@@ -25,15 +25,21 @@ const git = (cwd, args) => { try { return execFileSync('git', ['--no-optional-lo
 const round = (x) => Math.round(x * 10) / 10
 const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2 }
 
+// Usage errors exit 2: an unknown flag, a flag without its value, no --root, a --now or --since
+// that is not a date-time.
+const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since']
+const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]'); process.exit(2) }
 const argv = process.argv.slice(2), opt = { running: [] }
 for (let i = 0; i < argv.length; i += 2) {
-  const k = argv[i].replace(/^--/, ''), v = argv[i + 1]
+  const k = argv[i].slice(2), v = argv[i + 1]
+  if (!argv[i].startsWith('--') || !FLAGS.includes(k) || v === undefined || v.startsWith('--')) usage()
   if (k === 'running') opt.running.push(v); else opt[k] = v
 }
-if (!opt.root) { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>]'); process.exit(2) }
+if (!opt.root) usage()
 if (opt.slug !== undefined && !/^[a-z0-9-]+$/.test(opt.slug)) { console.error('now-facts.mjs: --slug takes [a-z0-9-] only'); process.exit(2) }
 const root = resolve(opt.root)
-const now = opt.now ? Date.parse(opt.now) : Date.now()
+const now = opt.now === undefined ? Date.now() : Date.parse(opt.now)
+if (Number.isNaN(now)) { console.error('now-facts.mjs: --now takes an ISO date-time'); process.exit(2) }
 const repo = (git(root, ['rev-parse', '--show-toplevel']) || '').trim() || null
 const since = opt.since === undefined ? null : Date.parse(opt.since)
 if (Number.isNaN(since)) { console.error('now-facts.mjs: --since takes an ISO date-time'); process.exit(2) }
