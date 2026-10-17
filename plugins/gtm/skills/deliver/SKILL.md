@@ -10,7 +10,7 @@ Ground rules: as in the `gtm` skill §0.
 ## 1. Prepare
 - Branch: from `git.base` as `git.branch` says (the orchestrator does this once; agents never switch
   branches); note the base commit. A range's files: `git -c core.quotePath=false diff --name-only
-  --no-renames "<a>..<b>"` (a rename lists both paths), never the planned or reported one.
+  --no-renames "<a>..<b>"` (a path per line, `"…"` C-quoted; a rename lists both), never the planned or reported one.
 - From `team.md`: `team` = `{ role: {model, effort} }` per role; `triggers`, the `on` specialists
   with their regexes; `fixRounds`; `fixCeiling`, the N of `Fix track ceiling: N files`; the budgets,
   Gates lines `budget per task` and `budget per branch` (`<minutes> min, <tokens>k tokens`; absent
@@ -67,7 +67,7 @@ Ground rules: as in the `gtm` skill §0.
    tasks up to a guarded task or the plan's last) gets `review: "range"` on its range after its
    merges; before §4, `review: "branch"` fork point to `HEAD`; each with `files` from git. `OPEN`,
    `BLOCKED`, no review → step 4's card, minors to the ledger (a re-run appends none twice). A
-   resume runs each owed review before §4. A Heads-up per `read as per-task` log.
+   resume runs each owed review before §4. A Heads-up per `Cadence` log.
 
 ## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
 1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
