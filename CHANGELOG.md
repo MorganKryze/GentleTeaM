@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.9.1] - 2026-10-17
+
 ### Fixed
 - The task workflow reads a Fix's file limit written as text (`3 files`); any other value
   escalates the Fix and says why. A fix verdict with no finding counts as an important finding.
