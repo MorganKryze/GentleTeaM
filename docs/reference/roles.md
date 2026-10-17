@@ -39,7 +39,7 @@ The words in the table and below it:
 | `design-critic` | scores the mockups by measuring; read-only | high | mockup rounds |
 | `architect` | writes the spec and the task plan | high | after the mockups |
 | `implementer` | one task, test-first; the only role that writes code | low, raised per round | every task |
-| `reviewer` | checks the spec, then code quality; read-only | medium | every task |
+| `reviewer` | checks the spec, then code quality; read-only | medium | every guarded task; standard ones once per wave |
 | `security-reviewer` | trust boundaries, sign-in, secrets; read-only | xhigh | the diff touches its paths |
 | `data-reviewer` | lost, duplicated or altered data; read-only | high | the diff touches its paths |
 | `ux-qa` | captures and measures screens | medium | the diff touches screens |

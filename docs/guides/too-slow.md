@@ -5,7 +5,7 @@ description: What GTM costs, measured, and the levers that make a change cheaper
 
 ::: callout summary
 - **You will learn:** what a change costs, and nine levers that lower it, each with its risk.
-- **Reading time:** 4 minutes.
+- **Reading time:** 5 minutes.
 - **Before this:** [Change your team settings](/guides/team-settings/).
 :::
 
