@@ -84,13 +84,17 @@ for (const [role, list] of Object.entries(A.triggers || {})) {
 }
 const ground = (files) => Object.keys(triggers).filter((r) => files.some((f) => triggers[r].some((re) => re.test(f))))
 // A role reviews per task unless the profile says per-wave or per-branch. An unknown cadence, or a
-// lighter one for the security or data reviewer, reads as per-task.
+// lighter one for the security or data reviewer, reads as per-task; a cadence that is not a role
+// map reads as per-task for every role. The reviewer joins the range review only, so its
+// per-branch reads as per-wave.
+const MAP = A.cadence && typeof A.cadence === 'object' && !Array.isArray(A.cadence) ? A.cadence : {}
+if (A.cadence != null && MAP !== A.cadence) log('Cadence is not a role map, read as per-task for every role')
 const CADENCE = {}
-for (const r of new Set(['reviewer', ...Object.keys(triggers), ...Object.keys(A.cadence || {})])) {
-  const c = (A.cadence || {})[r]
+for (const r of new Set(['reviewer', ...Object.keys(triggers), ...Object.keys(MAP)])) {
+  const c = MAP[r]
   const light = (c === 'per-wave' || c === 'per-branch') && !['security-reviewer', 'data-reviewer'].includes(r)
-  CADENCE[r] = light ? c : 'per-task'
-  if (c !== undefined && c !== CADENCE[r]) log(`Cadence ${c} for ${r} read as per-task`)
+  CADENCE[r] = !light ? 'per-task' : r === 'reviewer' ? 'per-wave' : c
+  if (c !== undefined && c !== CADENCE[r]) log(`Cadence ${c} for ${r} read as ${CADENCE[r]}`)
 }
 const per = (files, c) => ground(files).filter((r) => CADENCE[r] === c)
 
@@ -134,11 +138,14 @@ const impl = A.review ? { head: A.head, files: A.files } : await attempt(
 if (!impl || impl.status === 'BLOCKED') return { status: 'BLOCKED', impl }
 
 // A Fix escalates on size alone, counted over every file it has changed so far. On security or
-// data ground it stays a Fix and that specialist reviews it, as on any task.
-const ceiling = A.fixCeiling ?? 3
+// data ground it stays a Fix and that specialist reviews it, as on any task. A ceiling is a whole
+// number, or a text that starts with one (`3 files`); any other value escalates every Fix.
+const given = A.fixCeiling ?? 3
+const lead = typeof given === 'number' ? given : Number((String(given).match(/^\s*(\d+)\b/) || [])[1])
+const ceiling = Number.isSafeInteger(lead) && lead >= 0 ? lead : null
 function escalation(files, at) {
-  if (A.track !== 'fix' || files.length <= ceiling) return null
-  const reason = `${files.length} files > ${ceiling}`
+  if (A.track !== 'fix' || (ceiling !== null && files.length <= ceiling)) return null
+  const reason = ceiling === null ? `fix ceiling ${given} is not a number of files` : `${files.length} files > ${ceiling}`
   log(`Fix escalates to Feature: ${reason}`)
   return { status: 'ESCALATE', reason, head: at, files }
 }
@@ -194,19 +201,22 @@ for (; round <= limit; round++) {
       return
     }
     const blocking = []
+    const count = (severity) => { stats[r] = stats[r] || { critical: 0, important: 0, minor: 0 }; stats[r][severity]++ }
     for (const f of res.findings) {
       // Only a reviewer sent findings to re-check can close one; anywhere else the severity decides.
       if (pending[i].findings && f.status === 'addressed') continue
-      stats[r] = stats[r] || { critical: 0, important: 0, minor: 0 }
-      stats[r][f.severity]++
+      count(f.severity)
       // A status it may not set goes too, or the fix round and the re-review would read it as true.
       const { status, ...kept } = f
       if (f.severity === 'minor') minors.push({ ...kept, by: r })
       else blocking.push(kept)
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
-    // then the only reason given, so the fix round and the re-review get it.
-    if (res.verdict === 'fix' && !blocking.length) blocking.push({ severity: 'important', summary: `${r} asked for a fix without a blocking finding: ${res.summary}` })
+    // then the only reason given, so the fix round and the re-review get it, and it counts as one.
+    if (res.verdict === 'fix' && !blocking.length) {
+      count('important')
+      blocking.push({ severity: 'important', summary: `${r} asked for a fix without a blocking finding: ${res.summary}` })
+    }
     if (blocking.length) {
       open.push(...blocking.map((f) => ({ ...f, by: r })))
       still.push({ r, findings: blocking })
@@ -231,7 +241,7 @@ for (; round <= limit; round++) {
     if (unreviewed.some((f) => f.by === r)) continue
     // In a deferred review, a fix on guarded ground gets that specialist on the whole range.
     const whole = Boolean(A.review) && CADENCE[r] === 'per-task'
-    if (whole) limit = ROUNDS
+    if (whole) limit = Math.max(limit, ROUNDS)
     if (!still.some((p) => p.r === r)) still.push({ r, findings: null, whole })
     if (!reviewers.includes(r)) reviewers.push(r)
   }
