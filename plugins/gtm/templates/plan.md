@@ -25,9 +25,8 @@ covers it.>
 ## Tasks
 
 ### Task 1: <goal in one line, a vertical slice> [P]
-`[P]` = parallel-safe (disjoint files, no shared interface change). Omit when not.
 
-**Constraints:** C1, C3
+**Constraints:** C1, C2
 **Files:** Create: `…` · Modify: `…`
 **Tier:** <guarded | standard>
 **Risky:** <no | yes: migration / contract / persistence; dry run on <date>, gate counts>
