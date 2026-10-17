@@ -10,8 +10,9 @@ versions follow [SemVer](https://semver.org/).
   escalates the Fix and says why. A fix verdict with no finding counts as an important finding.
 - `review cadence`: the reviewer's `per-branch` reads as per-wave, with a Heads-up; a line that
   is not a role map reviews every task, in one Heads-up; a fix never cuts a wave review's rounds.
-- `/gtm:deliver` lists a range's files NUL-separated, so a path with a quote or a tab still meets
-  its specialist's paths. `/gtm:plan` passes `tasks per branch` to the architect, stops past it.
+- `/gtm:deliver` lists a range's files with `core.quotePath=false`, one path a line, so a path
+  with an accent or a quote still meets its specialist's paths. `/gtm:plan` passes `tasks per
+  branch` to the architect, stops past it.
 - `/gtm:gtm` quotes the GTM folder's paths, names the handoff when a pause has no resume command,
   and resumes only on the paused branch. `/gtm:tune` sets budgets from the last five measured runs.
 - The script that gathers NOW.md's facts exits 2 on a bad flag and drops invisible characters from

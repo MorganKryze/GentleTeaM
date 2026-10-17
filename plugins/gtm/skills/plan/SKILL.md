@@ -44,5 +44,5 @@ One round of corrections with the architect if a check fails.
 
 ## 3. Continue
 Do not present the plan. Go straight to `/gtm:deliver`, unless the plan deviates from the spec (a
-Heads-up and a decision card), its task count passes the cap (§2's split / accept card), its estimate passes 1.5× of the spec's (§2), or the human asked
-to see it (`/gtm:brief-me`).
+Heads-up and a decision card), its task count passes the cap (§2's split / accept card), its
+estimate passes 1.5× of the spec's (§2), or the human asked to see it (`/gtm:brief-me`).

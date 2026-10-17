@@ -24,7 +24,7 @@ of the ledger, and the final reviews under `<root>/reports/`.
 | a priority changed in the brief | re-derive the roles it drives |
 | a role holds 40% of the tokens or more (`roles`) in two measured runs | lower its effort, or narrow its triggers if a specialist |
 | an `over budget` usage line in two runs | revisit that budget, or the plan's task sizing |
-| three measured runs and no budget | set `budget per task` and `budget per branch` at their medians over the last five measured runs (`?` left out, as the architect's estimate), as Gates lines |
+| three measured runs and no budget | set `budget per task` and `budget per branch` at their medians over the last five measured runs (`?` left out, as the architect's estimate), replacing their Gates lines |
 | a convention keeps producing the same finding or the same `lesson` | edit that row of `conventions.md` and its guideline file |
 
 No signal: say so in one line and stop.
