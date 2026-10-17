@@ -32,9 +32,9 @@ A gate is a check that must pass before work moves on. There are six, one per st
 Requirements Syntax) is the form of the spec's acceptance lines: WHEN, WHILE, WHERE or IF, then
 THE SYSTEM SHALL.
 
-The final review replays two of the mutations the task reports planted, those nearest a pinned
-threshold (all of them when two or fewer); one that survives is a must-fix. A branch of one task,
-clean at zero correction rounds, skips it: that task's review, with every triggered specialist,
+The final review replays two of the mutations the task reports planted, those that move or drop a
+pinned threshold, plan order on a tie (all of them when two or fewer); one that survives is a
+must-fix. A branch of one task, clean at zero correction rounds, skips it: that task's review, with every triggered specialist,
 was the last, and the `run` line in `ledger.md` says so. Any correction round, a commit outside
 the tasks' ranges (a [Fix](/reference/glossary/#fix) that grew, a hand commit) or a specialist
 whose trigger matched a task's changed paths but who did not review it brings the final review back.
@@ -94,8 +94,9 @@ included, are disjoint. They run at once, each in its own worktree outside the r
 its own branch. When all have returned, the clean ones merge into the delivery branch with merge
 commits in plan order, then the gate runs once.
 
-A moved branch or head, an overlap of files, a conflict or a red gate stops the merges, and
-nothing is undone without you. A task left open or blocked does not hold back its clean siblings,
+A branch name with a character other than letters, digits and `._/-`, a moved branch or head, an
+overlap of files, a conflict, a red gate, a failed check or files left in a worktree's GTM folder
+stops the merges, and nothing is undone without you. A task left open or blocked does not hold back its clean siblings,
 which still merge, but no later task starts.
 
 ## How are several screens designed?
