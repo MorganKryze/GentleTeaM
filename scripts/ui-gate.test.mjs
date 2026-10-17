@@ -53,7 +53,8 @@ const types = { '.html': 'text/html; charset=utf-8' }
 function serve(dir) {
   return new Promise((done) => {
     const server = createServer((req, res) => {
-      const name = decodeURIComponent(new URL(req.url, 'http://x').pathname).slice(1)
+      let name = ''
+      try { name = decodeURIComponent(new URL(req.url, 'http://x').pathname).slice(1) } catch {}
       if (!/^[a-z0-9-]+\.html$/.test(name) || !existsSync(join(dir, name))) {
         res.writeHead(404).end('not found')
         return
@@ -146,6 +147,10 @@ try {
     }
   }
 
+  // A malformed escape in the path is a 404, never a crash of the fixture server.
+  const bad = await fetch(`${base}/%E0%A4%A.html`).then((r) => r.status, () => 'no answer')
+  if (bad !== 404) errors.push(`server: a malformed escape got ${bad}, expected 404`)
+
   // Nothing answers at baseURL: the start command is run, then stopped.
   const port = await freePort()
   const url = `http://127.0.0.1:${port}`
@@ -161,7 +166,8 @@ try {
   const port2 = await freePort()
   const none = await run('no-start', { ...page('clean'), baseURL: `http://127.0.0.1:${port2}`, routes: ['/'] })
   const noneTests = Object.values(none.tests)
-  if (!none.load.length && (!noneTests.some((t) => t.status === 'failed') || noneTests.some((t) => t.status === 'passed'))) {
+  if (none.load.includes('no report')) errors.push('no-start: the runner wrote no report')
+  else if (!none.load.length && (!noneTests.some((t) => t.status === 'failed') || noneTests.some((t) => t.status === 'passed'))) {
     errors.push(`no-start: expected a failure and no pass, got ${noneTests.map((t) => t.status).join(', ') || 'no test'}`)
   }
 } finally {
