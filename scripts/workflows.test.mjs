@@ -547,7 +547,7 @@ const deliver = [
     reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [typo], summary: 'fix' } : ok)),
     returns: {
       status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
-      stats: { reviewer: { critical: 0, important: 0, minor: 1 } },
+      stats: { reviewer: { critical: 0, important: 1, minor: 1 } },
       minors: [{ ...typo, by: 'reviewer' }],
     },
     dispatches: [
@@ -566,7 +566,7 @@ const deliver = [
         severity: 'important', by: 'reviewer',
         summary: 'reviewer asked for a fix without a blocking finding: execSync builds a shell string at x.mjs:12',
       }],
-      stats: {}, minors: [],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } }, minors: [],
     },
     dispatches: [
       implement(), reviewer(),
@@ -783,7 +783,7 @@ const deliver = [
     returns: {
       status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
       open: [{ severity: 'important', summary: 'reviewer asked for a fix without a blocking finding: still wrong', by: 'reviewer' }],
-      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } }, minors: [],
     },
     dispatches: [
       implement(), reviewer(),

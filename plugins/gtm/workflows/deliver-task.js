@@ -212,8 +212,9 @@ for (; round <= limit; round++) {
       else blocking.push(kept)
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
-    // then the only reason given, so the fix round and the re-review get it.
+    // then the only reason given, so the fix round and the re-review get it, and it counts as one.
     if (res.verdict === 'fix' && !blocking.length) {
+      count('important')
       blocking.push({ severity: 'important', summary: `${r} asked for a fix without a blocking finding: ${res.summary}` })
     }
     if (blocking.length) {
