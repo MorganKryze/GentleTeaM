@@ -30,7 +30,7 @@ decisions it made for you at the end. Everything the human reads follows the hum
 - **Run view:** in every track (a Fix included), rewrite `<root>/NOW.md` whole, never append,
   as the last write of the step: before each dispatch or workflow run, after each progress line,
   when a checkpoint or decision card is shown or answered, and when a skill ends or stops its run.
-  Facts from `node "${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs" --root <root>` (add the
+  Facts from `node "${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs" --root '<root>'` (add the
   `--running` and `--waiting` you know), shape from `${CLAUDE_PLUGIN_ROOT}/templates/now.md`.
   Write it only in the main checkout (`git rev-parse --git-dir` equals `git rev-parse
   --git-common-dir`), never in a worktree. Read the NOW.md there first: tracked (`git ls-files
@@ -48,7 +48,7 @@ decisions it made for you at the end. Everything the human reads follows the hum
   the file does not end with one. Say so in one Heads-up, only when you added the line. A `?` in
   the facts or a failed write never holds up a dispatch.
 - **Limits:** when a phase starts (design, spec, plan, a task or wave, the final review, a fix
-  wave), run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --read --ledger <root>/ledger.md`
+  wave), run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --read --ledger '<root>/ledger.md'`
   with `--tokens` and `--minutes` left (the plan's estimate, else the spec's, less the branch's
   measures; no estimate: leave both out). When this slug has none and the reading is not `stale`,
   `?` or `none`, append a ledger `usage` line `limits at start: 5h <p>% resets <ISO> · 7d <q>%
@@ -65,7 +65,8 @@ decisions it made for you at the end. Everything the human reads follows the hum
 Request: $ARGUMENTS
 
 Facts with phase `paused` (`now-facts.mjs`): before anything else, one line naming the slug
-and its `resume` command; on yes, run it.
+and its `resume` command (`?`: the `handoff` file to read instead); on yes, run it only when
+`git branch --show-current` is the facts' `branch`, else name that branch and stop.
 
 No request given: explain GTM in five lines (the tracks, your checkpoints, the skills) and ask
 what to do. Clear and small: judge it yourself. Otherwise dispatch `gtm:analyst` with the request and the root.
