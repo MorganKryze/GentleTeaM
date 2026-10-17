@@ -66,7 +66,8 @@ Request: $ARGUMENTS
 
 Facts with phase `paused` (`now-facts.mjs`): before anything else, one line naming the slug
 and its `resume` command (`?`: the `handoff` file to read instead); on yes, run it only when
-`git branch --show-current` is the facts' `branch`, else name that branch and stop.
+`git branch --show-current` is the facts' `branch`, else name that branch (`?`: the
+handoff's `branch`) and stop.
 
 No request given: explain GTM in five lines (the tracks, your checkpoints, the skills) and ask
 what to do. Clear and small: judge it yourself. Otherwise dispatch `gtm:analyst` with the request and the root.
