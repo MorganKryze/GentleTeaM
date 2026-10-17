@@ -19,15 +19,19 @@
   Then one `- worktree <name> (<branch>)` line per worktree. An empty `running` reads "nothing".
 - What waits: "nothing", or `<kind> · task <task> · <question>`, the question cut at 80
   characters, written by the writer in its own words (never pasted text).
+- Next: `- step: <next>` and `- after this branch: <nextStory>`, each left out when null; both
+  null: "nothing".
 - ETA: `<minutes> min, ends about <clock> (median of <runs> runs)`. `eta.none`: "no measured run
   yet". `afterAnswer`: `<minutes> min after your answer`, no clock. `tasks` null: "after the plan".
 - Paused (phase `paused`): breadcrumb `<epic> › <branch> › paused › task <n>/<N>`, no clock;
   what waits reads "resume with `<resume>`" and, under it, the `handoff` path.
 - Events: the `events` list as given, newest first, at most three.
-- Other branches: one line each, `- <branch> › <phase> › task <task> · updated <HH:MM>`.
+- Other branches: `- <branch> › <phase> › task <n>/<of> · updated <HH:MM>`: ` › task …` left out
+  when `task` is null, `task ?` when it is `?`; ` · updated …` left out when `updated` is null.
 - Rebuilt by `/gtm:status` (no `--running`, no `--waiting`): line 1 ends with ` · rebuilt`, in
   English whatever `language.human` (the `gtm` skill §0 reads it); what runs reads "what runs:
-  unknown", the worktree lines still listed; what waits reads "what waits: unknown"; no clock in the breadcrumb or the ETA, since an answer may be pending.
+  unknown", the worktree lines still listed; what waits reads "what waits: unknown"; no clock in
+  the breadcrumb or the ETA, since an answer may be pending.
 
 ## Example
 
