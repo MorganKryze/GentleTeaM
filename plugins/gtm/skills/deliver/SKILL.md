@@ -9,8 +9,8 @@ Ground rules: as in the `gtm` skill §0.
 
 ## 1. Prepare
 - Branch: from `git.base` as `git.branch` says (the orchestrator does this once; agents never switch
-  branches); note the base commit. A range's files: `git diff -z --name-only --no-renames
-  "<a>..<b>"`, split on NUL (a rename lists both paths), never the planned or reported one.
+  branches); note the base commit. A range's files: `git -c core.quotePath=false diff --name-only
+  --no-renames "<a>..<b>"` (a path per line, `"…"` C-quoted; a rename lists both), never the planned or reported one.
 - From `team.md`: `team` = `{ role: {model, effort} }` per role; `triggers`, the `on` specialists
   with their regexes; `fixRounds`; `fixCeiling`, the N of `Fix track ceiling: N files`; the budgets,
   Gates lines `budget per task` and `budget per branch` (`<minutes> min, <tokens>k tokens`; absent
