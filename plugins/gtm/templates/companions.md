@@ -21,7 +21,7 @@
 
 ## Use
 - Read `<root>/team.md` `## Companions`. Off or no line: the role's own method, unchanged, no
-  warning. On: its entry point is the last of `ls -d "<config>/plugins/cache/<entry point>" |
+  warning. On: its entry point is the last of `ls -d "<config>"/plugins/cache/<entry point> |
   sort -V` (`<config>` = `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`); none: the skip line below.
 - Run only the Run line, through the tools the role already has; read only what it names.
 - A companion only adds findings: it never removes, downgrades or replaces one the role's own

@@ -81,6 +81,12 @@ if (!/stealth: on/.test(line(section('humanize'), 'Never'))) fail('humanize: Nev
 if (!/No tool call, nothing run or written/.test(section('Detect')) || !/proposed `on`/.test(section('Detect'))) fail('companions.md Detect: read-only detection, proposed on at init')
 for (const f of ['agents/design-critic.md', 'agents/designer.md', 'agents/ux-qa.md']) if (!/impeccable/.test(read(f))) fail(`${f} does not name impeccable`)
 
+if (!use.includes('`ls -d "<config>"/plugins/cache/<entry point> |')) fail('companions.md Use: quote <config> only, so the entry point glob expands')
+for (const w of ['No question and no install advice']) if (!section('Detect').includes(w)) fail(`companions.md Detect lacks "${w}"`)
+for (const w of ['`guidelines/voice.md` wins a disagreement', 'then one briefing line (flagged, rewritten, kept)'])
+  if (!section('humanize').replace(/\n\s+/g, ' ').includes(w)) fail(`companions.md humanize lacks "${w}"`)
+if (!/without a `Companions` section reads as none on; nothing to migrate/.test(readFileSync(join(root, 'CHANGELOG.md'), 'utf8'))) fail('CHANGELOG: a team.md without Companions needs "nothing to migrate"')
+
 for (const s of ['init', 'tune']) if (!read(`skills/${s}/SKILL.md`).includes('templates/companions.md')) fail(`${s}/SKILL.md does not point at templates/companions.md`)
 const initLines = read('skills/init/SKILL.md').split('\n').length - 1
 if (initLines > 81) fail(`init/SKILL.md is ${initLines} lines (at most 81)`)
