@@ -46,8 +46,9 @@ type.
 
 ## Companions
 Optional plugins GTM knows (`templates/companions.md`): a role uses one only when it is `on` here
-and installed; GTM never installs one. Init writes one line per companion found, or
-`- none detected · YYYY-MM-DD`. A file without this section has none on: nothing to migrate.
+and installed; GTM never installs one. The two lines below are examples: init replaces them with
+one line per companion found and approved, or `- none detected · YYYY-MM-DD`. A file without this
+section has none on: nothing to migrate.
 
 - impeccable: on · detected skill `impeccable:impeccable` · roles designer, design-critic, ux-qa · why: <reason> · YYYY-MM-DD
 - humanize: on · detected skill `humanize:humanize` · roles ship, implementer · why: <reason> · YYYY-MM-DD

@@ -61,6 +61,12 @@ if (!(at('Specialists') < at('Companions') && at('Companions') < at('Gates'))) f
 for (const w of ['none on', '- impeccable: on · detected skill `impeccable:impeccable`', 'templates/companions.md'])
   if (!team.includes(w)) fail(`team.md Companions lacks "${w}"`)
 
+// The template's companion lines are examples: init must never keep them unchosen.
+const companionsSec = (team.split(/^## /m).find((s) => s.startsWith('Companions\n')) || '')
+if (!/examples/.test(companionsSec) || !/init replaces them/.test(companionsSec)) fail('team.md Companions must mark its lines as examples init replaces')
+if (!/example lines/.test(section('Detect'))) fail('companions.md Detect must say init replaces the template example lines')
+if (!/Companions[^.]*`- none detected/.test(read('agents/analyst.md'))) fail('agents/analyst.md must draft Companions as `- none detected`, never the example lines')
+
 for (const s of ['init', 'tune']) if (!read(`skills/${s}/SKILL.md`).includes('templates/companions.md')) fail(`${s}/SKILL.md does not point at templates/companions.md`)
 const initLines = read('skills/init/SKILL.md').split('\n').length - 1
 if (initLines > 81) fail(`init/SKILL.md is ${initLines} lines (at most 81)`)

@@ -10,7 +10,8 @@
 - Init: each one found is a row of the team-settings table, proposed `on`; none found, no row.
   No question and no install advice either way: the docs name them.
 - Record what the human approves: `- <name>: on|off · detected skill <skill> · roles <roles> ·
-  why: <reason> · <YYYY-MM-DD>`; none found, `- none detected · <YYYY-MM-DD>`.
+  why: <reason> · <YYYY-MM-DD>`; none found, `- none detected · <YYYY-MM-DD>`. These lines replace
+  the template's example lines, which never stay in a project's `team.md`.
 - Tune: one change-or-keep card per difference (a known one now listed but not recorded, a
   recorded one no longer listed), inside its five-card cap.
 - A `team.md` without the section (made before 0.10.0) has none on; it changes only through a
