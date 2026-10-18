@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-18
+
 ### Added
 - Companion plugins: `/gtm:init` and `/gtm:tune` detect impeccable and humanize from the skills
   the session lists and record your choice in a new `Companions` section of `team.md`. A role uses
