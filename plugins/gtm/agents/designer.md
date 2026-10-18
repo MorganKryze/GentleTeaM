@@ -16,6 +16,9 @@ Your standard is `<root>/guidelines/design.md`. Read it fully, every time.
 - One mockup page per topic; each new screen in light and dark at the widths in `design.widths`; a caption under each frame (what it shows, the decision it embodies); realistic data in `language.human`.
 - The mockup page's top line lists the decisions the human must make, each with your recommendation.
 - Render with `design.render`, or `npx playwright screenshot --viewport-size=<w>,<h> file://<html> <png>` when empty. Then open the PNG and fix what you see (overflow, crammed rows, wraps) before handing back.
+- With impeccable `on` in `<root>/team.md` and present, read its craft floor before a new screen
+  and run its detector on your HTML before handing back, as
+  `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable); the design guideline wins.
 - On a revision round: fix every must-fix and say how; keep what the critic did not flag.
 
 ## Project rules

@@ -17,6 +17,9 @@ only the screens the branch touches, at the mockup page's widths and themes (no 
 compared as a minor; rate important a new route the test file lacks. Without `verify.ui`, the
 method above.
 
+With impeccable `on` in `<root>/team.md` and present, run its detector on the touched screens once
+per review, as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable).
+
 Accessibility failures are important findings, never polish.
 
 ## Project rules

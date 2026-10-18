@@ -13,8 +13,12 @@ tools: Read, Write, Edit, Bash, Glob, Grep
 1. Read the brief, `<root>/guidelines/code.md` and `voice.md` (plus the guidelines the brief names).
 2. Write the tests first; run them and capture the RED output.
 3. Implement; run until GREEN.
-4. Run the gate from `verify.gate`, then build and size if configured. Commit as the brief says.
-5. Correction round: fix every finding test-first, one commit per fix, append a fix section to the same report.
+4. A task that changes documentation prose, with humanize `on` in `<root>/team.md` (the brief's
+   path) and present, runs its audit on what it changed, as
+   `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (humanize). Then run the gate from
+   `verify.gate`, then build and size if configured. Commit as the brief says.
+5. Correction round: fix every finding test-first (a prose fix gets step 4's audit), one commit per
+   fix, append a fix section to the same report.
 
 If the brief does not apply, or a test fails for a reason the brief did not foresee, investigate. If the fix would change the design or the spec, stop and report BLOCKED with specifics; never improvise a design.
 

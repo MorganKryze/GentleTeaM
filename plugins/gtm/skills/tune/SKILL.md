@@ -6,10 +6,13 @@ description: Re-evaluate the GTM team settings and conventions - reads the ledge
 
 Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without the human's answer.
 Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
+Asked to turn a companion on or off (`/gtm:tune <name> on|off`)? One card, then §4.
 
 ## 1. Read
-`<root>/team.md`, the `run` lines (their `measured` part included), the `minor` and `usage` lines
-of the ledger, and the final reviews under `<root>/reports/`.
+`<root>/team.md` (its `## Companions` against the session's skills, as
+`${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says), the `run` lines (their `measured` part
+included), the `minor` and `usage` lines of the ledger, and the final reviews under
+`<root>/reports/`.
 
 ## 2. Look for signals
 | Signal | Typical proposal |
@@ -25,6 +28,7 @@ of the ledger, and the final reviews under `<root>/reports/`.
 | a role holds 40% of the tokens or more (`roles`) in two measured runs | lower its effort, or narrow its triggers if a specialist |
 | an `over budget` usage line in two runs | revisit that budget, or the plan's task sizing |
 | three measured runs and no budget | set `budget per task` and `budget per branch` at their medians over the last five measured runs (`?` left out, as the architect's estimate), replacing their Gates lines |
+| a known companion listed in the session but not recorded, or recorded `on` but gone | turn it on or off (one card each); no section counts as none on |
 | a convention keeps producing the same finding or the same `lesson` | edit that row of `conventions.md` and its guideline file |
 
 No signal: say so in one line and stop.

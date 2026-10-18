@@ -21,6 +21,10 @@ for the user, how it was proven (tests, gate, review verdicts), the decisions ma
 Never name anything in `git.never_name`. With `stealth: on`, the body takes the shape of the
 project's own recent PRs, with none of GTM's section names (Summary, decisions made for you, deferred minors).
 
+With humanize `on` in `<root>/team.md` and present, run its audit on `pr.md` as
+`${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (humanize), before §2b, and give its one
+briefing line.
+
 ## 2b. Footprint check (stealth on only)
 Run, and quote the result:
 `node ${CLAUDE_PLUGIN_ROOT}/scripts/footprint-check.mjs --config <root>/config.yml --base <git.base> --pr <root>/reports/<slug>/pr.md`
@@ -44,7 +48,9 @@ lines against `guidelines/voice.md`.
 
 Execute exactly what was approved. Merge as `git.merge` says; never squash or rewrite history
 unless the config says so. Tag and release only when asked: release notes from the CHANGELOG or
-the commits since the last tag, grouped by type, in the project's voice (`guidelines/voice.md`).
+the commits since the last tag, grouped by type, in the project's voice (`guidelines/voice.md`);
+the same humanize pass runs on the notes, then with `stealth: on` §2b's command with `--pr <notes
+file>`, and the notes are shown to the human with the release go.
 
 ## 4. After the human deploys
 If `qa.live_url` is set, offer one line: run `gtm:release-qa` on the live instance. Report per the
