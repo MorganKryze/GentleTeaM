@@ -5,6 +5,12 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.10.2] - 2026-10-18
+
+### Fixed
+- A merged task's worktree is removed only when nothing at all is left in it, ignored files
+  included; otherwise GTM keeps it and its branch and lists what is there in a Heads-up.
+
 ## [0.10.1] - 2026-10-18
 
 ### Added

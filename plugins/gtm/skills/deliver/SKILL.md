@@ -78,12 +78,12 @@ Ground rules: as in the `gtm` skill §0.
    existing path or branch stops the wave), absolute `<root>` paths in brief and args. Run their
    workflows at once (§2's args plus `branch: <branch>-t<n>`, `base: <base>`, `worktree: <wt>`), let
    all return, write each one's progress line (no wave total) and measure each (§2 step 3).
-2. Before each merge, branch/head are as last recorded, the tip of `<branch>-t<n>` is the head on
-   its last progress line, and tasks' files (§1) of `<base>..<branch>-t<n>` disjoint. Merge each
-   `CLEAN` or `GATED` branch not yet an ancestor of `HEAD`, in plan order (`git merge --no-ff
-   --no-edit "<branch>-t<n>"`), record the head, gate once. Per merged task, only when `<root>` is
-   out of the repo, or `git -C "<wt>" status --porcelain --ignored -unormal -- "<root>"` (repo path)
-   exits 0 and lists nothing: `git worktree remove "<wt>"`, `git branch -d "<branch>-t<n>"`.
+2. Before merging, branch/head are as last recorded, `<branch>-t<n>`'s tip is the head on its last
+   progress line, the `<base>..<branch>-t<n>` files (§1) disjoint. Merge each `CLEAN`/`GATED` branch
+   not yet an ancestor of `HEAD`, in plan order (`git merge --no-ff --no-edit "<branch>-t<n>"`),
+   record the head, gate once. Per merged task, only when `git -c core.quotePath=false -C "<wt>"
+   status --porcelain --ignored -unormal` exits 0 and lists nothing: `git worktree remove "<wt>"`,
+   `git branch -d "<branch>-t<n>"`; else keep both; Heads-up: `<wt>`, the list, those commands.
 3. A branch name off `^[A-Za-z0-9._/-]+$` (before step 1), a moved branch/head, overlap, conflict,
    red gate, a failed check or files in a worktree's `<root>`: merge no more, keep it and unmerged
    worktrees, undo nothing without the human. `OPEN`/`BLOCKED`: `CLEAN` or `GATED` siblings merge,
