@@ -9,6 +9,7 @@ versions follow [SemVer](https://semver.org/).
 - Companion plugins: `/gtm:init` and `/gtm:tune` detect impeccable and humanize from the skills
   the session lists and record your choice in a new `Companions` section of `team.md`. A role uses
   one only when it is on there and installed; GTM never installs, enables or sets one up.
+  `/gtm:tune <name> on|off` switches one.
 - impeccable: the designer reads its craft floor and runs its detector on new screens; the design
   critic and ux-qa add its detector hits to their findings. Your design guideline still decides,
   and its other commands are never run.

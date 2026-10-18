@@ -55,8 +55,9 @@ To add humanize:
 /plugin install humanize@humanize
 ```
 
-Run `/gtm:tune` to turn one off. An absent companion changes nothing: no question, no warning,
-and each role works as it does without it. Your design and voice guidelines still win.
+Run `/gtm:tune <name> off` (or `on`) to switch one. An absent companion changes nothing: no
+question, no warning, and each role works as it does without it. Your design and voice
+guidelines still win.
 
 ## Which overlaps should I avoid?
 

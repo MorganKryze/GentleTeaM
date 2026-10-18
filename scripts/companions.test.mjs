@@ -67,6 +67,20 @@ if (!/examples/.test(companionsSec) || !/init replaces them/.test(companionsSec)
 if (!/example lines/.test(section('Detect'))) fail('companions.md Detect must say init replaces the template example lines')
 if (!/Companions[^.]*`- none detected/.test(read('agents/analyst.md'))) fail('agents/analyst.md must draft Companions as `- none detected`, never the example lines')
 
+// Every role and skill that uses a companion points at the one rule source.
+for (const f of ['agents/designer.md', 'agents/design-critic.md', 'agents/ux-qa.md', 'agents/implementer.md', 'skills/ship/SKILL.md'])
+  if (!read(f).includes('templates/companions.md')) fail(`${f} does not point at templates/companions.md`)
+const ship = read('skills/ship/SKILL.md')
+const humAt = ship.indexOf('With humanize `on`')
+if (!(ship.indexOf('\n## 2.') < humAt && humAt < ship.indexOf('\n## 2b.'))) fail('ship: the humanize pass on pr.md must sit in §2, before §2b')
+if (!/stealth: on`? §2b's command with `--pr <notes\s+file>`/.test(ship)) fail('ship: release notes must get the footprint check with stealth on')
+if (!read('skills/tune/SKILL.md').includes('`/gtm:tune <name> on|off`')) fail('tune: no direct companion on|off switch')
+if (!use.includes("the role's own method, unchanged") || !/sort -V/.test(use)) fail('companions.md Use: an off companion leaves the role unchanged; pick the version with sort -V')
+if (!/Never a briefing/.test(line(section('humanize'), 'Text')) || !/80 words/.test(line(section('humanize'), 'Text'))) fail('humanize: Text line must skip briefings and short text')
+if (!/stealth: on/.test(line(section('humanize'), 'Never'))) fail('humanize: Never must keep tool names out with stealth on')
+if (!/No tool call, nothing run or written/.test(section('Detect')) || !/proposed `on`/.test(section('Detect'))) fail('companions.md Detect: read-only detection, proposed on at init')
+for (const f of ['agents/design-critic.md', 'agents/designer.md', 'agents/ux-qa.md']) if (!/impeccable/.test(read(f))) fail(`${f} does not name impeccable`)
+
 for (const s of ['init', 'tune']) if (!read(`skills/${s}/SKILL.md`).includes('templates/companions.md')) fail(`${s}/SKILL.md does not point at templates/companions.md`)
 const initLines = read('skills/init/SKILL.md').split('\n').length - 1
 if (initLines > 81) fail(`init/SKILL.md is ${initLines} lines (at most 81)`)

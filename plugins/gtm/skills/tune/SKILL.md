@@ -6,6 +6,7 @@ description: Re-evaluate the GTM team settings and conventions - reads the ledge
 
 Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without the human's answer.
 Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
+Asked to turn a companion on or off (`/gtm:tune <name> on|off`)? One card, then §4.
 
 ## 1. Read
 `<root>/team.md` (its `## Companions` against the session's skills, as
