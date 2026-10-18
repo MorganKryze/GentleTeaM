@@ -63,6 +63,7 @@ defaults in the role files.
 | Priorities | security, data integrity, UX and accessibility, performance, delivery speed, usage and cost sensitivity: `low`, `normal` or `high` | `normal` for all six | `/gtm:init`, `/gtm:tune`, the architect |
 | Roles | each role's model (`opus`, `sonnet`, `haiku`, `fable`, a full model id or `inherit`) and effort (`low` to `max`) | `opus`, with the efforts in [Roles](/reference/roles/) | every command that dispatches a role |
 | Specialists | `security-reviewer`, `data-reviewer`, `ux-qa`: `on` or `off`, and the path regexes that call each one in | all `on`, with example triggers to adapt | `/gtm:deliver` |
+| Companions | `impeccable`, `humanize`: `on` or `off`, detected from the skills the session lists, and the roles that use each | none on; `/gtm:init` adds those it finds | the designer, design critic, ux-qa, implementer and `/gtm:ship` |
 | Limits (the `## Gates` section) | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky, `budget per task`, `budget per branch`, `tasks per branch` and `review cadence` | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver`, `/gtm:tune` |
 | History | one line per change made by `/gtm:tune`: date, setting, old and new value, why | empty | `/gtm:tune`, `/gtm:retro` |
 

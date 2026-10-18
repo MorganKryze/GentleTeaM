@@ -19,7 +19,7 @@ October 2026.
 | --- | --- | --- | --- |
 | `analyst` | optional | [superpowers](https://github.com/obra/superpowers) `brainstorming` | Socratic exploration for vague ideas, before `/gtm:gtm` picks a size |
 | `designer` | keep one | one design skill at most, for example `frontend-design` | many overlapping design skills inflate every session's context |
-| `design-critic` | add | [impeccable](https://github.com/pbakaus/impeccable) `critique` or `audit` | deterministic detectors of design tells, cheap and repeatable |
+| `design-critic` | add | [impeccable](https://github.com/pbakaus/impeccable) | deterministic detectors of design tells, cheap and repeatable; GTM's critic runs the detector when it is on |
 | `architect` | optional | [context7](https://github.com/upstash/context7) | current library docs while planning |
 | `implementer` | optional | superpowers `test-driven-development`, `systematic-debugging` | the discipline GTM asks for, in more depth |
 | `reviewer` | optional | [ponytail](https://github.com/DietrichGebert/ponytail) `ponytail-review` or `code-simplifier`, pick one | an over-engineering pass; GTM's reviewer already checks simplification |
@@ -29,6 +29,34 @@ October 2026.
 | `final-reviewer` | keep | Claude Code's built-in `/code-review` or `/security-review`, for a second opinion | GTM's final review already orders security and data first |
 | `release-qa` | add | the official [Playwright MCP](https://github.com/microsoft/playwright-mcp) | the only real browser driver; screenshots for bug reports |
 | ship | optional | `commit-commands` (official) | small, useful for commits and PRs outside GTM |
+
+## Which plugins does GTM use by itself?
+
+GTM knows two companions by name. When one is installed, `/gtm:init` or `/gtm:tune` proposes it,
+and `team.md` records your choice. A role then uses it only for the fixed job below.
+
+| Companion | Roles | What it does for them |
+| --- | --- | --- |
+| [impeccable](https://github.com/pbakaus/impeccable) | `designer`, `design-critic`, `ux-qa` | the designer reads its craft floor and checks its HTML; the critic and ux-qa run its detector on [mockups](/reference/glossary/#mockups) and touched screens |
+| [humanize](https://github.com/ccf/humanize) | ship, `implementer` | ship audits the PR text and release notes; the implementer audits the docs prose it changed |
+
+Both are optional, and GTM never installs, enables or updates them: that is your step. To add
+impeccable:
+
+```text
+/plugin marketplace add pbakaus/impeccable
+/plugin install impeccable@impeccable
+```
+
+To add humanize:
+
+```text
+/plugin marketplace add ccf/humanize
+/plugin install humanize@humanize
+```
+
+Run `/gtm:tune` to turn one off. An absent companion changes nothing: no question, no warning,
+and each role works as it does without it. Your design and voice guidelines still win.
 
 ## Which overlaps should I avoid?
 
