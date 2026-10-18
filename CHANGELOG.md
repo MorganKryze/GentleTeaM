@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.10.3] - 2026-10-18
+
 ### Fixed
 - A Fix counts each changed file once: a path returned both relative and absolute no longer
   escalates it, and an absolute path under the worktree still reaches its specialist reviewers.
