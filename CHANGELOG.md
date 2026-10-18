@@ -10,9 +10,9 @@ versions follow [SemVer](https://semver.org/).
   frozen per file and only allowed to shrink.
 
 ### Changed
-- Resuming a paused task keeps the files its stopped run left uncommitted in the worktree: GTM
-  lists them in a Heads-up, ignored files included, keeps the worktree, reruns from the base and
-  leaves the decision to you.
+- Resuming a paused task in a wave: when its worktree still holds files the stopped run left
+  (ignored ones included), GTM does not rerun it. It keeps them and the worktree, lists them in a
+  Heads-up and asks you to rerun once they are moved, or to take over by hand.
 
 ## [0.10.0] - 2026-10-18
 

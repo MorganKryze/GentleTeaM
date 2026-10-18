@@ -30,9 +30,9 @@ Ground rules: as in the `gtm` skill §0.
   `base` its line's, never its head (unlike §3 step 3), in its worktree if any, a wave's as one
   wave; then §3 step 2 merges each wave with an unmerged task, `PAUSED` or not; a `PAUSED` final
   review or fix wave reruns whole from its base; the handoff's "what waited" card shows again.
-  Files the stopped run left uncommitted in that worktree: GTM keeps them (no delete, no clean,
-  no stash, no checkout over them, no `git worktree remove`), lists them in one Heads-up (`git -C
-  <wt> status --porcelain --ignored -unormal`), reruns from its line's base; the human decides.
+  A worktree where `git -c core.quotePath=false -C "<wt>" status --porcelain --ignored -unormal`
+  lists anything but `<root>`: that task is not rerun; GTM keeps it all (no delete, clean, stash,
+  checkout or `git worktree remove`), lists it in a Heads-up, card (rerun once moved / by hand).
 
 ## 2. Each task, in plan order
 1. Write `<root>/reports/<slug>/task-<n>-brief.md`: the task verbatim,
