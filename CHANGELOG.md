@@ -5,6 +5,21 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Companion plugins: `/gtm:init` and `/gtm:tune` detect impeccable and humanize from the skills
+  the session lists and record your choice in a new `Companions` section of `team.md`. A role uses
+  one only when it is on there and installed; GTM never installs, enables or sets one up.
+- impeccable: the designer reads its craft floor and runs its detector on new screens; the design
+  critic and ux-qa add its detector hits to their findings. Your design guideline still decides,
+  and its other commands are never run.
+- humanize: an audit of the PR text, the release notes and changed docs, rewriting only the
+  flagged passages; `voice.md` wins a disagreement, briefings are never touched.
+- A guide section on companion plugins and a `Companions` row in the settings reference.
+
+### Changed
+- A `team.md` without a `Companions` section reads as none on; nothing to migrate.
+- Task briefs name `team.md` by its path, so a task in a worktree reads its settings.
+
 ## [0.9.1] - 2026-10-17
 
 ### Fixed
