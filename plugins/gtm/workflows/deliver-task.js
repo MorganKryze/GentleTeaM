@@ -97,15 +97,15 @@ for (const r of new Set(['reviewer', ...Object.keys(triggers), ...Object.keys(MA
   if (c !== undefined && c !== CADENCE[r]) log(`Cadence ${c} for ${r} read as ${CADENCE[r]}`)
 }
 // An implementer may return a path twice, relative and absolute: each file counts once, repo-relative.
-// An absolute path under the worktree, or ending in a relative path already listed, loses its prefix;
-// one outside the tree stays as given and counts.
+// An absolute path under the worktree loses its prefix; with no worktree, one ending in a relative
+// path already listed does; any other stays as given and counts.
 const TREE = A.worktree ? `${String(A.worktree).replace(/\/+$/, '')}/` : null
 function relative(files) {
   const plain = (files || []).map((f) => String(f).replace(/^(\.\/)+/, ''))
   const listed = new Set(plain.filter((f) => !f.startsWith('/')))
   return [...new Set(plain.map((f) => {
     if (!f.startsWith('/')) return f
-    if (TREE && f.startsWith(TREE)) return f.slice(TREE.length)
+    if (TREE) return f.startsWith(TREE) ? f.slice(TREE.length) : f
     const parts = f.split('/')
     for (let i = 1; i < parts.length; i++) if (listed.has(parts.slice(i).join('/'))) return parts.slice(i).join('/')
     return f

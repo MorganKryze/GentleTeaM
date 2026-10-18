@@ -320,6 +320,14 @@ const deliver = [
     ],
   },
   {
+    name: 'fix: an absolute path outside the worktree stays as given and counts',
+    args: { track: 'fix', worktree: '/tmp/wt/acme-t2' },
+    reply: implementer([...srcFiles(3), '/tmp/wt/acme-t3/src/0.js'], () => ok),
+    returns: { status: 'ESCALATE', reason: '4 files > 3', head: 'h0', files: [...srcFiles(3), '/tmp/wt/acme-t3/src/0.js'] },
+    dispatches: [implement()],
+    log: ['Fix escalates to Feature: 4 files > 3'],
+  },
+  {
     name: 'fix: 4 distinct files, one absolute under the worktree, escalate',
     args: { track: 'fix', worktree: '/tmp/wt/acme-t2/' },
     reply: implementer([...srcFiles(3), '/tmp/wt/acme-t2/src/3.js', 'src/0.js'], () => ok),
