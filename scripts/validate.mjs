@@ -64,6 +64,8 @@ for (const w of ['show-toplevel', 'exact line `/<rel>/NOW.md` absent', 'only whe
 const waves = readFileSync(join(plugin, 'skills/deliver/SKILL.md'), 'utf8').replace(/\s+/g, ' ')
 for (const w of ['is the head on its last progress line', 'not yet an ancestor of `HEAD`', 'merges each wave with an unmerged task', 'never its head'])
   if (!waves.includes(w)) fail(join(plugin, 'skills/deliver/SKILL.md'), `wave merge rule lacks "${w}"`)
+for (const w of ['`git -c core.quotePath=false -C "<wt>" status --porcelain --ignored -unormal` fails or lists anything:', 'stop the loop after the wave\'s merges, that wave task is not rerun', 'GTM keeps it all (no delete, clean, stash, checkout, `git worktree remove`)', 'card (recheck, rerun'])
+  if (!waves.includes(w)) fail(join(plugin, 'skills/deliver/SKILL.md'), `leftover files rule lacks "${w}"`)
 const tmp = mkdtempSync(join(tmpdir(), 'gtm-'))
 for (const name of readdirSync(join(plugin, 'workflows'))) {
   const file = join(plugin, 'workflows', name)
