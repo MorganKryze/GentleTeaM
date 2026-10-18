@@ -5,6 +5,15 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.10.3] - 2026-10-18
+
+### Fixed
+- A Fix counts each changed file once: a path returned both relative and absolute no longer
+  escalates it, and an absolute path under the worktree still reaches its specialist reviewers.
+- Resuming a paused lone task now checks your checkout first, the GTM root aside: tracked changes
+  or untracked files there stop the rerun and are kept, with a Heads-up. A fix wave reruns as
+  before.
+
 ## [0.10.2] - 2026-10-18
 
 ### Fixed
