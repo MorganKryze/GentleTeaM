@@ -49,7 +49,7 @@ lines against `guidelines/voice.md`.
 Execute exactly what was approved. Merge as `git.merge` says; never squash or rewrite history
 unless the config says so. Tag and release only when asked: release notes from the CHANGELOG or
 the commits since the last tag, grouped by type, in the project's voice (`guidelines/voice.md`);
-the same humanize pass runs on the notes before they are published.
+the same humanize pass runs on the notes, shown to the human with the release go.
 
 ## 4. After the human deploys
 If `qa.live_url` is set, offer one line: run `gtm:release-qa` on the live instance. Report per the
