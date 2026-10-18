@@ -11,7 +11,8 @@ versions follow [SemVer](https://semver.org/).
 
 ### Changed
 - Resuming a paused task keeps the files its stopped run left uncommitted in the worktree: GTM
-  lists them in a Heads-up, reruns from the base and leaves the decision to you.
+  lists them in a Heads-up, ignored files included, keeps the worktree, reruns from the base and
+  leaves the decision to you.
 
 ## [0.10.0] - 2026-10-18
 
