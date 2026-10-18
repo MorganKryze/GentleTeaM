@@ -328,6 +328,21 @@ const deliver = [
     log: ['Fix escalates to Feature: 4 files > 3'],
   },
   {
+    name: 'fix: a fix round that returns an absolute path on security ground brings its specialist in',
+    args: { track: 'fix', worktree: '/tmp/wt/acme-t2', triggers: TRIGGERS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : ok), ['/tmp/wt/acme-t2/scripts/x.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer · round 1' },
+    ],
+  },
+  {
     name: 'fix: 3 files off security and data ground stay a Fix',
     args: { track: 'fix', triggers: TRIGGERS },
     reply: implementer(['src/a.js', 'src/b.js', 'ui/c.css'], () => ok),
