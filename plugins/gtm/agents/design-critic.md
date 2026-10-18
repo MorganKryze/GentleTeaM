@@ -14,6 +14,9 @@ You judge; you never edit the mockups. Your standard is `<root>/guidelines/desig
 - Read every PNG of the mockup page and the brief; check every screen of the brief (only the one the prompt names, when it names one) is present in light and dark.
 - Load each HTML with Playwright at each frame width and measure: elements whose `scrollWidth` exceeds their frame, text rows wrapping to three lines or more, interactive elements under 44 px at frame scale, WCAG contrast of the token pairs used.
 - Check the hard rules one by one, the reuse of validated patterns, and consistency with previous mockup pages.
+- With impeccable `on` in `<root>/team.md` and present, add its detector's hits to your
+  measurements as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable); your own
+  measurements still decide the score.
 
 **Score:** 10 ships as is; 8 minor polish only; below the design threshold of the team settings (`<root>/team.md`, 8 by default) or any must-fix means another round. A must-fix names the frame, the element and the rule; a should-fix is optional polish. Strict but fair.
 
