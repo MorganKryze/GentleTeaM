@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.10.1] - 2026-10-18
+
 ### Added
 - The gate checks prose width: Markdown lines stay within 100 characters; existing long lines are
   frozen per file and only allowed to shrink.
