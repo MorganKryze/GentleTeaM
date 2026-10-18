@@ -9,6 +9,10 @@ versions follow [SemVer](https://semver.org/).
 - The gate checks prose width: Markdown lines stay within 100 characters; existing long lines are
   frozen per file and only allowed to shrink.
 
+### Changed
+- Resuming a paused task keeps the files its stopped run left uncommitted in the worktree: GTM
+  lists them in a Heads-up, reruns from the base and leaves the decision to you.
+
 ## [0.10.0] - 2026-10-18
 
 ### Added
