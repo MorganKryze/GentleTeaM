@@ -12,7 +12,8 @@ versions follow [SemVer](https://semver.org/).
 ### Changed
 - Resuming a paused task in a wave: when its worktree still holds files the stopped run left
   (ignored ones included), GTM does not rerun it. It keeps them and the worktree, lists them in a
-  Heads-up and asks you to rerun once they are moved, or to take over by hand.
+  Heads-up and asks you to rerun once they are moved, or to take over by hand; a git error counts
+  as leftovers. A lone task or fix wave, which runs in your checkout, reruns as before.
 
 ## [0.10.0] - 2026-10-18
 
