@@ -296,6 +296,38 @@ const deliver = [
     dispatches: [implement()],
   },
   {
+    name: 'fix: 3 files returned twice, relative and absolute under the worktree, stay a Fix',
+    args: { track: 'fix', worktree: '/tmp/wt/acme-t2' },
+    reply: implementer([...srcFiles(3), ...srcFiles(3).map((f) => `/tmp/wt/acme-t2/${f}`)], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+  },
+  {
+    name: 'fix: an absolute path under the worktree still triggers its specialists',
+    args: {
+      track: 'fix', worktree: '/tmp/wt/acme-t2',
+      triggers: { 'security-reviewer': ['^plugins/gtm/skills/'], 'data-reviewer': ['^plugins/gtm/skills/deliver/'] },
+    },
+    reply: implementer(['./src/a.js', '/tmp/wt/acme-t2/plugins/gtm/skills/deliver/SKILL.md'], () => ok),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer', 'data-reviewer'],
+      stats: {}, minors: [],
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:security-reviewer', label: 'security-reviewer' },
+      { agentType: 'gtm:data-reviewer', label: 'data-reviewer' },
+    ],
+  },
+  {
+    name: 'fix: 4 distinct files, one absolute under the worktree, escalate',
+    args: { track: 'fix', worktree: '/tmp/wt/acme-t2/' },
+    reply: implementer([...srcFiles(3), '/tmp/wt/acme-t2/src/3.js', 'src/0.js'], () => ok),
+    returns: { status: 'ESCALATE', reason: '4 files > 3', head: 'h0', files: srcFiles(4) },
+    dispatches: [implement()],
+    log: ['Fix escalates to Feature: 4 files > 3'],
+  },
+  {
     name: 'fix: 3 files off security and data ground stay a Fix',
     args: { track: 'fix', triggers: TRIGGERS },
     reply: implementer(['src/a.js', 'src/b.js', 'ui/c.css'], () => ok),

@@ -96,6 +96,21 @@ for (const r of new Set(['reviewer', ...Object.keys(triggers), ...Object.keys(MA
   CADENCE[r] = !light ? 'per-task' : r === 'reviewer' ? 'per-wave' : c
   if (c !== undefined && c !== CADENCE[r]) log(`Cadence ${c} for ${r} read as ${CADENCE[r]}`)
 }
+// An implementer may return a path twice, relative and absolute: each file counts once, repo-relative.
+// An absolute path under the worktree, or ending in a relative path already listed, loses its prefix;
+// one outside the tree stays as given and counts.
+const TREE = A.worktree ? `${String(A.worktree).replace(/\/+$/, '')}/` : null
+function relative(files) {
+  const plain = (files || []).map((f) => String(f).replace(/^(\.\/)+/, ''))
+  const listed = new Set(plain.filter((f) => !f.startsWith('/')))
+  return [...new Set(plain.map((f) => {
+    if (!f.startsWith('/')) return f
+    if (TREE && f.startsWith(TREE)) return f.slice(TREE.length)
+    const parts = f.split('/')
+    for (let i = 1; i < parts.length; i++) if (listed.has(parts.slice(i).join('/'))) return parts.slice(i).join('/')
+    return f
+  }))]
+}
 const per = (files, c) => ground(files).filter((r) => CADENCE[r] === c)
 
 // A reviewer whose dispatch throws (its structured result lost) gets one more dispatch on a
@@ -131,11 +146,12 @@ if (A.review !== undefined && (!['range', 'branch'].includes(A.review) || !A.bas
   log(`Deferred review ${A.review} not run: review range|branch, base, head and files are required`)
   return { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files' }
 }
-const impl = A.review ? { head: A.head, files: A.files } : await attempt(
+const got = A.review ? { head: A.head, files: A.files } : await attempt(
   `Implement this task on branch ${A.branch} (base ${A.base}).\nBrief (read it first): ${A.brief}\nReport file: ${A.report}\nReturn head = the commit after your work, files = repo-relative paths changed since ${A.base}.${WT}`,
   as('implementer', { schema: IMPL, label: 'implement', phase: 'Implement' }),
 )
-if (!impl || impl.status === 'BLOCKED') return { status: 'BLOCKED', impl }
+if (!got || got.status === 'BLOCKED') return { status: 'BLOCKED', impl: got }
+const impl = { ...got, files: relative(got.files) }
 
 // A Fix escalates on size alone, counted over every file it has changed so far. On security or
 // data ground it stays a Fix and that specialist reviews it, as on any task. A ceiling is a whole
@@ -230,7 +246,8 @@ for (; round <= limit; round++) {
     as('implementer', { schema: IMPL, effort: raised(round + 1), label: `fix · round ${round + 1}`, phase: 'Fix' }),
   )
   if (!fix || fix.status === 'BLOCKED') return { status: 'BLOCKED', head, open: [...open, ...unreviewed], stats, minors, ...T }
-  changed = [...new Set([...changed, ...fix.files])]
+  fix.files = relative(fix.files)
+  changed = relative([...changed, ...fix.files])
   // The findings this fix round got are not re-reviewed yet: they go with the escalation, so the
   // Feature flow checks them instead of losing them.
   const grown = escalation(changed, fix.head)
