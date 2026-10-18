@@ -70,7 +70,7 @@ if (!waves.includes('Per merged task, only when `git -c core.quotePath=false -C 
   fail(join(plugin, 'skills/deliver/SKILL.md'), 'worktree removal rule lacks the whole-worktree check')
 if (waves.includes('-unormal -- "<root>"'))
   fail(join(plugin, 'skills/deliver/SKILL.md'), 'worktree removal check still limits itself to "<root>"')
-if (!waves.includes('`git branch -d "<branch>-t<n>"`; else keep both; Heads-up: the list, those commands'))
+if (!waves.includes('`git branch -d "<branch>-t<n>"`; else keep both; Heads-up: `<wt>`, the list, those commands'))
   fail(join(plugin, 'skills/deliver/SKILL.md'), 'kept worktree Heads-up lacks the removal commands')
 const tmp = mkdtempSync(join(tmpdir(), 'gtm-'))
 for (const name of readdirSync(join(plugin, 'workflows'))) {
