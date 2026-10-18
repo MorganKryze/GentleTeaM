@@ -31,7 +31,7 @@ Ground rules: as in the `gtm` skill §0.
   wave; then §3 step 2 merges each wave with an unmerged task, `PAUSED` or not; a `PAUSED` final
   review or fix wave reruns whole from its base; the handoff's "what waited" card shows again.
   If `git -c core.quotePath=false -C "<wt>" status --porcelain --ignored -unormal` fails or lists
-  anything: stop the loop after the wave's merges, that task is not rerun, GTM keeps it all (no
+  anything: stop the loop after the wave's merges, that wave task is not rerun, GTM keeps it all (no
   delete, clean, stash, checkout, `git worktree remove`); Heads-up, card (recheck, rerun / by hand).
 
 ## 2. Each task, in plan order
