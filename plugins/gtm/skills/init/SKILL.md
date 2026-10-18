@@ -9,8 +9,9 @@ Ground rules: as in the `gtm` skill §0; the root may not exist yet. Goal: a wor
 under ten minutes of the human's time; the analyst guesses (1-2 min, say so), the human corrects.
 
 ## 1. Draft
-- Root: `$ARGUMENTS` or `.gtm/`. If it exists, never overwrite: list what is missing or stale and
-  offer to fill only that. Until §5 is answered, list the root in `.git/info/exclude`.
+- Root: `$ARGUMENTS` or `.gtm/`. If it exists, never overwrite: list what is missing or stale (a
+  `team.md` without `## Companions` included) and offer to fill only that. Until §5 is answered,
+  list the root in `.git/info/exclude`.
 - Dispatch `gtm:analyst` in **init mode** with the root and the files it holds: it drafts the rest.
 - Create `specs/`, `plans/`, `reports/`, `ledger.md` and `backlog.md` (from the templates).
 
@@ -37,7 +38,8 @@ generous; default light). Write the answers into `config.yml` (`language`, `brie
 From the brief, propose `team.md`: priorities weighted low / normal / high (security, data
 integrity, UX and accessibility, performance, delivery speed, usage and cost sensitivity), per role
 model and effort, specialists and their path triggers, correction rounds, the design threshold, dry
-runs of risky tasks; as a table (priority or role · value · reason) with your recommendation. Write
+runs of risky tasks, and the companions found as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md`
+says; as a table (priority, role or companion · value · reason) with your recommendation. Write
 what the human approves, with each value's reason and today's date. Derive, do not guess:
 - several accounts, a server or secrets → security high: security-reviewer on, effort xhigh;
 - stored or synced personal records → data integrity high: data-reviewer on, risky tasks dry-run;
