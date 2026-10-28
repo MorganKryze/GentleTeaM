@@ -21,9 +21,11 @@
 > <role>:<s>:<tokens>` per dispatch (architect, final-reviewer, implementer, a re-run review's
 > role), roles at 5% or more, any `?` → `roles ?`; `limits` the difference from the branch's first
 > `limits at start` usage line, `?` across a reset or with no reading; `mutations` summed over
-> the tasks' progress lines, `?` when one lacks it after 0.12.0; `lenses` last, the items
-> tagged `(lens: <method name>)` per role and method, every reflex of a role that ran listed, 0
-> included: the architect's in the spec and plan, any other role's in its report files; retro and
-> tune never appear in a run line (tune counts their tags itself). A `run` line
+> the progress lines that carry it, deferred and re-run review lines included, `?` when a line
+> naming the `reviewer` among its reviewers lacks it after 0.12.0, a `GATED` line or one without
+> the `reviewer` skipped; `lenses` last, the items tagged `(lens: <method name>)` per role and
+> method, every reflex of a role that ran listed, 0 included: the architect's in the spec and
+> plan, any other role's in its report files; retro and tune never appear in a run line (tune
+> counts their tags itself). A `run` line
 > without `lenses` (every line before 0.11.0) reads as not measured for lenses, one without
 > `mutations` (every line before 0.12.0) as not measured for mutations, the rest as before.

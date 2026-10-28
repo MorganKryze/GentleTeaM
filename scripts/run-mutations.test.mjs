@@ -41,6 +41,14 @@ const template = read('plugins/gtm/templates/ledger.md')
 if (!template.includes('· mutations <planted> planted <survived> survived · lenses')) {
   errors.push('ledger template does not state the `mutations` segment before `· lenses`')
 }
+// `?` only where the reviewer ran and left no count: a `GATED` line has no review of its own, and
+// its range review's line carries the counts.
+const LEDGER = [
+  '`mutations` summed over the progress lines that carry it, deferred and re-run review lines included',
+  '`?` when a line naming the `reviewer` among its reviewers lacks it after 0.12.0',
+  'a `GATED` line or one without the `reviewer` skipped',
+]
+for (const p of LEDGER) if (!template.includes(p)) errors.push(`ledger template lacks: ${p}`)
 const deliver = read('plugins/gtm/skills/deliver/SKILL.md')
 // Keyed on `planted`, set only when the review returned `mutations`: `stats.reviewer` alone exists
 // whenever the reviewer reported a finding, and would write a count no review made.
