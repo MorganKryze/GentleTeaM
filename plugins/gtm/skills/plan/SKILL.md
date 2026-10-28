@@ -5,8 +5,8 @@ argument-hint: "[spec path or slug]"
 ---
 # Plan (no checkpoint)
 
-Ground rules: as in the `gtm` skill §0. The spec must say `Status: approved`; otherwise run
-`/gtm:spec` first.
+Ground rules: as in the `gtm` skill §0. The spec's Status must start with `approved`; otherwise
+run `/gtm:spec` first.
 
 ## 1. Write
 An amend (a dig pick from `/gtm:brief-me`): dispatch the architect with the existing plan path

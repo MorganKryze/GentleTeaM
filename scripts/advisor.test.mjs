@@ -28,6 +28,12 @@ for (const [f, ps] of [
   ['plugins/gtm/skills/plan/SKILL.md', ['An amend (a dig pick from `/gtm:brief-me`)', 'never the shortcut below', 'the plan is shown to the human before delivery']],
   ['plugins/gtm/agents/architect.md', ['An amend gives instead an existing spec or plan path and the picked option', 'write no new file']],
 ]) { const t = read(f); for (const p of ps) has(f, t, p) }
+// An amend leaves no bare "approved" Status that plan §0 would accept, and the one-pass ending goes.
+for (const [f, ps] of [
+  ['plugins/gtm/skills/spec/SKILL.md', ['sets `Status: draft (amended <date>; approved by the human on <old date>)`', 'drops the `; plan kept from the one pass` ending']],
+  ['plugins/gtm/agents/architect.md', ['set `Status: draft (amended <date>; approved by the human on <old date>)`', 'drop the `; plan kept from the one pass` ending']],
+  ['plugins/gtm/skills/plan/SKILL.md', ["The spec's Status must start with `approved`"]],
+]) { const t = read(f); for (const p of ps) has(f, t, p) }
 has(ADVISOR, read(ADVISOR), 'git --no-optional-locks status')
 has(BRIEF, brief, 'A dig skips the detail question')
 
