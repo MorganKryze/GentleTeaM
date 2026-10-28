@@ -24,7 +24,7 @@ Measured on GTM's own changes:
 | a workflow change, 3 tasks | Feature | 58 min | GTM 0.2.0 |
 
 Installed and idle, GTM adds about 710 tokens to a session, measured by `size.mjs` on GTM
-0.9.0. No controlled comparison with Claude Code alone has been run yet.
+0.11.0. No controlled comparison with Claude Code alone has been run yet.
 
 ## How do I know what a change will cost before it runs?
 
