@@ -20,3 +20,17 @@ standard / deep). Store the answer under `briefing.remembered.<kind>`.
 Rules: follow `${CLAUDE_PLUGIN_ROOT}/templates/briefing.md`; quote numbers and names, never "it
 works"; say plainly what the artifact does not show. A mockup page is shown as its PNG paths (Read them),
 not described. End with Next steps only if the artifact waits on the human.
+
+## Dig
+When the human asks to dig an artifact (challenge it, test it, "dig with <method>"), apply one
+method from `${CLAUDE_PLUGIN_ROOT}/templates/methods/elicitation-methods.csv` or
+`brain-methods.csv` in the same folder, read only then. Method named: that row. None named:
+propose three suited to the artifact as one decision card, Pre-mortem Analysis first for a spec
+awaiting approval, and wait for the pick.
+
+Return at most five findings, largest risk first, each as a decision card: the options, one of
+them "leave it", and the recommendation. Tag each `(lens: <method name>)`.
+
+Dig changes no file. An option that changes the artifact is applied by the skill that owns it
+(`/gtm:spec` for a spec, `/gtm:plan` for a plan), on the human's pick; an approved spec or plan
+so changed goes back to its checkpoint.
