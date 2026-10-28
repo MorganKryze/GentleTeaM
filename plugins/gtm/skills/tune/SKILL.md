@@ -32,7 +32,7 @@ of the ledger, and the final reviews under `<root>/reports/`.
 | an `over budget` usage line in two runs | revisit that budget, or the plan's task sizing |
 | three measured runs and no budget | set `budget per task` and `budget per branch` at their medians over the last five measured runs (`?` left out, as the architect's estimate), replacing their Gates lines |
 | a known companion listed in the session but not recorded, or recorded `on` but gone | turn it on or off (one card each); no section counts as none on |
-| a reflex method has 0 tagged items over the last 3 measured runs in which its role ran | drop that reflex (one keep-or-drop card); a `run` line without a `lenses` segment is not measured; retro's and tune's own tags are counted in the ledger lessons and History lines |
+| a reflex method has 0 tagged items over the last 3 measured runs in which its role ran | drop that reflex (one keep-or-drop card); a reflex already `off` in `## Reflexes` is skipped; a `run` line without a `lenses` segment is not measured for lenses, the rest as before; retro's and tune's own tags are counted in the ledger lessons and History lines |
 | a convention keeps producing the same finding or the same `lesson` | edit that row of `conventions.md` and its guideline file |
 
 No signal: say so in one line and stop.
@@ -56,8 +56,8 @@ Why: <the ledger evidence, with counts>.
 ## 4. Record
 A reflex is dropped or restored only through a card the human approves.
 No reflex section in team.md: every reflex applies. Never write the section before the first
-approved reflex card; then add `## Reflexes` with one line per dropped reflex
-(`- <role>: <method name> off · why: <counts> · <date>`), and delete that line to restore it.
+approved drop; then add `## Reflexes` before `## History`, one line per dropped reflex
+(`- <role>: <method name> off · why: <counts> · <date>`); a restore deletes every line for it.
 
 Write each approved value into `team.md` (or `conventions.md` and its guideline) with its new
 reason and today's date, add a History line

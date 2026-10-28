@@ -5,9 +5,9 @@
 
 ## Read
 - `<root>/NOW.md` and the facts `now-facts.mjs` gives, `<root>/backlog.md`, `<root>/ledger.md`,
-  `git status` and `git branch --show-current`, the companions the session lists against
-  `team.md`'s `Companions` section, and the limits reading (`usage-line.mjs --read`, as §0 runs
-  it).
+  `git --no-optional-locks status` and `git branch --show-current`, the companions the session
+  lists against `team.md`'s `Companions` section, and the limits reading (`usage-line.mjs --read`,
+  as §0 runs it).
 - Open notes: list `<root>/brainstorms/*.md` and keep those holding the line `Status: open`.
   NOW.md alone is not enough: the next skill's write replaces its pointer to a note.
 

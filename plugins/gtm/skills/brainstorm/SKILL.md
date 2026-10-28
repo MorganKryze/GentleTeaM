@@ -46,7 +46,8 @@ group through cards, which moves each idea to `## Kept ideas` or `## Dropped ide
 `<root>/brainstorms/<YYYY-MM-DD>-<slug>.md`, `<slug>` matching `^[a-z0-9]+(-[a-z0-9]+)*$`, at most
 40 characters. If the file exists, resume it only when it has `Status: open` and the human picks
 that on a card; otherwise add a numeric suffix (`-2`, `-3`): the skill never overwrites a note.
-Update it as the session goes: topic, goal, stance, techniques, budget spent, kept ideas, open
+The path is set once, when the note is created, and kept for the whole session. Update it as the
+session goes: topic, goal, stance, techniques, budget spent, kept ideas, open
 questions and the `Status:` line. Before converging, every idea goes under `## Ideas` as it is
 raised, the human's included. The shape:
 

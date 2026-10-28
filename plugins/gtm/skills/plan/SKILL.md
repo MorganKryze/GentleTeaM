@@ -9,6 +9,9 @@ Ground rules: as in the `gtm` skill §0. The spec must say `Status: approved`; o
 `/gtm:spec` first.
 
 ## 1. Write
+An amend (a dig pick from `/gtm:brief-me`): dispatch the architect with the existing plan path
+and the picked option, never the shortcut below; it edits that file in place, same path, kept
+Decisions, and the plan is shown to the human before delivery.
 The spec's Status ends with `plan kept from the one pass` and the plan exists: dispatch no
 architect, go to §2. Otherwise (no one pass, a card answered otherwise, the spec changed),
 dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: the spec path, the

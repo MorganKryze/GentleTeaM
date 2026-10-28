@@ -31,8 +31,8 @@ awaiting approval, and wait for the pick.
 Return at most five findings, largest risk first, each as a decision card: the options, one of
 them "leave it", and the recommendation. Tag each `(lens: <method name>)`.
 
-Dig changes no file. On the human's pick of an option that changes the artifact, hand the
-artifact path and the picked option to the skill that owns it (`/gtm:spec` for a spec,
-`/gtm:plan` for a plan). That skill edits that file in place after reading it: same path,
-Decisions table and approval history kept. An approved spec or plan so changed goes back to its
-checkpoint.
+Dig changes no file. A dig skips the detail question. On the human's pick of an option that changes
+the artifact, hand the artifact path and the picked option to the skill that owns it (`/gtm:spec`
+for a spec, `/gtm:plan` for a plan). That skill edits that file in place after reading it: same
+path, Decisions table and approval history kept. An approved spec or plan so changed goes back to
+its checkpoint.

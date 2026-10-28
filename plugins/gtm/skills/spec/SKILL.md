@@ -12,6 +12,9 @@ Dispatch `gtm:architect` (spec mode) with: the request, the track, the validated
 any), decisions already taken, an escalated Fix's `open` findings (each one a requirement with
 its test, a missing review as owed, as `/gtm:deliver` §2 says), and the output path
 `<root>/specs/<YYYY-MM-DD>-<slug>.md`.
+An amend (a dig pick from `/gtm:brief-me`): instead, the existing spec path and the picked
+option; the architect edits that file in place, same path, Decisions and approval history kept,
+and §3's checkpoint reopens.
 Template: `${CLAUDE_PLUGIN_ROOT}/templates/spec.md`. When it returns, append its progress line
 (`spec`) as `/gtm:deliver` §1 says, and one more after
 each send-back (§2) and each reopening (§3); a phase's lines are summed in the run line.

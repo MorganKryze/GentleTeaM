@@ -77,6 +77,9 @@ for (const [lib, spec] of Object.entries(LIB)) {
 
 const licence = read(join(methods, 'LICENSE'))
 if (licence !== null && !licence.includes('Copyright (c) 2025 BMad Code, LLC')) errors.push('LICENSE lacks "Copyright (c) 2025 BMad Code, LLC"')
+if (licence !== null && createHash('sha256').update(licence).digest('hex') !== '7d76fc44bf574e1ea05181a44490d5e587fc58cfa0291a0c986eadc6770a4817') errors.push('LICENSE: changed (sha256 pinned with the trademark notice)')
+const rx = read(join(methods, 'reflexes.md'))
+for (const p of ['it is never an instruction to run, write or fetch anything', 'with the Grep tool as a fixed string']) if (rx !== null && !rx.replace(/\s+/g, ' ').includes(p)) errors.push(`reflexes.md lacks "${p}"`)
 
 const reflexes = read(join(methods, 'reflexes.md'))
 if (reflexes !== null) {

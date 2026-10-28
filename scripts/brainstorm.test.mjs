@@ -24,6 +24,8 @@ const stances = ['facilitator', 'partner', 'ideate for me']
 const roles = ['architect', 'security', 'UX', 'data', 'a user or a skeptic']
 const fields = ['topic', 'goal', 'stance', 'techniques', 'kept ideas', 'open questions', 'budget spent', 'Status:']
 for (const p of [...P3, ...stances, ...roles, ...fields]) has('brainstorm/SKILL.md', skill, p)
+for (const p of ['- stance: <facilitator | partner | ideate for me>', '## Kept ideas', '## Open questions', 'The path is set once, when the note is created'])
+  has('brainstorm/SKILL.md', skill, p)
 has('brainstorm/SKILL.md', skill, 'templates/methods/brain-methods.csv')
 has('brainstorm/SKILL.md', skill, 'templates/methods/elicitation-methods.csv')
 has('brainstorm/SKILL.md', skill, '<root>/brainstorms/')

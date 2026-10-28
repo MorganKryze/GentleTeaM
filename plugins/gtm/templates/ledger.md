@@ -21,7 +21,7 @@
 > role), roles at 5% or more, any `?` → `roles ?`; `limits` the difference from the branch's first
 > `limits at start` usage line, `?` across a reset or with no reading; `lenses` last, the items
 > tagged `(lens: <method name>)` per role and method, every reflex of a role that ran listed, 0
-> included: the architect's in the spec and plan, each reviewer's in its report files, retro's
-> and tune's in their ledger lessons and History lines (tune counts these itself). A `run` line
+> included: the architect's in the spec and plan, any other role's in its report files; retro and
+> tune never appear in a run line (tune counts their tags itself). A `run` line
 > without `lenses` (every line before 0.11.0) reads as not measured for lenses, the rest as
 > before.

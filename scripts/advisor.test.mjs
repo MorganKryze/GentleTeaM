@@ -22,6 +22,15 @@ for (const p of [
   'Decisions table and approval history kept',
 ]) has(BRIEF, brief, p)
 
+has(BRIEF, brief, 'goes back to its checkpoint')
+for (const [f, ps] of [
+  ['plugins/gtm/skills/spec/SKILL.md', ['An amend (a dig pick from `/gtm:brief-me`)', 'edits that file in place, same path, Decisions and approval history kept', "§3's checkpoint reopens"]],
+  ['plugins/gtm/skills/plan/SKILL.md', ['An amend (a dig pick from `/gtm:brief-me`)', 'never the shortcut below', 'the plan is shown to the human before delivery']],
+  ['plugins/gtm/agents/architect.md', ['An amend gives instead an existing spec or plan path and the picked option', 'write no new file']],
+]) { const t = read(f); for (const p of ps) has(f, t, p) }
+has(ADVISOR, read(ADVISOR), 'git --no-optional-locks status')
+has(BRIEF, brief, 'A dig skips the detail question')
+
 const gtm = read(GTM)
 const ground = gtm.slice(gtm.indexOf('## 0.'), gtm.indexOf('## 1.'))
 for (const p of [

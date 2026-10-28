@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/size.mjs: exact counts on scripts/fixtures/size/mini (an
 // agent, a model-invocable skill, a human-only skill, a workflow), the budget boundary, and the
-// real plugin with an agent pushed one token past the budget (over), 400 characters added or to a human-only skill (unchanged),
-// a missing or empty folder (exit 2), and a plugin copy under a path with a space (same total).
+// real plugin with an agent pushed one token past the budget (over) or 400 characters added to a
+// human-only skill (unchanged), a missing or empty folder (exit 2), and a plugin copy under a path with a space (same total).
 // Copies go to a temporary folder, removed after the run. Run by scripts/validate.mjs. No dependencies.
 import { mkdtempSync, mkdirSync, cpSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
