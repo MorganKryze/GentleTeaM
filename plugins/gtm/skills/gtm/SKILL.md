@@ -71,7 +71,7 @@ handoff's `branch`) and stop.
 No request: propose as `${CLAUDE_PLUGIN_ROOT}/templates/advisor.md` says. Asked which commands
 exist: show `${CLAUDE_PLUGIN_ROOT}/templates/commands.md`, read only then. Clear and small: judge
 it yourself. Otherwise dispatch `gtm:analyst` with the request, the root and, for a request from a
-brainstorm note, its path (never edited by the analyst).
+brainstorm note, its path, read only: tell the analyst never to write it.
 
 | Track | When | Flow | Human checkpoints |
 | --- | --- | --- | --- |

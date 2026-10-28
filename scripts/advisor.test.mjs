@@ -25,6 +25,7 @@ for (const p of [
   'one next command from `${CLAUDE_PLUGIN_ROOT}/templates/commands.md`',
   'none when the state calls for none',
 ]) has(`${GTM} §0`, ground, p)
+has(GTM, gtm, 'its path, read only: tell the analyst never to write it')
 if (/explain GTM in five lines/.test(flat(gtm))) errors.push(`${GTM}: still explains GTM in five lines`)
 if (!flat(gtm).includes('templates/advisor.md')) errors.push(`${GTM}: no pointer to advisor.md`)
 const lines = gtm.split('\n').length - (gtm.endsWith('\n') ? 1 : 0)
