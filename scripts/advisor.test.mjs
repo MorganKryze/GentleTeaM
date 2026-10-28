@@ -34,6 +34,12 @@ for (const [f, ps] of [
   ['plugins/gtm/agents/architect.md', ['set `Status: draft (amended <date>; approved by the human on <old date>)`', 'drop the `; plan kept from the one pass` ending']],
   ['plugins/gtm/skills/plan/SKILL.md', ["The spec's Status must start with `approved`"]],
 ]) { const t = read(f); for (const p of ps) has(f, t, p) }
+// A plan amend records its pick and stops for the human's go before delivery.
+for (const [f, ps] of [
+  ['plugins/gtm/skills/plan/SKILL.md', ['writes the pick into the plan\'s "Decisions made where the spec is silent" and a ledger `ruling` line', "After an amend, show the plan and wait for the human's go before `/gtm:deliver`."]],
+  [BRIEF, ["an amended plan is shown and waits for the human's go before delivery"]],
+  ['CHANGELOG.md', ['`/gtm:plan`, which shows the plan and waits for your go']],
+]) { const t = read(f); for (const p of ps) has(f, t, p) }
 has(ADVISOR, read(ADVISOR), 'git --no-optional-locks status')
 has(BRIEF, brief, 'A dig skips the detail question')
 

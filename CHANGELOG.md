@@ -15,8 +15,8 @@ versions follow [SemVer](https://semver.org/).
   example the architect's pre-mortem, the data reviewer's cascading failure); findings carry a
   lens tag, the run line counts them, and `/gtm:tune` offers to drop one that finds nothing.
 - Dig: `/gtm:brief-me` can apply one method to a spec or plan and return up to five findings as
-  decision cards; a pick is applied in place by `/gtm:spec` or `/gtm:plan`, which reopen their
-  checkpoint.
+  decision cards; a pick is applied in place by `/gtm:spec`, which reopens its checkpoint, or
+  `/gtm:plan`, which shows the plan and waits for your go.
 - `/gtm:gtm` with no request reads where you stand and proposes one to three next commands, each
   with its reason; "which commands?" shows a one-line map. It proposes, never runs.
 
