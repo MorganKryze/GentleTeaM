@@ -67,6 +67,10 @@ const P6 = [
 for (const p of P6) if (!tune.includes(p)) errors.push(`tune lacks: ${p}`)
 const row = readFileSync(join(root, 'plugins/gtm/skills/tune/SKILL.md'), 'utf8').split('\n').find((l) => l.startsWith('|') && l.includes('0 survived'))
 if (!row || !row.includes('3 measured runs')) errors.push('tune has no signal row naming `0 survived` and `3 measured runs`')
+// The clauses that keep the drop honest: runs that planted nothing, and lines without the
+// segment, are no evidence that nothing survives.
+const ROW = ['planted at least one mutation', 'without a `mutations` segment is not measured for mutations']
+for (const p of ROW) if (!row || !row.includes(p)) errors.push(`tune's signal row lacks: ${p}`)
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('run-mutations: run lines read the same with and without the segment; template, deliver and tune state it')
