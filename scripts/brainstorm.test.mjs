@@ -32,6 +32,8 @@ has('brainstorm/SKILL.md', skill, 'supply no idea')
 has('brainstorm/SKILL.md', skill, 'its `now-facts.mjs` read, the `NOW.md.bak` rename and the exclude line')
 // A pause before converging keeps every raised idea: each is written down when raised.
 for (const p of ['## Ideas', '## Dropped ideas', 'every idea goes under `## Ideas` as it is raised']) has('brainstorm/SKILL.md', skill, p)
+// A same-name note is resumed only when open and picked on a card; any other gets a suffix.
+has('brainstorm/SKILL.md', skill, 'resume it only when it has `Status: open` and the human picks that on a card; otherwise add a numeric suffix')
 
 const map = read('templates/commands.md')
 const line = /^- `\/gtm:([a-z-]+)` · (.+)$/
