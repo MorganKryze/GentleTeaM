@@ -40,6 +40,12 @@ const REVIEW = {
       },
     },
     summary: { type: 'string' },
+    // The mutations a review planted in its scratch clone, and how many no test caught.
+    mutations: {
+      type: 'object',
+      properties: { planted: { type: 'integer', minimum: 0 }, survived: { type: 'integer', minimum: 0 } },
+      required: ['planted', 'survived'],
+    },
   },
   required: ['verdict', 'findings', 'summary'],
 }
@@ -217,15 +223,30 @@ for (; round <= limit; round++) {
       return
     }
     const blocking = []
-    const count = (severity) => { stats[r] = stats[r] || { critical: 0, important: 0, minor: 0 }; stats[r][severity]++ }
+    const at = () => (stats[r] = stats[r] || { critical: 0, important: 0, minor: 0 })
+    const count = (severity) => { at()[severity]++ }
+    let found = 0
     for (const f of res.findings) {
       // Only a reviewer sent findings to re-check can close one; anywhere else the severity decides.
       if (pending[i].findings && f.status === 'addressed') continue
       count(f.severity)
+      found++
       // A status it may not set goes too, or the fix round and the re-review would read it as true.
       const { status, ...kept } = f
       if (f.severity === 'minor') minors.push({ ...kept, by: r })
       else blocking.push(kept)
+    }
+    // Mutations count once, on a review's first round: a re-review replays the survivors it sent.
+    // A survivor is a finding, never a silent pass: more survivors than findings is one more.
+    const m = res.mutations
+    if (m && !round) {
+      const s = at()
+      s.planted = (s.planted || 0) + m.planted
+      s.survived = (s.survived || 0) + m.survived
+    }
+    if (m && m.survived > found) {
+      count('important')
+      blocking.push({ severity: 'important', summary: `${r} reported ${m.survived} surviving mutations and ${found} findings: ${res.summary}` })
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
     // then the only reason given, so the fix round and the re-review get it, and it counts as one.
