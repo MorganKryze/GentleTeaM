@@ -61,7 +61,8 @@ for (const p of [
   'paused run', 'open brainstorm note', 'no request and no run', 'spec awaiting approval',
   'Pre-mortem Analysis', 'shipped story without retro', '`/gtm:retro`', 'costly last run',
   '`/gtm:tune`', 'companion installed and not in team.md', 'limits flagged', '`/gtm:pause`',
-  '5 or more open', '1.5 ×', 'flag',
+  '5 or more open', '1.5 ×', 'flag', '1 to 3 commands as one decision card',
+  'shipped story without retro, or 5 or more open minors | `/gtm:retro`',
 ]) has(ADVISOR, advisor, p)
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }

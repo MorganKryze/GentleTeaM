@@ -18,7 +18,7 @@ const skill = read('skills/brainstorm/SKILL.md').replace(/\s+/g, ' ')
 const P3 = [
   'It writes nothing but its note and NOW.md, runs no script, and starts no other skill until the human picks.',
   'never overwrites a note', '^[a-z0-9]+(-[a-z0-9]+)*$', '40k', '80%', 'one prompt per message',
-  'never a numbered menu',
+  'never a numbered menu', 'Propose 3 or 4 techniques', 'at most 10 lines', 'at most 40 characters',
 ]
 const stances = ['facilitator', 'partner', 'ideate for me']
 const roles = ['architect', 'security', 'UX', 'data', 'a user or a skeptic']

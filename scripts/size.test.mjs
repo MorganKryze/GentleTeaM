@@ -28,6 +28,8 @@ const real = run()
 expect('real plugin', real, 0)
 const total = +(real.stdout.match(/(\d+) {2}total/) || [])[1]
 const budget = +(real.stdout.match(/total, budget (\d+)/) || [])[1]
+const doc = readFileSync(join(root, 'docs/reference/contributing.md'), 'utf8').replace(/\s+/g, ' ').match(/a budget of (\d+) held in the script/)
+if (!doc || +doc[1] !== budget) errors.push(`contributing.md: budget ${doc ? doc[1] : 'not stated'}, size.mjs prints ${budget}`)
 const over = 4 * (budget - total) + 4 // one token past the budget
 const tmp = mkdtempSync(join(tmpdir(), 'gtm-size-'))
 try {
@@ -55,4 +57,4 @@ try {
 } finally { rmSync(tmp, { recursive: true, force: true }) }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`size: 9 scenarios OK (${total} tokens per session)`)
+console.log(`size: 10 scenarios OK (${total} tokens per session)`)

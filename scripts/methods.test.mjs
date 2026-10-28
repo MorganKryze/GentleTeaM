@@ -121,6 +121,7 @@ for (const file of NONE) {
 }
 
 const tune = read(join(plugin, 'skills/tune/SKILL.md'))
+if (tune !== null) for (const p of ['a reflex method has 0 tagged items over the last 3 measured runs in which its role ran']) if (!flat(tune).includes(p)) errors.push(`tune lacks "${p}"`)
 if (tune !== null) for (const p of P2) if (!flat(tune).includes(p)) errors.push(`tune lacks "${p}"`)
 
 for (const dir of ['agents', 'skills']) {
