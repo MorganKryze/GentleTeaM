@@ -87,7 +87,12 @@ for (const w of ['`guidelines/voice.md` wins a disagreement', 'then one briefing
   if (!section('humanize').replace(/\n\s+/g, ' ').includes(w)) fail(`companions.md humanize lacks "${w}"`)
 if (!/without a `Companions` section reads as none on; nothing to migrate/.test(readFileSync(join(root, 'CHANGELOG.md'), 'utf8'))) fail('CHANGELOG: a team.md without Companions needs "nothing to migrate"')
 
-const unreleased = (() => { const c = readFileSync(join(root, 'CHANGELOG.md'), 'utf8'); const a = c.indexOf('## [Unreleased]'); return c.slice(a, c.indexOf('\n## [', a + 1)) })()
+// The 0.11.0 entries: [Unreleased] before the release, the 0.11.0 section after it.
+const unreleased = (() => {
+  const c = readFileSync(join(root, 'CHANGELOG.md'), 'utf8')
+  const at = (h) => c.indexOf(h), a = at('## [0.11.0]') >= 0 ? at('## [0.11.0]') : at('## [Unreleased]')
+  return c.slice(a, c.indexOf('\n## [', a + 1))
+})()
 const bullets = unreleased.split(/\n(?=- )/).map((b) => b.replace(/\s+/g, ' '))
 if (!bullets.some((b) => /`brainstorms\/`, a `## Reflexes` section in team\.md and the run line's `lenses` segment are optional; folders without them read as before; nothing to migrate/.test(b))) fail('CHANGELOG [Unreleased]: the optional additions need "nothing to migrate" on their bullet')
 if (!bullets.some((b) => b.includes('nothing runs until you pick'))) fail('CHANGELOG [Unreleased]: the advisor says "nothing runs until you pick"')
