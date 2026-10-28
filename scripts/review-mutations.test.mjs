@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Check for the task review's mutation step: each pinned phrase stated exactly once in the
-// reviewer's prompt (wrapped lines joined), the Fix survivor rule, the four skip reasons, a Return
-// line naming `mutations`, the reviewer's frontmatter unchanged from HEAD, and the team guide
-// describing the step. Run by scripts/validate.mjs. No dependencies.
+// reviewer's prompt (wrapped lines joined), the Fix survivor rule, the clone path written
+// literally, the four skip reasons, a Return line naming `mutations`, the reviewer's frontmatter
+// unchanged from HEAD, and the team guide describing the step. Run by scripts/validate.mjs.
+// No dependencies.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -39,6 +40,16 @@ for (const reason of ['docs-only', 'no executable test', 'tests do not pass in t
   if (!text.includes(`\`${reason}\``)) errors.push(`skip reason missing: ${reason}`)
 }
 if (!text.includes('on a Fix, a survivor is important')) errors.push('R2 missing: on a Fix, a survivor is important')
+const CLONE_PATH = [
+  'run `mktemp -d` on its own',
+  'write the absolute path it prints literally in every later command',
+  'never a relative path or a variable carried between Bash calls',
+  'in a single Bash call: `cd <path> && <apply> && <test>; git -C <path> checkout -- .`',
+  'check the path is the one `mktemp -d` printed',
+  '`git -C <worktree> status --porcelain` as empty as at the start',
+]
+for (const p of CLONE_PATH) if (!text.includes(p)) errors.push(`clone path rule missing: ${p}`)
+if (text.includes('"$(mktemp -d)"')) errors.push('clone path taken from "$(mktemp -d)", never printed')
 const ret = text.split('**Return:**')[1] || ''
 if (!ret.includes('mutations')) errors.push('Return line does not name mutations')
 const fm = (s) => s.split('\n---\n')[0]
