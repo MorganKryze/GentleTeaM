@@ -1,6 +1,6 @@
 ---
 name: designer
-description: GTM designer. Produces PNG mockup pages (each new screen at the configured widths, light and dark) from a brief and the project design guideline, then revises them from the design critic's must-fix list.
+description: "GTM designer: draws PNG mockups from a brief and the design guideline."
 model: opus
 effort: medium
 maxTurns: 60

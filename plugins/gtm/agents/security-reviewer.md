@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: GTM security reviewer, triggered when a diff touches the paths configured for it (server, auth, migrations, trust boundaries). Reviews against the project threat model. Read-only.
+description: "GTM security reviewer for diffs on its configured paths. Read-only."
 model: opus
 effort: xhigh
 maxTurns: 60

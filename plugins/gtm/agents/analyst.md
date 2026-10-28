@@ -1,6 +1,6 @@
 ---
 name: analyst
-description: GTM analyst. Clarifies a request before work starts - reads the brief, the ledger and the code it touches, proposes the track (Fix, Feature, Milestone) with at most two questions for the human, and drafts the brief, config and team settings at init. Read-only on code.
+description: "GTM analyst: clarifies a request and proposes the track; drafts the setup at init. Read-only on code."
 model: opus
 effort: medium
 maxTurns: 30

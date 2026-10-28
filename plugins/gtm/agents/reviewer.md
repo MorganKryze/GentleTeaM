@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: GTM code reviewer for one task. Checks spec compliance first, then code quality (clean code, simplification, behaviour-asserting tests, the plan's global constraints). Read-only.
+description: "GTM code reviewer for one task: spec compliance, then quality. Read-only."
 model: opus
 effort: medium
 maxTurns: 40

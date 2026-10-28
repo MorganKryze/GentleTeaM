@@ -1,6 +1,6 @@
 ---
 name: final-reviewer
-description: GTM whole-branch reviewer, run once per branch before the human is asked for the go. Reviews merge-base to head against spec and plan, and triages every deferred minor in the ledger. Read-only.
+description: "GTM whole-branch reviewer before the go; triages deferred minors. Read-only."
 model: opus
 effort: xhigh
 maxTurns: 80

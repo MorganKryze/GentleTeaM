@@ -1,6 +1,6 @@
 ---
 name: design-critic
-description: GTM design critic. Scores a mockup mockup page against the project design guideline with measurements (overflow, targets, contrast, rules) and returns a score out of 10 with must-fix and should-fix lists. Read-only.
+description: "GTM design critic: scores a mockup against the design guideline. Read-only."
 model: opus
 effort: high
 maxTurns: 40

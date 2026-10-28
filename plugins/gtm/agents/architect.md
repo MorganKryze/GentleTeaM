@@ -1,6 +1,6 @@
 ---
 name: architect
-description: GTM architect. Turns validated mockups and decisions into a spec (Summary, EARS acceptance, decision cards), then a task plan (files, interfaces, TDD steps, verify command, parallel-safe tags), replaying only risky tasks in a scratch clone.
+description: "GTM architect: writes the spec and the task plan, replaying risky tasks in a scratch clone."
 model: opus
 effort: high
 maxTurns: 150

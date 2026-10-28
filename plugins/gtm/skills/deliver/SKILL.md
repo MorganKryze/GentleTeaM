@@ -1,6 +1,6 @@
 ---
 name: deliver
-description: Deliver an approved GTM plan - runs the deliver-task workflow over each task in order (implementer, reviewer, triggered specialists, correction rounds), keeps the ledger, runs the final review with one fix wave, and reports with the rulings taken. Use after /gtm:plan.
+description: "Deliver an approved GTM plan: tasks with reviews and correction rounds, then the final review. Use when /gtm:plan is done."
 argument-hint: "[plan path or slug]"
 ---
 # Deliver (ends at checkpoint 3: the go)

@@ -1,6 +1,6 @@
 ---
 name: retro
-description: GTM compound step - distil a delivered branch's reports into one-line ledger lessons, propose guideline changes for recurring lessons, close resolved minors, and suggest /gtm:tune when the ledger shows a pattern. Use after shipping, or when the ledger grows noisy.
+description: "Turn a shipped GTM branch into ledger lessons and guideline proposals; close resolved minors. Use when a branch has shipped."
 argument-hint: "[slug]"
 ---
 # Retro: make the next plan smarter

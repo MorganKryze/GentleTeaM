@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/size.mjs: exact counts on scripts/fixtures/size/mini (an
 // agent, a model-invocable skill, a human-only skill, a workflow), the budget boundary, and the
-// real plugin with 400 characters added to an agent (over) or to a human-only skill (unchanged),
+// real plugin with an agent pushed one token past the budget (over), 400 characters added or to a human-only skill (unchanged),
 // a missing or empty folder (exit 2), and a plugin copy under a path with a space (same total).
 // Copies go to a temporary folder, removed after the run. Run by scripts/validate.mjs. No dependencies.
 import { mkdtempSync, mkdirSync, cpSync, readFileSync, writeFileSync, rmSync } from 'node:fs'
@@ -27,13 +27,15 @@ expect('usage', run('--budget', 'lots'), 2)
 const real = run()
 expect('real plugin', real, 0)
 const total = +(real.stdout.match(/(\d+) {2}total/) || [])[1]
+const budget = +(real.stdout.match(/total, budget (\d+)/) || [])[1]
+const over = 4 * (budget - total) + 4 // one token past the budget
 const tmp = mkdtempSync(join(tmpdir(), 'gtm-size-'))
 try {
-  for (const [name, file, exit] of [['agent +400', 'agents/reviewer.md', 1], ['human-only skill +400', 'skills/status/SKILL.md', 0]]) {
+  for (const [name, file, exit, chars] of [['agent past the budget', 'agents/reviewer.md', 1, over], ['human-only skill +400', 'skills/status/SKILL.md', 0, 400]]) {
     const copy = join(tmp, name.replace(/\W+/g, '-'))
     cpSync(join(root, 'plugins/gtm'), copy, { recursive: true })
     const f = join(copy, file)
-    writeFileSync(f, readFileSync(f, 'utf8').replace(/^(description: .*)$/m, `$1${'w'.repeat(400)}`))
+    writeFileSync(f, readFileSync(f, 'utf8').replace(/^(description: .*)$/m, `$1${'w'.repeat(chars)}`))
     const r = run('--plugin', copy)
     expect(name, r, exit)
     if (exit === 0 && !r.stdout.includes(`${total}  total`)) errors.push(`${name}: total moved from ${total}`)

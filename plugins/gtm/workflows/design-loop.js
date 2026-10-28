@@ -1,7 +1,7 @@
 export const meta = {
   name: 'design-loop',
-  description: 'Designer drafts mockup boards, the critic scores them, repeat until the bar is met (default 3 rounds, 8/10, zero must-fix)',
-  whenToUse: 'Feature or Milestone that changes screens, before the spec. args: {brief, outDir, screens?: [slug], guideline?, threshold?, maxRounds?, team?: {designer: {model, effort}, "design-critic": {...}}}',
+  description: 'Designer drafts mockups, the critic scores them, until the bar is met',
+  whenToUse: 'Screens of a Feature, as /gtm:design passes its args.',
   phases: [{ title: 'Design' }, { title: 'Critique' }],
 }
 

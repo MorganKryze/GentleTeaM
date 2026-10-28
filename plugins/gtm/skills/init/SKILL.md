@@ -1,6 +1,6 @@
 ---
 name: init
-description: Bootstrap GTM in a project - drafts the brief, config, team settings, conventions and guidelines from the codebase, confirms them through a short interview, and sets stealth mode and whether .gtm/ stays out of git. Use once per project, or to refresh a stale setup.
+description: "Set up GTM in a project: brief, config, team settings and guidelines from the codebase, after a short interview. Use when a project has no GTM root, or to refresh it."
 argument-hint: "[root path, default .gtm]"
 ---
 # Set up GTM in this project

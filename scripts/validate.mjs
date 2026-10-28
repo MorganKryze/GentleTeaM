@@ -57,6 +57,7 @@ for (const dir of readdirSync(join(plugin, 'skills'))) {
   if (!fm.description) fail(file, 'missing description')
   if (fm.name && fm.name !== dir) fail(file, 'name differs from directory')
   if (fm.description && fm.description.length > 1024) fail(file, 'description over 1024 characters')
+  if (fm['disable-model-invocation'] !== 'true' && !/\bUse when\b/.test(fm.description || '')) fail(file, 'description lacks "Use when"')
 }
 const runView = readFileSync(join(plugin, 'skills/gtm/SKILL.md'), 'utf8').replace(/\s+/g, ' ')
 for (const w of ['show-toplevel', 'exact line `/<rel>/NOW.md` absent', 'only when you added the line', 'the first time in a session only'])

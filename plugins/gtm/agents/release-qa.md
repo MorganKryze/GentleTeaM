@@ -1,6 +1,6 @@
 ---
 name: release-qa
-description: GTM release QA. After the human deploys, runs the project's scripted journey against the live instance with the dedicated test account, extends it to the new feature, and reports bugs with screenshots.
+description: "GTM release QA: runs the scripted journey on the live instance after deploy."
 model: opus
 effort: low
 maxTurns: 60

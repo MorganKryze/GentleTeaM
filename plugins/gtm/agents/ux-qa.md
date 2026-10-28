@@ -1,6 +1,6 @@
 ---
 name: ux-qa
-description: GTM UX and accessibility QA, triggered when a diff touches screens. Builds the app, captures the touched screens at the configured widths in light and dark, measures overflow, targets and axe, and compares with the validated mockup.
+description: "GTM UX and accessibility QA: captures touched screens and compares with the mockup."
 model: opus
 effort: medium
 maxTurns: 50

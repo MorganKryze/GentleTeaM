@@ -1,6 +1,6 @@
 ---
 name: ship
-description: Prepare a GTM branch for the human's go - gate check, PR text, footprint check in stealth mode, then push, merge, tag or release only what the human explicitly approves, plus release notes and live QA after deployment. Use when /gtm:deliver reports the branch ready.
+description: "Ship a GTM branch: gate, PR text, then push, merge, tag or release only on the human's go. Use when /gtm:deliver is ready."
 argument-hint: "[branch or slug]"
 ---
 # Ship (checkpoint 3: the go)

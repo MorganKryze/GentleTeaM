@@ -1,6 +1,6 @@
 ---
 name: gtm
-description: GentleTeaM entry point. Use when starting any piece of work with GTM - explains the method in a few lines, picks the track (Fix, Feature, Milestone) with at most two questions, and routes to the right GTM skills.
+description: "GentleTeaM entry point: picks the track and routes, or proposes the next command. Use when starting GTM work or unsure what to do next."
 argument-hint: "[what you want done]"
 ---
 # GTM: the light agent team

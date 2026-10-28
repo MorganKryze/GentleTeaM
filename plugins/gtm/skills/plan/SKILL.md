@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Write the GTM task plan with the architect from an approved spec - per task files, interfaces, TDD steps, verify command, parallel-safe tags - applying the ledger's lessons and replaying only risky tasks in a scratch clone. No human checkpoint unless something deviates.
+description: "Write the GTM task plan from an approved spec with the architect. Use when the spec is approved."
 argument-hint: "[spec path or slug]"
 ---
 # Plan (no checkpoint)

@@ -1,6 +1,6 @@
 ---
 name: tune
-description: Re-evaluate the GTM team settings and conventions - reads the ledger's run, minor and usage lines and the reports, proposes changes to priorities, per-role model and effort, specialists, triggers, gates or a convention as decision cards, and records what the human approves with its date. Also switches stealth mode on or off. Use when /gtm:retro suggests it or the human feels the team is too slow, too costly or missing things.
+description: "Re-tune GTM team settings (roles, effort, specialists, gates, companions, reflexes, stealth) from the ledger, as decision cards. Use when the team feels slow, costly or blind."
 ---
 # Tune the team settings and conventions
 

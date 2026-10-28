@@ -1,6 +1,6 @@
 ---
 name: spec
-description: Write a GTM spec with the architect - Summary, what and why, EARS acceptance lines, decision cards, zero NEEDS CLARIFICATION - and present the summary for the human's approval. Use for a Feature or Milestone after the mockup page is approved.
+description: "Write a GTM spec with the architect and present its summary for approval. Use when a Feature or Milestone needs one."
 argument-hint: "[feature slug]"
 ---
 # Spec (checkpoint 2: approve the summary)

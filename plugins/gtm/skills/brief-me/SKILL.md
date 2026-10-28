@@ -1,6 +1,6 @@
 ---
 name: brief-me
-description: Re-present any GTM artifact (spec, plan, mockup page, review, report, ledger, team settings) at the detail level the human chooses - brief, standard or deep - in the human briefing format. Use whenever the human wants to understand an artifact without reading it.
+description: "Re-present a GTM artifact at the detail level the human picks, or dig into it with a method. Use when the human wants one explained or challenged."
 argument-hint: "[artifact path or kind] [brief|standard|deep]"
 ---
 # Brief me

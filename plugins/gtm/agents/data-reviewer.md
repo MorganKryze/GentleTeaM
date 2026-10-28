@@ -1,6 +1,6 @@
 ---
 name: data-reviewer
-description: GTM data-integrity reviewer, triggered when a diff touches the paths configured for it (storage, sync, migrations, anything that writes a person's records). Read-only.
+description: "GTM data-integrity reviewer for diffs on its configured paths. Read-only."
 model: opus
 effort: high
 maxTurns: 50
