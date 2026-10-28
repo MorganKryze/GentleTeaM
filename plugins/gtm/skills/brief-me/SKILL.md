@@ -37,4 +37,5 @@ Dig changes no file. A dig skips the detail question. On the human's pick of an 
 the artifact, hand the artifact path and the picked option to the skill that owns it (`/gtm:spec`
 for a spec, `/gtm:plan` for a plan). That skill edits that file in place after reading it: same
 path, Decisions table and approval history kept. An approved spec so changed goes back to its
-checkpoint; an amended plan is shown and waits for the human's go before delivery.
+checkpoint; an amended plan is shown and waits for the human's go before delivery. An amend
+leaves the dig's `(lens: …)` tags out of the spec and plan.

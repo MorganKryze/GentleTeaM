@@ -65,6 +65,9 @@ for (const p of [
   'shipped story without retro, or 5 or more open minors | `/gtm:retro`',
 ]) has(ADVISOR, advisor, p)
 
+// A dig's lens tags count in no run line: an amend writes the pick without them.
+has(BRIEF, brief, "An amend leaves the dig's `(lens: …)` tags out of the spec and plan.")
+has('plugins/gtm/agents/architect.md', read('plugins/gtm/agents/architect.md'), "leave the dig's `(lens: …)` tags out of the spec and plan")
 // The spec row proposes the dig itself; a flagged limit outranks retro, tune and companion; the
 // human-only commands are typed by the human.
 has(ADVISOR, advisor, '`/gtm:brief-me <spec path>, dig with Pre-mortem Analysis`')
