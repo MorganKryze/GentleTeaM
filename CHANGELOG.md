@@ -5,6 +5,10 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- The tutorial follows a recorded run: GTM 0.11.0 adds due dates to the public sample todo CLI,
+  with real excerpts and measured times.
+
 ## [0.11.0] - 2026-10-28
 
 ### Added

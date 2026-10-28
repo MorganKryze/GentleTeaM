@@ -8,7 +8,8 @@
 //   <repo>   the worktree; checks that read the build need `npx -y @docmd/core@0.9.7 build` first.
 //   A<n>     run only these lines (default: all).
 //   --base   the base branch, for A31 and A32 (default: main; diffs run from the merge base).
-//   --final  A34's second half: the tutorial holds no illustrative block.
+//   --final  A34's second half: the tutorial holds no illustrative block (and a mockup image,
+//            unless it says checkpoint 1 is skipped because the project has no screens).
 //   --source only the lines read from the sources and git: no build and no network needed.
 //   --lasting skip the lines that judge this branch against its base (CHANGELOG and plugin
 //            scope, banner redraw, illustrative tutorial): they hold until the merge only.
@@ -767,7 +768,9 @@ check('A34', () => {
   if (!/github\.com\/MorganKryze\/(?!GentleTeaM|belay)[\w.-]+/.test(t)) f.push('no link to the sample repository');
   if (!/\b0\.\d+\.\d+\b/.test(t)) f.push('the run names no release');
   if (!/\b\d+(\.\d+)? (min|minutes|s)\b/.test(prose(t))) f.push('no measured time');
-  if (!/!\[[^\]]{12,}\]\([^)]+\.(png|webp|jpg)\)/.test(t)) f.push('no mockup image with alt text');
+  // A run on a project without screens skips checkpoint 1 and has no mockup to show.
+  const noScreens = /checkpoint 1 is skipped\s+because\s+the\s+project\s+has\s+no\s+screens/i.test(prose(t));
+  if (!noScreens && !/!\[[^\]]{12,}\]\([^)]+\.(png|webp|jpg)\)/.test(t)) f.push('no mockup image with alt text');
   return f;
 });
 
