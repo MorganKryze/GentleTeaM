@@ -34,8 +34,8 @@ screen, light and dark), the [summary](/reference/glossary/#summary) of the
 [spec](/reference/glossary/#spec) (the document that says what will be built and how it is
 checked), and the go.
 
-The whole run took 33 minutes from an empty repository to the merge, about 0.33M tokens, and one
-human answer, at set-up. After that the human handed the decisions to GTM, so the replies below
+The whole run took 33 minutes from the sample's first commit to the merge, about 0.33M tokens, and
+one human answer, at set-up. After that the human handed the decisions to GTM, so the replies below
 are the ones GTM recorded for them. The excerpts come from the run's files, shortened.
 
 ## Step by step
@@ -161,7 +161,7 @@ reply. The pull request text was checked for plain writing before it was opened.
 Final review: fix-first.
   4 of 8 mutations survive: plain
   add, the time zone, the message,
-  done keeps the due date.
+  done drops the due date.
 Fix: 1 test commit, 19 tests.
 Re-review: ready.
 
