@@ -56,8 +56,9 @@ Why: <the ledger evidence, with counts>.
 ## 4. Record
 A reflex is dropped or restored only through a card the human approves.
 No reflex section in team.md: every reflex applies. Never write the section before the first
-approved drop; then add `## Reflexes` before `## History`, one line per dropped reflex
-(`- <role>: <method name> off · why: <counts> · <date>`); a restore deletes every line for it.
+approved drop; then add `## Reflexes` before `## History`: add it once; a later drop appends its
+line to it. One line per dropped reflex (`- <role>: <method name> off · why: <counts> · <date>`);
+a restore deletes every line for it.
 
 Write each approved value into `team.md` (or `conventions.md` and its guideline) with its new
 reason and today's date, add a History line

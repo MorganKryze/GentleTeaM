@@ -135,6 +135,9 @@ for (const [file, expected] of Object.entries(REFLEXES)) {
   }
 }
 
+const ledger = read(join(plugin, 'templates/ledger.md'))
+if (ledger !== null && !flat(ledger).replace(/> /g, '').includes('retro and tune never appear in a run line')) errors.push('ledger template lacks "retro and tune never appear in a run line"')
+
 // A5: no role or skill outside the map carries a reflex line.
 for (const dir of ['agents', 'skills']) {
   for (const entry of readdirSync(join(plugin, dir))) {
@@ -150,7 +153,10 @@ for (const file of NONE) {
 }
 
 const tune = read(join(plugin, 'skills/tune/SKILL.md'))
-if (tune !== null) for (const p of ['a reflex method has 0 tagged items over the last 3 measured runs in which its role ran']) if (!flat(tune).includes(p)) errors.push(`tune lacks "${p}"`)
+// Each keep, skip or restore clause of the reflex rule in tune, and who writes the section next.
+if (tune !== null) for (const p of ['a reflex method has 0 tagged items over the last 3 measured runs in which its role ran',
+  'a reflex already `off` in `## Reflexes` is skipped', 'Never write the section before the first approved drop',
+  'a restore deletes every line for it', 'before `## History`', 'add it once; a later drop appends its line to it']) if (!flat(tune).includes(p)) errors.push(`tune lacks "${p}"`)
 if (tune !== null) for (const p of P2) if (!flat(tune).includes(p)) errors.push(`tune lacks "${p}"`)
 
 for (const dir of ['agents', 'skills']) {
