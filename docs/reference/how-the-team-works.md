@@ -32,6 +32,12 @@ A gate is a check that must pass before work moves on. There are six, one per st
 Requirements Syntax) is the form of the spec's acceptance lines: WHEN, WHILE, WHERE or IF, then
 THE SYSTEM SHALL.
 
+Each task review plants up to five mutations first: one small change per acceptance line the task
+touches, in a throwaway clone, with the project's own tests run against each. A mutation the tests
+miss is a finding, never a silent pass, and a re-review replays it against the fix. A docs-only
+task, one with no executable test, a red suite or a `review mutations: off` line in `team.md` skips
+the step, and the summary says why. The final review still replays two of them.
+
 The final review replays two of the mutations the task reports planted, those that move or drop a
 pinned threshold, plan order on a tie (all of them when two or fewer); one that survives is a
 must-fix. A branch of one task, clean at zero correction rounds, skips it: that task's review, with
