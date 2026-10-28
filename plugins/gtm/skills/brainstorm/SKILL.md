@@ -39,13 +39,15 @@ decision card, never a numbered menu.
 ## 4. Converge
 When the human asks to converge, or 80% of the budget is spent, say so and offer converge,
 extend or pause as one card. Converging groups the ideas and lets the human keep or drop each
-group through cards; then set `Status: done`.
+group through cards, which moves each idea to `## Kept ideas` or `## Dropped ideas`; then set
+`Status: done`.
 
 ## 5. The note
 `<root>/brainstorms/<YYYY-MM-DD>-<slug>.md`, `<slug>` matching `^[a-z0-9]+(-[a-z0-9]+)*$`, at most
 40 characters. If the file exists, resume it or add a numeric suffix (`-2`, `-3`): the skill
 never overwrites a note. Update it as the session goes: topic, goal, stance, techniques, budget
-spent, kept ideas, open questions and the `Status:` line, in this shape:
+spent, kept ideas, open questions and the `Status:` line. Before converging, every idea goes
+under `## Ideas` as it is raised, the human's included. The shape:
 
 ```markdown
 # <topic>
@@ -55,8 +57,14 @@ spent, kept ideas, open questions and the `Status:` line, in this shape:
 - techniques: <names, "invented" where so>
 - budget spent: <k tokens> of <budget>
 
-## Kept ideas
+## Ideas
 - <idea> (<author, partner stance only>) (lens: <method name>)
+
+## Kept ideas
+- <an idea moved from Ideas, as written there>
+
+## Dropped ideas
+- <an idea moved from Ideas, as written there>
 
 ## Open questions
 - <question>
@@ -65,8 +73,8 @@ Status: open
 ```
 
 ## 6. Stop
-Stopped before converging: the note keeps everything kept so far with `Status: open`. Write
-NOW.md per §0's run-view rule with `--slug <slug> --waiting brainstorm`, its question
-`resume: /gtm:brainstorm <note>`. To turn the note into a request, the human runs `/gtm:gtm`;
-the analyst receives the note's path and the spec cites it in its `Brainstorm:` header line.
-Nobody edits the note after that.
+Stopped before converging: the note keeps everything kept so far, its `## Ideas` included,
+with `Status: open`. Write NOW.md per §0's run-view rule with `--slug <slug> --waiting
+brainstorm`, its question `resume: /gtm:brainstorm <note>`. To turn the note into a request, the
+human runs `/gtm:gtm`; the analyst receives the note's path and the spec cites it in its
+`Brainstorm:` header line. Nobody edits the note after that.

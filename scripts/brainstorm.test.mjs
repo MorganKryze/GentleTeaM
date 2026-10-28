@@ -30,6 +30,8 @@ has('brainstorm/SKILL.md', skill, '<root>/brainstorms/')
 has('brainstorm/SKILL.md', skill, 'supply no idea')
 // P3 allows NOW.md, so the gtm §0 run-view steps that write it are named as part of it.
 has('brainstorm/SKILL.md', skill, 'its `now-facts.mjs` read, the `NOW.md.bak` rename and the exclude line')
+// A pause before converging keeps every raised idea: each is written down when raised.
+for (const p of ['## Ideas', '## Dropped ideas', 'every idea goes under `## Ideas` as it is raised']) has('brainstorm/SKILL.md', skill, p)
 
 const map = read('templates/commands.md')
 const line = /^- `\/gtm:([a-z-]+)` · (.+)$/
