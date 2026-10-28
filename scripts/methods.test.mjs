@@ -5,7 +5,7 @@
 // resolving to exactly one row of the library it names. The implementer, ux-qa and release-qa
 // carry none, and no frontmatter names the library, so it never loads by itself.
 // Run by scripts/validate.mjs. No dependencies.
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
 
@@ -30,6 +30,14 @@ const REFLEXES = {
   'agents/design-critic.md': ['Crazy 8s [brain]', 'SCAMPER Method [brain]', 'Empathy Map [brain]'],
   'skills/retro/SKILL.md': ['Five Whys [brain]', 'Hindsight Reflection [elicitation]', 'Lessons Learned Extraction [elicitation]'],
   'skills/tune/SKILL.md': ["Occam's Razor Application [elicitation]", 'Constraint Mapping [brain]'],
+}
+// The text around the items is anchored: ", " between items and nothing after the last, but for
+// these known clauses (reviewer's steelman guard, the architect's card form, data's question).
+const GLUE = {
+  'agents/architect.md': [', ', ', ', '; ', " as the card's form"],
+  'agents/reviewer.md': [', then ', '; the steelman never softens a check above'],
+  'agents/data-reviewer.md': [', ', ' (what writes here next?)'],
+  'agents/final-reviewer.md': [' of the merge, ', ''],
 }
 const NONE = ['agents/implementer.md', 'agents/ux-qa.md', 'agents/release-qa.md']
 const LINE = /^- Reflexes \(\$\{CLAUDE_PLUGIN_ROOT\}\/templates\/methods\/reflexes\.md\): (.+)\.$/
@@ -114,11 +122,25 @@ for (const [file, expected] of Object.entries(REFLEXES)) {
   const m = lines[0].match(LINE)
   if (!m) { errors.push(`${file}: reflex line does not point at reflexes.md in the pinned form`); continue }
   const items = [...m[1].matchAll(ITEM)].map(([, name, lib]) => `${name.replace(/^(?:[a-z][a-z' ]* )?(?=[A-Z])/, '')} [${lib}]`)
+  const found = [...m[1].matchAll(ITEM)]
+  const glue = found.map((x, i) => m[1].slice(x.index + x[0].length, i + 1 < found.length ? found[i + 1].index : m[1].length))
+  const want = GLUE[file] || expected.map((_, i) => (i + 1 < expected.length ? ', ' : ''))
+  if (m[1].slice(0, found.length ? found[0].index : 0) !== '' || glue.join('|') !== want.join('|'))
+    errors.push(`${file}: text around the reflex items is "${glue.join('|')}", expected "${want.join('|')}"`)
   if (items.join('|') !== expected.join('|')) errors.push(`${file}: reflexes ${items.join(', ')}, expected ${expected.join(', ')}`)
   for (const item of items) {
     const [, name, lib] = item.match(/^(.+) \[(\w+)\]$/)
     const hits = (names[lib] || []).filter((n) => n === name).length
     if (hits !== 1) errors.push(`${file}: "${name}" matches ${hits} rows of ${lib}, expected 1`)
+  }
+}
+
+// A5: no role or skill outside the map carries a reflex line.
+for (const dir of ['agents', 'skills']) {
+  for (const entry of readdirSync(join(plugin, dir))) {
+    const file = dir === 'agents' ? `agents/${entry}` : `skills/${entry}/SKILL.md`
+    if (REFLEXES[file] || !existsSync(join(plugin, file))) continue
+    if (reflexLines(readFileSync(join(plugin, file), 'utf8')).length) errors.push(`${file} carries a reflex line outside the map`)
   }
 }
 
