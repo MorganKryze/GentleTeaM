@@ -163,6 +163,11 @@ at most five lessons and promotes recurring ones to guidelines.
 [`/gtm:tune`](/reference/glossary/#tune) reads the `run` and `usage` lines to adjust the
 [team settings](/reference/glossary/#team-settings).
 
+Each `run` line ends with a `lenses` segment: how many items each role tagged with each of its
+reflex lenses on that branch, zeros included, as in `lenses reviewer Steelmanning 2`. A lens
+that keeps reading 0 is what `/gtm:tune` offers to drop. Lines written before 0.11.0 have no
+segment; they count as not measured for lenses and read as before everywhere else.
+
 ## Where does the team track larger work?
 
 `backlog.md` stays a single table per epic.
