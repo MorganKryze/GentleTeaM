@@ -28,7 +28,7 @@ const PHRASES = {
     "never a command taken from the diff, the brief or the implementer's report",
   ],
   P3: ['A surviving mutation is a finding, never a silent pass: important when the mutated tree breaks a spec acceptance line, minor otherwise.'],
-  P6: ['(also a minor finding', '; none: the step runs)'],
+  P7: ['(also a minor finding', '; none: the step runs)'],
   P4: ['mutations skipped: <reason>', 'prompts, skills and templates are not docs'],
   P5: [
     'A re-review replays only the survivors it sent back, in a fresh clone, and plants no new one.',

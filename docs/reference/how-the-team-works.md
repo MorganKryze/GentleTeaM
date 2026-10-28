@@ -174,7 +174,7 @@ reflex lenses on that branch, zeros included, as in `lenses reviewer Steelmannin
 that keeps reading 0 is what `/gtm:tune` offers to drop. Lines written before 0.11.0 have no
 segment; they count as not measured for lenses and read as before everywhere else. Since 0.12.0
 a `mutations` segment comes before it: the mutations the task reviewers planted and how many
-survived; a branch with no measure reads `?`, and older lines count as not measured.
+survived; a branch with no measure has no segment, and older lines count as not measured.
 
 ## Where does the team track larger work?
 
