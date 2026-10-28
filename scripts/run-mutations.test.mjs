@@ -71,6 +71,14 @@ if (!row || !row.includes('3 measured runs')) errors.push('tune has no signal ro
 // segment, are no evidence that nothing survives.
 const ROW = ['planted at least one mutation', 'without a `mutations` segment is not measured for mutations']
 for (const p of ROW) if (!row || !row.includes(p)) errors.push(`tune's signal row lacks: ${p}`)
+// Once off, runs plant 0 and the same pre-drop runs would fire the card again: the row is
+// skipped, a drop writes one line, and a restore leaves no line behind.
+if (!row || !row.includes('skipped while team.md holds a `review mutations: off` line')) {
+  errors.push('tune\'s signal row does not skip a step already off')
+}
+for (const p of ['adds to its Gates, when none is there,', 'a restore deletes every `review mutations` line']) {
+  if (!tune.includes(p)) errors.push(`tune lacks: ${p}`)
+}
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('run-mutations: run lines read the same with and without the segment; template, deliver and tune state it')
