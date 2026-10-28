@@ -72,6 +72,17 @@ if (!base) console.log('review-mutations: no main to compare the frontmatter wit
 else if (fm(raw) !== fm(git('show', `${base}:${rel}`))) errors.push(`reviewer.md frontmatter changed since ${base.slice(0, 7)}`)
 const guide = readFileSync(join(root, 'docs/reference/how-the-team-works.md'), 'utf8')
 for (const w of ['task review', 'mutation']) if (!guide.includes(w)) errors.push(`how-the-team-works.md lacks "${w}"`)
+if (guide.includes('The final review still replays two of them.')) errors.push('how-the-team-works.md repeats the final replay')
+const glossary = readFileSync(join(root, 'docs/reference/glossary.md'), 'utf8')
+if (!glossary.includes('### Mutation {#mutation}\nA small planted change; it survives when no test catches it.')) {
+  errors.push('glossary lacks the Mutation entry')
+}
+const settings = readFileSync(join(root, 'docs/guides/team-settings.md'), 'utf8').replace(/\n/g, ' ')
+const first = settings.indexOf('mutation')
+if (first < 0 || !settings.slice(first).startsWith('mutations](/reference/glossary/#mutation)')) {
+  errors.push('team-settings.md does not link its first "mutation" to the glossary')
+}
+if (/\bdrop\b/.test(settings.slice(first, settings.indexOf('|', first)))) errors.push('team-settings.md mixes "drop" with "switch-off"')
 
 if (errors.length) {
   for (const e of errors) console.error(`FAIL ${e}`)

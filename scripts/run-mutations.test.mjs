@@ -81,7 +81,12 @@ for (const p of ROW) if (!row || !row.includes(p)) errors.push(`tune's signal ro
 if (!row || !row.includes('skipped while team.md holds a `review mutations: off` line')) {
   errors.push('tune\'s signal row does not skip a step already off')
 }
-for (const p of ['adds to its Gates, when none is there,', 'a restore deletes every `review mutations` line']) {
+for (const p of [
+  "adds to team.md's Gates, when none is there,",
+  '(their `measured` part, `lenses` and `mutations` segments included)',
+  'Asked to turn the mutation step back on (`/gtm:tune review mutations on`)? One card, then §4.',
+   'a restore deletes every `review mutations` line',
+]) {
   if (!tune.includes(p)) errors.push(`tune lacks: ${p}`)
 }
 

@@ -7,6 +7,7 @@ description: "Re-tune GTM team settings (roles, effort, specialists, gates, comp
 Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without the human's answer.
 Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
 Asked to turn a companion on or off (`/gtm:tune <name> on|off`)? One card, then §4.
+Asked to turn the mutation step back on (`/gtm:tune review mutations on`)? One card, then §4.
 
 - Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Occam's Razor Application
   [elicitation], Constraint Mapping [brain].
@@ -14,8 +15,8 @@ Asked to turn a companion on or off (`/gtm:tune <name> on|off`)? One card, then 
 ## 1. Read
 `<root>/team.md` (its `## Companions` against the session's skills, as
 `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says, and its `## Reflexes` section, if any), the
-`run` lines (their `measured` part and `lenses` segment included), the `minor` and `usage` lines
-of the ledger, and the final reviews under `<root>/reports/`.
+`run` lines (their `measured` part, `lenses` and `mutations` segments included), the `minor` and
+`usage` lines of the ledger, and the final reviews under `<root>/reports/`.
 
 ## 2. Look for signals
 | Signal | Typical proposal |
@@ -61,8 +62,8 @@ approved drop; then add `## Reflexes` before `## History`: add it once; a later 
 line to it. One line per dropped reflex (`- <role>: <method name> off · why: <counts> · <date>`);
 a restore deletes every line for it.
 The mutation step is switched off or back on only through a card the human approves.
-No `review mutations` line in team.md: the step runs. An approved drop adds to its Gates, when
-none is there, `- review mutations: off · why: <counts> · <date>`, with a History line and a
+No `review mutations` line in team.md: the step runs. An approved drop adds to team.md's Gates,
+when none is there, `- review mutations: off · why: <counts> · <date>`, with a History line and a
 ledger `ruling` line; a restore deletes every `review mutations` line.
 
 Write each approved value into `team.md` (or `conventions.md` and its guideline) with its new

@@ -36,7 +36,7 @@ Each task review plants up to five mutations first: one small change per accepta
 touches, in a throwaway clone, with the project's own tests run against each. A mutation the tests
 miss is a finding, never a silent pass, and a re-review replays it against the fix. A docs-only
 task, one with no executable test, a red suite or a `review mutations: off` line in `team.md` skips
-the step, and the summary says why. The final review still replays two of them.
+the step, and the summary says why.
 
 The final review replays two of the mutations the task reports planted, those that move or drop a
 pinned threshold, plan order on a tie (all of them when two or fewer); one that survives is a
