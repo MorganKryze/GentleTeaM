@@ -36,14 +36,19 @@ const plain = eta(false), counted = eta(true)
 if (!plain || plain.runs !== 3) errors.push(`eta without mutations reads ${JSON.stringify(plain)}, want 3 runs`)
 if (JSON.stringify(plain) !== JSON.stringify(counted)) errors.push(`eta differs: ${JSON.stringify(plain)} vs ${JSON.stringify(counted)}`)
 
-const read = (p) => readFileSync(join(root, p), 'utf8').replace(/\n> /g, ' ').replace(/\n(?!\n)/g, ' ')
+const read = (p) => readFileSync(join(root, p), 'utf8').replace(/\n> /g, ' ').replace(/\n(?!\n)/g, ' ').replace(/ {2,}/g, ' ')
 const template = read('plugins/gtm/templates/ledger.md')
 if (!template.includes('· mutations <planted> planted <survived> survived · lenses')) {
   errors.push('ledger template does not state the `mutations` segment before `· lenses`')
 }
 const deliver = read('plugins/gtm/skills/deliver/SKILL.md')
-if (!deliver.includes('· mutations <planted>/<survived>') || !deliver.includes('stats.reviewer')) {
-  errors.push('deliver does not name the progress field `mutations <planted>/<survived>` from `stats.reviewer`')
+// Keyed on `planted`, set only when the review returned `mutations`: `stats.reviewer` alone exists
+// whenever the reviewer reported a finding, and would write a count no review made.
+if (!deliver.includes('whose result holds `stats.reviewer.planted` adds ` · mutations <planted>/<survived>`')) {
+  errors.push('deliver does not key the progress field `mutations <planted>/<survived>` on `stats.reviewer.planted`')
+}
+if (!deliver.includes('A line (task, deferred or re-run review)')) {
+  errors.push('deliver does not give the progress field to deferred and re-run review lines')
 }
 const tune = read('plugins/gtm/skills/tune/SKILL.md')
 const P6 = [
