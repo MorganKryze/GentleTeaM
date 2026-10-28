@@ -22,7 +22,9 @@ Ground rules: as in the `gtm` skill §0.
   status, tier, correction rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each run's
   line (design, spec, plan, task, final review, re-review, re-run review, fix wave) ends `· <s> s ·
   <t>k · <a> agents` from Claude Code's `duration_ms`, `subagent_tokens`, `agent_count` (a dispatch
-  is 1 agent), `?` if unreported, never an estimate; workflows add `· run <id>`.
+  is 1 agent), `?` if unreported, never an estimate; workflows add `· run <id>`. A line (task,
+  deferred or re-run review) whose result holds `stats.reviewer.planted` adds ` · mutations
+  <planted>/<survived>` from it.
 - `[CHECK]` verify commands in `config.yml`: run each once on the branch with `verify.prefix`; it
   runs → remove the mark; it cannot run or fails on the untouched base → stop before any task: a
   Heads-up and a card (correct the command / drop it / accept the failure as pre-existing, logged).
