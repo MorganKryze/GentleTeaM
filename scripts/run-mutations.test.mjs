@@ -45,8 +45,10 @@ if (!template.includes('· mutations <planted> planted <survived> survived · le
 // its range review's line carries the counts.
 const LEDGER = [
   '`mutations` summed over the progress lines that carry it, deferred and re-run review lines included',
-  '`?` when a line naming the `reviewer` among its reviewers lacks it after 0.12.0',
+  '`?` when the task progress lines do not all carry it',
   'a `GATED` line or one without the `reviewer` skipped',
+  'a `?` segment left out, as budgets',
+  'one without `mutations` (every line before 0.12.0) as not measured for mutations',
 ]
 for (const p of LEDGER) if (!template.includes(p)) errors.push(`ledger template lacks: ${p}`)
 const deliver = read('plugins/gtm/skills/deliver/SKILL.md')
@@ -54,6 +56,9 @@ const deliver = read('plugins/gtm/skills/deliver/SKILL.md')
 // whenever the reviewer reported a finding, and would write a count no review made.
 if (!deliver.includes('whose result holds `stats.reviewer.planted` adds ` · mutations <planted>/<survived>`')) {
   errors.push('deliver does not key the progress field `mutations <planted>/<survived>` on `stats.reviewer.planted`')
+}
+if (!deliver.includes('a re-run review, a direct dispatch, from its own `mutations`')) {
+  errors.push('deliver does not take a re-run review\'s field from its own `mutations`')
 }
 if (!deliver.includes('A line (task, deferred or re-run review)')) {
   errors.push('deliver does not give the progress field to deferred and re-run review lines')

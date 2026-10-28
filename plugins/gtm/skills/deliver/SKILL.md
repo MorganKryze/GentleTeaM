@@ -15,16 +15,16 @@ Ground rules: as in the `gtm` skill §0.
   with their regexes; `fixRounds`; `fixCeiling`, the N of `Fix track ceiling: N files`; the budgets,
   Gates lines `budget per task` and `budget per branch` (`<minutes> min, <tokens>k tokens`; absent
   or `none`: none); `cadence`, `review cadence` (absent: none); `standardRounds`, `fix rounds per
-  standard review: N` (1). A ledger `ruling` `limits: lighter …` for this slug
-  overrides the roles it names in `team`, on every dispatch (resumes too), unless struck through or
-  beyond what `gtm` §0's card A allows (then ignored, a Heads-up).
+  standard review: N` (1). A ledger `ruling` `limits: lighter …` for this slug overrides the roles
+  it names in `team`, on every dispatch (resumes too), unless struck through or beyond what `gtm`
+  §0's card A allows (then ignored, a Heads-up).
 - Progress: `<root>/reports/<slug>/progress.md`, one line per run, any result (reruns append):
   status, tier, correction rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each run's
   line (design, spec, plan, task, final review, re-review, re-run review, fix wave) ends `· <s> s ·
   <t>k · <a> agents` from Claude Code's `duration_ms`, `subagent_tokens`, `agent_count` (a dispatch
   is 1 agent), `?` if unreported, never an estimate; workflows add `· run <id>`. A line (task,
   deferred or re-run review) whose result holds `stats.reviewer.planted` adds ` · mutations
-  <planted>/<survived>` from it.
+  <planted>/<survived>` from it; a re-run review, a direct dispatch, from its own `mutations`.
 - `[CHECK]` verify commands in `config.yml`: run each once on the branch with `verify.prefix`; it
   runs → remove the mark; it cannot run or fails on the untouched base → stop before any task: a
   Heads-up and a card (correct the command / drop it / accept the failure as pre-existing, logged).
