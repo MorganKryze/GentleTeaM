@@ -71,6 +71,12 @@ Nothing is dropped without your answer. A drop adds a reflexes section to the se
 with a line in the history; until then the section does not exist and every reflex applies. A
 later card can restore a dropped one.
 
+The task review also plants a few small bugs ([mutations](/reference/glossary/#mutation)) to
+check that the tests catch them. When the last three measured runs that planted any let none
+survive, `/gtm:tune` offers one card: keep the step or switch it off. An approved switch-off writes
+a dated line in the settings, with a line in the history; until then no such line exists and the
+step runs. A later card can switch it back on, which removes the line.
+
 | Setting | Values |
 | --- | --- |
 | Effort | `low`, `medium`, `high`, `xhigh`, `max` |

@@ -32,6 +32,12 @@ A gate is a check that must pass before work moves on. There are six, one per st
 Requirements Syntax) is the form of the spec's acceptance lines: WHEN, WHILE, WHERE or IF, then
 THE SYSTEM SHALL.
 
+Each task review plants up to five mutations first: one small change per acceptance line the task
+touches, in a throwaway clone, with the project's own tests run against each. A mutation the tests
+miss is a finding, never a silent pass, and a re-review replays it against the fix. A docs-only
+task, one with no executable test, a red suite or a `review mutations: off` line in `team.md` skips
+the step, and the summary says why.
+
 The final review replays two of the mutations the task reports planted, those that move or drop a
 pinned threshold, plan order on a tie (all of them when two or fewer); one that survives is a
 must-fix. A branch of one task, clean at zero correction rounds, skips it: that task's review, with
@@ -166,7 +172,9 @@ at most five lessons and promotes recurring ones to guidelines.
 Each `run` line ends with a `lenses` segment: how many items each role tagged with each of its
 reflex lenses on that branch, zeros included, as in `lenses reviewer Steelmanning 2`. A lens
 that keeps reading 0 is what `/gtm:tune` offers to drop. Lines written before 0.11.0 have no
-segment; they count as not measured for lenses and read as before everywhere else.
+segment; they count as not measured for lenses and read as before everywhere else. Since 0.12.0
+a `mutations` segment comes before it: the mutations the task reviewers planted and how many
+survived; a branch with no measure has no segment, and older lines count as not measured.
 
 ## Where does the team track larger work?
 

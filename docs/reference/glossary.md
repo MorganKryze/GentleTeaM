@@ -79,6 +79,9 @@ Work across several branches, each run as a Feature, tracked as an epic in `back
 ### Mockups {#mockups}
 One page showing each new screen in light and dark, scored by the critic, kept in `.gtm/mockups/`.
 
+### Mutation {#mutation}
+A small planted change; it survives when no test catches it.
+
 ### Reflex {#reflex}
 A method a role applies every time, listed in its file; it adds a lens and never weakens a check.
 

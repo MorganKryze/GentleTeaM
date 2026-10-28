@@ -162,6 +162,76 @@ const deliver = [
     ],
   },
   {
+    name: 'mutations: counted on the first round only; a survivor with no finding blocks',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => ({ ...ok, mutations: d.label === 'reviewer' ? { planted: 3, survived: 1 } : { planted: 1, survived: 0 } })),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 3, survived: 1 } },
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'mutations: a survivor reported with its finding adds no second one',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...bad, mutations: { planted: 2, survived: 1 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 2, survived: 1 } },
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+    ],
+  },
+  {
+    name: 'mutations: a re-review that addresses every finding sent yet reports a survivor blocks',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') return { ...bad, mutations: { planted: 2, survived: 1 } }
+      if (d.label === 'reviewer · round 1') return { ...ok, findings: [addressed, typo], mutations: { planted: 1, survived: 1 } }
+      return ok
+    }),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'],
+      minors: [{ ...typo, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 2, minor: 1, planted: 2, survived: 1 } },
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' },
+      reviewer('reviewer · round 2'),
+    ],
+  },
+  {
+    name: 'mutations: an open minor does not hide a survivor a re-review still reports',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') return { ...bad, mutations: { planted: 2, survived: 1 } }
+      if (d.label === 'reviewer · round 1') return { ...ok, findings: [addressed, { ...typo, status: 'open' }], mutations: { planted: 1, survived: 1 } }
+      return ok
+    }),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'],
+      minors: [{ ...typo, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 2, minor: 1, planted: 2, survived: 1 } },
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' },
+      reviewer('reviewer · round 2'),
+    ],
+  },
+  {
     name: 'clean: a minor finding starts no fix',
     args: {},
     reply: implementer(['src/a.js'], () => ({ verdict: 'approve', findings: [{ severity: 'minor', summary: 'typo' }], summary: 'ok' })),
