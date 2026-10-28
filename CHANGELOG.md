@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-10-28
+
 ### Added
 - `/gtm:brainstorm <topic>`: three stances (you bring the ideas, we trade them, or GTM ideates
   for you), 3-4 techniques picked for the topic, a roundtable where the GTM roles argue in
