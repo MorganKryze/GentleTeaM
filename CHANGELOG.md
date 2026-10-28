@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-10-28
+
 ### Added
 - The per-task reviewer plants at most one mutation per acceptance line the task touches (five
   per review) in a throwaway clone, runs the project's test command, and reports each survivor
