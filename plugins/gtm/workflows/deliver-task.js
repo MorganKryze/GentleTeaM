@@ -247,6 +247,11 @@ for (; round <= limit; round++) {
     if (m && m.survived > found) {
       count('important')
       blocking.push({ severity: 'important', summary: `${r} reported ${m.survived} surviving mutations and ${found} findings: ${res.summary}` })
+    } else if (m && m.survived && pending[i].findings && !res.findings.some((f) => f.status === 'open')) {
+      // A re-review that closes every finding it was sent while a survivor still survives: the
+      // survivor it replayed was not addressed after all.
+      count('important')
+      blocking.push({ severity: 'important', summary: `${r} addressed every finding sent yet ${m.survived} mutations survive: ${res.summary}` })
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
     // then the only reason given, so the fix round and the re-review get it, and it counts as one.
