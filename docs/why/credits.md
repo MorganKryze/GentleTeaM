@@ -23,7 +23,10 @@ your attention or the team's context. The links lead to the original work.
 [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) brought scale-adaptive entry doors:
 the idea that the size of the change picks the process, which became the
 [Fix](/reference/glossary/#fix), [Feature](/reference/glossary/#feature) and
-[Milestone](/reference/glossary/#milestone) sizes.
+[Milestone](/reference/glossary/#milestone) sizes. GTM also ships a copy of its two method
+libraries, 108 brainstorming techniques and 71 elicitation methods, under BMAD-METHOD's MIT
+licence, with its copyright and trademark notice kept next to them. Roles read a few rows by
+name as [reflexes](/reference/roles/#which-thinking-methods-does-each-role-apply).
 
 :::
 

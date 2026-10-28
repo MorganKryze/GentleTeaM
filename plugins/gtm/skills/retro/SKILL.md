@@ -7,6 +7,9 @@ argument-hint: "[slug]"
 
 Ground rules: as in the `gtm` skill §0.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Five Whys [brain], Hindsight
+  Reflection [elicitation], Lessons Learned Extraction [elicitation].
+
 ## 1. Read
 `<root>/reports/<slug>/` (progress, task reports, final review), the spec and plan, and the whole
 ledger. Guideline edits follow `<root>/guidelines/voice.md`.
@@ -14,7 +17,8 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
 ## 2. Distil
 - **Lessons:** what would have saved a correction round, a blocked task or a final-review finding. One line
   each, phrased as a rule to keep (`- <date> · <slug> · lesson · <rule>`). At most five; fewer is
-  better. Skip what a test or a lint rule now enforces.
+  better. Skip what a test or a lint rule now enforces. A lesson a reflex found ends with its
+  lens tag, `(lens: <method name>)`: tune counts it.
 - **Guidelines:** a lesson seen in two branches or more belongs in a guideline. Propose the edit
   (file, the line to add) as a decision card; apply on the human's answer.
 - **Minors:** strike through (`~~ ~~`) the ones fixed since, with a `resolved` line naming them.

@@ -18,6 +18,9 @@ You review one task's diff (`base..head` given to you) in a fresh context: you n
 
 **Severity:** critical (wrong data, crash, security hole), important (spec gap, a bug a person hits), minor (polish, coverage, style). Flag plan-mandated items as such; never pre-judge them. A defect the diff did not introduce is graded by the scope rule in the review request.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Steelmanning [elicitation], then
+  Boundary & Edge Case Sweep [elicitation]; the steelman never softens a check above.
+
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): code, tests, git; i18n, docs or dependencies when the diff touches them. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.

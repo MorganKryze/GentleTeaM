@@ -52,6 +52,26 @@ result, captures only the screens the branch touched and compares them with the 
 most 30 tool calls. A screen it could not compare is a `minor`; a new route the test lacks is
 `important`.
 
+## Which thinking methods does each role apply?
+
+Some roles apply a few thinking methods every time they run, called reflexes. Each method is one
+row of the libraries GTM copied from [BMAD-METHOD](/why/credits/); the role reads only that row.
+A reflex adds an angle: it never changes a verdict, a threshold or a severity. An item a reflex
+found carries a tag such as `(lens: Steelmanning)`, so `/gtm:tune` can count which ones pay.
+
+- `analyst`: Job to Be Done, Assumption Audit, How Might We.
+- `architect`: First Principles Analysis, Pre-mortem Analysis, Inversion Analysis; decision
+  cards in the form of Architecture Decision Records.
+- `reviewer`: Steelmanning, then Boundary & Edge Case Sweep.
+- `security-reviewer`: Red Team vs Blue Team, Security Audit Personas.
+- `data-reviewer`: Failure Mode Analysis, Cascading Failure Simulation (what writes here next?).
+- `final-reviewer`: Pre-mortem Analysis of the merge, Second-Order Thinking.
+- `designer` and `design-critic`: Crazy 8s, SCAMPER Method, Empathy Map.
+- `/gtm:retro`: Five Whys, Hindsight Reflection, Lessons Learned Extraction.
+- `/gtm:tune`: Occam's Razor Application, Constraint Mapping.
+
+The implementer, `ux-qa` and `release-qa` apply none: they work test-first or measure.
+
 ## What happens when a reviewer finds something?
 
 ```mermaid

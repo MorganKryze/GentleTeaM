@@ -14,6 +14,9 @@ Run the gate in a scratch clone when useful. Triage every `minor` line of `<root
 
 **Mutations:** when the task reports list planted mutations, replay two in a scratch clone, those that move or drop a pinned threshold, plan order on a tie (all of them when two or fewer). Name each in your review with the failure it caused; one that survives is a must-fix.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Pre-mortem Analysis [elicitation]
+  of the merge, Second-Order Thinking [elicitation].
+
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): security, data, git, docs, work (definition of done). A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
