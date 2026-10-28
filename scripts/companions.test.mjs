@@ -87,6 +87,13 @@ for (const w of ['`guidelines/voice.md` wins a disagreement', 'then one briefing
   if (!section('humanize').replace(/\n\s+/g, ' ').includes(w)) fail(`companions.md humanize lacks "${w}"`)
 if (!/without a `Companions` section reads as none on; nothing to migrate/.test(readFileSync(join(root, 'CHANGELOG.md'), 'utf8'))) fail('CHANGELOG: a team.md without Companions needs "nothing to migrate"')
 
+const unreleased = (() => { const c = readFileSync(join(root, 'CHANGELOG.md'), 'utf8'); const a = c.indexOf('## [Unreleased]'); return c.slice(a, c.indexOf('\n## [', a + 1)) })()
+const bullets = unreleased.split(/\n(?=- )/).map((b) => b.replace(/\s+/g, ' '))
+if (!bullets.some((b) => /`brainstorms\/`, a `## Reflexes` section in team\.md and the run line's `lenses` segment are optional; folders without them read as before; nothing to migrate/.test(b))) fail('CHANGELOG [Unreleased]: the optional additions need "nothing to migrate" on their bullet')
+if (!bullets.some((b) => b.includes('nothing runs until you pick'))) fail('CHANGELOG [Unreleased]: the advisor says "nothing runs until you pick"')
+if (/never runs/.test(unreleased)) fail('CHANGELOG [Unreleased]: "never runs" contradicts commands.md')
+for (const w of ['`Brainstorm:` line', 'Next steps']) if (!bullets.some((b) => b.includes(w))) fail(`CHANGELOG [Unreleased] lacks "${w}"`)
+
 for (const s of ['init', 'tune']) if (!read(`skills/${s}/SKILL.md`).includes('templates/companions.md')) fail(`${s}/SKILL.md does not point at templates/companions.md`)
 const initLines = read('skills/init/SKILL.md').split('\n').length - 1
 if (initLines > 81) fail(`init/SKILL.md is ${initLines} lines (at most 81)`)

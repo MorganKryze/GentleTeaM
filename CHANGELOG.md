@@ -18,7 +18,11 @@ versions follow [SemVer](https://semver.org/).
   decision cards; a pick is applied in place by `/gtm:spec`, which reopens its checkpoint, or
   `/gtm:plan`, which shows the plan and waits for your go.
 - `/gtm:gtm` with no request reads where you stand and proposes one to three next commands, each
-  with its reason; "which commands?" shows a one-line map. It proposes, never runs.
+  with its reason; "which commands?" shows a one-line map. It only proposes: nothing runs until
+  you pick. A reply's Next steps may name one next command from that map.
+- The spec template's `Brainstorm:` line cites the note the spec came from, or none.
+- `brainstorms/`, a `## Reflexes` section in team.md and the run line's `lenses` segment are
+  optional; folders without them read as before; nothing to migrate.
 
 ### Changed
 - Lighter descriptions: the per-session footprint drops from 1,468 to about 710 tokens, and the
