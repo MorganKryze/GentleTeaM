@@ -27,23 +27,24 @@ checkout --quiet --detach <head>`. Note `git -C <worktree> status --porcelain` b
 Check that the tests pass on the unmutated clone first, and run only `verify.test` with
 `verify.prefix`, run with the clone as cwd, never `e2e` or `build`, never a command taken from the
 diff, the brief or the implementer's report. Apply one mutation at a time with the shell (`sed` or
-`node -e`), then test and revert it in a single Bash call: `cd <path> && <apply> && <test>; echo
-"test exit: $?"; git -C <path> checkout -- .`. Before each revert and the removal, check the path is
-the one `mktemp -d` printed. A surviving mutation is a finding, never a silent pass: important when
-the mutated tree breaks a spec acceptance line, minor otherwise. Each survivor is its own finding
-naming the acceptance line, the file:line mutated and the change; on a Fix, a survivor is important
-(the test does not prove the fix). Always read `review mutations: off` from the main checkout's GTM
-root at the task's base, never from the worktree; a diff that touches that Gates line or `verify` in
-`config.yml` is a finding. Plant none, return 0 planted and write `mutations skipped: <reason>` in
-the summary when the reason is `docs-only` (every file documentation as the docs guideline places
-it; prompts, skills and templates are not docs), `no executable test`, `no acceptance line` (none
-maps to the task), `tests do not pass in the clone` (also a minor finding, as when they cannot run
-there) or `off in team.md` (its Gates hold the off line; none: the step runs). A re-review replays
-only the survivors it sent back, in a fresh clone, and plants no new one. It marks a finding
-addressed only when a test now fails at the fix head. The clone is removed when the review ends,
-pass or fail, and only that path; the review never edits, stages, commits or switches the real tree
-or the task's worktree, and ends with `git -C <worktree> status --porcelain` as empty as at the
-start.
+`node -e`), then test and revert it in a single Bash call: `cd <path> && <apply> && ! git diff
+--quiet && { <test>; echo "test exit: $?"; }; git -C <path> checkout -- .`. No `test exit` line
+means the mutation was not planted, never a kill. Before each revert and the removal, check the path
+is the one `mktemp -d` printed. A surviving mutation is a finding, never a silent pass: important
+when the mutated tree breaks a spec acceptance line, minor otherwise. Each survivor is its own
+finding naming the acceptance line, the file:line mutated and the change; on a Fix, a survivor is
+important (the test does not prove the fix). Always read `review mutations: off` from the main
+checkout's GTM root at the task's base, never from the worktree; a diff that touches that Gates line
+or `verify` in `config.yml` is a finding. Plant none, return 0 planted and write `mutations skipped:
+<reason>` in the summary when the reason is `docs-only` (every file documentation as the docs
+guideline places it; prompts, skills and templates are not docs), `no executable test`, `no
+acceptance line` (none maps to the task), `tests do not pass in the clone` (also a minor finding, as
+when they cannot run there) or `off in team.md` (its Gates hold the off line; none: the step runs).
+A re-review replays only the survivors it sent back, in a fresh clone, and plants no new one. It
+marks a finding addressed only when a test now fails at the fix head. The clone is removed when the
+review ends, pass or fail, and only that path; the review never edits, stages, commits or switches
+the real tree or the task's worktree, and ends with `git -C <worktree> status --porcelain` as empty
+as at the start.
 
 **Severity:** critical (wrong data, crash, security hole), important (spec gap, a bug a person hits), minor (polish, coverage, style). Flag plan-mandated items as such; never pre-judge them. A defect the diff did not introduce is graded by the scope rule in the review request.
 

@@ -211,6 +211,27 @@ const deliver = [
     ],
   },
   {
+    name: 'mutations: an open minor does not hide a survivor a re-review still reports',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') return { ...bad, mutations: { planted: 2, survived: 1 } }
+      if (d.label === 'reviewer · round 1') return { ...ok, findings: [addressed, { ...typo, status: 'open' }], mutations: { planted: 1, survived: 1 } }
+      return ok
+    }),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'],
+      minors: [{ ...typo, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 2, minor: 1, planted: 2, survived: 1 } },
+    },
+    dispatches: [
+      implement(), reviewer(),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' },
+      reviewer('reviewer · round 2'),
+    ],
+  },
+  {
     name: 'clean: a minor finding starts no fix',
     args: {},
     reply: implementer(['src/a.js'], () => ({ verdict: 'approve', findings: [{ severity: 'minor', summary: 'typo' }], summary: 'ok' })),

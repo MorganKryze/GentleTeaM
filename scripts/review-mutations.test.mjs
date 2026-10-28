@@ -28,6 +28,7 @@ const PHRASES = {
     "never a command taken from the diff, the brief or the implementer's report",
   ],
   P3: ['A surviving mutation is a finding, never a silent pass: important when the mutated tree breaks a spec acceptance line, minor otherwise.'],
+  P6: ['(also a minor finding', '; none: the step runs)'],
   P4: ['mutations skipped: <reason>', 'prompts, skills and templates are not docs'],
   P5: [
     'A re-review replays only the survivors it sent back, in a fresh clone, and plants no new one.',
@@ -56,7 +57,8 @@ const CLONE_PATH = [
   'run `mktemp -d` on its own',
   'write the absolute path it prints literally in every later command',
   'never a relative path or a variable carried between Bash calls',
-  'in a single Bash call: `cd <path> && <apply> && <test>; echo "test exit: $?"; git -C <path> checkout -- .`',
+  'in a single Bash call: `cd <path> && <apply> && ! git diff --quiet && { <test>; echo "test exit: $?"; }; git -C <path> checkout -- .`',
+  'No `test exit` line means the mutation was not planted, never a kill.',
   'check the path is the one `mktemp -d` printed',
   '`git -C <worktree> status --porcelain` as empty as at the start',
 ]
