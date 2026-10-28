@@ -34,6 +34,8 @@ one learned.
 <li><code>config.yml</code><span class="why">paths and commands</span><span class="badge">skip it</span></li>
 <li><code>conventions.md</code><span class="why">rules per area</span><span class="badge">skip it</span></li>
 <li class="dir"><code>guidelines/</code><span class="why">one file per area</span><span class="badge">skip it</span></li>
+<li class="dir"><code>brainstorms/</code><span class="why">notes from brainstorms</span>
+<span class="badge">skip it</span></li>
 <li class="dir"><code>plans/</code><span class="why">tasks for the team</span><span class="badge">skip it</span></li>
 <li class="dir"><code>reports/</code><span class="why">full agent reports</span><span class="badge">skip it</span></li>
 <li><code>ledger.md</code><span class="why">the logbook</span><span class="badge">skip it</span></li>
@@ -48,6 +50,7 @@ one learned.
 | `brief.md` | purpose, users, principles and limits, on one page | `/gtm:init`, amended rarely |
 | `team.md` | your [team settings](/reference/glossary/#team-settings): effort per role, specialists, checks | `/gtm:init`, `/gtm:tune` |
 | `backlog.md` | the larger pieces of work, their priority and status | `/gtm:gtm`, `/gtm:ship` |
+| `brainstorms/` | one [brainstorm](/reference/glossary/#brainstorm) note per session, `open` or `done`, cited by the spec it led to | `/gtm:brainstorm` |
 | `specs/` | one [spec](/reference/glossary/#spec) per Feature, opened by your summary | architect |
 | `mockups/` | the [mockups](/reference/glossary/#mockups), as HTML and PNG | designer |
 | `NOW.md` | where the run is now: phase, task, what runs, when it should end | the orchestrator, `/gtm:status` |

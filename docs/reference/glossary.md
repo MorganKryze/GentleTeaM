@@ -15,6 +15,10 @@ description: Every term GTM uses, in one line each.
 ### Backlog {#backlog}
 `.gtm/backlog.md`: epics, their stories, priority and status, one table per epic.
 
+### Brainstorm {#brainstorm}
+`/gtm:brainstorm`: explores a vague idea with you, in one of three stances, and keeps the result
+in a note under `.gtm/brainstorms/` that the spec cites.
+
 ### Brief {#brief}
 `.gtm/brief.md`: your project's one-page constitution: purpose, users, principles, limits.
 
@@ -42,6 +46,9 @@ What the team decided without asking, each with its cost if wrong, kept in `ledg
 The architect runs a risky task's code in a scratch copy while planning (`/gtm:plan`), to prove
 the plan; risky paths are set in `team.md`.
 
+### Dig {#dig}
+`/gtm:brief-me` asked to challenge an artifact with one method; it changes no file.
+
 ### Feature {#feature}
 One capability on one branch, with three checkpoints, started with `/gtm:gtm`.
 
@@ -60,6 +67,9 @@ A change of at most 3 files with no schema or sign-in change, run by `/gtm:gtm`.
 `handoff.md`, written by `/gtm:pause`: what was stopped, what waited, the worktrees kept and the
 command that resumes.
 
+### Lens {#lens}
+The method behind an item, named at its end as `(lens: <method name>)`.
+
 ### Logbook {#logbook}
 `ledger.md`, in `.gtm/`: one line per lesson, decision or deferred finding, kept across changes.
 
@@ -69,8 +79,15 @@ Work across several branches, each run as a Feature, tracked as an epic in `back
 ### Mockups {#mockups}
 One page showing each new screen in light and dark, scored by the critic, kept in `.gtm/mockups/`.
 
+### Reflex {#reflex}
+A method a role applies every time, listed in its file; it adds a lens and never weakens a check.
+
 ### Retro {#retro}
 `/gtm:retro`: distils a delivered branch into at most five lessons and guideline edits.
+
+### Roundtable {#roundtable}
+The voices of a brainstorm: architect, security, UX, data and a user or a skeptic, played in the
+chat, each line prefixed with its speaker.
 
 ### Spec {#spec}
 The document the architect writes before any code, in `.gtm/specs/`: what will be built, what is
@@ -79,6 +96,10 @@ left out, and how each part is checked.
 ### Stealth {#stealth}
 `stealth: on` in `config.yml`: GTM keeps its files out of the tracked tree and its names out of
 everything it writes into the project.
+
+### Stance {#stance}
+Who brings the ideas in a brainstorm: facilitator (only you), partner (you and the team) or
+ideate for me (the team, and you keep or drop).
 
 ### Summary {#summary}
 The ten lines at the top of a spec in `.gtm/specs/`, written for you.
