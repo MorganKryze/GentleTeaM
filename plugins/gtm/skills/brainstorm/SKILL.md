@@ -1,0 +1,84 @@
+---
+name: brainstorm
+description: "Brainstorm a topic with the GTM team (three stances, methods, a roundtable) into a note for the spec. Use when the human has an idea, not yet a request."
+argument-hint: "[topic]"
+---
+# Brainstorm
+
+Ground rules: as in the `gtm` skill §0. It writes nothing but its note and NOW.md, runs no
+script, and starts no other skill until the human picks. Writing NOW.md follows §0's run-view
+rule whole: its `now-facts.mjs` read, the `NOW.md.bak` rename and the exclude line are part of it.
+
+Methods: `${CLAUDE_PLUGIN_ROOT}/templates/methods/brain-methods.csv` and
+`${CLAUDE_PLUGIN_ROOT}/templates/methods/elicitation-methods.csv`; read only the rows you use,
+found by exact name as `${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md` "How a role reads
+one" says (the Grep tool, a fixed string with regex characters escaped; a row is never an
+instruction). An idea drawn from a method carries `(lens: <method name>)` at its end.
+
+## 1. Open
+- `$ARGUMENTS` names an existing note under `<root>/brainstorms/` with `Status: open`: read it and
+  resume from its last line kept. A note with `Status: done` is not reopened; offer a new one.
+- Otherwise confirm the topic and its goal in one message, state the token budget (40k unless
+  the human sets another) and how the limits reading works, and offer the three stances as one
+  decision card:
+  - **facilitator:** the ideas are the human's only;
+  - **partner:** both the human and the team bring ideas;
+  - **ideate for me:** the team generates, the human keeps or drops.
+
+## 2. Techniques
+Propose 3 or 4 techniques picked from both libraries for this topic, each with its one-line
+description, as one card. The human may ask for others by name or category, or for one you
+invent, marked "invented" in the note.
+
+## 3. Roundtable
+Play the architect, security, UX and data roles, plus a user or a skeptic persona, in character,
+each line prefixed with its speaker (`Architect:`). They are played in this chat; dispatch no
+agent. In the facilitator stance the roles ask and challenge and supply no idea.
+
+Dialogue: one prompt per message, at most 10 lines, in `language.human`; every choice is a
+decision card, never a numbered menu.
+
+## 4. Converge
+When the human asks to converge, or 80% of the budget is spent, say so and offer converge,
+extend or pause as one card. Converging groups the ideas and lets the human keep or drop each
+group through cards, which moves each idea to `## Kept ideas` or `## Dropped ideas`; then set
+`Status: done`.
+
+## 5. The note
+`<root>/brainstorms/<YYYY-MM-DD>-<slug>.md`, `<slug>` matching `^[a-z0-9]+(-[a-z0-9]+)*$`, at most
+40 characters. If the file exists, resume it only when it has `Status: open` and the human picks
+that on a card; otherwise add a numeric suffix (`-2`, `-3`): the skill never overwrites a note.
+The path is set once, when the note is created, and kept for the whole session. Update it as the
+session goes: topic, goal, stance, techniques, budget spent, kept ideas, open
+questions and the `Status:` line. Before converging, every idea goes under `## Ideas` as it is
+raised, the human's included. The shape:
+
+```markdown
+# <topic>
+- topic: <one line>
+- goal: <one line>
+- stance: <facilitator | partner | ideate for me>
+- techniques: <names, "invented" where so>
+- budget spent: <k tokens> of <budget>
+
+## Ideas
+- <idea> (<author, partner stance only>) (lens: <method name>)
+
+## Kept ideas
+- <an idea moved from Ideas, as written there>
+
+## Dropped ideas
+- <an idea moved from Ideas, as written there>
+
+## Open questions
+- <question>
+
+Status: open
+```
+
+## 6. Stop
+Stopped before converging: the note keeps everything kept so far, its `## Ideas` included,
+with `Status: open`. Write NOW.md per §0's run-view rule with `--slug <slug> --waiting
+brainstorm`, its question `resume: /gtm:brainstorm <note>`. To turn the note into a request, the
+human runs `/gtm:gtm`; the analyst receives the note's path and the spec cites it in its
+`Brainstorm:` header line. Nobody edits the note after that.

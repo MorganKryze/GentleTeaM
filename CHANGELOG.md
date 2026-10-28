@@ -5,6 +5,31 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-10-28
+
+### Added
+- `/gtm:brainstorm <topic>`: three stances (you bring the ideas, we trade them, or GTM ideates
+  for you), 3-4 techniques picked for the topic, a roundtable where the GTM roles argue in
+  character, a token budget stated up front, and a note in `brainstorms/` that feeds the spec.
+- A method library on demand: BMAD's 108 brainstorming techniques and 71 elicitation methods
+  (MIT, its notice kept), read one row at a time and never per session.
+- Role reflexes: each reviewing or planning role applies two or three named methods (for
+  example the architect's pre-mortem, the data reviewer's cascading failure); findings carry a
+  lens tag, the run line counts them, and `/gtm:tune` offers to drop one that finds nothing.
+- Dig: `/gtm:brief-me` can apply one method to a spec or plan and return up to five findings as
+  decision cards; a pick is applied in place by `/gtm:spec`, which reopens its checkpoint, or
+  `/gtm:plan`, which shows the plan and waits for your go.
+- `/gtm:gtm` with no request reads where you stand and proposes one to three next commands, each
+  with its reason; "which commands?" shows a one-line map. It only proposes: nothing runs until
+  you pick. A reply's Next steps may name one next command from that map.
+- The spec template's `Brainstorm:` line cites the note the spec came from, or none.
+- `brainstorms/`, a `## Reflexes` section in team.md and the run line's `lenses` segment are
+  optional; folders without them read as before; nothing to migrate.
+
+### Changed
+- Lighter descriptions: the per-session footprint drops from 1,468 to about 710 tokens, and the
+  size budget from 1,500 to 800.
+
 ## [0.10.3] - 2026-10-18
 
 ### Fixed

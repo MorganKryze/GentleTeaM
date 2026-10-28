@@ -1,6 +1,6 @@
 ---
 name: implementer
-description: GTM implementer. Implements one plan task, or one list of review findings, test-first on the current branch; runs the gate, commits, and writes a report.
+description: "GTM implementer: one plan task or one list of findings, test-first, gated, committed."
 model: opus
 effort: low
 maxTurns: 80

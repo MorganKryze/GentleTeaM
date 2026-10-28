@@ -49,6 +49,9 @@ for (const name of readdirSync(join(plugin, 'agents'))) {
   if (fm.maxTurns && !/^\d+$/.test(fm.maxTurns)) fail(file, 'maxTurns is not an integer')
   if (READ_ONLY.includes(fm.name) && !/Write/.test(fm.disallowedTools || '')) fail(file, 'read-only role must disallow Write and Edit')
   if (/\bAgent\b/.test(fm.tools || '')) fail(file, 'role agents never dispatch subagents')
+  // One sentence, plus `Read-only.` (the analyst: `Read-only on code.`) where it applies.
+  const body = (fm.description || '').replace(/ Read-only(?: on code)?\.$/, '')
+  if (!/^[^.!?]+\.$/.test(body)) fail(file, 'description is not one sentence (plus "Read-only.")')
 }
 for (const dir of readdirSync(join(plugin, 'skills'))) {
   const file = join(plugin, 'skills', dir, 'SKILL.md')
@@ -57,6 +60,7 @@ for (const dir of readdirSync(join(plugin, 'skills'))) {
   if (!fm.description) fail(file, 'missing description')
   if (fm.name && fm.name !== dir) fail(file, 'name differs from directory')
   if (fm.description && fm.description.length > 1024) fail(file, 'description over 1024 characters')
+  if (fm['disable-model-invocation'] !== 'true' && !/\bUse when\b/.test(fm.description || '')) fail(file, 'description lacks "Use when"')
 }
 const runView = readFileSync(join(plugin, 'skills/gtm/SKILL.md'), 'utf8').replace(/\s+/g, ' ')
 for (const w of ['show-toplevel', 'exact line `/<rel>/NOW.md` absent', 'only when you added the line', 'the first time in a session only'])
@@ -79,6 +83,11 @@ for (const name of readdirSync(join(plugin, 'workflows'))) {
   if (!src.startsWith('export const meta = {')) fail(file, 'meta must be the first statement')
   const meta = src.match(/name: '([^']+)'/)
   if (!meta || meta[1] !== basename(name, '.js')) fail(file, 'meta.name differs from file name')
+  for (const k of ['description', 'whenToUse']) {
+    const v = (src.match(new RegExp(`\\b${k}: '([^']*)'`)) || [])[1]
+    if (v === undefined) fail(file, `meta lacks ${k}`)
+    else if (/\bargs\s*:/.test(v)) fail(file, `meta ${k} lists its args`)
+  }
   if (/Date\.now\(\)|Math\.random\(\)|new Date\(\)/.test(src)) fail(file, 'Date.now, Math.random and new Date() throw in workflows')
   // Top-level return and await are valid at runtime: wrap in an async function to check syntax.
   const wrapped = join(tmp, name)

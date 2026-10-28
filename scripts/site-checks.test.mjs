@@ -424,6 +424,7 @@ check('A11', () => {
     if (total) tokens = (Math.round(total / 10) * 10).toLocaleString('en-GB');
     else f.push('size.mjs printed no total');
   }
+  const dated = {};
   for (const [file, t] of all) {
     // Two defaults since 0.7.0: per task, and per standard review (a sentence about a wave or a standard task).
     for (const m of t.matchAll(/\b(\d+|one|two|three|four|five)\s+correction rounds?\b/gi)) {
@@ -434,7 +435,12 @@ check('A11', () => {
     for (const m of t.matchAll(/\b(\d+|three|four|five)[- ]files? (limit|at most)|file limit[^.]{0,40}?\b(\d+) files?/gi)) { const n = num(m[1] || m[3]); if (n !== ceiling) f.push(`${file}: "${m[0]}", default is ${ceiling}`); }
     for (const m of t.matchAll(/\b(\d+)\/10\b/g)) if (+m[1] !== threshold) f.push(`${file}: "${m[0]}", default is ${threshold}/10`);
     for (const m of t.matchAll(/\b(\d+|ten|eleven|twelve)\s+(role agents|roles)\b/gi)) if (num(m[1]) !== agents.length) f.push(`${file}: "${m[0]}", there are ${agents.length} agents`);
-    if (tokens) for (const m of t.matchAll(/\b(about|around) ([\d,]+) tokens\b/gi)) if (m[2] !== tokens) f.push(`${file}: "${m[0]}", the measured figure is ${tokens}`);
+    if (tokens) for (const m of t.matchAll(/\b(about|around)\s+([\d,]+)\s+tokens\b/gi)) {
+      if (m[2] !== tokens) f.push(`${file}: "${m[0]}", the measured figure is ${tokens}`);
+      // A page that dates the figure dates it like every other page does.
+      const v = (t.slice(m.index, m.index + 120).match(/\b(?:in|on)(?: GTM)?\s+(\d+\.\d+\.\d+)\b/) || [])[1];
+      if (v) (dated[v] ||= []).push(file);
+    }
   }
   const roles = page('reference/roles.md') || '';
   for (const a of agents) {
@@ -445,6 +451,7 @@ check('A11', () => {
     if (!row) f.push(`roles.md has no row for \`${name}\``);
     else if (!new RegExp(`\\|\\s*${effort}\\b`).test(row)) f.push(`roles.md row ${name} lacks its default effort ${effort}`);
   }
+  if (Object.keys(dated).length > 1) f.push(`the token figure is dated to different versions: ${Object.entries(dated).map(([v, fs]) => `${v} (${fs.join(', ')})`).join(', ')}`);
   if (tokens && !all.some(([, t]) => new RegExp(`\\b${tokens} tokens\\b`).test(t))) f.push(`no page states about ${tokens} tokens per session`);
   if (!all.some(([, t]) => new RegExp(`\\b${threshold}/10\\b`).test(t))) f.push(`no page states the ${threshold}/10 design threshold`);
   // The cost guide's summary counts its lever table.

@@ -1,14 +1,18 @@
 ---
 name: plan
-description: Write the GTM task plan with the architect from an approved spec - per task files, interfaces, TDD steps, verify command, parallel-safe tags - applying the ledger's lessons and replaying only risky tasks in a scratch clone. No human checkpoint unless something deviates.
+description: "Write the GTM task plan from an approved spec with the architect. Use when the spec is approved."
 argument-hint: "[spec path or slug]"
 ---
 # Plan (no checkpoint)
 
-Ground rules: as in the `gtm` skill §0. The spec must say `Status: approved`; otherwise run
-`/gtm:spec` first.
+Ground rules: as in the `gtm` skill §0. The spec's Status must start with `approved`; otherwise
+run `/gtm:spec` first.
 
 ## 1. Write
+An amend (a dig pick from `/gtm:brief-me`): dispatch the architect with the existing plan path
+and the picked option, never the shortcut below; it edits that file in place, same path, kept
+Decisions, writes the pick into the plan's "Decisions made where the spec is silent" and a ledger
+`ruling` line, and the plan is shown to the human before delivery (§3).
 The spec's Status ends with `plan kept from the one pass` and the plan exists: dispatch no
 architect, go to §2. Otherwise (no one pass, a card answered otherwise, the spec changed),
 dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: the spec path, the
@@ -46,3 +50,4 @@ One round of corrections with the architect if a check fails.
 Do not present the plan. Go straight to `/gtm:deliver`, unless the plan deviates from the spec (a
 Heads-up and a decision card), its task count passes the cap (§2's split / accept card), its
 estimate passes 1.5× of the spec's (§2), or the human asked to see it (`/gtm:brief-me`).
+After an amend, show the plan and wait for the human's go before `/gtm:deliver`.

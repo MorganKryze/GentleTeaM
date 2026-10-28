@@ -1,6 +1,7 @@
 # <Feature>: spec
 
 > Track: <Feature | Milestone>. Date: <YYYY-MM-DD>. Mockups: <mockup page path or "none">.
+> Brainstorm: <note path or none>.
 > Status: draft | approved by the human on <date>.
 
 ## Summary

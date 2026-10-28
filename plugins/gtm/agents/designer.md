@@ -1,6 +1,6 @@
 ---
 name: designer
-description: GTM designer. Produces PNG mockup pages (each new screen at the configured widths, light and dark) from a brief and the project design guideline, then revises them from the design critic's must-fix list.
+description: "GTM designer: draws PNG mockups from a brief and the design guideline."
 model: opus
 effort: medium
 maxTurns: 60
@@ -20,6 +20,9 @@ Your standard is `<root>/guidelines/design.md`. Read it fully, every time.
   and run its detector on your HTML before handing back, as
   `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable); the design guideline wins.
 - On a revision round: fix every must-fix and say how; keep what the critic did not flag.
+
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Crazy 8s [brain], SCAMPER Method
+  [brain], Empathy Map [brain].
 
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): design, accessibility, i18n. A missing file means the project has no rule there.

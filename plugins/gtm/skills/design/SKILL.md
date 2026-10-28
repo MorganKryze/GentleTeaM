@@ -1,6 +1,6 @@
 ---
 name: design
-description: Run the GTM design loop - the designer drafts PNG mockup pages, the design critic scores them against the project guideline until the bar is met - then present the scored mockup page for the human's approval. Use for a Feature that changes screens, before the spec.
+description: "GTM design loop: mockups scored against the design guideline, then shown for approval. Use when a Feature changes screens."
 argument-hint: "[feature slug or brief]"
 ---
 # Design loop (checkpoint 1: approve the mockups)

@@ -1,13 +1,9 @@
 ---
 name: gtm
-description: GentleTeaM entry point. Use when starting any piece of work with GTM - explains the method in a few lines, picks the track (Fix, Feature, Milestone) with at most two questions, and routes to the right GTM skills.
+description: "GentleTeaM entry point: picks the track and routes, or proposes the next command. Use when starting GTM work or unsure what to do next."
 argument-hint: "[what you want done]"
 ---
 # GTM: the light agent team
-
-GTM runs a small team of role agents for you. You see three checkpoints per Feature (approve the
-mockups, approve the spec summary, give the go); the team settles everything else and lists the
-decisions it made for you at the end. Everything the human reads follows the human briefing format.
 
 ## 0. Ground rules (every GTM skill)
 - **GTM root:** `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md says `GTM root: <path>`. No root: offer
@@ -59,7 +55,10 @@ decisions it made for you at the end. Everything the human reads follows the hum
   no saving promised. A: a ledger `ruling` `limits: lighter <role> <old> → sonnet low, …` quoting
   the answer, for this slug's dispatches, resumes included; `team.md` unchanged. `none`: nothing;
   `stale` or `?`: one Heads-up per session.
-- Nothing is pushed, merged, tagged or released without the human's explicit go.
+- Nothing is pushed, merged, tagged or released without the human's explicit go. The advisor only
+  proposes: it runs no skill, workflow or git command that writes, and never pushes, merges, tags or
+  starts a run until the human picks. Next steps may name one next command from
+  `${CLAUDE_PLUGIN_ROOT}/templates/commands.md`, none when the state calls for none.
 
 ## 1. Pick the track (≤ 2 questions)
 Request: $ARGUMENTS
@@ -69,8 +68,10 @@ and its `resume` command (`?`: the `handoff` file to read instead); on yes, run 
 `git branch --show-current` is the facts' `branch`, else name that branch (`?`: the
 handoff's `branch`) and stop.
 
-No request given: explain GTM in five lines (the tracks, your checkpoints, the skills) and ask
-what to do. Clear and small: judge it yourself. Otherwise dispatch `gtm:analyst` with the request and the root.
+No request: propose as `${CLAUDE_PLUGIN_ROOT}/templates/advisor.md` says. Asked which commands
+exist: show `${CLAUDE_PLUGIN_ROOT}/templates/commands.md`, read only then. Clear and small: judge
+it yourself. Otherwise dispatch `gtm:analyst` with the request, the root and, for a request from a
+brainstorm note, its path, read only: tell the analyst never to write it.
 
 | Track | When | Flow | Human checkpoints |
 | --- | --- | --- | --- |
@@ -100,12 +101,11 @@ Record the work in `<root>/backlog.md`: add or update its story (type, priority 
 ## 2. Route
 - **Fix:** write `<root>/reports/<slug>/brief.md` (the approved 3 lines plus the test that proves
   it), create the branch as `git` says, run the workflow `gtm:deliver-task` with `track: "fix"`
-  (args as `/gtm:deliver` builds them). `ESCALATE` → read it as `/gtm:deliver` §2 says; the
-  commits stay. `OPEN` or `BLOCKED` → stop, and read it as `/gtm:deliver` §2 says. Any result:
-  its progress line and measure as `/gtm:deliver` §1 and §2 step 3 say. `CLEAN` → append each
-  minor to the ledger (`minor`) as `/gtm:deliver` §2 does and one `run` line as its §5 says
-  (its phase `tasks`, one task), holding `Fix: CLEAN, no final review`; then present the result
-  and ask the go (`/gtm:ship`).
+  (args as `/gtm:deliver` builds them). `ESCALATE` → read it as `/gtm:deliver` §2 says; the commits
+  stay. `OPEN` or `BLOCKED` → stop, and read it as `/gtm:deliver` §2 says. Any result: its progress
+  line and measure as `/gtm:deliver` §1 and §2 step 3 say. `CLEAN` → append each minor to the ledger
+  (`minor`) as `/gtm:deliver` §2 does, one `run` line as its §5 says (its phase `tasks`, one task),
+  holding `Fix: CLEAN, no final review`; then present the result and ask the go (`/gtm:ship`).
 - **Feature:** `/gtm:design` (only if screens change and `design.screens` is true) → `/gtm:spec` →
   `/gtm:plan` → `/gtm:deliver` → `/gtm:ship`. Invoke each skill in turn; stop only at a checkpoint.
 - **Milestone:** dispatch `gtm:architect` to write `<root>/specs/<date>-<slug>-milestone.md`: the

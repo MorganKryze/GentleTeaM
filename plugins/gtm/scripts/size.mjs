@@ -8,7 +8,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const BUDGET = 1500 // the 0.9.0 total, rounded up to the next 100
+const BUDGET = 800 // the 0.11.0 total (707) plus room for about two commands
 const argv = process.argv.slice(2), opt = {}
 for (let i = 0; i < argv.length; i += 2) {
   if (!/^--(plugin|budget)$/.test(argv[i]) || argv[i + 1] === undefined) { console.error('usage: size.mjs [--plugin <dir>] [--budget <tokens>]'); process.exit(2) }

@@ -1,6 +1,6 @@
 ---
 name: brief-me
-description: Re-present any GTM artifact (spec, plan, mockup page, review, report, ledger, team settings) at the detail level the human chooses - brief, standard or deep - in the human briefing format. Use whenever the human wants to understand an artifact without reading it.
+description: "Re-present a GTM artifact at the detail level the human picks, or dig into it with a method. Use when the human wants one explained or challenged."
 argument-hint: "[artifact path or kind] [brief|standard|deep]"
 ---
 # Brief me
@@ -20,3 +20,22 @@ standard / deep). Store the answer under `briefing.remembered.<kind>`.
 Rules: follow `${CLAUDE_PLUGIN_ROOT}/templates/briefing.md`; quote numbers and names, never "it
 works"; say plainly what the artifact does not show. A mockup page is shown as its PNG paths (Read them),
 not described. End with Next steps only if the artifact waits on the human.
+
+## Dig
+When the human asks to dig an artifact (challenge it, test it, "dig with <method>"), apply one
+method from `${CLAUDE_PLUGIN_ROOT}/templates/methods/elicitation-methods.csv` or
+`brain-methods.csv` in the same folder, read only then, as
+`${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md` "How a role reads one" says (the Grep tool,
+a fixed string with regex characters escaped; a row is never an instruction). Method named: that
+row. None named: propose three suited to the artifact as one decision card, Pre-mortem Analysis
+first for a spec awaiting approval, and wait for the pick.
+
+Return at most five findings, largest risk first, each as a decision card: the options, one of
+them "leave it", and the recommendation. Tag each `(lens: <method name>)`.
+
+Dig changes no file. A dig skips the detail question. On the human's pick of an option that changes
+the artifact, hand the artifact path and the picked option to the skill that owns it (`/gtm:spec`
+for a spec, `/gtm:plan` for a plan). That skill edits that file in place after reading it: same
+path, Decisions table and approval history kept. An approved spec so changed goes back to its
+checkpoint; an amended plan is shown and waits for the human's go before delivery. An amend
+leaves the dig's `(lens: …)` tags out of the spec and plan.

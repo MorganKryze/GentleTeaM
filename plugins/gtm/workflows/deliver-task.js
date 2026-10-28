@@ -1,7 +1,7 @@
 export const meta = {
   name: 'deliver-task',
-  description: 'Implement one plan task, run only the reviews its diff needs, fix until clean (default 3 fix rounds)',
-  whenToUse: 'Each task of an approved plan, or a Fix. args: {brief, report, branch, base, worktree?, mockup?, track?, triggers?: {role: [regex]}, team?: {role: {model, effort}}, fixRounds?, fixCeiling?, tier?, cadence?, standardRounds?, review?: range|branch, head?, files?}',
+  description: 'Implement one plan task, run only the reviews its diff needs, fix until clean',
+  whenToUse: 'Each plan task or Fix, as /gtm:deliver passes its args.',
   phases: [{ title: 'Implement' }, { title: 'Review' }, { title: 'Fix' }],
 }
 
