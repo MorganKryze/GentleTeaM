@@ -16,7 +16,11 @@ const GTM = 'plugins/gtm/skills/gtm/SKILL.md'
 const ADVISOR = 'plugins/gtm/templates/advisor.md'
 
 const brief = read(BRIEF)
-for (const p of ['Dig changes no file.', 'at most five', 'leave it']) has(BRIEF, brief, p)
+for (const p of [
+  'Dig changes no file.', 'at most five', 'leave it',
+  'the artifact path and the picked option', 'edits that file in place after reading it',
+  'Decisions table and approval history kept',
+]) has(BRIEF, brief, p)
 
 const gtm = read(GTM)
 const ground = gtm.slice(gtm.indexOf('## 0.'), gtm.indexOf('## 1.'))
