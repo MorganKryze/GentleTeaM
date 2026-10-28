@@ -28,6 +28,8 @@ has('brainstorm/SKILL.md', skill, 'templates/methods/brain-methods.csv')
 has('brainstorm/SKILL.md', skill, 'templates/methods/elicitation-methods.csv')
 has('brainstorm/SKILL.md', skill, '<root>/brainstorms/')
 has('brainstorm/SKILL.md', skill, 'supply no idea')
+// P3 allows NOW.md, so the gtm §0 run-view steps that write it are named as part of it.
+has('brainstorm/SKILL.md', skill, 'its `now-facts.mjs` read, the `NOW.md.bak` rename and the exclude line')
 
 const map = read('templates/commands.md')
 const line = /^- `\/gtm:([a-z-]+)` · (.+)$/

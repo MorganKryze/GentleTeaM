@@ -6,7 +6,8 @@ argument-hint: "[topic]"
 # Brainstorm
 
 Ground rules: as in the `gtm` skill §0. It writes nothing but its note and NOW.md, runs no
-script, and starts no other skill until the human picks.
+script, and starts no other skill until the human picks. Writing NOW.md follows §0's run-view
+rule whole: its `now-facts.mjs` read, the `NOW.md.bak` rename and the exclude line are part of it.
 
 Methods: `${CLAUDE_PLUGIN_ROOT}/templates/methods/brain-methods.csv` and
 `${CLAUDE_PLUGIN_ROOT}/templates/methods/elicitation-methods.csv`; read only the rows you use,
