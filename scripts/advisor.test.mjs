@@ -65,5 +65,12 @@ for (const p of [
   'shipped story without retro, or 5 or more open minors | `/gtm:retro`',
 ]) has(ADVISOR, advisor, p)
 
+// The spec row proposes the dig itself; a flagged limit outranks retro, tune and companion; the
+// human-only commands are typed by the human.
+has(ADVISOR, advisor, '`/gtm:brief-me <spec path>, dig with Pre-mortem Analysis`')
+has(ADVISOR, advisor, '`/gtm:status` and `/gtm:pause` are typed by the human: the card says to type them')
+const row = (s) => advisor.indexOf(`| ${s}`)
+for (const later of ['shipped story without retro', 'costly last run', 'known companion installed'])
+  if (!(row('limits flagged') > 0 && row('limits flagged') < row(later))) errors.push(`${ADVISOR}: "limits flagged" must rank before "${later}"`)
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('advisor: dig, advisor rule, states and thresholds OK')

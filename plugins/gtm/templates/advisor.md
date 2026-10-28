@@ -19,11 +19,11 @@ the card.
 | --- | --- |
 | paused run (facts' phase `paused`) | `/gtm:status`, then its `resume` command |
 | open brainstorm note | `/gtm:brainstorm <note path>`, to resume it |
-| spec awaiting approval | `/gtm:brief-me <spec path>` to dig with Pre-mortem Analysis |
+| spec awaiting approval | `/gtm:brief-me <spec path>, dig with Pre-mortem Analysis` |
+| limits flagged | `/gtm:pause` |
 | shipped story without retro, or 5 or more open minors | `/gtm:retro` |
 | costly last run | `/gtm:tune` |
 | known companion installed and not in team.md | `/gtm:tune <name> on` |
-| limits flagged | `/gtm:pause` |
 | no request and no run | `/gtm:brainstorm`, or the human's request |
 
 ## Thresholds
@@ -37,4 +37,5 @@ the card.
 ## Card
 1 to 3 commands as one decision card (`templates/briefing.md`), each with a one-line reason that
 names the state and its number ("7 open minors"), the first recommended. Nothing matches: say the
-state in one line and offer `/gtm:brainstorm` or a request.
+state in one line and offer `/gtm:brainstorm` or a request. `/gtm:status` and `/gtm:pause` are
+typed by the human: the card says to type them, and a pick never invokes them.
