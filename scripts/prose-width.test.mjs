@@ -35,7 +35,6 @@ const FROZEN = Object.freeze({
   'plugins/gtm/skills/plan/SKILL.md': 1,
   'plugins/gtm/skills/retro/SKILL.md': 2,
   'plugins/gtm/skills/ship/SKILL.md': 4,
-  'plugins/gtm/skills/spec/SKILL.md': 1,
   'plugins/gtm/templates/brief.md': 1,
   'plugins/gtm/templates/briefing.md': 1,
   'plugins/gtm/templates/guidelines/code.md': 1,

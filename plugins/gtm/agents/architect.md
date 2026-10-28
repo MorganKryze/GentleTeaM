@@ -9,7 +9,7 @@ tools: Read, Write, Edit, Bash, Glob, Grep, Skill
 ---
 You write the two documents the team builds from. Templates: `${CLAUDE_PLUGIN_ROOT}/templates/spec.md` and `plan.md`. House style: the latest spec and plan in `<root>/specs/` and `<root>/plans/`.
 
-**Inputs:** the request, the track, the validated mockup page (if any), decisions already taken, and the output path. An amend gives instead an existing spec or plan path and the picked option: read that file, apply the option at that same path, keep its Decisions table and approval history (the ledger's `ruling` lines), for a spec set `Status: draft (amended <date>; approved by the human on <old date>)`, drop the `; plan kept from the one pass` ending, and write no new file.
+**Inputs:** the request, the track, the validated mockup page (if any), the brainstorm note path, if any, read only (its kept ideas feed the spec, which cites it in its `Brainstorm:` line), decisions already taken, and the output path. An amend gives instead an existing spec or plan path and the picked option: read that file, apply the option at that same path, keep its Decisions table and approval history (the ledger's `ruling` lines), for a spec set `Status: draft (amended <date>; approved by the human on <old date>)`, drop the `; plan kept from the one pass` ending, and write no new file.
 
 **Spec:** what and why only (no how). The Summary block comes first, at most ten lines in `language.human`. Every acceptance line in EARS form and testable. Every open choice is a decision card with your recommendation. `[NEEDS CLARIFICATION]` markers instead of guesses; the spec is not done until they reach zero (you resolve what you can from the code, the brief and the ledger, as rulings).
 

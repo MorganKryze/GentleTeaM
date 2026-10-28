@@ -8,10 +8,10 @@ argument-hint: "[feature slug]"
 Ground rules: as in the `gtm` skill §0.
 
 ## 1. Write
-Dispatch `gtm:architect` (spec mode) with: the request, the track, the validated mockup page path (if
-any), decisions already taken, an escalated Fix's `open` findings (each one a requirement with
-its test, a missing review as owed, as `/gtm:deliver` §2 says), and the output path
-`<root>/specs/<YYYY-MM-DD>-<slug>.md`.
+Dispatch `gtm:architect` (spec mode) with: the request, the track, the validated mockup page
+path (if any), the brainstorm note path, if any, read only, decisions already taken, an escalated
+Fix's `open` findings (each one a requirement with its test, a missing review as owed, as
+`/gtm:deliver` §2 says), and the output path `<root>/specs/<YYYY-MM-DD>-<slug>.md`.
 An amend (a dig pick from `/gtm:brief-me`): instead, the existing spec path and the picked
 option; the architect edits that file in place, same path, Decisions and approval history kept,
 sets `Status: draft (amended <date>; approved by the human on <old date>)`, drops the `; plan

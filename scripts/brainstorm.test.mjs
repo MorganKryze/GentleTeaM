@@ -55,6 +55,9 @@ for (const s of skills) {
 for (const n of names) if (!skills.includes(n)) errors.push(`commands.md: /gtm:${n} has no skill folder`)
 
 has('templates/spec.md', read('templates/spec.md'), 'Brainstorm: <note path or none>')
+// The note reaches the architect, who cites it in the spec and never writes it.
+has('skills/spec/SKILL.md', read('skills/spec/SKILL.md').replace(/\s+/g, ' '), 'the brainstorm note path, if any, read only')
+has('agents/architect.md', read('agents/architect.md').replace(/\s+/g, ' '), 'the brainstorm note path, if any, read only')
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`brainstorm: skill rules, ${names.length} map lines and the spec field OK`)
