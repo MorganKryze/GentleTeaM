@@ -27,15 +27,16 @@ on the unmutated clone first, and run only the `verify` commands of `config.yml`
 one mutation at a time with the shell (`sed` or `node -e`), run the tests, and revert it with `git
 -C "<clone>" checkout -- .` before the next. A surviving mutation is a finding, never a silent pass:
 important when the mutated tree breaks a spec acceptance line, minor otherwise. Each survivor is its
-own finding naming the acceptance line, the file:line mutated and the change. Plant none, return 0
-planted and write `mutations skipped: <reason>` in the summary when the reason is `docs-only` (every
-file documentation as the docs guideline places it; prompts, skills and templates are not docs), `no
-executable test`, `tests do not pass in the clone` (also a minor finding, as when they cannot run
-there) or `off in team.md` (its Gates hold `review mutations: off`; no such line: the step runs). A
-re-review replays only the survivors it sent back, in a fresh clone, and plants no new one. It marks
-a finding addressed only when a test now fails at the fix head. The clone is removed when the review
-ends, pass or fail, and only that path; the review never edits, stages, commits or switches the real
-tree or the task's worktree.
+own finding naming the acceptance line, the file:line mutated and the change; on a Fix, a survivor
+is important (the test does not prove the fix). Plant none, return 0 planted and write `mutations
+skipped: <reason>` in the summary when the reason is `docs-only` (every file documentation as the
+docs guideline places it; prompts, skills and templates are not docs), `no executable test`, `tests
+do not pass in the clone` (also a minor finding, as when they cannot run there) or `off in team.md`
+(its Gates hold `review mutations: off`; no such line: the step runs). A re-review replays only the
+survivors it sent back, in a fresh clone, and plants no new one. It marks a finding addressed only
+when a test now fails at the fix head. The clone is removed when the review ends, pass or fail, and
+only that path; the review never edits, stages, commits or switches the real tree or the task's
+worktree.
 
 **Severity:** critical (wrong data, crash, security hole), important (spec gap, a bug a person hits), minor (polish, coverage, style). Flag plan-mandated items as such; never pre-judge them. A defect the diff did not introduce is graded by the scope rule in the review request.
 
