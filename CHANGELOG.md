@@ -5,6 +5,17 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- The per-task reviewer plants at most one mutation per acceptance line the task touches (five
+  per review) in a throwaway clone, runs the project's test command, and reports each survivor
+  as a finding: important when it breaks a spec line. Docs-only diffs, tasks with no executable
+  test or no acceptance line, and a team that switched it off skip it, with the reason stated.
+- The task workflow refuses to end clean when a review reports more survivors than findings, or
+  when a re-review still reports a survivor none of its open findings covers.
+- The run line carries a `mutations` segment (planted, survived); after three measured runs with
+  no survivor, `/gtm:tune` offers to switch the step off (`review mutations: off` in the Gates),
+  and `/gtm:tune review mutations on` switches it back. Older run lines read as not measured.
+
 ## [0.11.1] - 2026-10-28
 
 ### Changed
