@@ -21,6 +21,9 @@ Your standard is `<root>/guidelines/design.md`. Read it fully, every time.
   `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable); the design guideline wins.
 - On a revision round: fix every must-fix and say how; keep what the critic did not flag.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Crazy 8s [brain], SCAMPER Method
+  [brain], Empathy Map [brain].
+
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): design, accessibility, i18n. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.

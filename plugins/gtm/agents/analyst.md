@@ -22,6 +22,9 @@ You turn a request into something the team can act on, at the lowest cost to the
 
 Write nothing outside the GTM root.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Job to Be Done [brain], Assumption
+  Audit [elicitation], How Might We [brain].
+
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): work. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.

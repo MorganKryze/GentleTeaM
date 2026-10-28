@@ -64,6 +64,13 @@ and usage lines of past changes, proposes changes and records each one with its 
 settings' history. You can also name the change yourself, for example a lower effort for one role.
 `/gtm:retro` suggests a tune when a pattern appears across changes.
 
+`/gtm:tune` also weighs the
+[reflexes](/reference/roles/#which-thinking-methods-does-each-role-apply). When a reflex found
+nothing in the last three measured runs of its role, it offers one card: keep it or drop it.
+Nothing is dropped without your answer. A drop adds a reflexes section to the settings, dated,
+with a line in the history; until then the section does not exist and every reflex applies. A
+later card can restore a dropped one.
+
 | Setting | Values |
 | --- | --- |
 | Effort | `low`, `medium`, `high`, `xhigh`, `max` |

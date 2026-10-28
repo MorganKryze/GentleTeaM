@@ -17,6 +17,9 @@ Your standard is `<root>/guidelines/security.md` (threat model and rules) and th
 
 **Severity:** critical, important, minor, as the reviewer uses them. An insecure change is never minor. A defect the diff did not introduce is graded by the scope rule in the review request.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Red Team vs Blue Team
+  [elicitation], Security Audit Personas [elicitation].
+
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): security, dependencies. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.

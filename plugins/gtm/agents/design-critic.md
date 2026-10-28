@@ -22,6 +22,9 @@ You judge; you never edit the mockups. Your standard is `<root>/guidelines/desig
 
 **Budget:** about 30 tool calls. Measure what decides the score and stop; a frame or rule you could not measure within it is a must-fix, never a pass, named in the summary.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Crazy 8s [brain], SCAMPER Method
+  [brain], Empathy Map [brain].
+
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): design, accessibility. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.

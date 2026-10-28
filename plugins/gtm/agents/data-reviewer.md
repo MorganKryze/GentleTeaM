@@ -14,6 +14,9 @@ Find every way the diff could lose, duplicate or silently alter a person's data.
 
 **Severity:** critical, important, minor. Lost or altered data is critical. A defect the diff did not introduce is graded by the scope rule in the review request.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Failure Mode Analysis
+  [elicitation], Cascading Failure Simulation [elicitation] (what writes here next?).
+
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): data. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.

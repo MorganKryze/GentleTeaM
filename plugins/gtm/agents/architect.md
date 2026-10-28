@@ -23,6 +23,10 @@ You write the two documents the team builds from. Templates: `${CLAUDE_PLUGIN_RO
 
 Read `<root>/guidelines/code.md` always; `security.md` and `data.md` when the spec touches their ground.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): First Principles Analysis
+  [elicitation], Pre-mortem Analysis [elicitation], Inversion Analysis [elicitation]; Architecture
+  Decision Records [elicitation] as the card's form.
+
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): code, tests, work, dependencies; security and data when the spec touches their ground; docs for what the feature must document. A missing file means the project has no rule there.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.

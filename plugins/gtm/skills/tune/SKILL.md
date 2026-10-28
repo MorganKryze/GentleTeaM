@@ -8,11 +8,14 @@ Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without th
 Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
 Asked to turn a companion on or off (`/gtm:tune <name> on|off`)? One card, then §4.
 
+- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Occam's Razor Application
+  [elicitation], Constraint Mapping [brain].
+
 ## 1. Read
 `<root>/team.md` (its `## Companions` against the session's skills, as
-`${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says), the `run` lines (their `measured` part
-included), the `minor` and `usage` lines of the ledger, and the final reviews under
-`<root>/reports/`.
+`${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says, and its `## Reflexes` section, if any), the
+`run` lines (their `measured` part and `lenses` segment included), the `minor` and `usage` lines
+of the ledger, and the final reviews under `<root>/reports/`.
 
 ## 2. Look for signals
 | Signal | Typical proposal |
@@ -29,6 +32,7 @@ included), the `minor` and `usage` lines of the ledger, and the final reviews un
 | an `over budget` usage line in two runs | revisit that budget, or the plan's task sizing |
 | three measured runs and no budget | set `budget per task` and `budget per branch` at their medians over the last five measured runs (`?` left out, as the architect's estimate), replacing their Gates lines |
 | a known companion listed in the session but not recorded, or recorded `on` but gone | turn it on or off (one card each); no section counts as none on |
+| a reflex method has 0 tagged items over the last 3 measured runs in which its role ran | drop that reflex (one keep-or-drop card); a `run` line without a `lenses` segment is not measured; retro's and tune's own tags are counted in the ledger lessons and History lines |
 | a convention keeps producing the same finding or the same `lesson` | edit that row of `conventions.md` and its guideline file |
 
 No signal: say so in one line and stop.
@@ -50,6 +54,11 @@ Why: <the ledger evidence, with counts>.
 **I recommend: <A or B>**, <why>. **Cost if wrong:** <one line>.
 
 ## 4. Record
+A reflex is dropped or restored only through a card the human approves.
+No reflex section in team.md: every reflex applies. Never write the section before the first
+approved reflex card; then add `## Reflexes` with one line per dropped reflex
+(`- <role>: <method name> off · why: <counts> · <date>`), and delete that line to restore it.
+
 Write each approved value into `team.md` (or `conventions.md` and its guideline) with its new
 reason and today's date, add a History line
 (`- <date> · <setting>: <old> → <new> · <why>`), and a `ruling` line in the ledger quoting the
