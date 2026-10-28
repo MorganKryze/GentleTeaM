@@ -33,6 +33,7 @@ of the ledger, and the final reviews under `<root>/reports/`.
 | three measured runs and no budget | set `budget per task` and `budget per branch` at their medians over the last five measured runs (`?` left out, as the architect's estimate), replacing their Gates lines |
 | a known companion listed in the session but not recorded, or recorded `on` but gone | turn it on or off (one card each); no section counts as none on |
 | a reflex method has 0 tagged items over the last 3 measured runs in which its role ran | drop that reflex (one keep-or-drop card); a reflex already `off` in `## Reflexes` is skipped; a `run` line without a `lenses` segment is not measured for lenses, the rest as before; retro's and tune's own tags are counted in the ledger lessons and History lines |
+| the last 3 measured runs that planted at least one mutation show 0 survived | drop the review's mutation step (one keep-or-drop card); a `run` line without a `mutations` segment is not measured for mutations, the rest as before |
 | a convention keeps producing the same finding or the same `lesson` | edit that row of `conventions.md` and its guideline file |
 
 No signal: say so in one line and stop.
@@ -59,6 +60,10 @@ No reflex section in team.md: every reflex applies. Never write the section befo
 approved drop; then add `## Reflexes` before `## History`: add it once; a later drop appends its
 line to it. One line per dropped reflex (`- <role>: <method name> off · why: <counts> · <date>`);
 a restore deletes every line for it.
+The mutation step is switched off or back on only through a card the human approves.
+No `review mutations` line in team.md: the step runs. An approved drop adds to its Gates
+`- review mutations: off · why: <counts> · <date>`, with a History line and a ledger `ruling`
+line; a restore removes that line.
 
 Write each approved value into `team.md` (or `conventions.md` and its guideline) with its new
 reason and today's date, add a History line
