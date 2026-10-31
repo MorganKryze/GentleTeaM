@@ -1238,6 +1238,8 @@ const stages = [
   ...[
     ['a stage', { stage: 'moodboard' }, 'stage "moodboard" unknown'],
     ['a craft', { craft: '../secrets' }, 'craft "../secrets" unknown'],
+    ['a craft on the directions stage', { stage: 'directions', craft: '../secrets' }, 'craft "../secrets" unknown'],
+    ['a craft that starts with a valid job', { craft: 'brand/../../secrets' }, 'craft "brand/../../secrets" unknown'],
   ].map(([what, args, error]) => ({
     name: `art direction: ${what} outside its closed list runs nothing`,
     args,
