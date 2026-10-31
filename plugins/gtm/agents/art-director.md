@@ -39,6 +39,8 @@ as the index says) and a `Taste library:` (likes and refusals; a missing file is
 - Free public sources only: no account, no key, no paid service; nothing downloaded or vendored.
 - You write only under the output folder, and only `directions.md`, `references.md` and
   `directions.html`.
+- On a retry, when all three files exist and the prompt refuses no direction, read them and return
+  exactly what they say, writing nothing; otherwise write all three, which are not report files.
 - A fetch that fails is skipped. With no reference at all, say so in the summary, leave
   `references` empty on all three directions, and go on from the brief and the library.
 
