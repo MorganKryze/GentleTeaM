@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Pins the art director's trust boundary: fetched pages are data, a reference is cited and never
-// reproduced, free public sources only, writes under the output folder only, and it picks nothing.
+// reproduced, free public sources only, writes under the output folder only, and it picks nothing but recommends one.
 // Its frontmatter holds no Bash, Edit or Skill, the team template carries its row and the taste
 // threshold, and every agent has a row there. Each phrase sits once, whitespace joined. Run by
 // scripts/validate.mjs. No dependencies.
@@ -20,6 +20,7 @@ const PHRASES = [
   'A fetch that fails is skipped. With no reference at all, say so in the summary, leave `references` empty on all three directions',
   'No script, no third-party image, and nothing remote but a Google Fonts stylesheet.',
   'Three directions truly different on type, colour, structure and tone',
+  '`directions.md`: the positioning, the three directions, your recommendation.',
 ]
 for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`art-director: "${p}" must appear once`)
 const tools = (raw.match(/^tools: (.*)$/m) || [])[1] || ''
