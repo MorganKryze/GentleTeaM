@@ -3,16 +3,31 @@
 // per job; each rule of how a craft is used sits once in the index, whitespace joined; the index
 // holds the free public references and the two plugin skills' entry points. Each craft keeps its
 // six sections in order, at least 5 bullets of what great looks like and of what to refuse, and
-// its optional skills as `name`: what to take. Together they name the 16 skills, each list opens
-// on the job's own skill, and no file names a tool, so a craft stays something read. Run by
-// scripts/validate.mjs. No dependencies.
+// its optional skills as `name`: what to take, the whole list in priority order, because under the
+// cap of 3 a skill's position decides whether it loads. Together they name the 16 skills, and no
+// file names a tool, so a craft stays something read. Run by scripts/validate.mjs. No dependencies.
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const dir = new URL('../plugins/gtm/templates/crafts/', import.meta.url).pathname
 const errors = []
 const FILES = ['brand.md', 'index.md', 'mobile.md', 'website.md']
-const FIRST = { brand: 'brandkit', website: 'design-taste-frontend', mobile: 'mobile-native' }
+const PRIORITY = {
+  brand: [
+    'brandkit', 'high-end-visual-design', 'minimalist-ui', 'industrial-brutalist-ui',
+    'frontend-design', 'ui-ux-pro-max', 'impeccable',
+  ],
+  website: [
+    'design-taste-frontend', 'high-end-visual-design', 'gpt-taste', 'minimalist-ui',
+    'industrial-brutalist-ui', 'redesign-existing-projects', 'emil-design-eng', 'apple-design',
+    'frontend-design', 'ui-ux-pro-max', 'imagegen-frontend-web', 'image-to-code', 'impeccable',
+  ],
+  mobile: [
+    'mobile-native', 'apple-design', 'emil-design-eng', 'minimalist-ui',
+    'redesign-existing-projects', 'frontend-design', 'ui-ux-pro-max', 'imagegen-frontend-mobile',
+    'impeccable',
+  ],
+}
 const SECTIONS = ['The job', 'Positioning questions', 'What great looks like', 'Refuse', 'Deliverables', 'Optional skills']
 const MIN_BULLETS = 5
 const SKILLS = [
@@ -63,7 +78,7 @@ for (const p of P1) if (index.split(p).length !== 2) errors.push(`index.md: "${p
 for (const h of HELD) if (!index.includes(h)) errors.push(`index.md: no ${h}`)
 
 const named = new Set()
-for (const [job, first] of Object.entries(FIRST)) {
+for (const [job, priority] of Object.entries(PRIORITY)) {
   const file = `${job}.md`
   const text = read(file)
   const parts = text.split(/^## /m).slice(1).map((part) => [part.split('\n')[0], part.slice(part.indexOf('\n'))])
@@ -80,7 +95,8 @@ for (const [job, first] of Object.entries(FIRST)) {
     if (name) names.push(name)
     else errors.push(`${file}: "${bullet}" is not - \`<name>\`: <what to take>`)
   }
-  if (names[0] !== first) errors.push(`${file}: optional skills open on ${names[0]}, want ${first}`)
+  const held = names.join(', ')
+  if (held !== priority.join(', ')) errors.push(`${file}: optional skills are ${held}, want ${priority.join(', ')}`)
   for (const name of names) named.add(name)
 }
 for (const name of SKILLS) if (!named.has(name)) errors.push(`crafts: no craft names ${name}`)
