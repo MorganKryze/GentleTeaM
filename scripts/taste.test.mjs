@@ -80,6 +80,7 @@ pin(DESIGNER, [
   DATA,
   'A reference is never reproduced: no logo, name, layout or wording of it in a mockup.',
   'On the round that says "Go further", do not polish: push the direction\'s strongest idea.',
+  'Before you redraw on that round, copy the current HTML and PNG files into `round-1/` in the output folder, and name that folder in every later hand-back as the kept round, not to be scored.',
   '**Without a direction:** ignore a `Craft:` or `Optional skills:` line: nothing it names is read or invoked.',
   '- Reflexes (',
 ])
