@@ -53,9 +53,11 @@ const DIRECTIONS = {
       },
     },
     page: { type: 'string' },
+    directionsText: { type: 'string' },
+    referencesText: { type: 'string' },
     summary: { type: 'string' },
   },
-  required: ['directions', 'page', 'summary'],
+  required: ['directions', 'page', 'directionsText', 'referencesText', 'summary'],
 }
 
 // The project's team profile wins over the agents' frontmatter defaults.
@@ -124,10 +126,13 @@ const LIBRARY = A.taste ? `\nTaste library: ${A.taste}` : ''
 const DRAWN = DIRECTED ? `${CRAFT}${OPTIONAL}` : ''
 const JUDGED = DIRECTED ? CRAFT : ''
 
-// The art-direction stage: three directions for the human to pick from, never a mockup. Refused
-// directions go back once with the reasons; a second refusal ends the stage not passed.
+const inline = (name, body) => (body ? `\n\n${name}:\n${body}` : '')
+
+// The art-direction stage: three directions for the human to pick from, never a mockup. The agent
+// reads no file, so its inputs come inline, and it writes none: the skill writes what it returns.
+// Refused directions go back once with the reasons; a second refusal ends the stage not passed.
 async function directions() {
-  const ask = `Brief:\n${A.brief}\n\nDesign guideline: ${GUIDE}\nOutput folder: ${A.outDir}${CRAFT}${OPTIONAL}${LIBRARY}`
+  const ask = `Brief:\n${A.brief}${inline('Design guideline essentials', A.essentials)}${inline('Craft', A.craftText)}${inline('Taste library', A.tasteText)}`
   let out = null
   let wrong = []
   for (let round = 1; round <= 2; round++) {
@@ -135,7 +140,7 @@ async function directions() {
     out = await retried(ask + again, as('art-director', { schema: DIRECTIONS, label: `art director · round ${round}`, phase: 'Direction' }))
     if (!out) return { passed: false, rounds: round, directions: [], error: 'the art director returned no directions' }
     wrong = refused(out.directions)
-    if (!wrong.length) return { passed: true, rounds: round, directions: out.directions, page: out.page, summary: out.summary }
+    if (!wrong.length) return { passed: true, rounds: round, directions: out.directions, page: out.page, directionsText: out.directionsText, referencesText: out.referencesText, summary: out.summary }
     log(`Art director, round ${round}: ${wrong.join('; ')}`)
   }
   return { passed: false, rounds: 2, directions: [], error: wrong.join('; ') }

@@ -17,7 +17,7 @@ const read = (rel) => existsSync(join(plugin, rel)) ? readFileSync(join(plugin, 
 const TOOLS = {
   analyst: 'Read, Write, Glob, Grep, Bash',
   architect: 'Read, Write, Edit, Bash, Glob, Grep, Skill',
-  'art-director': 'Read, Write, Glob, Grep, WebFetch, WebSearch',
+  'art-director': 'WebFetch, WebSearch',
   'data-reviewer': 'Read, Bash, Glob, Grep',
   'design-critic': 'Read, Bash, Glob, Grep',
   designer: 'Read, Write, Edit, Bash, Glob, Grep, Skill',

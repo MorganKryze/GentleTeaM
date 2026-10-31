@@ -1177,8 +1177,9 @@ const TASTE_GRADES = ['distinctiveness', 'faithfulness', 'hierarchy', 'typograph
 const artDirector = (set) => (d) => set(Number(d.label.match(/round (\d+)/)[1]), d.label)
 const art = (round, extra = {}) => ({ agentType: 'gtm:art-director', label: `art director · round ${round}`, ...extra })
 const look = (n, over = {}) => ({ name: `n${n}`, idea: `i${n}`, type: `t${n}`, colour: `c${n}`, structure: `s${n}`, tone: `o${n}`, references: [`https://r/${n}`], ...over })
-const three = (over = {}) => ({ directions: [look(1, over), look(2), look(3)], page: 'out/directions.html', summary: 's' })
-const stageArgs = { stage: 'directions', brief: 'b', outDir: 'out', craft: 'website', skills: ['/s/a.md'], taste: 't.md' }
+const files = { page: '<p>board</p>', directionsText: 'd', referencesText: 'r', summary: 's' }
+const three = (over = {}) => ({ directions: [look(1, over), look(2), look(3)], ...files })
+const stageArgs = { stage: 'directions', brief: 'b', outDir: 'out', craft: 'website', skills: ['/s/a.md'], taste: 't.md', essentials: 'ess', craftText: 'cft', tasteText: 'lib' }
 const refusedRun = { passed: false, rounds: 2, directions: [] }
 const wide = Object.fromEntries(['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 'x'.repeat(160)]))
 const told = { idea: `${'x'.repeat(161)}\nA second line.` }
@@ -1188,15 +1189,16 @@ const stages = [
     name: 'art direction: three directions that differ pass, and nothing is drawn',
     args: { ...stageArgs, team: { 'art-director': { model: 'opus', effort: 'high' } } },
     reply: artDirector(() => three()),
-    returns: { passed: true, rounds: 1, directions: three().directions, page: 'out/directions.html', summary: 's' },
+    returns: { passed: true, rounds: 1, directions: three().directions, ...files },
     dispatches: [art(1, { model: 'opus', effort: 'high' })],
-    prompts: { 'art director · round 1': ['Output folder: out', 'Craft: website', 'Optional skills: /s/a.md', 'Taste library: t.md'] },
+    prompts: { 'art director · round 1': ['Design guideline essentials:\ness', 'Craft:\ncft', 'Taste library:\nlib'] },
+    unprompted: { 'art director · round 1': ['Output folder', 'Optional skills', 't.md', '.gtm/'] },
   },
   {
     name: 'art direction: two directions on one axis go back once with the reason, and pass',
     args: stageArgs,
     reply: artDirector((r) => (r === 1 ? { ...three(), directions: [look(1, { tone: ' O2' }), look(2), look(3)] } : three())),
-    returns: { passed: true, rounds: 2, directions: three().directions, page: 'out/directions.html', summary: 's' },
+    returns: { passed: true, rounds: 2, directions: three().directions, ...files },
     dispatches: [art(1), art(2)],
     prompts: { 'art director · round 2': ['refused: two directions share their tone'] },
     unprompted: { 'art director · round 1': ['refused'] },
@@ -1225,18 +1227,18 @@ const stages = [
     dispatches: [art(1), art(2)],
   })),
   {
-    name: 'art direction: a run without skills has no Optional skills line',
-    args: { ...stageArgs, skills: undefined },
+    name: 'art direction: a run without craft or library text has no such section',
+    args: { ...stageArgs, craftText: '', tasteText: undefined },
     reply: artDirector(() => three()),
-    returns: { passed: true, rounds: 1, directions: three().directions, page: 'out/directions.html', summary: 's' },
+    returns: { passed: true, rounds: 1, directions: three().directions, ...files },
     dispatches: [art(1)],
-    unprompted: { 'art director · round 1': ['Optional skills'] },
+    unprompted: { 'art director · round 1': ['Craft', 'Taste library'] },
   },
   {
     name: 'art direction: a name and axes of 160 characters pass, and the schema caps them',
     args: stageArgs,
     reply: artDirector(() => three(wide)),
-    returns: { passed: true, rounds: 1, directions: three(wide).directions, page: 'out/directions.html', summary: 's' },
+    returns: { passed: true, rounds: 1, directions: three(wide).directions, ...files },
     dispatches: [art(1)],
     capped: { 'art director · round 1': ['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 160]) },
   },
@@ -1244,14 +1246,14 @@ const stages = [
     name: 'art direction: an idea has no such cap: 161 characters over two lines pass',
     args: stageArgs,
     reply: artDirector(() => three(told)),
-    returns: { passed: true, rounds: 1, directions: three(told).directions, page: 'out/directions.html', summary: 's' },
+    returns: { passed: true, rounds: 1, directions: three(told).directions, ...files },
     dispatches: [art(1)],
   },
   {
     name: 'art direction: no reference at all passes: no network is not a refusal',
     args: stageArgs,
-    reply: artDirector(() => ({ directions: [1, 2, 3].map((n) => look(n, { references: [] })), page: 'p', summary: 's' })),
-    returns: { passed: true, rounds: 1, directions: [1, 2, 3].map((n) => look(n, { references: [] })), page: 'p', summary: 's' },
+    reply: artDirector(() => ({ directions: [1, 2, 3].map((n) => look(n, { references: [] })), ...files })),
+    returns: { passed: true, rounds: 1, directions: [1, 2, 3].map((n) => look(n, { references: [] })), ...files },
     dispatches: [art(1)],
   },
   {
@@ -1268,7 +1270,7 @@ const stages = [
       if (!d.label.endsWith('· retry')) throw new Error('lost')
       return three()
     },
-    returns: { passed: true, rounds: 1, directions: three().directions, page: 'out/directions.html', summary: 's' },
+    returns: { passed: true, rounds: 1, directions: three().directions, ...files },
     dispatches: [art(1), { agentType: 'gtm:art-director', label: 'art director · round 1 · retry' }],
   },
   ...[
