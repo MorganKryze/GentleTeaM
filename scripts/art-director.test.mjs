@@ -17,7 +17,7 @@ const PHRASES = [
   'A reference is cited, never reproduced: its name and link appear only in the citations; its logo, layout, wording and images never reach a page you write.',
   'Free public sources only: no account, no key, no paid service; nothing downloaded or vendored.',
   'You write only under the output folder, and only `directions.md`, `references.md` and `directions.html`.',
-  'A fetch that fails is skipped. With no reference at all, say so in the summary, leave `references` empty on all three directions',
+  'A fetch that fails is skipped. With no reference at all, say so in the summary, leave `references` empty on all three directions, and go on from the brief and the library.',
   'No script, no third-party image, and nothing remote but a Google Fonts stylesheet.',
   'Three directions truly different on type, colour, structure and tone',
   '`directions.md`: the positioning, the three directions, your recommendation.',
