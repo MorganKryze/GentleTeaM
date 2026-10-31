@@ -89,7 +89,9 @@ for (const rel of [CRITIC, DESIGNER]) if (raw(rel).includes('<!--')) errors.push
 // The library has two readers (A28): the designer's only mention of it is the line it ignores.
 if (joined(DESIGNER).split(/taste library/i).length !== 2) errors.push(`${DESIGNER}: the taste library is named outside the line it ignores`)
 
-pin(LIBRARY, [
+const TEMPLATE = [
+  '# Taste library',
+  'What you like and refuse in a design, kept from one run to the next.',
   'The art director and the design critic read it.',
   '`/gtm:design` appends to it on your pick and your words; you may edit it by hand.',
   'A line goes under its own section, never at the end of the file.',
@@ -97,11 +99,13 @@ pin(LIBRARY, [
   'Never overwritten.',
   '## Likes <!-- - <YYYY-MM-DD> · <what> · <why, or picked for <slug>> -->',
   '## Refusals <!-- - <YYYY-MM-DD> · <what> · <why> -->',
-])
-// Title, quote, the two headings, their comments: anything else lands in every project, and a
-// sample refusal caps every signature grade.
+]
+pin(LIBRARY, TEMPLATE)
+// These clauses and no other word, on the lines of a title, a quote, two headings and their
+// comments: anything else lands in every project, and a sample refusal caps every signature grade.
+if (joined(LIBRARY).trim() !== TEMPLATE.join(' ')) errors.push(`${LIBRARY}: holds words beyond its clauses`)
 const SHAPE = /^# Taste library\n\n(> .*\n)+\n## Likes\n<!--.*-->\n\n## Refusals\n<!--.*-->\n$/
-if (!SHAPE.test(raw(LIBRARY))) errors.push(`${LIBRARY}: holds more than its title, quote, headings and comments`)
+if (!SHAPE.test(raw(LIBRARY))) errors.push(`${LIBRARY}: is not a title, a quote, two headings and their comments`)
 
 const section = (n) => (joined(GUIDELINE).split(/ ## (?=\d\. )/).find((s) => s.startsWith(`${n}. `)) || '')
 if (!section(5).includes('- With a picked direction, draw it; a reference is never reproduced.')) errors.push(`${GUIDELINE}: §5 does not keep references out of a mockup`)
