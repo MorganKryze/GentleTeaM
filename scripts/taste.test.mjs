@@ -99,8 +99,9 @@ if (!joined(DESIGNER).includes(PROMPT.join(' '))) errors.push(`${DESIGNER}: hold
 // A comment would read as a clause here and reach no agent.
 for (const rel of [CRITIC, DESIGNER]) if (raw(rel).includes('<!--')) errors.push(`${rel}: holds an HTML comment`)
 
-// The library has two readers (A28): the designer's only mention of it is the line it ignores.
-if (joined(DESIGNER).split(/taste library/i).length !== 2) errors.push(`${DESIGNER}: the taste library is named outside the line it ignores`)
+// The library has two readers (A28). PROMPT stops at the rules: past it, this holds the library's
+// name and its file, wherever they sit; the line the designer ignores is their one mention.
+if (joined(DESIGNER).split(/taste[ -]library|taste\.md/i).length !== 2) errors.push(`${DESIGNER}: the taste library is named outside the line it ignores`)
 
 const TEMPLATE = [
   '# Taste library',
