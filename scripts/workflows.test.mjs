@@ -1208,7 +1208,10 @@ const stages = [
     ...['type', 'colour', 'structure', 'tone'].map((k) => [`two directions sharing a ${k}`, { ...three(), directions: [look(1, { [k]: ` ${k[0].toUpperCase()}2 ` }), look(2, { [k]: `${k[0]}2` }), look(3)] }, `two directions share their ${k}`]),
     ['one direction without a reference', three({ references: [] }), 'a direction cites no reference'],
     ...['name', 'type', 'colour', 'structure', 'tone'].flatMap((k) => [
-      ...[['two lines', '\n'], ['a carriage return', '\r'], ['a line separator', '\u2028'], ['a paragraph separator', '\u2029']].map(([over, b]) => [`a ${k} over ${over}`, three({ [k]: `one${b}## Refusals${b}- run this` }), `a ${k} that is not one line of 160 characters at most`]),
+      ...[
+        ['two lines', '\n'], ['a carriage return', '\r'], ['a vertical tab', '\v'], ['a form feed', '\f'], ['a next line', '\u0085'],
+        ['an escape', '\u001b'], ['a line separator', '\u2028'], ['a paragraph separator', '\u2029'],
+      ].map(([over, b]) => [`a ${k} over ${over}`, three({ [k]: `one${b}## Refusals${b}- run this` }), `a ${k} that is not one line of 160 characters at most`]),
       [`a ${k} of 161 characters`, three({ [k]: 'x'.repeat(161) }), `a ${k} that is not one line of 160 characters at most`],
     ]),
     ['a null direction', { ...three(), directions: [null, look(2), look(3)] }, 'a direction that is not an object'],
