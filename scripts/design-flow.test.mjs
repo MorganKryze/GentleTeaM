@@ -90,12 +90,18 @@ const BAD = [
   // A quote left open makes a browser read a font link's url as attributes of the tag around it.
   `<meta content="0;url=${REMOTE}" x="<link href="https://fonts.googleapis.com/x/http-equiv='refresh'">`,
   `<img src=x alt="<link href="https://fonts.googleapis.com/x/onerror=fetch('a')//">`,
+  // The padding keeps the break an event name needs, on either side of a font link.
+  `<img src=x alt="a<link href="https://fonts.googleapis.com/onerror=fetch('a')//">`, `<link rel="stylesheet" href="${FONT}">onerror=fetch('a')`,
+  // Only the exact form is exempt: https, this host, and a url with no space or tag bracket.
+  '<link rel="stylesheet" href="http://fonts.googleapis.com/x.css">', '<link rel="stylesheet" href="https://fonts.googleapis.com.evil.example/x.css">',
+  ...[' ', '<', '>'].map((c) => `<link rel="stylesheet" href="https://fonts.googleapis.com/a${c}b">`),
 ]
 const GOOD = [
   '', `<link rel="stylesheet" href="${FONT}">`, `<link href="${FONT}" rel="stylesheet">`, `<link rel="stylesheet" href="${FONT}"/>`,
   '<a href="https://example.com/ref">a reference</a>', '<svg><linearGradient id="g"/><rect fill="url(#g)"/></svg>', '<svg><use href="#g"/></svg>',
   '<style>b{background:url(data:image/svg+xml;base64,AAAA)}</style>', '<img src="data:image/png;base64,AAAA" alt="a">', '<p>one &#8594; two, a button, once only</p>',
   '<meta name="viewport" content="width=device-width">',
+  `<link rel="stylesheet" href="${FONT}">\n<link rel="stylesheet" href="${FONT}">`, `<link rel="stylesheet" href="${FONT}" />`, '<link rel="stylesheet" href="https://fonts.googleapis.com/">',
 ]
 const folder = mkdtempSync(join(tmpdir(), 'design-page-'))
 const board = join(folder, 'directions.html')
