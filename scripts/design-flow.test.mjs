@@ -2,12 +2,12 @@
 // Pins the clauses of /gtm:design that keep, skip or exempt: who picks a direction, what writes the
 // taste library, when the round that goes further may be left out, the order of the look rule and
 // the checks on the art director's output. Each phrase sits once in the skill, whitespace joined;
-// the page check and the rendered copy are run from the skill's own fences. The
+// the page check and the kept board are run from the skill's own fences. The
 // workflow's half is in workflows.test.mjs. Run by scripts/validate.mjs. No dependencies.
 import { execFileSync, spawnSync } from 'node:child_process'
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { dirname, join } from 'node:path'
+import { join } from 'node:path'
 
 const file = new URL('../plugins/gtm/skills/design/SKILL.md', import.meta.url).pathname
 const raw = readFileSync(file, 'utf8')
@@ -43,8 +43,8 @@ const PHRASES = [
   'the newest `<design.mockups>/*/direction.md` whose path a `ruling` line of `<root>/ledger.md` names',
   'A skip is one line saying why, with the direction\'s path if it reuses one',
   'only when this counts 0 on it (the page may load Google Fonts, nothing else remote); otherwise a Heads-up',
-  'render that copy, never `directions.html` itself, as the designer does',
-  "The copy's policy blocks scripts and remote loads but not a meta refresh: only the count stops that.",
+  'After a count of 0, write the policy line then the draft\'s bytes to `<outDir>/directions.html`, one file, and render that file, as the designer does',
+  'The policy blocks scripts and remote loads but not a meta refresh: only the count stops that.',
 ]
 for (const p of PHRASES) {
   const n = text.split(p).length - 1
@@ -116,17 +116,19 @@ const count = (bytes) => {
 for (const body of BAD) if (!(count(page(body)) > 0)) errors.push(`design skill: the page check counts 0 on ${body}`)
 for (const body of GOOD) if (count(page(body)) !== 0) errors.push(`design skill: the page check refuses ${body || 'an empty board'}`)
 if (!(count(Buffer.concat([Buffer.from(page('')), Buffer.from([0xff]), Buffer.from('<script>1</script>')])) > 0)) errors.push('design skill: a bad byte hides a script from the page check')
-// The copy that gets rendered: the policy first, then the page, byte for byte.
+// The board kept and rendered: the policy first, then the draft, byte for byte, and no other file.
 const CSP = `default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; base-uri 'none'`
 const original = page('<p>a</p>')
 writeFileSync(board, original)
-const copy = execFileSync('bash', ['-c', fence('Content-Security-Policy').replaceAll('<outDir>', folder)], { encoding: 'utf8' }).trim()
-const rendered = copy && existsSync(copy) ? readFileSync(copy, 'utf8') : ''
+const out = mkdtempSync(join(tmpdir(), 'design-out-'))
+execFileSync('bash', ['-c', fence('Content-Security-Policy').replaceAll('<draft>', folder).replaceAll('<outDir>', out)])
+const kept = join(out, 'directions.html')
+const rendered = existsSync(kept) ? readFileSync(kept, 'utf8') : ''
 const head = `<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${CSP}">\n`
-if (rendered !== head + original) errors.push(`design skill: the rendered copy does not open on the policy: ${rendered.slice(0, 200)}`)
-if (copy === board) errors.push('design skill: the policy went into the art director\'s page')
+if (rendered !== head + original) errors.push(`design skill: the kept board does not open on the policy: ${rendered.slice(0, 200)}`)
+if (readdirSync(out).length !== 1) errors.push(`design skill: the board is not one file: ${readdirSync(out)}`)
 rmSync(folder, { recursive: true })
-if (copy) rmSync(dirname(copy), { recursive: true, force: true })
+rmSync(out, { recursive: true })
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`design flow: ${PHRASES.length} clauses, the look rule and the page check OK`)
