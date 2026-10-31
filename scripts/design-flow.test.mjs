@@ -36,6 +36,7 @@ const PHRASES = [
   'A skip is one line saying why, with the direction\'s path if it reuses one',
   'only when this counts 0 on it (the page may load Google Fonts, nothing else remote); otherwise a Heads-up',
   'render that copy, never `directions.html` itself, as the designer does',
+  "The copy's policy blocks scripts and remote loads but not a meta refresh: only the count stops that.",
 ]
 for (const p of PHRASES) {
   const n = text.split(p).length - 1
@@ -82,6 +83,9 @@ const BAD = [
   `<svg><use href="${REMOTE}#a"/></svg>`, '<base href="https://evil.example/"><img src="a">', '<img src="http&#58;//evil.example/a">',
   `<style>b{background:url(${REMOTE})}</style>`, `<style>b{background:url( '${REMOTE}')}</style>`, '<style>b{background:url(//evil.example/a.png)}</style>',
   `<style>b{background:image-set("${REMOTE}" 1x)}</style>`, '<style>b{background:url(http\\3a //evil.example/a)}</style>',
+  // A quote left open makes a browser read a font link's url as attributes of the tag around it.
+  `<meta content="0;url=${REMOTE}" x="<link href="https://fonts.googleapis.com/x/http-equiv='refresh'">`,
+  `<img src=x alt="<link href="https://fonts.googleapis.com/x/onerror=fetch('a')//">`,
 ]
 const GOOD = [
   '', `<link rel="stylesheet" href="${FONT}">`, `<link href="${FONT}" rel="stylesheet">`, `<link rel="stylesheet" href="${FONT}"/>`,
