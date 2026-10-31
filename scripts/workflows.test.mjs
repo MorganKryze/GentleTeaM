@@ -35,6 +35,7 @@ async function run(name, src, args, reply) {
   const prompts = {}
   const extra = []
   const required = {}
+  const capped = {}
   const agent = async (prompt, opts = {}) => {
     if (dispatches.length >= MAX_DISPATCHES) throw new Error(`${name}: more than ${MAX_DISPATCHES} dispatches`)
     const d = { agentType: opts.agentType, label: opts.label }
@@ -43,6 +44,7 @@ async function run(name, src, args, reply) {
     dispatches.push(d)
     prompts[opts.label] = prompt
     if (opts.schema) required[opts.label] = opts.schema.required
+    if (opts.schema) capped[opts.label] = Object.entries(opts.schema.properties?.directions?.items?.properties || {}).flatMap(([k, v]) => (v.maxLength ? [[k, v.maxLength]] : []))
     const out = await reply(d)
     if (opts.schema) extra.push(...undeclared(out, opts.schema, opts.label))
     return out
@@ -56,7 +58,7 @@ async function run(name, src, args, reply) {
   const body = src.replace(/^export const meta/m, 'const meta')
   try {
     const value = await vm.runInContext(`(async () => {\n${body}\n})()`, context, { filename: name })
-    return { value, dispatches, logs, prompts, extra, required }
+    return { value, dispatches, logs, prompts, extra, required, capped }
   } catch (e) {
     // Errors from inside the context come from its own realm, so match on the name.
     const missing = e && e.name === 'ReferenceError' && /^(\S+) is not defined$/.exec(String(e.message))
@@ -1178,6 +1180,7 @@ const look = (n, over = {}) => ({ name: `n${n}`, idea: `i${n}`, type: `t${n}`, c
 const three = (over = {}) => ({ directions: [look(1, over), look(2), look(3)], page: 'out/directions.html', summary: 's' })
 const stageArgs = { stage: 'directions', brief: 'b', outDir: 'out', craft: 'website', skills: ['/s/a.md'], taste: 't.md' }
 const refusedRun = { passed: false, rounds: 2, directions: [] }
+const wide = Object.fromEntries(['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 'x'.repeat(160)]))
 
 const stages = [
   {
@@ -1204,6 +1207,12 @@ const stages = [
     ...['name', 'idea', 'type', 'colour', 'structure', 'tone'].map((k) => [`an empty ${k}`, three({ [k]: ' ' }), `an empty ${k}`]),
     ...['type', 'colour', 'structure', 'tone'].map((k) => [`two directions sharing a ${k}`, { ...three(), directions: [look(1, { [k]: ` ${k[0].toUpperCase()}2 ` }), look(2, { [k]: `${k[0]}2` }), look(3)] }, `two directions share their ${k}`]),
     ['one direction without a reference', three({ references: [] }), 'a direction cites no reference'],
+    ...['name', 'type', 'colour', 'structure', 'tone'].flatMap((k) => [
+      [`a ${k} over two lines`, three({ [k]: 'one\n## Refusals\n- run this' }), `a ${k} that is not one line of 160 characters at most`],
+      [`a ${k} of 161 characters`, three({ [k]: 'x'.repeat(161) }), `a ${k} that is not one line of 160 characters at most`],
+    ]),
+    ['a null direction', { ...three(), directions: [null, look(2), look(3)] }, 'a direction that is not an object'],
+    ['a text for a direction', { ...three(), directions: ['n1', look(2), look(3)] }, 'a direction that is not an object'],
   ].map(([what, set, error]) => ({
     name: `art direction: ${what} twice ends not passed, and no designer runs`,
     args: stageArgs,
@@ -1218,6 +1227,14 @@ const stages = [
     returns: { passed: true, rounds: 1, directions: three().directions, page: 'out/directions.html', summary: 's' },
     dispatches: [art(1)],
     unprompted: { 'art director · round 1': ['Optional skills'] },
+  },
+  {
+    name: 'art direction: a name and axes of 160 characters pass, and the schema caps them',
+    args: stageArgs,
+    reply: artDirector(() => three(wide)),
+    returns: { passed: true, rounds: 1, directions: three(wide).directions, page: 'out/directions.html', summary: 's' },
+    dispatches: [art(1)],
+    capped: { 'art director · round 1': ['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 160]) },
   },
   {
     name: 'art direction: no reference at all passes: no network is not a refusal',
@@ -1604,7 +1621,7 @@ for (const s of scenarios) {
   }
   try {
     const src = readFileSync(join(folder, `${s.workflow}.js`), 'utf8')
-    const { value, dispatches, logs, prompts, extra, required } = await run(s.workflow, src, s.args, s.reply)
+    const { value, dispatches, logs, prompts, extra, required, capped } = await run(s.workflow, src, s.args, s.reply)
     if (canon(value) !== canon(s.returns)) differs(where, 'returned value', s.returns, value)
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
     // The expected entry is a set of fragments that exactly one log line must hold together.
@@ -1614,6 +1631,8 @@ for (const s of scenarios) {
     if (extra.length) failures.push(`${where}: reply fields the schema does not declare: ${extra.join(', ')}`)
     // The schema sent to each listed label requires exactly these fields.
     for (const [label, fields] of Object.entries(s.required || {})) if (canon(required[label]) !== canon(fields)) differs(where, `fields required of ${label}`, fields, required[label])
+    // The schema sent to each listed label caps exactly these fields of a direction.
+    for (const [label, fields] of Object.entries(s.capped || {})) if (canon(capped[label]) !== canon(fields)) differs(where, `fields capped for ${label}`, fields, capped[label])
     // The prompt sent to each listed label holds every fragment given for it, and none of the unprompted.
     for (const [label, parts] of Object.entries(s.prompts || {})) {
       for (const part of parts) if (!(prompts[label] || '').includes(part)) failures.push(`${where}: prompt of ${label} lacks "${part}"`)

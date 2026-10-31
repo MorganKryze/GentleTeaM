@@ -22,6 +22,9 @@ const TASTE = ['distinctiveness', 'faithfulness', 'hierarchy', 'typography', 'si
 const DIRECTED = !!A.direction
 const FURTHER = DIRECTED && A.goFurther !== false
 const LAST = FURTHER ? Math.max(MAX, 2) : MAX
+// A direction's name and axes land in durable lines (taste.md, the ledger): one short line each.
+const LINE = 160
+const ONE_LINE = { type: 'string', maxLength: LINE }
 const GRADE = { type: 'number', minimum: 0, maximum: 10 }
 const SCORE = {
   type: 'object',
@@ -45,7 +48,7 @@ const DIRECTIONS = {
       type: 'array',
       items: {
         type: 'object',
-        properties: { name: { type: 'string' }, idea: { type: 'string' }, ...Object.fromEntries(AXES.map((k) => [k, { type: 'string' }])), references: { type: 'array', items: { type: 'string' } } },
+        properties: { name: ONE_LINE, idea: { type: 'string' }, ...Object.fromEntries(AXES.map((k) => [k, ONE_LINE])), references: { type: 'array', items: { type: 'string' } } },
         required: ['name', 'idea', ...AXES, 'references'],
       },
     },
@@ -101,9 +104,12 @@ const said = (s) => String(s ?? '').trim().toLowerCase()
 // network), never from one: the art director looked, or it did not.
 function refused(all) {
   if (!Array.isArray(all) || all.length !== 3) return [`${Array.isArray(all) ? all.length : 0} directions, exactly 3 wanted`]
+  if (all.some((d) => !d || typeof d !== 'object')) return ['a direction that is not an object']
   const wrong = []
+  const overlong = (s) => String(s).length > LINE || /[\p{Cc}\p{Zl}\p{Zp}]/u.test(s)
   for (const k of ['name', 'idea', ...AXES]) {
     if (all.some((d) => !said(d[k]))) wrong.push(`an empty ${k}`)
+    else if (k !== 'idea' && all.some((d) => overlong(d[k]))) wrong.push(`a ${k} that is not one line of ${LINE} characters at most`)
     else if (AXES.includes(k) && new Set(all.map((d) => said(d[k]))).size < 3) wrong.push(`two directions share their ${k}`)
   }
   const cited = all.filter((d) => (d.references || []).length).length
