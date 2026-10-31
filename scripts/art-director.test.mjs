@@ -22,6 +22,7 @@ const PHRASES = [
   'Three directions truly different on type, colour, structure and tone',
   '`directions.md`: the positioning, the three directions, your recommendation.',
   'a missing file is an empty library',
+  'one line in your own words on what to learn from it, for the designer and the critic.',
 ]
 for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`art-director: "${p}" must appear once`)
 const tools = (raw.match(/^tools: (.*)$/m) || [])[1] || ''
