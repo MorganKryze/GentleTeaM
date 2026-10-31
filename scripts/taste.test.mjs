@@ -35,10 +35,7 @@ const pin = (rel, phrases) => {
 
 const TASTE = [
   '**Taste (only when the prompt names a direction):**',
-  'the direction file the prompt names',
-  '`references.md` beside it',
-  'the craft it names',
-  'the taste library it names',
+  'read the direction file the prompt names, `references.md` beside it, the craft it names (`${CLAUDE_PLUGIN_ROOT}/templates/crafts/<job>.md`) and the taste library it names.',
   'five grades from 0 to 10: distinctiveness, faithfulness, hierarchy, typography, signature ("would a designer sign this?")',
   '5 is a clean template, 7 a point of view a designer would sign with edits, 9 a portfolio piece.',
   'A clean board with no point of view is 5 on distinctiveness at most, however well it measures.',
@@ -73,10 +70,7 @@ pin(CRITIC, [
 pin(DESIGNER, [
   '- On a revision round: fix every must-fix and say how; keep what the critic did not flag.',
   '**With a direction:**',
-  'the direction file the prompt names',
-  '`references.md` beside it',
-  '`${CLAUDE_PLUGIN_ROOT}/templates/crafts/index.md`, then that craft',
-  'optional skills as the index says',
+  'read the direction file the prompt names, `references.md` beside it, then the craft it names (`${CLAUDE_PLUGIN_ROOT}/templates/crafts/index.md`, then that craft) and its optional skills as the index says.',
   'Draw the picked direction, never a blend of the three.',
   DATA,
   'Ignore a `Taste library:` line: the file it names is not read.',
@@ -86,7 +80,11 @@ pin(DESIGNER, [
   'Name the folder you used in every later hand-back as the kept round, not to be scored.',
   '**Without a direction:** ignore a `Craft:` or `Optional skills:` line: nothing it names is read or invoked.',
   '- Reflexes (',
+  '**Hand back (≤ 8 lines):** PNG paths, HTML paths, what changed this round, open decisions for the human with your recommendation.',
 ])
+
+// A comment would read as a clause here and reach no agent.
+for (const rel of [CRITIC, DESIGNER]) if (raw(rel).includes('<!--')) errors.push(`${rel}: holds an HTML comment`)
 
 // The library has two readers (A28): the designer's only mention of it is the line it ignores.
 if (joined(DESIGNER).split(/taste library/i).length !== 2) errors.push(`${DESIGNER}: the taste library is named outside the line it ignores`)
@@ -100,8 +98,10 @@ pin(LIBRARY, [
   '## Likes <!-- - <YYYY-MM-DD> · <what> · <why, or picked for <slug>> -->',
   '## Refusals <!-- - <YYYY-MM-DD> · <what> · <why> -->',
 ])
-// A line in the template would land in every project: a sample refusal caps every signature grade.
-if (/^- /m.test(raw(LIBRARY))) errors.push(`${LIBRARY}: the template holds a line, not only its comments`)
+// Title, quote, the two headings, their comments: anything else lands in every project, and a
+// sample refusal caps every signature grade.
+const SHAPE = /^# Taste library\n\n(> .*\n)+\n## Likes\n<!--.*-->\n\n## Refusals\n<!--.*-->\n$/
+if (!SHAPE.test(raw(LIBRARY))) errors.push(`${LIBRARY}: holds more than its title, quote, headings and comments`)
 
 const section = (n) => (joined(GUIDELINE).split(/ ## (?=\d\. )/).find((s) => s.startsWith(`${n}. `)) || '')
 if (!section(5).includes('- With a picked direction, draw it; a reference is never reproduced.')) errors.push(`${GUIDELINE}: §5 does not keep references out of a mockup`)
