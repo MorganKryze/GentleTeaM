@@ -99,12 +99,14 @@ if (!section(6).includes('taste threshold')) errors.push(`${GUIDELINE}: §6 does
 
 const front = (text) => text.split('\n---\n')[0]
 const git = (...a) => execFileSync('git', ['-C', root, ...a], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
-let inClone = true
-try { git('cat-file', '-e', `${BASE}^{commit}`) } catch { inClone = false }
-if (!inClone) console.log(`taste: ${BASE} is not in this clone, frontmatter comparison skipped`)
-else for (const rel of [CRITIC, DESIGNER]) {
-  if (front(raw(rel)) !== front(git('show', `${BASE}:${rel}`))) errors.push(`${rel}: frontmatter changed since ${BASE}`)
-}
+const asked = (...a) => { try { return git(...a).trim() } catch { return '' } }
+// Only a shallow clone may lack the base: in a full one a wrong BASE fails, it never turns this off.
+if (asked('cat-file', '-t', BASE) === 'commit') {
+  for (const rel of [CRITIC, DESIGNER]) {
+    if (front(raw(rel)) !== front(git('show', `${BASE}:${rel}`))) errors.push(`${rel}: frontmatter changed since ${BASE}`)
+  }
+} else if (asked('rev-parse', '--is-shallow-repository') === 'false') errors.push(`${BASE} is not in this full clone: check BASE`)
+else console.log(`taste: ${BASE} is not in this clone, frontmatter comparison skipped`)
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('taste: the critic, the designer and the library OK')
