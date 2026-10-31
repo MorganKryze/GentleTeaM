@@ -56,7 +56,8 @@ const TASTE = [
 ]
 pin(CRITIC, TASTE)
 
-// The conformity score (A19): every measure word for word, then the taste paragraph, then the Score.
+// The conformity score (A19): every measure word for word, then the taste paragraph, then the
+// Score, the Budget and the Return.
 pin(CRITIC, [
   '**Method (measured, not felt):**',
   '- Read every PNG of the mockup page and the brief; check every screen of the brief (only the one the prompt names, when it names one) is present in light and dark.',
@@ -64,10 +65,10 @@ pin(CRITIC, [
   '- Check the hard rules one by one, the reuse of validated patterns, and consistency with previous mockup pages.',
   '- With impeccable `on` in `<root>/team.md` and present, add its detector\'s hits to your measurements as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable); your own measurements still decide the score.',
   TASTE[0],
-  '**Score:** 10 ships as is; 8 minor polish only; below the design threshold of the team settings (`<root>/team.md`, 8 by default) or any must-fix means another round.',
+  '**Score:** 10 ships as is; 8 minor polish only; below the design threshold of the team settings (`<root>/team.md`, 8 by default) or any must-fix means another round. A must-fix names the frame, the element and the rule; a should-fix is optional polish. Strict but fair.',
+  '**Budget:** about 30 tool calls. Measure what decides the score and stop; a frame or rule you could not measure within it is a must-fix, never a pass, named in the summary.',
+  '**Return:** exactly the structure asked (score, mustFix[], shouldFix[], summary, and taste with a direction).',
 ])
-const ret = joined(CRITIC).split('**Return:**')[1] || ''
-for (const w of ['score, mustFix[], shouldFix[], summary', 'taste']) if (!ret.includes(w)) errors.push(`${CRITIC}: the Return line lacks "${w}"`)
 
 pin(DESIGNER, [
   '- On a revision round: fix every must-fix and say how; keep what the critic did not flag.',
@@ -86,16 +87,20 @@ pin(DESIGNER, [
 ])
 
 pin(LIBRARY, [
+  'The art director and the design critic read it.',
+  '`/gtm:design` appends to it on your pick and your words; you may edit it by hand.',
   'A line goes under its own section, never at the end of the file.',
   'Nothing else writes here.',
   'Never overwritten.',
   '## Likes <!-- - <YYYY-MM-DD> · <what> · <why, or picked for <slug>> -->',
   '## Refusals <!-- - <YYYY-MM-DD> · <what> · <why> -->',
 ])
+// A line in the template would land in every project: a sample refusal caps every signature grade.
+if (/^- /m.test(raw(LIBRARY))) errors.push(`${LIBRARY}: the template holds a line, not only its comments`)
 
 const section = (n) => (joined(GUIDELINE).split(/ ## (?=\d\. )/).find((s) => s.startsWith(`${n}. `)) || '')
-if (!section(5).includes('a reference is never reproduced')) errors.push(`${GUIDELINE}: §5 does not keep references out of a mockup`)
-if (!section(6).includes('taste threshold')) errors.push(`${GUIDELINE}: §6 does not name the taste threshold`)
+if (!section(5).includes('- With a picked direction, draw it; a reference is never reproduced.')) errors.push(`${GUIDELINE}: §5 does not keep references out of a mockup`)
+if (!section(6).includes("- With a picked direction, a second score, taste: the lowest of five grades against the references; below the team's taste threshold means another round.")) errors.push(`${GUIDELINE}: §6 does not hold the taste score and its threshold`)
 
 const front = (text) => text.split('\n---\n')[0]
 const git = (...a) => execFileSync('git', ['-C', root, ...a], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })
