@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Pins the crafts under plugins/gtm/templates/crafts/: the folder holds the index and one craft
 // per job; each rule of how a craft is used sits once in the index, whitespace joined; the index
-// holds the free public references and the two plugin skills' entry points. Each craft keeps its
-// six sections in order, at least 5 bullets of what great looks like and of what to refuse, and
+// holds the free public references, the path of a present skill and the two plugin skills' entry
+// points. Each craft keeps its six sections in order, at least 5 bullets of what great looks like
+// and of what to refuse, and
 // its optional skills as `name`: what to take, the whole list in priority order, because under the
 // cap of 3 a skill's position decides whether it loads. Together they name the 16 skills, and no
 // file names a tool, so a craft stays something read. Run by scripts/validate.mjs. No dependencies.
@@ -51,6 +52,7 @@ const HELD = [
   'https://github.com/VoltAgent/awesome-design-md',
   'https://raw.githubusercontent.com/VoltAgent/awesome-design-md/main/design-md/<brand>/DESIGN.md',
   'https://github.com/Leonxlnx/taste-skill',
+  '"<config>"/skills/<name>/SKILL.md',
   'claude-plugins-official/frontend-design/*/skills/frontend-design/SKILL.md',
   'ui-ux-pro-max-skill/ui-ux-pro-max/*/.claude/skills/ui-ux-pro-max/SKILL.md',
 ]
