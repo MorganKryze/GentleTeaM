@@ -95,6 +95,10 @@ const BAD = [
   // Only the exact form is exempt: https, this host, and a url with no space or tag bracket.
   '<link rel="stylesheet" href="http://fonts.googleapis.com/x.css">', '<link rel="stylesheet" href="https://fonts.googleapis.com.evil.example/x.css">',
   ...[' ', '<', '>'].map((c) => `<link rel="stylesheet" href="https://fonts.googleapis.com/a${c}b">`),
+  // Each term's other spelling: plain http, a colon padded with zeros, a space on the way.
+  '<img src="http://evil.example/a">', '<style>b{background:url(http://evil.example/a)}</style>', '<svg><use href="http://evil.example/a#b"/></svg>',
+  '<img src="http&#00058;//evil.example/a">', '<img src="http&#x0003a;//evil.example/a">', '<style>b{background:url(http\\00003a //evil.example/a)}</style>',
+  `<style>b{background:url(' ${REMOTE}')}</style>`, '<img src=x onerror = fetch(1)>', '<img src="x"onerror="fetch(1)">',
 ]
 const GOOD = [
   '', `<link rel="stylesheet" href="${FONT}">`, `<link href="${FONT}" rel="stylesheet">`, `<link rel="stylesheet" href="${FONT}"/>`,
@@ -102,6 +106,7 @@ const GOOD = [
   '<style>b{background:url(data:image/svg+xml;base64,AAAA)}</style>', '<img src="data:image/png;base64,AAAA" alt="a">', '<p>one &#8594; two, a button, once only</p>',
   '<meta name="viewport" content="width=device-width">',
   `<link rel="stylesheet" href="${FONT}">\n<link rel="stylesheet" href="${FONT}">`, `<link rel="stylesheet" href="${FONT}" />`, '<link rel="stylesheet" href="https://fonts.googleapis.com/">',
+  '<p>the switch: on = lit</p>',
 ]
 const folder = mkdtempSync(join(tmpdir(), 'design-page-'))
 const board = join(folder, 'directions.html')
