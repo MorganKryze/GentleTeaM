@@ -1266,6 +1266,15 @@ const seen = (round, board, verdict, scores, tastes, passed = true) => ({ passed
 
 const directed = [
   {
+    name: 'design direction: the craft reaches both roles, the skills the designer alone',
+    args: { ...picked, goFurther: false, craft: 'website', skills: ['/s/a.md'] },
+    reply: designReply(() => tasted(9, grades(9))),
+    returns: seen(1, 'board 1', tasted(9, grades(9)), [9], [9]),
+    dispatches: designRounds(1),
+    prompts: { 'designer · round 1': ['Craft: website', 'Optional skills: /s/a.md'], 'critic · round 1': ['Craft: website'] },
+    unprompted: { 'critic · round 1': ['Optional skills'] },
+  },
+  {
     name: 'design direction: a run without skills has no Optional skills line',
     args: { ...picked, goFurther: false, craft: 'website' },
     reply: designReply(() => tasted(9, grades(9))),
@@ -1568,13 +1577,12 @@ const design = [
     unprompted: { 'designer · round 1': ['Screen:'], 'critic · round 1': ['Screen:', 'alone'] },
   },
   {
-    name: 'design: without a direction, a craft and a library add no taste and no round',
+    name: 'design: without a direction, a craft, skills and a library change nothing',
     args: { outDir: 'out', craft: 'website', skills: ['/s/a.md'], taste: 't.md', goFurther: true },
     reply: designReply(() => score(8)),
     returns: { passed: true, rounds: 1, scores: [8], verdict: score(8), board: 'board 1' },
     dispatches: designRounds(1),
-    prompts: { 'designer · round 1': ['Craft: website', 'Optional skills: /s/a.md'], 'critic · round 1': ['Craft: website'] },
-    unprompted: { 'designer · round 1': ['Direction', 'Go further'], 'critic · round 1': ['Taste bar', 'Optional skills'] },
+    unprompted: { 'designer · round 1': ['Craft', 'Optional skills', 'Direction', 'Go further'], 'critic · round 1': ['Craft', 'Optional skills', 'Taste bar'] },
     unlogged: ['taste'],
     required: { 'critic · round 1': ['score', 'mustFix', 'shouldFix', 'summary'] },
   },

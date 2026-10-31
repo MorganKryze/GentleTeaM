@@ -114,6 +114,9 @@ function refused(all) {
 const CRAFT = A.craft ? `\nCraft: ${A.craft}` : ''
 const OPTIONAL = SKILLS.length ? `\nOptional skills: ${SKILLS.join(', ')}` : ''
 const LIBRARY = A.taste ? `\nTaste library: ${A.taste}` : ''
+// Crafts and skills are read under the rule that comes with a direction: today's loop gets neither.
+const DRAWN = DIRECTED ? `${CRAFT}${OPTIONAL}` : ''
+const JUDGED = DIRECTED ? CRAFT : ''
 
 // The art-direction stage: three directions for the human to pick from, never a mockup. Refused
 // directions go back once with the reasons; a second refusal ends the stage not passed.
@@ -154,7 +157,7 @@ async function loop(screen) {
       : ''
     const further = FURTHER && round === 2 ? GO_FURTHER : ''
     board = await draw(
-      `Brief:\n${A.brief}${only}\n\nDesign guideline: ${GUIDE}\nOutput folder: ${out}\nRound ${round} of ${LAST}.${CRAFT}${OPTIONAL}${steer}${further}${previous}`,
+      `Brief:\n${A.brief}${only}\n\nDesign guideline: ${GUIDE}\nOutput folder: ${out}\nRound ${round} of ${LAST}.${DRAWN}${steer}${further}${previous}`,
       as('designer', { label: `designer${tag} · round ${round}`, phase: 'Design' }),
     )
     if (!board) {
@@ -162,7 +165,7 @@ async function loop(screen) {
       break
     }
     verdict = await retried(
-      `Score this board${screen ? `, the screen ${screen} alone,` : ''} against ${GUIDE}. Pass bar: ${BAR}/10 with zero must-fix.${DIRECTED ? ` Taste bar: ${TASTE_BAR}/10, the lowest of ${TASTE.join(', ')}.` : ''}\n\nBrief:\n${A.brief}${only}${CRAFT}${steer}\n\nDesigner hand-back (PNG and HTML paths inside):\n${board}`,
+      `Score this board${screen ? `, the screen ${screen} alone,` : ''} against ${GUIDE}. Pass bar: ${BAR}/10 with zero must-fix.${DIRECTED ? ` Taste bar: ${TASTE_BAR}/10, the lowest of ${TASTE.join(', ')}.` : ''}\n\nBrief:\n${A.brief}${only}${JUDGED}${steer}\n\nDesigner hand-back (PNG and HTML paths inside):\n${board}`,
       as('design-critic', { schema: SCORE, label: `critic${tag} · round ${round}`, phase: 'Critique' }),
     )
     if (!verdict) break
