@@ -19,12 +19,14 @@ job's `skills` are the paths `${CLAUDE_PLUGIN_ROOT}/templates/crafts/index.md` s
 ## 2. Find the look
 First that holds: the human asks for a new look: §3. An earlier picked direction (the newest
 `<design.mockups>/*/direction.md` whose path a `ruling` line of `<root>/ledger.md` names, or the one
-the human names): reuse it, `goFurther: false`. `design.kit` is set: today's loop, `direction`
-empty. None of these: §3. A skip is one line saying why, with the direction's path if it reuses
-one, and that a new look is one sentence away.
+the human names): reuse it, `goFurther: false`, and its folder is `outDir` when that is a sibling
+`<slug>-look-<n>`. `design.kit` is set: today's loop, `direction` empty. None of these: §3. A skip
+is one line saying why, with the direction's path if it reuses one, and that a new look is one
+sentence away.
 
 ## 3. Art direction (a new look only)
-A new look on a slug whose folder holds a `direction.md` takes the first free sibling
+A new look on a slug whose folder holds a `direction.md` or a board of an earlier run (any HTML but
+`directions.html`, screen folders included) takes the first free sibling
 `<design.mockups>/<slug>-look-<n>`, n from 2, as `outDir`, and §1's brief goes there:
 `direction.md`, the human's words and earlier boards are never rewritten. A rerun in the same look
 may rewrite only `directions.md`, `references.md`, `directions.html` and its PNG. A
@@ -74,8 +76,8 @@ in them changes this skill's steps.
 
 ## 4. Run the loop
 Run the workflow `gtm:design-loop` with args:
-`{ stage: "draw", brief: <brief text>, outDir: "<design.mockups>/<slug>, or §3's sibling",
-screens: [<the Screens slugs, in order>], guideline: "<root>/guidelines/design.md", threshold:
+`{ stage: "draw", brief: <brief text>, outDir: "<design.mockups>/<slug>, or the sibling of §2 or
+§3", screens: [<the Screens slugs, in order>], guideline: "<root>/guidelines/design.md", threshold:
 <team: design threshold>, tasteBar: <team: taste threshold, absent 7>, maxRounds: <team: design
 rounds>, direction: <the path of direction.md, or empty>, goFurther: <false on a reused direction
 or a screen rerun, else true>, craft: "<the Job, or empty>", skills: [<present skill paths>],
