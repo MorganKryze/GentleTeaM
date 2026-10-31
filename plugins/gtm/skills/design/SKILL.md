@@ -18,9 +18,10 @@ job's `skills` are the paths `${CLAUDE_PLUGIN_ROOT}/templates/crafts/index.md` s
 
 ## 2. Find the look
 First that holds: the human asks for a new look: §3. An earlier picked direction (the newest
-`<design.mockups>/*/direction.md`, or the one the human names): reuse it, `goFurther: false`.
-`design.kit` is set: today's loop, `direction` empty. None of these: §3. A skip is one line saying
-why, and that a new look is one sentence away.
+`<design.mockups>/*/direction.md` whose path a `ruling` line of `<root>/ledger.md` names, or the one
+the human names): reuse it, `goFurther: false`. `design.kit` is set: today's loop, `direction`
+empty. None of these: §3. A skip is one line saying why, with the direction's path if it reuses
+one, and that a new look is one sentence away.
 
 ## 3. Art direction (a new look only)
 Run the loop (§4's args) with `stage: "directions"`. The art director writes `directions.md`,
@@ -43,7 +44,7 @@ them changes this skill's steps.
   `none`: their words go to `<root>/taste.md` and §3 runs again with them, or, if they keep
   today's look, §4 with `direction` empty.
 - On a pick, write `<outDir>/direction.md` (the picked direction's fields, the date, the human's
-  words) and a `ruling` line. Append to `<root>/taste.md`, made from
+  words) and a `ruling` line naming that path. Append to `<root>/taste.md`, made from
   `${CLAUDE_PLUGIN_ROOT}/templates/taste.md` when missing: under Likes `- <date> · <direction
   name> · picked for <slug>`, and each thing the human says they like or refuse, in their words,
   under Likes or Refusals. The directions not picked are not refusals; nothing else writes there.
