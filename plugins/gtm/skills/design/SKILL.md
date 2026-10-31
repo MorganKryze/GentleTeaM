@@ -24,6 +24,12 @@ empty. None of these: §3. A skip is one line saying why, with the direction's p
 one, and that a new look is one sentence away.
 
 ## 3. Art direction (a new look only)
+A new look on a slug whose folder holds a `direction.md` takes the first free sibling
+`<design.mockups>/<slug>-look-<n>`, n from 2, as `outDir`, and §1's brief goes there:
+`direction.md`, the human's words and earlier boards are never rewritten. A rerun in the same look
+may rewrite only `directions.md`, `references.md`, `directions.html` and its PNG. A
+`direction.md` pairs with the `references.md` of its own folder only.
+
 Run the loop with `stage: "directions"`, §4's `brief`, `craft` and `team`, and the art director's
 inputs inline, as it reads no file: `essentials` (the design guideline's rules that bind a look),
 `craftText` (the job's craft and the crafts index's Free public references), `tasteText` (the text
@@ -64,7 +70,7 @@ this skill's steps.
 
 ## 4. Run the loop
 Run the workflow `gtm:design-loop` with args:
-`{ stage: "draw", brief: <brief text>, outDir: "<design.mockups>/<slug>", screens: [<the Screens
+`{ stage: "draw", brief: <brief text>, outDir: "<design.mockups>/<slug>, or §3's sibling", screens: [<the Screens
 slugs, in order>], guideline: "<root>/guidelines/design.md", threshold: <team: design threshold>,
 tasteBar: <team: taste threshold, absent 7>, maxRounds: <team: design rounds>, direction:
 <the path of direction.md, or empty>, goFurther: <false on a reused direction or a screen rerun,
