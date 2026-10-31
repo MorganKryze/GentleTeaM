@@ -1181,6 +1181,7 @@ const three = (over = {}) => ({ directions: [look(1, over), look(2), look(3)], p
 const stageArgs = { stage: 'directions', brief: 'b', outDir: 'out', craft: 'website', skills: ['/s/a.md'], taste: 't.md' }
 const refusedRun = { passed: false, rounds: 2, directions: [] }
 const wide = Object.fromEntries(['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 'x'.repeat(160)]))
+const told = { idea: `${'x'.repeat(161)}\nA second line.` }
 
 const stages = [
   {
@@ -1238,6 +1239,13 @@ const stages = [
     returns: { passed: true, rounds: 1, directions: three(wide).directions, page: 'out/directions.html', summary: 's' },
     dispatches: [art(1)],
     capped: { 'art director · round 1': ['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 160]) },
+  },
+  {
+    name: 'art direction: an idea has no such cap: 161 characters over two lines pass',
+    args: stageArgs,
+    reply: artDirector(() => three(told)),
+    returns: { passed: true, rounds: 1, directions: three(told).directions, page: 'out/directions.html', summary: 's' },
+    dispatches: [art(1)],
   },
   {
     name: 'art direction: no reference at all passes: no network is not a refusal',
