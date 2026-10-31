@@ -60,8 +60,9 @@ this skill's steps.
   direction cites a reference: a Heads-up, "no reference fetched".
 - One card: one option per direction (name, idea, type, colour, structure, tone) plus `none: your
   words`, with your recommendation. The pick is the human's answer: no designer draws before it.
-  `none`: their words go to `<root>/taste.md` and §3 runs again with them, or, if they keep
-  today's look, §4 with `direction` empty.
+  `none`: their words are appended under Likes or Refusals of `<root>/taste.md`, made from
+  `${CLAUDE_PLUGIN_ROOT}/templates/taste.md` when missing, and §3 runs again with them, or, if they
+  keep today's look, §4 with `direction` empty.
 - On a pick, write `<outDir>/direction.md` (the picked direction's fields, the date, the human's
   words) and a `ruling` line naming that path. Append to `<root>/taste.md`, made from
   `${CLAUDE_PLUGIN_ROOT}/templates/taste.md` when missing: under Likes `- <date> · <direction
