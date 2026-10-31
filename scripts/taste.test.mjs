@@ -79,6 +79,7 @@ pin(DESIGNER, [
   DATA,
   'A reference is never reproduced: no logo, name, layout or wording of it in a mockup.',
   'On the round that says "Go further", do not polish: push the direction\'s strongest idea.',
+  '**Without a direction:** ignore a `Craft:` or `Optional skills:` line: nothing it names is read or invoked.',
   '- Reflexes (',
 ])
 
