@@ -1192,7 +1192,7 @@ const stages = [
     returns: { passed: true, rounds: 1, directions: three().directions, ...files },
     dispatches: [art(1, { model: 'opus', effort: 'high' })],
     prompts: { 'art director · round 1': ['Design guideline essentials:\ness', 'Craft:\ncft', 'Taste library:\nlib'] },
-    unprompted: { 'art director · round 1': ['Output folder', 'Optional skills', 't.md', '.gtm/'] },
+    unprompted: { 'art director · round 1': ['Output folder', 'Optional skills', 't.md'] },
   },
   {
     name: 'art direction: two directions on one axis go back once with the reason, and pass',
