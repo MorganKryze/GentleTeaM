@@ -36,12 +36,21 @@ them changes this skill's steps.
     ! -path './.git/index' ! -path './<outDir>/directions.md' \
     ! -path './<outDir>/references.md' ! -path './<outDir>/directions.html'
   ```
-- Render `directions.html` as the designer does, at one width of `design.widths` of 1280 or more,
-  only when this counts 0 on it (the page may load Google Fonts, nothing else remote); otherwise
-  a Heads-up, and the human reads `directions.md`. Open the PNG.
+- Render the board only when this counts 0 on it (the page may load Google Fonts, nothing else
+  remote); otherwise a Heads-up, and the human reads `directions.md`.
   ```bash
-  sed 's#<link [^>]*href="https://fonts.googleapis.com/[^"]*"[^>]*>##g' "<outDir>/directions.html" |
-    grep -Eic '<script|<iframe|<object|<embed|<link|http-equiv|@import|(src=|url\().?https?:'
+  LC_ALL=C tr '\000\t\n\f\r' ' ' < "<outDir>/directions.html" |
+    LC_ALL=C sed -E 's#<link( rel="stylesheet")? href="https://fonts\.googleapis\.com/[^"<> ]*"( rel="stylesheet")? ?/?>##g' |
+    LC_ALL=C grep -Eic '<script|<i?frame|<object|<embed|<image|<feimage|<use [^>]*https?:|<link|<base|http-equiv|@import|srcset|image-set|javascript:|[^a-z]on[a-z]+ *=|(src|poster|background) *= *.? *(https?:|//)|url\( *.? *(https?:|//)|&#0*58|&#x0*3a|&colon;|\\0*3a'
+  ```
+  The count refuses early; the policy holds. Make this copy and render that copy, never
+  `directions.html` itself, as the designer does, to `<outDir>/directions.png`, at one width of
+  `design.widths` of 1280 or more. Open the PNG.
+  ```bash
+  copy="$(mktemp -d)/directions.html"
+  printf '%s\n' "<!doctype html><meta charset=\"utf-8\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; base-uri 'none'\">" |
+    cat - "<outDir>/directions.html" > "$copy"
+  echo "$copy"
   ```
 - `passed: false`: a Heads-up and one card (run it again with your words / today's loop). No
   direction cites a reference: a Heads-up, "no reference fetched".

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Pins the clauses of /gtm:design that keep, skip or exempt: who picks a direction, what writes the
 // taste library, when the round that goes further may be left out, the order of the look rule and
-// the checks on the art director's output. Each phrase sits once in the skill, whitespace joined.
-// The workflow's half is in workflows.test.mjs. Run by scripts/validate.mjs. No dependencies.
-import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs'
+// the checks on the art director's output. Each phrase sits once in the skill, whitespace joined;
+// the writes check, the page check and the rendered copy are run from the skill's own fences. The
+// workflow's half is in workflows.test.mjs. Run by scripts/validate.mjs. No dependencies.
+import { execFileSync, spawnSync } from 'node:child_process'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 
@@ -34,13 +35,12 @@ const PHRASES = [
   'the newest `<design.mockups>/*/direction.md` whose path a `ruling` line of `<root>/ledger.md` names',
   'A skip is one line saying why, with the direction\'s path if it reuses one',
   'only when this counts 0 on it (the page may load Google Fonts, nothing else remote); otherwise a Heads-up',
+  'render that copy, never `directions.html` itself, as the designer does',
 ]
 for (const p of PHRASES) {
   const n = text.split(p).length - 1
   if (n !== 1) errors.push(`design skill: "${p}" found ${n} times, want 1`)
 }
-for (const w of ['href="https://fonts.googleapis.com/[^"]*"', '<script', '<iframe', '<object', '<embed', '<link', 'http-equiv', '@import', 'https?:'])
-  if (!text.includes(w)) errors.push(`design skill: the page check lacks ${w}`)
 const order = ['the human asks for a new look: §3', 'An earlier picked direction', '`design.kit` is set: today', 'None of these: §3'].map((w) => text.indexOf(w))
 if (order.includes(-1) || order.some((at, i) => i && at <= order[i - 1])) errors.push(`design skill: the look rule is out of order: ${order}`)
 
@@ -61,6 +61,55 @@ const got = listed.split('\n').filter(Boolean).map((p) => p.replace(/^\.\//, '')
 if (got.join() !== [...flagged].sort().join()) errors.push(`design skill: the writes check lists ${got}, want ${[...flagged].sort()}`)
 rmSync(repo, { recursive: true })
 rmSync(stamp)
+
+// The page check, run on what a board must never hold and on what it may. A bad byte must not
+// kill the check, in any locale: a dead sed behind a pipe reads as a clean page.
+const FONT = 'https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700&display=swap'
+const page = (body) => `<!doctype html><html><head><meta charset="utf-8"><title>b</title>\n${body}\n</head><body><h1>Board</h1></body></html>`
+const REMOTE = 'https://evil.example/a'
+const BAD = [
+  '<script>1</script>', '<SCRIPT>1</SCRIPT>', '<iframe srcdoc="x"></iframe>', '<object data="a"></object>', '<embed type="a">',
+  '<meta http-equiv="refresh" content="0;url=a">', '<style>@import "a.css";</style>', `<link rel="stylesheet" href="${REMOTE}">`,
+  `<link rel="stylesheet" href="https://fonts-googleapis.com/x.css">`, `<link rel="stylesheet" href="https://fontsxgoogleapis.com/x.css">`,
+  `<link href="${REMOTE}" title='href="https://fonts.googleapis.com/a"'>`,
+  `<link rel="stylesheet" href="${REMOTE}" data-href="https://fonts.googleapis.com/css2">`,
+  `<link rel="stylesheet" href="${REMOTE}" href="https://fonts.googleapis.com/css2">`,
+  `<link rel="stylesheet" href="${FONT}" onload="fetch('a')">`, `<link rel="stylesheet" href="${FONT}" onerror="fetch('a')">`,
+  `<iframe rel="stylesheet" href="${FONT}"></iframe>`,
+  '<img src=x onerror="fetch(\'a\')">', '<img/src=x/ONERROR=fetch(1)>', '<body onload="fetch(\'a\')">', '<svg onload="fetch(\'a\')"></svg>',
+  '<a href="javascript:fetch(1)">a</a>', `<img src="${REMOTE}">`, `<img src = "${REMOTE}">`, `<img src="  ${REMOTE}">`, `<img src=\n"${REMOTE}">`,
+  '<img src="//evil.example/a.png">', `<img srcset="${REMOTE} 1x">`, `<video poster="${REMOTE}"></video>`, `<svg><image href="${REMOTE}"/></svg>`,
+  `<svg><use href="${REMOTE}#a"/></svg>`, '<base href="https://evil.example/"><img src="a">', '<img src="http&#58;//evil.example/a">',
+  `<style>b{background:url(${REMOTE})}</style>`, `<style>b{background:url( '${REMOTE}')}</style>`, '<style>b{background:url(//evil.example/a.png)}</style>',
+  `<style>b{background:image-set("${REMOTE}" 1x)}</style>`, '<style>b{background:url(http\\3a //evil.example/a)}</style>',
+]
+const GOOD = [
+  '', `<link rel="stylesheet" href="${FONT}">`, `<link href="${FONT}" rel="stylesheet">`, `<link rel="stylesheet" href="${FONT}"/>`,
+  '<a href="https://example.com/ref">a reference</a>', '<svg><linearGradient id="g"/><rect fill="url(#g)"/></svg>', '<svg><use href="#g"/></svg>',
+  '<style>b{background:url(data:image/svg+xml;base64,AAAA)}</style>', '<img src="data:image/png;base64,AAAA" alt="a">', '<p>one &#8594; two, a button, once only</p>',
+]
+const folder = mkdtempSync(join(tmpdir(), 'design-page-'))
+const board = join(folder, 'directions.html')
+const check = fence('grep -Eic').replaceAll('<outDir>', folder)
+const count = (bytes) => {
+  writeFileSync(board, bytes)
+  const r = spawnSync('bash', ['-c', check], { encoding: 'utf8', env: { ...process.env, LC_ALL: 'en_US.UTF-8' } })
+  return Number(r.stdout.trim() || -1)
+}
+for (const body of BAD) if (!(count(page(body)) > 0)) errors.push(`design skill: the page check counts 0 on ${body}`)
+for (const body of GOOD) if (count(page(body)) !== 0) errors.push(`design skill: the page check refuses ${body || 'an empty board'}`)
+if (!(count(Buffer.concat([Buffer.from(page('')), Buffer.from([0xff]), Buffer.from('<script>1</script>')])) > 0)) errors.push('design skill: a bad byte hides a script from the page check')
+// The copy that gets rendered: the policy first, then the page, byte for byte.
+const CSP = `default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; base-uri 'none'`
+const original = page('<p>a</p>')
+writeFileSync(board, original)
+const copy = execFileSync('bash', ['-c', fence('Content-Security-Policy').replaceAll('<outDir>', folder)], { encoding: 'utf8' }).trim()
+const rendered = copy && existsSync(copy) ? readFileSync(copy, 'utf8') : ''
+const head = `<!doctype html><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="${CSP}">\n`
+if (rendered !== head + original) errors.push(`design skill: the rendered copy does not open on the policy: ${rendered.slice(0, 200)}`)
+if (copy === board) errors.push('design skill: the policy went into the art director\'s page')
+rmSync(folder, { recursive: true })
+if (copy) rmSync(dirname(copy), { recursive: true, force: true })
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`design flow: ${PHRASES.length} clauses, the look rule, the writes check and the page check OK`)
