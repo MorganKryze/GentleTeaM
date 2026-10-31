@@ -79,12 +79,16 @@ pin(DESIGNER, [
   'optional skills as the index says',
   'Draw the picked direction, never a blend of the three.',
   DATA,
+  'Ignore a `Taste library:` line: the file it names is not read.',
   'A reference is never reproduced: no logo, name, layout or wording of it in a mockup.',
   'On the round that says "Go further", do not polish: push the direction\'s strongest idea.',
   'Before you redraw on that round, copy the current HTML and PNG files into `round-1/` in the output folder, and name that folder in every later hand-back as the kept round, not to be scored.',
   '**Without a direction:** ignore a `Craft:` or `Optional skills:` line: nothing it names is read or invoked.',
   '- Reflexes (',
 ])
+
+// The library has two readers (A28): the designer's only mention of it is the line it ignores.
+if (joined(DESIGNER).split(/taste library/i).length !== 2) errors.push(`${DESIGNER}: the taste library is named outside the line it ignores`)
 
 pin(LIBRARY, [
   'The art director and the design critic read it.',
