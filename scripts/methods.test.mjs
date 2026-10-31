@@ -26,6 +26,7 @@ const REFLEXES = {
   'agents/security-reviewer.md': ['Red Team vs Blue Team [elicitation]', 'Security Audit Personas [elicitation]'],
   'agents/data-reviewer.md': ['Failure Mode Analysis [elicitation]', 'Cascading Failure Simulation [elicitation]'],
   'agents/final-reviewer.md': ['Pre-mortem Analysis [elicitation]', 'Second-Order Thinking [elicitation]'],
+  'agents/art-director.md': ['Cross-Pollination [brain]', 'Reverse Brainstorming [brain]'],
   'agents/designer.md': ['Crazy 8s [brain]', 'SCAMPER Method [brain]', 'Empathy Map [brain]'],
   'agents/design-critic.md': ['Crazy 8s [brain]', 'SCAMPER Method [brain]', 'Empathy Map [brain]'],
   'skills/retro/SKILL.md': ['Five Whys [brain]', 'Hindsight Reflection [elicitation]', 'Lessons Learned Extraction [elicitation]'],

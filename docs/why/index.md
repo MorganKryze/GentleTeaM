@@ -55,7 +55,7 @@ ships, whatever the speed.
 
 ## What GTM is not
 
-It is not a heavyweight persona framework. Eleven roles exist, but most tasks see two of them;
+It is not a heavyweight persona framework. Twelve roles exist, but most tasks see two of them;
 there is no role-play, no story-file ceremony, no seven documents per feature.
 
 It is not a replacement for judgment. Agents recommend and you decide what matters; GTM's job is

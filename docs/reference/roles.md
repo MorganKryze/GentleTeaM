@@ -1,15 +1,15 @@
 ---
 title: Roles
-description: The eleven role agents, what each one does, and when it runs.
+description: The twelve role agents, what each one does, and when it runs.
 ---
 
 ::: callout summary
-- **You will learn:** what each of the eleven roles does, how hard it thinks, and when it runs.
+- **You will learn:** what each of the twelve roles does, how hard it thinks, and when it runs.
 - **Reading time:** 5 minutes, or look up one row.
 - **Before this:** [Which size is my change?](/guides/which-size/) for the tracks.
 :::
 
-GTM ships eleven role agents. Each has one job, reads only the guidelines its role needs, and
+GTM ships twelve role agents. Each has one job, reads only the guidelines its role needs, and
 writes its full report to a file you never have to open. Reviewers are read-only. Every role
 runs Opus, Claude's largest model, and roles differ by effort (defined below); your
 [team settings](/reference/glossary/#team-settings) can change any of them.
@@ -35,6 +35,7 @@ The words in the table and below it:
 | Role | Job | Effort | When it runs |
 | --- | --- | --- | --- |
 | `analyst` | sizes the request, drafts the setup | medium | sizing, `/gtm:init` |
+| `art-director` | gathers references and proposes three directions; picks nothing | high | a new look, before the mockups |
 | `designer` | draws the mockups | medium | mockup rounds |
 | `design-critic` | scores the mockups by measuring; read-only | high | mockup rounds |
 | `architect` | writes the spec and the task plan | high | after the mockups |
@@ -66,6 +67,7 @@ found carries a tag such as `(lens: Steelmanning)`, so `/gtm:tune` can count whi
 - `security-reviewer`: Red Team vs Blue Team, Security Audit Personas.
 - `data-reviewer`: Failure Mode Analysis, Cascading Failure Simulation (what writes here next?).
 - `final-reviewer`: Pre-mortem Analysis of the merge, Second-Order Thinking.
+- `art-director`: Cross-Pollination, Reverse Brainstorming.
 - `designer` and `design-critic`: Crazy 8s, SCAMPER Method, Empathy Map.
 - `/gtm:retro`: Five Whys, Hindsight Reflection, Lessons Learned Extraction.
 - `/gtm:tune`: Occam's Razor Application, Constraint Mapping.

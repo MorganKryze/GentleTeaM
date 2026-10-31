@@ -19,7 +19,7 @@ Four parts, read by every command and every role.
 
 - **Priorities:** security, data integrity, UX and accessibility, performance, delivery speed,
   usage and cost sensitivity. Each is low, normal or high, with a reason and a date.
-- **Roles:** the model and effort of each of the eleven roles, each with a reason. The roles keep
+- **Roles:** the model and effort of each of the twelve roles, each with a reason. The roles keep
   defaults in their own files; GTM passes your values on every call, so your settings win.
 - **Specialists:** the security, data and screen reviewers, each with the paths that call it in.
   A specialist reviews a task only when a changed path matches one of its triggers; `off`

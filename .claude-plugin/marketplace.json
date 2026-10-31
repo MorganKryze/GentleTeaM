@@ -9,7 +9,7 @@
     {
       "name": "gtm",
       "source": "./plugins/gtm",
-      "description": "A light agent-team method: three tracks, eleven roles, three human touchpoints per feature"
+      "description": "A light agent-team method: three tracks, twelve roles, three human touchpoints per feature"
     }
   ]
 }
