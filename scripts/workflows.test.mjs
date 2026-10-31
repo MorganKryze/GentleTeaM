@@ -34,6 +34,8 @@ async function run(name, src, args, reply) {
   const logs = []
   const prompts = {}
   const extra = []
+  const required = {}
+  const capped = {}
   const agent = async (prompt, opts = {}) => {
     if (dispatches.length >= MAX_DISPATCHES) throw new Error(`${name}: more than ${MAX_DISPATCHES} dispatches`)
     const d = { agentType: opts.agentType, label: opts.label }
@@ -41,6 +43,8 @@ async function run(name, src, args, reply) {
     if (opts.effort !== undefined) d.effort = opts.effort
     dispatches.push(d)
     prompts[opts.label] = prompt
+    if (opts.schema) required[opts.label] = opts.schema.required
+    if (opts.schema) capped[opts.label] = Object.entries(opts.schema.properties?.directions?.items?.properties || {}).flatMap(([k, v]) => (v.maxLength ? [[k, v.maxLength]] : []))
     const out = await reply(d)
     if (opts.schema) extra.push(...undeclared(out, opts.schema, opts.label))
     return out
@@ -54,7 +58,7 @@ async function run(name, src, args, reply) {
   const body = src.replace(/^export const meta/m, 'const meta')
   try {
     const value = await vm.runInContext(`(async () => {\n${body}\n})()`, context, { filename: name })
-    return { value, dispatches, logs, prompts, extra }
+    return { value, dispatches, logs, prompts, extra, required, capped }
   } catch (e) {
     // Errors from inside the context come from its own realm, so match on the name.
     const missing = e && e.name === 'ReferenceError' && /^(\S+) is not defined$/.exec(String(e.message))
@@ -1167,6 +1171,264 @@ const screenRounds = (screen, n) =>
     { agentType: 'gtm:design-critic', label: `critic · ${screen} · round ${r}` },
   ])
 
+const TASTE_GRADES = ['distinctiveness', 'faithfulness', 'hierarchy', 'typography', 'signature']
+
+// Answers the art director with `set(round, label)`.
+const artDirector = (set) => (d) => set(Number(d.label.match(/round (\d+)/)[1]), d.label)
+const art = (round, extra = {}) => ({ agentType: 'gtm:art-director', label: `art director · round ${round}`, ...extra })
+const look = (n, over = {}) => ({ name: `n${n}`, idea: `i${n}`, type: `t${n}`, colour: `c${n}`, structure: `s${n}`, tone: `o${n}`, references: [`https://r/${n}`], ...over })
+const three = (over = {}) => ({ directions: [look(1, over), look(2), look(3)], page: 'out/directions.html', summary: 's' })
+const stageArgs = { stage: 'directions', brief: 'b', outDir: 'out', craft: 'website', skills: ['/s/a.md'], taste: 't.md' }
+const refusedRun = { passed: false, rounds: 2, directions: [] }
+const wide = Object.fromEntries(['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 'x'.repeat(160)]))
+const told = { idea: `${'x'.repeat(161)}\nA second line.` }
+
+const stages = [
+  {
+    name: 'art direction: three directions that differ pass, and nothing is drawn',
+    args: { ...stageArgs, team: { 'art-director': { model: 'opus', effort: 'high' } } },
+    reply: artDirector(() => three()),
+    returns: { passed: true, rounds: 1, directions: three().directions, page: 'out/directions.html', summary: 's' },
+    dispatches: [art(1, { model: 'opus', effort: 'high' })],
+    prompts: { 'art director · round 1': ['Output folder: out', 'Craft: website', 'Optional skills: /s/a.md', 'Taste library: t.md'] },
+  },
+  {
+    name: 'art direction: two directions on one axis go back once with the reason, and pass',
+    args: stageArgs,
+    reply: artDirector((r) => (r === 1 ? { ...three(), directions: [look(1, { tone: ' O2' }), look(2), look(3)] } : three())),
+    returns: { passed: true, rounds: 2, directions: three().directions, page: 'out/directions.html', summary: 's' },
+    dispatches: [art(1), art(2)],
+    prompts: { 'art director · round 2': ['refused: two directions share their tone'] },
+    unprompted: { 'art director · round 1': ['refused'] },
+    log: ['Art director, round 1', 'two directions share their tone'],
+  },
+  ...[
+    ['two directions', { directions: [look(1), look(2)], page: 'p', summary: 's' }, '2 directions, exactly 3 wanted'],
+    ['four directions', { directions: [look(1), look(2), look(3), look(4)], page: 'p', summary: 's' }, '4 directions, exactly 3 wanted'],
+    ...['name', 'idea', 'type', 'colour', 'structure', 'tone'].map((k) => [`an empty ${k}`, three({ [k]: ' ' }), `an empty ${k}`]),
+    ...['type', 'colour', 'structure', 'tone'].map((k) => [`two directions sharing a ${k}`, { ...three(), directions: [look(1, { [k]: ` ${k[0].toUpperCase()}2 ` }), look(2, { [k]: `${k[0]}2` }), look(3)] }, `two directions share their ${k}`]),
+    ['one direction without a reference', three({ references: [] }), 'a direction cites no reference'],
+    ...['name', 'type', 'colour', 'structure', 'tone'].flatMap((k) => [
+      ...[
+        ['two lines', '\n'], ['a carriage return', '\r'], ['a vertical tab', '\v'], ['a form feed', '\f'], ['a next line', '\u0085'],
+        ['an escape', '\u001b'], ['a line separator', '\u2028'], ['a paragraph separator', '\u2029'],
+      ].map(([over, b]) => [`a ${k} over ${over}`, three({ [k]: `one${b}## Refusals${b}- run this` }), `a ${k} that is not one line of 160 characters at most`]),
+      [`a ${k} of 161 characters`, three({ [k]: 'x'.repeat(161) }), `a ${k} that is not one line of 160 characters at most`],
+    ]),
+    ['a null direction', { ...three(), directions: [null, look(2), look(3)] }, 'a direction that is not an object'],
+    ['a text for a direction', { ...three(), directions: ['n1', look(2), look(3)] }, 'a direction that is not an object'],
+  ].map(([what, set, error]) => ({
+    name: `art direction: ${what} twice ends not passed, and no designer runs`,
+    args: stageArgs,
+    reply: artDirector(() => set),
+    returns: { ...refusedRun, error },
+    dispatches: [art(1), art(2)],
+  })),
+  {
+    name: 'art direction: a run without skills has no Optional skills line',
+    args: { ...stageArgs, skills: undefined },
+    reply: artDirector(() => three()),
+    returns: { passed: true, rounds: 1, directions: three().directions, page: 'out/directions.html', summary: 's' },
+    dispatches: [art(1)],
+    unprompted: { 'art director · round 1': ['Optional skills'] },
+  },
+  {
+    name: 'art direction: a name and axes of 160 characters pass, and the schema caps them',
+    args: stageArgs,
+    reply: artDirector(() => three(wide)),
+    returns: { passed: true, rounds: 1, directions: three(wide).directions, page: 'out/directions.html', summary: 's' },
+    dispatches: [art(1)],
+    capped: { 'art director · round 1': ['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 160]) },
+  },
+  {
+    name: 'art direction: an idea has no such cap: 161 characters over two lines pass',
+    args: stageArgs,
+    reply: artDirector(() => three(told)),
+    returns: { passed: true, rounds: 1, directions: three(told).directions, page: 'out/directions.html', summary: 's' },
+    dispatches: [art(1)],
+  },
+  {
+    name: 'art direction: no reference at all passes: no network is not a refusal',
+    args: stageArgs,
+    reply: artDirector(() => ({ directions: [1, 2, 3].map((n) => look(n, { references: [] })), page: 'p', summary: 's' })),
+    returns: { passed: true, rounds: 1, directions: [1, 2, 3].map((n) => look(n, { references: [] })), page: 'p', summary: 's' },
+    dispatches: [art(1)],
+  },
+  {
+    name: 'art direction: an art director that returns nothing ends the stage, not dispatched again',
+    args: stageArgs,
+    reply: () => null,
+    returns: { passed: false, rounds: 1, directions: [], error: 'the art director returned no directions' },
+    dispatches: [art(1)],
+  },
+  {
+    name: 'art direction: an art director that throws is retried once',
+    args: stageArgs,
+    reply: (d) => {
+      if (!d.label.endsWith('· retry')) throw new Error('lost')
+      return three()
+    },
+    returns: { passed: true, rounds: 1, directions: three().directions, page: 'out/directions.html', summary: 's' },
+    dispatches: [art(1), { agentType: 'gtm:art-director', label: 'art director · round 1 · retry' }],
+  },
+  ...[
+    ['a stage', { stage: 'moodboard' }, 'stage "moodboard" unknown'],
+    ['a craft', { craft: '../secrets' }, 'craft "../secrets" unknown'],
+    ['a craft on the directions stage', { stage: 'directions', craft: '../secrets' }, 'craft "../secrets" unknown'],
+    ['a craft that starts with a valid job', { craft: 'brand/../../secrets' }, 'craft "brand/../../secrets" unknown'],
+  ].map(([what, args, error]) => ({
+    name: `art direction: ${what} outside its closed list runs nothing`,
+    args,
+    reply: () => { throw new Error('nothing runs') },
+    returns: { passed: false, screens: [], error },
+    dispatches: [],
+    log: ['nothing runs'],
+  })),
+]
+
+// A critic's taste: all five grades at n, or at n but one (`low`) at m.
+const grades = (n, low, m) => ({ distinctiveness: n, faithfulness: n, hierarchy: n, typography: n, signature: n, notes: ['n'], ...(low ? { [low]: m } : {}) })
+const tasted = (n, t, mustFix = []) => ({ ...score(n, mustFix), taste: t })
+const picked = { outDir: 'out', direction: 'out/direction.md', taste: 't.md' }
+const seen = (round, board, verdict, scores, tastes, passed = true) => ({ passed, rounds: round, scores, tastes, verdict, board })
+
+const directed = [
+  {
+    name: 'design direction: the craft reaches both roles, the skills the designer alone',
+    args: { ...picked, goFurther: false, craft: 'website', skills: ['/s/a.md'] },
+    reply: designReply(() => tasted(9, grades(9))),
+    returns: seen(1, 'board 1', tasted(9, grades(9)), [9], [9]),
+    dispatches: designRounds(1),
+    prompts: { 'designer · round 1': ['Craft: website', 'Optional skills: /s/a.md'], 'critic · round 1': ['Craft: website'] },
+    unprompted: { 'critic · round 1': ['Optional skills'] },
+  },
+  {
+    name: 'design direction: a run without skills has no Optional skills line',
+    args: { ...picked, goFurther: false, craft: 'website' },
+    reply: designReply(() => tasted(9, grades(9))),
+    returns: seen(1, 'board 1', tasted(9, grades(9)), [9], [9]),
+    dispatches: designRounds(1),
+    prompts: { 'designer · round 1': ['Craft: website'] },
+    unprompted: { 'designer · round 1': ['Optional skills'], 'critic · round 1': ['Optional skills'] },
+  },
+  {
+    name: 'design direction: a first round above both bars still goes further, then passes',
+    args: picked,
+    reply: designReply(() => tasted(9, grades(9))),
+    returns: seen(2, 'board 2', tasted(9, grades(9)), [9, 9], [9, 9]),
+    dispatches: designRounds(2),
+    prompts: {
+      'designer · round 1': ['Direction, picked by the human: out/direction.md', 'Taste library: t.md', 'Round 1 of 3.'],
+      'designer · round 2': ['Go further:', 'Round 2 of 3.', "The critic's verdict on your previous board"],
+      'critic · round 1': ['Taste bar: 7/10', 'Direction, picked by the human: out/direction.md', 'Taste library: t.md'],
+    },
+    unprompted: { 'designer · round 1': ['Go further'], 'critic · round 2': ['Go further'] },
+    log: ['Round 1: 9/10, 0 must-fix, taste 9/10'],
+    required: { 'critic · round 1': ['score', 'mustFix', 'shouldFix', 'summary', 'taste'] },
+  },
+  {
+    name: 'design direction: the go-further round comes once, the third round polishes',
+    args: picked,
+    reply: designReply((r) => tasted(r === 3 ? 8 : 7, grades(8))),
+    returns: seen(3, 'board 3', tasted(8, grades(8)), [7, 7, 8], [8, 8, 8]),
+    dispatches: designRounds(3),
+    unprompted: { 'designer · round 3': ['Go further'] },
+  },
+  {
+    name: 'design direction: conformity passed, taste below its bar: another round, not passed',
+    args: picked,
+    reply: designReply(() => tasted(10, grades(9, 'distinctiveness', 6))),
+    returns: seen(3, 'board 3', tasted(10, grades(9, 'distinctiveness', 6)), [10, 10, 10], [6, 6, 6], false),
+    dispatches: designRounds(3),
+  },
+  {
+    name: 'design direction: taste passed, one must-fix: another round, not passed',
+    args: picked,
+    reply: designReply(() => tasted(9, grades(9), ['contrast'])),
+    returns: seen(3, 'board 3', tasted(9, grades(9), ['contrast']), [9, 9, 9], [9, 9, 9], false),
+    dispatches: designRounds(3),
+  },
+  ...TASTE_GRADES.map((low) => ({
+    name: `design direction: the lowest grade decides, here ${low}`,
+    args: picked,
+    reply: designReply(() => tasted(9, grades(10, low, 6))),
+    returns: seen(3, 'board 3', tasted(9, grades(10, low, 6)), [9, 9, 9], [6, 6, 6], false),
+    dispatches: designRounds(3),
+  })),
+  {
+    name: 'design direction: the taste bar holds at exactly 7 by default',
+    args: picked,
+    reply: designReply(() => tasted(8, grades(7))),
+    returns: seen(2, 'board 2', tasted(8, grades(7)), [8, 8], [7, 7]),
+    dispatches: designRounds(2),
+  },
+  {
+    name: 'design direction: tasteBar sets the bar',
+    args: { ...picked, tasteBar: 8, maxRounds: 2 },
+    reply: designReply(() => tasted(8, grades(7))),
+    returns: seen(2, 'board 2', tasted(8, grades(7)), [8, 8], [7, 7], false),
+    dispatches: designRounds(2),
+    prompts: { 'critic · round 1': ['Taste bar: 8/10'] },
+  },
+  ...[
+    ['no taste', () => score(9)],
+    ['a grade missing', () => tasted(9, { ...grades(9), signature: undefined })],
+    ['a grade past 10', () => tasted(9, grades(9, 'signature', 11))],
+    ['a grade below 0', () => tasted(9, grades(9, 'hierarchy', -1))],
+    ['a grade that is no number', () => tasted(9, grades(9, 'hierarchy', '9'))],
+  ].map(([what, verdict]) => ({
+    name: `design direction: ${what} reads taste 0 and never passes`,
+    args: { ...picked, maxRounds: 2 },
+    reply: designReply(verdict),
+    returns: seen(2, 'board 2', verdict(), [9, 9], [0, 0], false),
+    dispatches: designRounds(2),
+  })),
+  {
+    name: 'design direction: one design round on the team still runs the round that goes further',
+    args: { ...picked, maxRounds: 1 },
+    reply: designReply(() => tasted(9, grades(9))),
+    returns: seen(2, 'board 2', tasted(9, grades(9)), [9, 9], [9, 9]),
+    dispatches: designRounds(2),
+    prompts: { 'designer · round 2': ['Go further:', 'Round 2 of 2.'] },
+  },
+  {
+    name: 'design direction: goFurther false passes on round 1, both bars still hold',
+    args: { ...picked, goFurther: false },
+    reply: designReply((r) => tasted(9, r === 1 ? grades(6) : grades(9))),
+    returns: seen(2, 'board 2', tasted(9, grades(9)), [9, 9], [6, 9]),
+    dispatches: designRounds(2),
+    unprompted: { 'designer · round 2': ['Go further'] },
+  },
+  {
+    name: 'design direction: goFurther false keeps one round when the team says one',
+    args: { ...picked, goFurther: false, maxRounds: 1 },
+    reply: designReply(() => tasted(9, grades(9))),
+    returns: seen(1, 'board 1', tasted(9, grades(9)), [9], [9]),
+    dispatches: designRounds(1),
+  },
+  {
+    name: 'design direction: a critic lost on the go-further round ends it not passed',
+    args: picked,
+    reply: designReply((r) => (r === 1 ? tasted(9, grades(9)) : null)),
+    returns: seen(1, 'board 2', null, [9], [9], false),
+    dispatches: designRounds(2),
+  },
+  {
+    name: 'design direction: every screen goes further, and one below its taste fails the run',
+    args: { ...picked, screens: ['home', 'list'], maxRounds: 2 },
+    reply: designReply((r, label) => tasted(9, label.includes('list') ? grades(5) : grades(9))),
+    returns: {
+      passed: false,
+      screens: [
+        { screen: 'home', ...seen(2, 'board 2', tasted(9, grades(9)), [9, 9], [9, 9]) },
+        { screen: 'list', ...seen(2, 'board 2', tasted(9, grades(5)), [9, 9], [5, 5], false) },
+      ],
+    },
+    dispatches: [...screenRounds('home', 2), ...screenRounds('list', 2)],
+    prompts: { 'designer · home · round 2': ['Go further:'], 'designer · list · round 2': ['Go further:'] },
+  },
+]
+
 const design = [
   {
     name: 'design: passes on round 2 at the default bar',
@@ -1342,6 +1604,18 @@ const design = [
     prompts: { 'designer · round 1': ['Output folder: out\n'] },
     unprompted: { 'designer · round 1': ['Screen:'], 'critic · round 1': ['Screen:', 'alone'] },
   },
+  {
+    name: 'design: without a direction, a craft, skills and a library change nothing',
+    args: { outDir: 'out', craft: 'website', skills: ['/s/a.md'], taste: 't.md', goFurther: true },
+    reply: designReply(() => score(8)),
+    returns: { passed: true, rounds: 1, scores: [8], verdict: score(8), board: 'board 1' },
+    dispatches: designRounds(1),
+    unprompted: { 'designer · round 1': ['Craft', 'Optional skills', 'Direction', 'Go further'], 'critic · round 1': ['Craft', 'Optional skills', 'Taste bar'] },
+    unlogged: ['taste'],
+    required: { 'critic · round 1': ['score', 'mustFix', 'shouldFix', 'summary'] },
+  },
+  ...stages,
+  ...directed,
 ].map((s) => ({ workflow: 'design-loop', ...s }))
 
 const scenarios = [...deliver, ...design]
@@ -1358,7 +1632,7 @@ for (const s of scenarios) {
   }
   try {
     const src = readFileSync(join(folder, `${s.workflow}.js`), 'utf8')
-    const { value, dispatches, logs, prompts, extra } = await run(s.workflow, src, s.args, s.reply)
+    const { value, dispatches, logs, prompts, extra, required, capped } = await run(s.workflow, src, s.args, s.reply)
     if (canon(value) !== canon(s.returns)) differs(where, 'returned value', s.returns, value)
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
     // The expected entry is a set of fragments that exactly one log line must hold together.
@@ -1366,6 +1640,10 @@ for (const s of scenarios) {
     // And no log line may hold any of these.
     for (const part of s.unlogged || []) if (logs.some((line) => line.includes(part))) differs(where, `log without "${part}"`, [], logs)
     if (extra.length) failures.push(`${where}: reply fields the schema does not declare: ${extra.join(', ')}`)
+    // The schema sent to each listed label requires exactly these fields.
+    for (const [label, fields] of Object.entries(s.required || {})) if (canon(required[label]) !== canon(fields)) differs(where, `fields required of ${label}`, fields, required[label])
+    // The schema sent to each listed label caps exactly these fields of a direction.
+    for (const [label, fields] of Object.entries(s.capped || {})) if (canon(capped[label]) !== canon(fields)) differs(where, `fields capped for ${label}`, fields, capped[label])
     // The prompt sent to each listed label holds every fragment given for it, and none of the unprompted.
     for (const [label, parts] of Object.entries(s.prompts || {})) {
       for (const part of parts) if (!(prompts[label] || '').includes(part)) failures.push(`${where}: prompt of ${label} lacks "${part}"`)
