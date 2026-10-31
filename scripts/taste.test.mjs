@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Pins what art direction asks of the design critic, the designer and the taste library: each
-// clause sits once, in order, in the one file that states it, whitespace joined. The critic's
-// measures stay word for word, so taste cannot move the conformity score, and neither agent's
-// frontmatter moves from 614e6d7 (skipped, with a line, in a shallow clone that lacks the commit;
-// companions.test.mjs still holds the tools lines there). The loop's half is in
-// workflows.test.mjs. Run by scripts/validate.mjs. No dependencies.
+// clause sits once, in order, in the one file that states it, whitespace joined. The template and
+// the designer's prompt down to its rules hold no other word. The critic's measures stay word for
+// word, so taste cannot move the conformity score, and neither agent's frontmatter moves from
+// 614e6d7 (skipped, with a line, in a shallow clone that lacks the commit; companions.test.mjs
+// still holds the tools lines there). The loop's half is in workflows.test.mjs. Run by
+// scripts/validate.mjs. No dependencies.
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -67,7 +68,17 @@ pin(CRITIC, [
   '**Return:** exactly the structure asked (score, mustFix[], shouldFix[], summary, and taste with a direction).',
 ])
 
-pin(DESIGNER, [
+// The designer's prompt down to its rules, with nothing between the clauses: an added sentence
+// could send it to the library or clear a kept round in words no list of names would catch.
+const PROMPT = [
+  'Your standard is `<root>/guidelines/design.md`. Read it fully, every time.',
+  '**Inputs:** a brief (feature, screens, constraints), an output folder, and on later rounds the critic\'s verdict and your previous hand-back. When the prompt names one screen, draw that screen alone, in its folder; other designers draw the others.',
+  '**Method:**',
+  '- Reuse the previous mockup pages\' CSS and frames; look at the latest mockup page for consistency.',
+  '- One mockup page per topic; each new screen in light and dark at the widths in `design.widths`; a caption under each frame (what it shows, the decision it embodies); realistic data in `language.human`.',
+  '- The mockup page\'s top line lists the decisions the human must make, each with your recommendation.',
+  '- Render with `design.render`, or `npx playwright screenshot --viewport-size=<w>,<h> file://<html> <png>` when empty. Then open the PNG and fix what you see (overflow, crammed rows, wraps) before handing back.',
+  '- With impeccable `on` in `<root>/team.md` and present, read its craft floor before a new screen and run its detector on your HTML before handing back, as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable); the design guideline wins.',
   '- On a revision round: fix every must-fix and say how; keep what the critic did not flag.',
   '**With a direction:**',
   'read the direction file the prompt names, `references.md` beside it, then the craft it names (`${CLAUDE_PLUGIN_ROOT}/templates/crafts/index.md`, then that craft) and its optional skills as the index says.',
@@ -79,9 +90,11 @@ pin(DESIGNER, [
   'Before you redraw on that round, copy the current HTML and PNG files into `round-1/` in the output folder, or the next free `round-<n>/` when that one exists: a kept round is never overwritten.',
   'Name the folder you used in every later hand-back as the kept round, not to be scored.',
   '**Without a direction:** ignore a `Craft:` or `Optional skills:` line: nothing it names is read or invoked.',
-  '- Reflexes (',
-  '**Hand back (≤ 8 lines):** PNG paths, HTML paths, what changed this round, open decisions for the human with your recommendation.',
-])
+  '- Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Crazy 8s [brain], SCAMPER Method [brain], Empathy Map [brain].',
+  '## Project rules',
+]
+pin(DESIGNER, [...PROMPT, '**Hand back (≤ 8 lines):** PNG paths, HTML paths, what changed this round, open decisions for the human with your recommendation.'])
+if (!joined(DESIGNER).includes(PROMPT.join(' '))) errors.push(`${DESIGNER}: holds words between its clauses`)
 
 // A comment would read as a clause here and reach no agent.
 for (const rel of [CRITIC, DESIGNER]) if (raw(rel).includes('<!--')) errors.push(`${rel}: holds an HTML comment`)
