@@ -72,6 +72,7 @@ const BAD = [
   '<script>1</script>', '<SCRIPT>1</SCRIPT>', '<iframe srcdoc="x"></iframe>', '<object data="a"></object>', '<embed type="a">',
   '<meta http-equiv="refresh" content="0;url=a">', '<style>@import "a.css";</style>', `<link rel="stylesheet" href="${REMOTE}">`,
   `<link rel="stylesheet" href="https://fonts-googleapis.com/x.css">`, `<link rel="stylesheet" href="https://fontsxgoogleapis.com/x.css">`,
+  `<link rel="stylesheet" href="https://fonts.googleapisxcom/x.css">`, `<link href="${FONT}" rel="preload">`,
   `<link href="${REMOTE}" title='href="https://fonts.googleapis.com/a"'>`,
   `<link rel="stylesheet" href="${REMOTE}" data-href="https://fonts.googleapis.com/css2">`,
   `<link rel="stylesheet" href="${REMOTE}" href="https://fonts.googleapis.com/css2">`,
@@ -79,6 +80,9 @@ const BAD = [
   `<iframe rel="stylesheet" href="${FONT}"></iframe>`,
   '<img src=x onerror="fetch(\'a\')">', '<img/src=x/ONERROR=fetch(1)>', '<body onload="fetch(\'a\')">', '<svg onload="fetch(\'a\')"></svg>',
   '<a href="javascript:fetch(1)">a</a>', `<img src="${REMOTE}">`, `<img src = "${REMOTE}">`, `<img src="  ${REMOTE}">`, `<img src=\n"${REMOTE}">`,
+  `<img src=\t"${REMOTE}">`, `<img src=\f"${REMOTE}">`, `<img src=\r"${REMOTE}">`, `<table background="${REMOTE}"></table>`,
+  '<frameset><frame name=a></frameset>', `<svg><filter><feImage href="${REMOTE}"/></filter></svg>`,
+  '<img src="http&colon;//evil.example/a">', '<img src="http&#x3a;//evil.example/a">',
   '<img src="//evil.example/a.png">', `<img srcset="${REMOTE} 1x">`, `<video poster="${REMOTE}"></video>`, `<svg><image href="${REMOTE}"/></svg>`,
   `<svg><use href="${REMOTE}#a"/></svg>`, '<base href="https://evil.example/"><img src="a">', '<img src="http&#58;//evil.example/a">',
   `<style>b{background:url(${REMOTE})}</style>`, `<style>b{background:url( '${REMOTE}')}</style>`, '<style>b{background:url(//evil.example/a.png)}</style>',
@@ -91,6 +95,7 @@ const GOOD = [
   '', `<link rel="stylesheet" href="${FONT}">`, `<link href="${FONT}" rel="stylesheet">`, `<link rel="stylesheet" href="${FONT}"/>`,
   '<a href="https://example.com/ref">a reference</a>', '<svg><linearGradient id="g"/><rect fill="url(#g)"/></svg>', '<svg><use href="#g"/></svg>',
   '<style>b{background:url(data:image/svg+xml;base64,AAAA)}</style>', '<img src="data:image/png;base64,AAAA" alt="a">', '<p>one &#8594; two, a button, once only</p>',
+  '<meta name="viewport" content="width=device-width">',
 ]
 const folder = mkdtempSync(join(tmpdir(), 'design-page-'))
 const board = join(folder, 'directions.html')
