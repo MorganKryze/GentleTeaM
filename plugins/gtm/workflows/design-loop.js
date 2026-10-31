@@ -25,6 +25,11 @@ const LAST = FURTHER ? Math.max(MAX, 2) : MAX
 // A direction's name and axes land in durable lines (taste.md, the ledger): one short line each.
 const LINE = 160
 const ONE_LINE = { type: 'string', maxLength: LINE }
+// What the skill writes to disk is bounded, and the two Markdown files link out by http or https
+// alone: an agent fed by fetched pages never hands the human another scheme.
+const FILES = { page: 200000, directionsText: 20000, referencesText: 20000 }
+const LINKED = ['directionsText', 'referencesText']
+const LINKS = /\]\(\s*<?([^\s)>]*)|^\s*\[[^\]]*\]:\s*<?([^\s>]*)|<([a-z][a-z0-9+.-]*:[^\s>]*)>|(?:href|src)\s*=\s*["']?([^\s"'>]*)|\b([a-z][a-z0-9+.-]*:\/\/[^\s)>]*)/gim
 const GRADE = { type: 'number', minimum: 0, maximum: 10 }
 const SCORE = {
   type: 'object',
@@ -52,9 +57,9 @@ const DIRECTIONS = {
         required: ['name', 'idea', ...AXES, 'references'],
       },
     },
-    page: { type: 'string' },
-    directionsText: { type: 'string' },
-    referencesText: { type: 'string' },
+    page: { type: 'string', maxLength: FILES.page },
+    directionsText: { type: 'string', maxLength: FILES.directionsText },
+    referencesText: { type: 'string', maxLength: FILES.referencesText },
     summary: { type: 'string' },
   },
   required: ['directions', 'page', 'directionsText', 'referencesText', 'summary'],
@@ -102,9 +107,11 @@ function lowest(verdict) {
 }
 
 const said = (s) => String(s ?? '').trim().toLowerCase()
-// What is wrong with a set of directions, by rule. A reference may be missing from all three (no
+const outbound = (text) => [...text.matchAll(LINKS)].some((m) => !/^https?:\/\//i.test(m.slice(1).find((t) => t !== undefined)))
+// What is wrong with an art director's return, by rule. A reference may be missing from all three (no
 // network), never from one: the art director looked, or it did not.
-function refused(all) {
+function refused(out) {
+  const all = out.directions
   if (!Array.isArray(all) || all.length !== 3) return [`${Array.isArray(all) ? all.length : 0} directions, exactly 3 wanted`]
   if (all.some((d) => !d || typeof d !== 'object')) return ['a direction that is not an object']
   const wrong = []
@@ -116,6 +123,10 @@ function refused(all) {
   }
   const cited = all.filter((d) => (d.references || []).length).length
   if (cited && cited < 3) wrong.push('a direction cites no reference')
+  for (const [k, max] of Object.entries(FILES)) {
+    if (typeof out[k] !== 'string' || out[k].length > max) wrong.push(`a ${k} that is not text of ${max} characters at most`)
+    else if (LINKED.includes(k) && outbound(out[k])) wrong.push(`a ${k} with a link that is not http or https`)
+  }
   return wrong
 }
 
@@ -139,7 +150,7 @@ async function directions() {
     const again = wrong.length ? `\n\nYour previous directions were refused: ${wrong.join('; ')}. Send three that differ on ${AXES.join(', ')}.` : ''
     out = await retried(ask + again, as('art-director', { schema: DIRECTIONS, label: `art director · round ${round}`, phase: 'Direction' }))
     if (!out) return { passed: false, rounds: round, directions: [], error: 'the art director returned no directions' }
-    wrong = refused(out.directions)
+    wrong = refused(out)
     if (!wrong.length) return { passed: true, rounds: round, directions: out.directions, page: out.page, directionsText: out.directionsText, referencesText: out.referencesText, summary: out.summary }
     log(`Art director, round ${round}: ${wrong.join('; ')}`)
   }

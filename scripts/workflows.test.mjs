@@ -44,7 +44,7 @@ async function run(name, src, args, reply) {
     dispatches.push(d)
     prompts[opts.label] = prompt
     if (opts.schema) required[opts.label] = opts.schema.required
-    if (opts.schema) capped[opts.label] = Object.entries(opts.schema.properties?.directions?.items?.properties || {}).flatMap(([k, v]) => (v.maxLength ? [[k, v.maxLength]] : []))
+    if (opts.schema) capped[opts.label] = [...Object.entries(opts.schema.properties?.directions?.items?.properties || {}), ...Object.entries(opts.schema.properties || {})].flatMap(([k, v]) => (v.maxLength ? [[k, v.maxLength]] : []))
     const out = await reply(d)
     if (opts.schema) extra.push(...undeclared(out, opts.schema, opts.label))
     return out
@@ -1182,6 +1182,10 @@ const three = (over = {}) => ({ directions: [look(1, over), look(2), look(3)], .
 const stageArgs = { stage: 'directions', brief: 'b', outDir: 'out', craft: 'website', skills: ['/s/a.md'], taste: 't.md', essentials: 'ess', craftText: 'cft', tasteText: 'lib' }
 const refusedRun = { passed: false, rounds: 2, directions: [] }
 const wide = Object.fromEntries(['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 'x'.repeat(160)]))
+const CAPS = [['page', 200000], ['directionsText', 20000], ['referencesText', 20000]]
+const LINKED = ['directionsText', 'referencesText']
+const badLinks = ['[a](javascript:alert(1))', '![a](data:text/html,x)', '[a]( JaVaScript:x)', '[a](//evil.example/x)', '[a](x.md)', '[a]: ftp://evil.example/x', '<file:/etc/passwd>', 'ftp://evil.example/x', '<a href="javascript:x">a</a>', "<img src='data:x'>"]
+const fine = { directionsText: 'Job: website. [a](https://a.example/b) and <http://b.example>', referencesText: '[a]: HTTPS://a.example\nhttps://c.example/d (note: e)' }
 const told = { idea: `${'x'.repeat(161)}\nA second line.` }
 
 const stages = [
@@ -1219,6 +1223,11 @@ const stages = [
     ]),
     ['a null direction', { ...three(), directions: [null, look(2), look(3)] }, 'a direction that is not an object'],
     ['a text for a direction', { ...three(), directions: ['n1', look(2), look(3)] }, 'a direction that is not an object'],
+    ...CAPS.flatMap(([k, max]) => [
+      [`a ${k} of ${max + 1} characters`, { ...three(), [k]: 'x'.repeat(max + 1) }, `a ${k} that is not text of ${max} characters at most`],
+      ...[['a number', 7], ['a list', ['x']], ['nothing', undefined]].map(([what, v]) => [`${what} for ${k}`, { ...three(), [k]: v }, `a ${k} that is not text of ${max} characters at most`]),
+    ]),
+    ...LINKED.flatMap((k) => badLinks.map((l) => [`${l} in ${k}`, { ...three(), [k]: `See ${l} there` }, `a ${k} with a link that is not http or https`])),
   ].map(([what, set, error]) => ({
     name: `art direction: ${what} twice ends not passed, and no designer runs`,
     args: stageArgs,
@@ -1240,7 +1249,22 @@ const stages = [
     reply: artDirector(() => three(wide)),
     returns: { passed: true, rounds: 1, directions: three(wide).directions, ...files },
     dispatches: [art(1)],
-    capped: { 'art director · round 1': ['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 160]) },
+    capped: { 'art director · round 1': [...['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 160]), ...CAPS] },
+  },
+  {
+    name: 'art direction: files at their caps with http and https links pass, and the schema caps them',
+    args: stageArgs,
+    reply: artDirector(() => ({ ...three(), page: 'x'.repeat(200000), ...fine })),
+    returns: { passed: true, rounds: 1, directions: three().directions, ...files, page: 'x'.repeat(200000), ...fine },
+    dispatches: [art(1)],
+    capped: { 'art director · round 1': [...['name', 'type', 'colour', 'structure', 'tone'].map((k) => [k, 160]), ...CAPS] },
+  },
+  {
+    name: 'art direction: two text fields at exactly 20000 characters pass',
+    args: stageArgs,
+    reply: artDirector(() => ({ ...three(), directionsText: 'x'.repeat(20000), referencesText: 'x'.repeat(20000) })),
+    returns: { passed: true, rounds: 1, directions: three().directions, ...files, directionsText: 'x'.repeat(20000), referencesText: 'x'.repeat(20000) },
+    dispatches: [art(1)],
   },
   {
     name: 'art direction: an idea has no such cap: 161 characters over two lines pass',
@@ -1658,7 +1682,7 @@ for (const s of scenarios) {
     if (extra.length) failures.push(`${where}: reply fields the schema does not declare: ${extra.join(', ')}`)
     // The schema sent to each listed label requires exactly these fields.
     for (const [label, fields] of Object.entries(s.required || {})) if (canon(required[label]) !== canon(fields)) differs(where, `fields required of ${label}`, fields, required[label])
-    // The schema sent to each listed label caps exactly these fields of a direction.
+    // The schema sent to each listed label caps exactly these fields of a direction, then of the return.
     for (const [label, fields] of Object.entries(s.capped || {})) if (canon(capped[label]) !== canon(fields)) differs(where, `fields capped for ${label}`, fields, capped[label])
     // The prompt sent to each listed label holds every fragment given for it, and none of the unprompted.
     for (const [label, parts] of Object.entries(s.prompts || {})) {
