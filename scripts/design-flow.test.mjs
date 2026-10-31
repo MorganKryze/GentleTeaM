@@ -99,6 +99,8 @@ const BAD = [
   '<img src="http://evil.example/a">', '<style>b{background:url(http://evil.example/a)}</style>', '<svg><use href="http://evil.example/a#b"/></svg>',
   '<img src="http&#00058;//evil.example/a">', '<img src="http&#x0003a;//evil.example/a">', '<style>b{background:url(http\\00003a //evil.example/a)}</style>',
   `<style>b{background:url(' ${REMOTE}')}</style>`, '<img src=x onerror = fetch(1)>', '<img src="x"onerror="fetch(1)">',
+  // GNU grep ends a line at a NUL, which leaves no byte before the event name. Dies on Linux only.
+  '<img src=x\0onerror=fetch(1)>',
 ]
 const GOOD = [
   '', `<link rel="stylesheet" href="${FONT}">`, `<link href="${FONT}" rel="stylesheet">`, `<link rel="stylesheet" href="${FONT}"/>`,
