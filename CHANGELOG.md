@@ -5,6 +5,24 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Art direction before any mockup: a new `art-director` role studies the brief, the taste library
+  and real references found on the public web, and returns three truly different directions. You
+  pick one inside checkpoint 1, ask for a new look, or say none. It runs unless the look is
+  already set. It can only search and read the web: the skill writes its files after checking them.
+- Crafts by job (brand and logo, website, mobile app): playbooks read on demand, each naming the
+  installed skills it may draw on. Nothing to install, nothing added per session.
+- A taste score beside the measured one: the critic grades distinctiveness, fidelity to the
+  direction, hierarchy, typography and whether a designer would sign it. The lowest grade is the
+  score, 7 out of 10 by default, and failing either score means another round.
+- A mandatory round that goes further on the chosen direction, before polish.
+- A taste library, `taste.md`: what you liked and refused, read by the art director and the critic.
+  Your picks and your words append to it, and a new look keeps its own folder.
+
+### Changed
+- The per-session footprint rises to about 730 tokens for the twelfth role. A project without any
+  of this keeps its loop; nothing to migrate.
+
 ## [0.12.0] - 2026-10-28
 
 ### Added
