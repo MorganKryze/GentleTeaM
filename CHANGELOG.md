@@ -20,8 +20,9 @@ versions follow [SemVer](https://semver.org/).
   Your picks and your words append to it, and a new look keeps its own folder.
 
 ### Changed
-- The per-session footprint rises to about 730 tokens for the twelfth role. A project without any
-  of this keeps its loop; nothing to migrate.
+- The per-session footprint rises to about 730 tokens for the twelfth role. A project with no
+  design kit gets the art direction stage on its next new design, a project with a kit or a picked
+  look keeps its loop; nothing to migrate.
 
 ## [0.12.0] - 2026-10-28
 

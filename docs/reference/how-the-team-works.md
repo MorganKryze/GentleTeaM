@@ -115,7 +115,8 @@ direction is reused or the design kit applies. One sentence from you brings it b
 The art director gathers references from free public sources and proposes three directions that
 differ on type, colour, structure and tone. It holds `WebFetch` and `WebSearch` alone: it reads no
 file and writes none, so `/gtm:design` passes its inputs inline, checks the board it returns, then
-writes the files. You pick one, or give your own words, inside
+writes the files. A design run sends category words to the search provider, never your brief's
+text. You pick one, or give your own words, inside
 [checkpoint](/reference/glossary/#checkpoint) 1, and no designer draws before that.
 
 The [craft](/reference/glossary/#craft) of the job (brand, website or mobile) tells the designer
