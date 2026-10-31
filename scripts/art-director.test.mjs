@@ -23,8 +23,10 @@ const PHRASES = [
   '`directions.md`: the positioning, the three directions, your recommendation.',
   'a missing file is an empty library',
   'one line in your own words on what to learn from it, for the designer and the critic.',
+  '6 to 12 real ones, about 12 fetches at most',
 ]
 for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`art-director: "${p}" must appear once`)
+if (!/^maxTurns: 40$/m.test(raw)) errors.push('art-director: maxTurns is not 40')
 const tools = (raw.match(/^tools: (.*)$/m) || [])[1] || ''
 for (const t of ['Bash', 'Edit', 'Skill', 'Agent']) if (new RegExp(`\\b${t}\\b`).test(tools)) errors.push(`art-director: tools hold ${t}`)
 for (const t of ['WebFetch', 'WebSearch', 'Write']) if (!new RegExp(`\\b${t}\\b`).test(tools)) errors.push(`art-director: tools lack ${t}`)
