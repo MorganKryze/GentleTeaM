@@ -1201,7 +1201,8 @@ const stages = [
   ...[
     ['two directions', { directions: [look(1), look(2)], page: 'p', summary: 's' }, '2 directions, exactly 3 wanted'],
     ['four directions', { directions: [look(1), look(2), look(3), look(4)], page: 'p', summary: 's' }, '4 directions, exactly 3 wanted'],
-    ['an empty idea', three({ idea: ' ' }), 'an empty idea'],
+    ...['name', 'idea', 'type', 'colour', 'structure', 'tone'].map((k) => [`an empty ${k}`, three({ [k]: ' ' }), `an empty ${k}`]),
+    ...['type', 'colour', 'structure', 'tone'].map((k) => [`two directions sharing a ${k}`, { ...three(), directions: [look(1, { [k]: ` ${k[0].toUpperCase()}2 ` }), look(2, { [k]: `${k[0]}2` }), look(3)] }, `two directions share their ${k}`]),
     ['one direction without a reference', three({ references: [] }), 'a direction cites no reference'],
   ].map(([what, set, error]) => ({
     name: `art direction: ${what} twice ends not passed, and no designer runs`,
