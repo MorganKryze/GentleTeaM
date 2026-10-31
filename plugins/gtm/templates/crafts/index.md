@@ -25,8 +25,8 @@
   skills are `brandkit`, `imagegen-frontend-web`, `imagegen-frontend-mobile` and `image-to-code`.
 
 ## Which skills are present
-For `/gtm:design`, which works this out once and hands the roles paths: a role reads only the
-paths its prompt names.
+For `/gtm:design`, which works this out once and hands the roles paths, the art director their
+excerpts inline: a role reads only the paths its prompt names.
 
 Go down the job's `## Optional skills`, leave out `impeccable`, and keep the present ones up to the
 limit above. Present means the path exists: `"<config>"/skills/<name>/SKILL.md`, or for a plugin

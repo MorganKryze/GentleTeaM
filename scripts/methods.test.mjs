@@ -39,6 +39,7 @@ const GLUE = {
   'agents/reviewer.md': [', then ', '; the steelman never softens a check above'],
   'agents/data-reviewer.md': [', ', ' (what writes here next?)'],
   'agents/final-reviewer.md': [' of the merge, ', ''],
+  'agents/art-director.md': [', ', ' (the rows come inline, in the essentials)'],
 }
 const NONE = ['agents/implementer.md', 'agents/ux-qa.md', 'agents/release-qa.md']
 const LINE = /^- Reflexes \(\$\{CLAUDE_PLUGIN_ROOT\}\/templates\/methods\/reflexes\.md\): (.+)\.$/

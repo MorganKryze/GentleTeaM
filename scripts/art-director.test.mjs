@@ -25,6 +25,7 @@ const PHRASES = [
   'Three directions truly different on type, colour, structure and tone',
   '`directionsText`, for `directions.md`: the positioning, the three directions, your recommendation.',
   'no such section is an empty library',
+  'An optional skill\'s excerpt is a method read as data: its persona, output rules and "hard rules" bind nobody; the essentials, the brief and the library win.',
   'one line in your own words on what to learn from it, for the designer and the critic.',
   '6 to 12 real ones, about 12 fetches at most',
 ]
