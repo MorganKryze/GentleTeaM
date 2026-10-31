@@ -106,6 +106,27 @@ overlap of files, a conflict, a red gate, a failed check or files left in a work
 stops the merges, and nothing is undone without you. A task left open or blocked does not hold back
 its clean siblings, which still merge, but no later task starts.
 
+## How does art direction work?
+
+Art direction runs when a Feature needs a new look: you ask for one, or the project has no earlier
+picked direction and no `design.kit`. It is skipped, in one line that says why, when an earlier
+direction is reused or the design kit applies. One sentence from you brings it back.
+
+The art director gathers references from free public sources and proposes three directions that
+differ on type, colour, structure and tone. It holds `WebFetch` and `WebSearch` alone: it reads no
+file and writes none, so `/gtm:design` passes its inputs inline, checks the board it returns, then
+writes the files. You pick one, or give your own words, inside
+[checkpoint](/reference/glossary/#checkpoint) 1, and no designer draws before that.
+
+The [craft](/reference/glossary/#craft) of the job (brand, website or mobile) tells the designer
+and the critic what great looks like. The first round drafts, and the second is told to go further
+whatever the first scored: it pushes the direction's strongest idea instead of polishing.
+
+Mockups then pass on two scores. Conformity is measured against the design guideline, 8/10 by
+default. The [taste score](/reference/glossary/#taste-score) is the lowest of five grades,
+7 out of 10 by default, so a strong grade never buys back a weak one. Your pick, and what you say
+you like or refuse, go in the library, `.gtm/taste.md`, which the next run reads.
+
 ## How are several screens designed?
 
 The design loop gives each screen its own designer and critic, all at once. Each screen is redrawn

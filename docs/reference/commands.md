@@ -20,7 +20,7 @@ Each command dispatches the roles it needs and comes back to you only at a
 | `/gtm:gtm` | picks the track and routes to the right commands; with no request, proposes the next one to three commands from your GTM folder, your branch and your limits; bare `/gtm` works when unambiguous | to start any piece of work, or when you are unsure what comes next | at most two questions to pick the track, or your pick among the proposed commands |
 | `/gtm:brainstorm` | runs a brainstorm on a topic with you and keeps it in a note you can resume | before a request, when the idea is not settled yet | the topic, how you want to work, and your pick of the ideas to keep |
 | `/gtm:init` | drafts the brief, config, [team settings](/reference/glossary/#team-settings), conventions and guidelines from your codebase | once per project, or to refresh a stale setup | a short interview to confirm them, [stealth](/reference/glossary/#stealth) on or off, and whether `.gtm/` stays out of git |
-| `/gtm:design` | runs the design loop: the designer draws [mockups](/reference/glossary/#mockups), the design critic scores them until they meet the bar | for a change of screens, before the spec | your approval of the scored mockups |
+| `/gtm:design` | runs the design loop: for a new look, the art director proposes three directions; the designer draws [mockups](/reference/glossary/#mockups), the design critic scores them, conformity and taste, until they meet the bar | for a change of screens, before the spec | your pick of a direction, when there is one to pick, and your approval of the scored mockups |
 | `/gtm:spec` | writes the spec with the architect: what and why, acceptance lines, [decision cards](/reference/glossary/#decision-card) | after the mockups are approved, or first when no screen changes | your approval of the spec's summary |
 | `/gtm:plan` | writes the task plan from the approved spec: files, interfaces, test-first steps, the check of each task; runs a [dry run](/reference/glossary/#dry-run) of risky tasks only | after `/gtm:spec` | nothing, unless something deviates |
 | `/gtm:deliver` | runs each task in order (implementer, reviewer, the specialists it calls in, [correction rounds](/reference/glossary/#correction-round)), keeps the [logbook](/reference/glossary/#logbook), runs the final review | after `/gtm:plan` | nothing until the report, which lists the [decisions made for you](/reference/glossary/#decisions-made-for-you) |
@@ -75,7 +75,9 @@ Two workflows do the repetitive work. You never call them: the commands do.
   rounds follow until it is clean or three rounds are spent.
 - **`design-loop`:** run by `/gtm:design`. The designer draws each screen and the design critic
   scores it, until it reaches 8/10 or three rounds are spent; with several screens, each gets
-  its own pair, all at once.
+  its own pair, all at once. With a new look, the art director first proposes three directions.
+  With a picked direction, the second round is told to go further, and the taste score must also
+  reach its bar.
 
 The words used above are in the [glossary](/reference/glossary/); the roles behind each command
 are in [Roles](/reference/roles/). To see the commands in order on a real change, follow

@@ -12,6 +12,10 @@ description: Every term GTM uses, in one line each.
 
 ## What does each term mean?
 
+### Art direction {#art-direction}
+The stage of `/gtm:design` for a new look: the art director proposes three directions and you pick
+one before any designer draws.
+
 ### Backlog {#backlog}
 `.gtm/backlog.md`: epics, their stories, priority and status, one table per epic.
 
@@ -33,6 +37,10 @@ The project's rules, one file per area: `conventions.md` in `.gtm/`, and its fil
 ### Correction round {#correction-round}
 The implementer fixes open findings, then the same reviewers re-check. 3 at most, the
 `fix rounds per task` line in `team.md`; each raises the implementer's effort one level.
+
+### Craft {#craft}
+What a studio knows about a kind of job, one file per job (brand, website, mobile) under the
+plugin's `templates/crafts/`, read only when a prompt names it.
 
 ### Decision card {#decision-card}
 A question, its options, a firm recommendation and the cost if wrong, shown by `/gtm:spec` and
@@ -106,6 +114,10 @@ ideate for me (the team, and you keep or drop).
 
 ### Summary {#summary}
 The ten lines at the top of a spec in `.gtm/specs/`, written for you.
+
+### Taste score {#taste-score}
+The lowest of the design critic's five grades on a board drawn from a picked direction. The bar is
+the `taste threshold` line in `team.md`, 7 out of 10 by default.
 
 ### Team settings {#team-settings}
 `team.md`, in `.gtm/`: which roles run, how hard each one thinks, and why, each with its date.

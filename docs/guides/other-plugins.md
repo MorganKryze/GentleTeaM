@@ -18,7 +18,7 @@ October 2026.
 | Role | Verdict | Plugin | Why |
 | --- | --- | --- | --- |
 | `analyst` | optional | [superpowers](https://github.com/obra/superpowers) `brainstorming` | Socratic exploration for vague ideas, before `/gtm:gtm` picks a size |
-| `designer` | keep one | one design skill at most, for example `frontend-design` | many overlapping design skills inflate every session's context |
+| `designer` | keep one | one design skill at most loaded per session, for example `frontend-design` | many overlapping design skills inflate every session's context |
 | `design-critic` | add | [impeccable](https://github.com/pbakaus/impeccable) | deterministic detectors of design tells, cheap and repeatable; GTM's critic runs the detector when it is on |
 | `architect` | optional | [context7](https://github.com/upstash/context7) | current library docs while planning |
 | `implementer` | optional | superpowers `test-driven-development`, `systematic-debugging` | the discipline GTM asks for, in more depth |
@@ -54,6 +54,10 @@ To add humanize:
 /plugin marketplace add ccf/humanize
 /plugin install humanize@humanize
 ```
+
+[Crafts](/reference/glossary/#craft) work differently: they read the design skills already present,
+on demand and as data, up to three per run. There is nothing to install, and a missing skill
+changes nothing.
 
 Run `/gtm:tune <name> off` (or `on`) to switch one. An absent companion changes nothing: no
 question, no warning, and each role works as it does without it. Your design and voice

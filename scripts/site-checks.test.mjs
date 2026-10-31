@@ -542,7 +542,7 @@ check('A16', () => {
     if (badge === 'read it') read.push(name);
     if ((badge === 'read it') !== /class="[^"]*\byou\b/.test(l)) f.push(`${name}: badge and amber row disagree`);
   }
-  const want = ['brief.md', 'team.md', 'backlog.md', 'specs/', 'mockups/', 'NOW.md'];
+  const want = ['brief.md', 'team.md', 'backlog.md', 'specs/', 'mockups/', 'taste.md', 'NOW.md'];
   if (JSON.stringify(read.sort()) !== JSON.stringify(want.sort())) f.push(`read it on ${read.join(', ')}, want ${want.join(', ')}`);
   const words = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8 };
   for (const m of t.matchAll(/\b(one|two|three|four|five|six|seven|eight)\s+(?:you actually read|entries)\b|\bread\s+(one|two|three|four|five|six|seven|eight)\s+entries\b/gi)) {

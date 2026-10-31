@@ -37,7 +37,7 @@ The words in the table and below it:
 | `analyst` | sizes the request, drafts the setup | medium | sizing, `/gtm:init` |
 | `art-director` | gathers references and proposes three directions; picks nothing | high | a new look, before the mockups |
 | `designer` | draws the mockups | medium | mockup rounds |
-| `design-critic` | scores the mockups by measuring; read-only | high | mockup rounds |
+| `design-critic` | scores the mockups by measuring, and their taste with a picked direction; read-only | high | mockup rounds |
 | `architect` | writes the spec and the task plan | high | after the mockups |
 | `implementer` | one task, test-first; the only role that writes code | low, raised per round | every task |
 | `reviewer` | checks the spec, then code quality; read-only | medium | every guarded task; standard ones once per wave |

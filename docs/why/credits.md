@@ -78,6 +78,26 @@ lines, so that each line turns directly into a test.
 
 :::
 
+::: grid
+
+### taste-skill
+
+[taste-skill](https://github.com/Leonxlnx/taste-skill) (MIT) brought a method for design taste:
+name the category's default and leave it, and judge the rendered picture, which shaped the
+[crafts](/reference/glossary/#craft) and the taste score.
+
+:::
+
+::: grid
+
+### awesome-design-md
+
+[awesome-design-md](https://github.com/VoltAgent/awesome-design-md) (MIT) brought references: the
+art director may read its public `DESIGN.md` files to learn how a system is built. None is copied
+into GTM.
+
+:::
+
 :::
 
 ## Which project was GTM distilled from?
