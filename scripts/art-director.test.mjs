@@ -21,7 +21,7 @@ const PHRASES = [
   'Free public sources only: no account, no key, no paid service; nothing downloaded or vendored.',
   'You read no file and write none: what you return, the skill writes after its page check.',
   'A fetch that fails is skipped. With no reference at all, say so in the summary, leave `references` empty on all three directions, and go on from the brief and the library.',
-  'No script, no third-party image, and nothing remote but a Google Fonts stylesheet.',
+  'No script, no third-party image, and nothing remote but a Google Fonts stylesheet, in this exact tag: `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=<family>&display=swap">`.',
   'Three directions truly different on type, colour, structure and tone',
   '`directionsText`, for `directions.md`: the positioning, the three directions, your recommendation.',
   'no such section is an empty library',

@@ -26,6 +26,7 @@ const PHRASES = [
   '`direction.md`, the human\'s words and earlier boards are never rewritten.',
   'A rerun in the same look may rewrite only `directions.md`, `references.md`, `directions.html` and its PNG.',
   'A `direction.md` pairs with the `references.md` of its own folder only.',
+  'One more round: §4 again, `direction` and `goFurther` kept.',
   'Nothing goes under `<outDir>` before this check.',
   '`directions.html` is not written, and the human reads `directions.md`',
   'the second goes further whatever the first scored',
@@ -81,6 +82,9 @@ const BAD = [
   // Only the exact form is exempt: https, this host, and a url with no space or tag bracket.
   '<link rel="stylesheet" href="http://fonts.googleapis.com/x.css">', '<link rel="stylesheet" href="https://fonts.googleapis.com.evil.example/x.css">',
   ...[' ', '<', '>'].map((c) => `<link rel="stylesheet" href="https://fonts.googleapis.com/a${c}b">`),
+  // Preconnect is exempt for the two font hosts alone, with nothing but crossorigin.
+  `<link rel="preconnect" href="${REMOTE}">`, '<link rel="preconnect" href="https://fonts.gstatic.com.evil.example">',
+  `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin onload="fetch('a')">`, `<link rel="dns-prefetch" href="https://fonts.gstatic.com">`,
   // Each term's other spelling: plain http, a colon padded with zeros, a space on the way.
   '<img src="http://evil.example/a">', '<style>b{background:url(http://evil.example/a)}</style>', '<svg><use href="http://evil.example/a#b"/></svg>',
   '<img src="http&#00058;//evil.example/a">', '<img src="http&#x0003a;//evil.example/a">', '<style>b{background:url(http\\00003a //evil.example/a)}</style>',
@@ -95,6 +99,8 @@ const GOOD = [
   '<meta name="viewport" content="width=device-width">',
   `<link rel="stylesheet" href="${FONT}">\n<link rel="stylesheet" href="${FONT}">`, `<link rel="stylesheet" href="${FONT}" />`, '<link rel="stylesheet" href="https://fonts.googleapis.com/">',
   '<p>the switch: on = lit</p>',
+  '<link rel="preconnect" href="https://fonts.googleapis.com">', '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
+  `<link rel="stylesheet" href="${FONT}" crossorigin>`,
 ]
 const folder = mkdtempSync(join(tmpdir(), 'design-page-'))
 const board = join(folder, 'directions.html')

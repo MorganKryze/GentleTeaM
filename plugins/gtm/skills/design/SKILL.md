@@ -44,7 +44,7 @@ this skill's steps.
   `directions.md`.
   ```bash
   LC_ALL=C tr '\000\t\n\f\r' ' ' < "<draft>/directions.html" |
-    LC_ALL=C sed -E 's#<link( rel="stylesheet")? href="https://fonts\.googleapis\.com/([^"<> ]*)"( rel="stylesheet")? ?/?># \2 #g' |
+    LC_ALL=C sed -E 's#<link rel="preconnect" href="https://fonts\.(googleapis|gstatic)\.com"( crossorigin)? ?/?># #g; s#<link( rel="stylesheet")? href="https://fonts\.googleapis\.com/([^"<> ]*)"( rel="stylesheet")?( crossorigin)? ?/?># \2 #g' |
     LC_ALL=C grep -Eic '<script|<i?frame|<object|<embed|<image|<feimage|<use [^>]*https?:|<link|<base|http-equiv|@import|srcset|image-set|javascript:|[^a-z]on[a-z]+ *=|(src|poster|background) *= *.? *(https?:|//)|url\( *.? *(https?:|//)|&#0*58|&#x0*3a|&colon;|\\0*3a'
   ```
   The copy's policy blocks scripts and remote loads but not a meta refresh: only the count stops
@@ -71,14 +71,14 @@ this skill's steps.
 
 ## 4. Run the loop
 Run the workflow `gtm:design-loop` with args:
-`{ stage: "draw", brief: <brief text>, outDir: "<design.mockups>/<slug>, or §3's sibling", screens: [<the Screens
-slugs, in order>], guideline: "<root>/guidelines/design.md", threshold: <team: design threshold>,
-tasteBar: <team: taste threshold, absent 7>, maxRounds: <team: design rounds>, direction:
-<the path of direction.md, or empty>, goFurther: <false on a reused direction or a screen rerun,
-else true>, craft: "<the Job, or empty>", skills: [<present skill paths>], taste:
-"<root>/taste.md", essentials: <§3 only>, craftText: <§3 only>, tasteText: <§3 only>, team: {
-"art-director": {model, effort}, designer: {model, effort},
-"design-critic": {model, effort} } }`.
+`{ stage: "draw", brief: <brief text>, outDir: "<design.mockups>/<slug>, or §3's sibling",
+screens: [<the Screens slugs, in order>], guideline: "<root>/guidelines/design.md", threshold:
+<team: design threshold>, tasteBar: <team: taste threshold, absent 7>, maxRounds: <team: design
+rounds>, direction: <the path of direction.md, or empty>, goFurther: <false on a reused direction
+or a screen rerun, else true>, craft: "<the Job, or empty>", skills: [<present skill paths>],
+taste: "<root>/taste.md", essentials: <§3 only>, craftText: <§3 only>, tasteText: <§3 only>,
+team: { "art-director": {model, effort}, designer: {model, effort}, "design-critic": {model,
+effort} } }`.
 Two screens or more run at once, one designer and one critic each, in `<outDir>/<screen>`; each
 screen has its own rounds, and the run passes only when every screen passed. With a direction the
 first round drafts, the second goes further whatever the first scored, and the mockups pass only
@@ -92,7 +92,8 @@ the image already shows. Then, per the briefing format:
 - The decisions the mockup page's top line lists, each as a decision card.
 - Should-fix items left, only if the human asked for standard or deep detail.
 - Not passed after the last round: a Heads-up and one decision card (approve as is / one more
-  round with your direction / change the brief), with your recommendation.
+  round with your direction / change the brief), with your recommendation. One more round: §4
+  again, `direction` and `goFurther` kept.
 - Two screens or more: each screen's mockup page in the brief's order, then one table (screen, score,
   rounds, must-fix) and one approval for all. A screen sent back reruns alone: `screens` omitted,
   the brief with that screen's line and the human's direction, `outDir` its folder, the direction

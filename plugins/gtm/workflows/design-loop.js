@@ -8,7 +8,7 @@ export const meta = {
 const A = args || {}
 const MAX = A.maxRounds || 3
 const BAR = A.threshold || 8
-const TASTE_BAR = A.tasteBar || 7
+const TASTE_BAR = A.tasteBar >= 1 && A.tasteBar <= 10 ? A.tasteBar : 7
 const GUIDE = A.guideline || '.gtm/guidelines/design.md'
 const TEAM = A.team || {}
 const SKILLS = Array.isArray(A.skills) ? A.skills : []
@@ -210,7 +210,8 @@ if (A.stage && !STAGES.includes(A.stage)) {
 }
 if (A.craft && !JOBS.includes(A.craft)) {
   log(`Craft "${A.craft}" is not one of ${JOBS.join(', ')}: nothing runs`)
-  return { passed: false, screens: [], error: `craft "${A.craft}" unknown` }
+  const error = `craft "${A.craft}" unknown`
+  return A.stage === 'directions' ? { passed: false, rounds: 0, directions: [], error } : { passed: false, screens: [], error }
 }
 if (A.stage === 'directions') return await directions()
 if (SCREENS.length < 2) return await loop(null)

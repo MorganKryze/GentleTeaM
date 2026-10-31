@@ -1276,7 +1276,6 @@ const stages = [
   ...[
     ['a stage', { stage: 'moodboard' }, 'stage "moodboard" unknown'],
     ['a craft', { craft: '../secrets' }, 'craft "../secrets" unknown'],
-    ['a craft on the directions stage', { stage: 'directions', craft: '../secrets' }, 'craft "../secrets" unknown'],
     ['a craft that starts with a valid job', { craft: 'brand/../../secrets' }, 'craft "brand/../../secrets" unknown'],
   ].map(([what, args, error]) => ({
     name: `art direction: ${what} outside its closed list runs nothing`,
@@ -1286,6 +1285,14 @@ const stages = [
     dispatches: [],
     log: ['nothing runs'],
   })),
+  {
+    name: 'art direction: a craft outside its closed list on the stage keeps the directions shape',
+    args: { stage: 'directions', craft: '../secrets' },
+    reply: () => { throw new Error('nothing runs') },
+    returns: { passed: false, rounds: 0, directions: [], error: 'craft "../secrets" unknown' },
+    dispatches: [],
+    log: ['nothing runs'],
+  },
 ]
 
 // A critic's taste: all five grades at n, or at n but one (`low`) at m.
@@ -1364,6 +1371,13 @@ const directed = [
     returns: seen(2, 'board 2', tasted(8, grades(7)), [8, 8], [7, 7]),
     dispatches: designRounds(2),
   },
+  ...[[0, 6, false], [-1, 6, false], [11, 7, true], ['high', 6, false], [10, 9, false], [1, 1, true]].map(([tasteBar, t, passed]) => ({
+    name: `design direction: tasteBar ${tasteBar} with taste ${t} ${passed ? 'passes' : 'does not pass'}: outside 1..10 reads 7`,
+    args: { ...picked, tasteBar, goFurther: false, maxRounds: 1 },
+    reply: designReply(() => tasted(9, grades(t))),
+    returns: seen(1, 'board 1', tasted(9, grades(t)), [9], [t], passed),
+    dispatches: designRounds(1),
+  })),
   {
     name: 'design direction: tasteBar sets the bar',
     args: { ...picked, tasteBar: 8, maxRounds: 2 },
