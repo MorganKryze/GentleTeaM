@@ -49,6 +49,7 @@ const TASTE = [
   DATA,
   'A missing taste library is an empty one.',
   'The measures above alone set `score` and `mustFix`, the citation must-fix aside',
+  'the grades and notes go in `taste`',
   'the workflow takes the lowest grade',
   'Without a direction, return no taste.',
 ]
