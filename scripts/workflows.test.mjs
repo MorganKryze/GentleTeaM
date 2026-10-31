@@ -1212,6 +1212,14 @@ const stages = [
     dispatches: [art(1), art(2)],
   })),
   {
+    name: 'art direction: a run without skills has no Optional skills line',
+    args: { ...stageArgs, skills: undefined },
+    reply: artDirector(() => three()),
+    returns: { passed: true, rounds: 1, directions: three().directions, page: 'out/directions.html', summary: 's' },
+    dispatches: [art(1)],
+    unprompted: { 'art director · round 1': ['Optional skills'] },
+  },
+  {
     name: 'art direction: no reference at all passes: no network is not a refusal',
     args: stageArgs,
     reply: artDirector(() => ({ directions: [1, 2, 3].map((n) => look(n, { references: [] })), page: 'p', summary: 's' })),
@@ -1257,6 +1265,15 @@ const picked = { outDir: 'out', direction: 'out/direction.md', taste: 't.md' }
 const seen = (round, board, verdict, scores, tastes, passed = true) => ({ passed, rounds: round, scores, tastes, verdict, board })
 
 const directed = [
+  {
+    name: 'design direction: a run without skills has no Optional skills line',
+    args: { ...picked, goFurther: false, craft: 'website' },
+    reply: designReply(() => tasted(9, grades(9))),
+    returns: seen(1, 'board 1', tasted(9, grades(9)), [9], [9]),
+    dispatches: designRounds(1),
+    prompts: { 'designer · round 1': ['Craft: website'] },
+    unprompted: { 'designer · round 1': ['Optional skills'], 'critic · round 1': ['Optional skills'] },
+  },
   {
     name: 'design direction: a first round above both bars still goes further, then passes',
     args: picked,
