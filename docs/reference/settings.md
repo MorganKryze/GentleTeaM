@@ -62,17 +62,19 @@ verify:
   gate: [lint, typecheck, test, crap]
 ```
 
-One example is a CRAP-style score, per function, with coverage from 0 to 1:
+One example is a CRAP (Change Risk Anti-Patterns) score, per function. Complexity here means
+cyclomatic complexity, the number of independent paths through the function, and coverage runs
+from 0 to 1:
 
 ```text
 complexity² × (1 − coverage)³ + complexity
 ```
 
-The formula comes from crap4j, whose limit is 30. Complexity 10 reads 110 with no test and 10 fully
-covered, so a complex untested function stands out.
+The formula comes from crap4j, a Java tool, whose limit is 30. Complexity 10 reads 110 with no test
+and 10 fully covered, so a complex untested function stands out.
 
-The score is language-neutral: any tool that gives complexity and coverage per function will do.
-Your command exits non-zero above your limit. GTM ships no such command and runs none by default.
+The score is language-neutral: any tool that gives cyclomatic complexity and coverage per function
+will do. Your command exits non-zero above your limit. GTM ships no such command and runs none by default.
 
 ## What does `team.md` hold?
 
