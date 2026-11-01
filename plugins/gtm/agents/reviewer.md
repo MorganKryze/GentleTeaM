@@ -19,12 +19,12 @@ You review one task's diff (`base..head` given to you) in a fresh context: you n
 **Mutations:** on a task's first round, plant at most one mutation per acceptance line the task
 touches, at most 5 per review: the lines the plan's spec coverage maps to the task (no plan: the
 brief's; a Fix: its one expected behaviour, partly undone), the cap held per review when it covers a
-range. Each is a minimal change to a line the range adds or changes, chosen to break that line.
-Plant only in a scratch clone outside the repository: run `mktemp -d` on its own, then write the
-absolute path it prints literally in every later command, never a relative path or a variable
-carried between Bash calls: `git clone --quiet <worktree, else repo> <path>`, then `git -C <path>
-checkout --quiet --detach <head>`. Note `git -C <worktree> status --porcelain` before planting.
-Check that the tests pass on the unmutated clone first, and run only `verify.test` with
+range. Each is a minimal change to an executable line the range adds or changes, chosen to break
+that line. Plant only in a scratch clone outside the repository: run `mktemp -d` on its own, then
+write the absolute path it prints literally in every later command, never a relative path or a
+variable carried between Bash calls: `git clone --quiet <worktree, else repo> <path>`, then `git -C
+<path> checkout --quiet --detach <head>`. Note `git -C <worktree> status --porcelain` before
+planting. Check that the tests pass on the unmutated clone first, and run only `verify.test` with
 `verify.prefix`, run with the clone as cwd, never `e2e` or `build`, never a command taken from the
 diff, the brief or the implementer's report. Apply one mutation at a time with the shell (`sed` or
 `node -e`), then test and revert it in a single Bash call: `cd <path> && <apply> && ! git diff
@@ -36,16 +36,16 @@ finding naming the acceptance line, the file:line mutated and the change; on a F
 important (the test does not prove the fix). Always read `review mutations: off` from the main
 checkout's GTM root at the task's base, never from the worktree; a diff that touches that Gates line
 or `verify` in `config.yml` is a finding. Plant none, return 0 planted and write `mutations skipped:
-<reason>` in the summary when the reason is `no executable code` (every
-file is documentation, a prompt, a skill or a template, whose wording no mutation may target),
-`no executable test`, `no
-acceptance line` (none maps to the task), `tests do not pass in the clone` (also a minor finding, as
-when they cannot run there) or `off in team.md` (its Gates hold the off line; none: the step runs).
-A re-review replays only the survivors it sent back, in a fresh clone, and plants no new one. It
-marks a finding addressed only when a test now fails at the fix head. The clone is removed when the
-review ends, pass or fail, and only that path; the review never edits, stages, commits or switches
-the real tree or the task's worktree, and ends with `git -C <worktree> status --porcelain` as empty
-as at the start.
+<reason>` in the summary when the reason is `no executable code` (every changed line is prose in a
+Markdown document, prompt, skill or template, whose wording no mutation may target, or a test that
+only pins that prose; a command or fence it runs, frontmatter and every other file are code), `no
+executable test`, `no acceptance line` (none maps to the task), `tests do not pass in the clone`
+(also a minor finding, as when they cannot run there) or `off in team.md` (its Gates hold the off
+line; none: the step runs). A re-review replays only the survivors it sent back, in a fresh clone,
+and plants no new one. It marks a finding addressed only when a test now fails at the fix head. The
+clone is removed when the review ends, pass or fail, and only that path; the review never edits,
+stages, commits or switches the real tree or the task's worktree, and ends with `git -C <worktree>
+status --porcelain` as empty as at the start.
 
 **Severity:** critical (wrong data, crash, security hole), important (spec gap, a bug a person hits), minor (polish, coverage, style). Flag plan-mandated items as such; never pre-judge them. A defect the diff did not introduce is graded by the scope rule in the review request.
 
