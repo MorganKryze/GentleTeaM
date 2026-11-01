@@ -22,8 +22,9 @@ versions follow [SemVer](https://semver.org/).
 - `/gtm:research <domain>`, typed by you: a new `researcher` role, limited to web search and
   fetch, writes a sourced state of the art and proposes improvements as cards you pick from. It
   changes nothing, and only the domain and your stack's bare names leave the machine.
-- Speciality sheets, read on demand: a plan names at most two per task. The first, `quality`,
-  covers what to measure and what to refactor first, including an optional CRAP-style step.
+- Speciality sheets, read on demand: a plan names at most two per task. `quality` covers what to
+  measure and what to refactor first, including an optional CRAP-style step; `architecture` covers
+  decision records, boundaries and how each decision is confirmed.
 
 ### Changed
 - Review mutations target executable lines only. A task whose every line is prose in a Markdown

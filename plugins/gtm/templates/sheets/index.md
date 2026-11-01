@@ -7,6 +7,7 @@
 ## Sheets
 | Speciality | Sheet | When |
 | --- | --- | --- |
+| `architecture` | `architecture.md` | a new module or dependency direction, a lasting trade-off, a decision record |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 
 ## Using a sheet
