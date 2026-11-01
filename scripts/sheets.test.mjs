@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 // Pins the speciality sheets under plugins/gtm/templates/sheets/: the clauses that keep or exempt
-// sit once in the index, whitespace joined; every sheet has its row and every row its file; each
-// sheet keeps the template's sections in order and cites a source; the roles that read a sheet
-// point at the index, so the rule stays in one place. Run by scripts/validate.mjs. No dependencies.
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+// sit once in the index, whitespace joined; every line under `## Sheets` is a row in the frozen
+// form, or the gate fails, so a row is never dropped unread; every sheet has its row and every row
+// its file, named after its speciality in the slug's alphabet (a-z, 0-9, -); each sheet keeps the
+// template's sections in order and cites a source; the roles that read a sheet point at the index,
+// so the rule stays in one place. Run by scripts/validate.mjs. No dependencies.
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const plugin = new URL('../plugins/gtm/', import.meta.url).pathname
@@ -23,9 +25,27 @@ for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`sheets ind
 
 const SECTIONS = ['When it applies', 'Method', 'Reflexes', 'What is measured', 'Sources']
 const sheets = readdirSync(dir).filter((f) => !['index.md', 'template.md'].includes(f))
-const rows = [...index.matchAll(/^\| `([a-z-]+)` \| `([a-z-]+\.md)` \|/gm)].map((m) => m[2])
+const rowName = (line) => /^\| `([a-z0-9-]+)` \| `\1\.md` \| \S.* \|$/.exec(line)?.[1]
+const GOOD = ['| `quality` | `quality.md` | x |', '| `i18n` | `i18n.md` | x |', '| `oauth2` | `oauth2.md` | x |']
+const BAD = [
+  '| quality | quality.md | x |',
+  '| `c4` | `c4.md` |',
+  '| `x` | `../../agents/reviewer.md` | x |',
+  '| `x` | `reports/research/2026-11-01-x.md` | x |',
+  '| `quality` | `refactoring.md` | x |',
+  '| `Quality` | `Quality.md` | x |',
+  '`quality` | `quality.md` | x',
+]
+for (const l of GOOD) if (!rowName(l)) errors.push(`row parser refuses ${l}`)
+for (const l of BAD) if (rowName(l)) errors.push(`row parser takes ${l}`)
+
+const TABLE_HEAD = ['| Speciality | Sheet | When |', '| --- | --- | --- |']
+const section = index.split(/^## /m).find((s) => s.startsWith('Sheets\n')) ?? ''
+const lines = section.split('\n').slice(1).filter((l) => l.trim() && !TABLE_HEAD.includes(l))
+for (const l of lines) if (!rowName(l)) errors.push(`sheets index: not a row: ${l}`)
+const rows = lines.filter(rowName).map((l) => `${rowName(l)}.md`)
 for (const f of sheets) if (!rows.includes(f)) errors.push(`sheets index: no row for ${f}`)
-for (const f of rows) if (!existsSync(join(dir, f))) errors.push(`sheets index: ${f} has no file`)
+for (const f of rows) if (!sheets.includes(f)) errors.push(`sheets index: ${f} has no file`)
 for (const f of ['template.md', ...sheets]) {
   const body = read(f)
   const found = [...body.matchAll(/^## (.+)$/gm)].map((m) => m[1])
