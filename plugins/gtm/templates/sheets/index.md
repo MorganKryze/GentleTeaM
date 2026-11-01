@@ -36,6 +36,7 @@
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `react-native` | `react-native.md` | work in a React Native or Expo app |
 | `react` | `react.md` | work in a React app |
+| `ruby` | `ruby.md` | work in a Ruby on Rails codebase |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
 ## Using a sheet
