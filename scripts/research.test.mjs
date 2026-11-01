@@ -27,7 +27,8 @@ const check = ([...raw.matchAll(/```bash\n([\s\S]*?)```/g)].map((m) => m[1]).fin
 const dir = mkdtempSync(join(tmpdir(), 'gtm-research-'))
 const run = (body) => {
   writeFileSync(join(dir, 'report.md'), body)
-  const r = spawnSync('bash', ['-c', check.replaceAll('<draft>', dir)], { encoding: 'utf8' })
+  // A Claude Code shell defines grep as a function that skips binary input: the fence must go past it.
+  const r = spawnSync('bash', ['-c', `grep() { echo 0; }\n${check.replaceAll('<draft>', dir)}`], { encoding: 'utf8' })
   return (r.stdout || '').trim().split(/\s+/).map(Number)
 }
 const report = (proposals, extra = '') => `## Summary\nOK.\n\n## State of the art\nSee [a](https://a.example/x).\n\n## Proposals\n${proposals}\n## Sheet draft\n[late](https://b.example)\n\n## Sources\n- [a](https://a.example/x)\n${extra}`
