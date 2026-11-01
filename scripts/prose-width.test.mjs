@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-// Checks prose width: no line of a tracked Markdown file runs past 100 characters, outside YAML
-// frontmatter, fenced code blocks and table rows (scripts/fixtures/ and dot folders are skipped).
+// Checks prose width: no line of a Markdown file that git does not ignore, new files included, runs
+// past 100 characters, outside YAML frontmatter, fenced code blocks and table rows
+// (scripts/fixtures/ and dot folders are skipped).
 // Files that already had long lines are frozen at their count in FROZEN, which may only go down:
 // a file over its count fails, a file under it fails until its number is lowered, and a mapped
 // file that no longer exists fails. Run by scripts/validate.mjs. No dependencies.
@@ -51,7 +52,7 @@ const FROZEN = Object.freeze({
 const errors = []
 const fail = (msg) => errors.push(msg)
 
-const files = execFileSync('git', ['-c', 'core.quotePath=false', 'ls-files', '-z', '*.md'], { cwd: root, encoding: 'utf8' })
+const files = execFileSync('git', ['-c', 'core.quotePath=false', 'ls-files', '-z', '--cached', '--others', '--exclude-standard', '*.md'], { cwd: root, encoding: 'utf8' })
   .split('\0')
   .filter((f) => f && !f.startsWith('scripts/fixtures/') && !f.split('/').some((part) => part.startsWith('.')))
   .filter((f) => existsSync(join(root, f)))
@@ -85,7 +86,7 @@ for (const file of files) {
   }
 }
 for (const file of Object.keys(FROZEN)) {
-  if (!files.includes(file)) fail(`${file}: in the prose-width map but no longer tracked: remove it`)
+  if (!files.includes(file)) fail(`${file}: in the prose-width map but gone: remove it`)
 }
 
 if (errors.length) {
