@@ -13,6 +13,7 @@ const root = new URL('..', import.meta.url).pathname
 const LIMIT = 100
 const FROZEN = Object.freeze({
   // Source URLs longer than a line: they cannot wrap.
+  'plugins/gtm/templates/sheets/react-native.md': 1,
   'plugins/gtm/templates/sheets/react.md': 6,
   'plugins/gtm/templates/sheets/privacy.md': 10,
   'plugins/gtm/templates/sheets/php.md': 1,
