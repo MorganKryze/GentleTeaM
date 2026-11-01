@@ -28,7 +28,7 @@ const PHRASES = [
   'An adopted card starts nothing: the human runs `/gtm:gtm` when they want the story.',
   'with the Edit tool, never through the shell,',
   'the title on one line, without `|`, at most 160 characters.',
-  'nothing written, and one card (run it again / stop).',
+  '0 proposals and 0 with no source: a Heads-up, "no source fetched", nothing written.',
   'so the bytes written are the bytes checked',
 ]
 for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`research: "${p}" must appear once`)
