@@ -104,6 +104,10 @@ chat, each line prefixed with its speaker.
 The document the architect writes before any code, in `.gtm/specs/`: what will be built, what is
 left out, and how each part is checked.
 
+### Speciality sheet {#speciality-sheet}
+One file per speciality that a plan names for a task, at most 2 per task: it adds a lens to the
+roles that read it and never softens a check.
+
 ### Stealth {#stealth}
 `stealth: on` in `config.yml`: GTM keeps its files out of the tracked tree and its names out of
 everything it writes into the project.
@@ -111,6 +115,10 @@ everything it writes into the project.
 ### Stance {#stance}
 Who brings the ideas in a brainstorm: facilitator (only you), partner (you and the team) or
 ideate for me (the team, and you keep or drop).
+
+### State of the art {#state-of-the-art}
+What `/gtm:research` reports on a domain from public sources: its practices, its tools and what
+changed, with cards you `adopt` or `leave`.
 
 ### Summary {#summary}
 The ten lines at the top of a spec in `.gtm/specs/`, written for you.

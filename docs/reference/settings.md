@@ -52,6 +52,31 @@ JavaScript syntax, matched against repository-relative paths.
 | `qa.live_url` | the live site checked after you deploy; empty skips the check | `""` | `release-qa` |
 | `qa.account` | where the test account's credentials live, never the values | `""` | `release-qa` |
 
+## Can I add my own gate step?
+
+Yes. A key you add under `verify` runs when `verify.gate` lists it:
+
+```text
+verify:
+  crap: "<your command>"
+  gate: [lint, typecheck, test, crap]
+```
+
+One example is a CRAP (Change Risk Anti-Patterns) score, per function. Complexity here means
+cyclomatic complexity, the number of independent paths through the function, and coverage runs
+from 0 to 1:
+
+```text
+complexity² × (1 − coverage)³ + complexity
+```
+
+The formula comes from crap4j, a Java tool, whose limit is 30. Complexity 10 reads 110 with no test
+and 10 fully covered, so a complex untested function stands out.
+
+The score is language-neutral: any tool that gives cyclomatic complexity and coverage per function
+will do. Your command exits non-zero above your limit. GTM ships no such command and runs none by
+default.
+
 ## What does `team.md` hold?
 
 Your team settings, read by every command that dispatches a role. Each line carries its reason
