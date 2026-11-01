@@ -16,6 +16,7 @@ const errors = []
 // The skill's fenced command that holds `word`, or nothing.
 const fence = (word) => [...raw.matchAll(/```bash\n([\s\S]*?)```/g)].map((m) => m[1]).find((c) => c.includes(word)) ?? ''
 const PHRASES = [
+  'Save `page` with the Write tool, never through a shell string, as `directions.html`',
   'Skip this skill when `design.screens` is false',
   "The pick is the human's answer: no designer draws before it.",
   'The directions not picked are not refusals; nothing else writes there.',

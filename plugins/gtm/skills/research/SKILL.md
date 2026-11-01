@@ -12,7 +12,8 @@ NOW.md: it changes no code, guideline, sheet or team setting.
 ## 1. Send
 The domain is `$ARGUMENTS`, in category words; none: ask for it in one line and stop. `<slug>`: the
 domain lower-cased, each run of anything but a-z and 0-9 one `-`, none at either end, at most 40
-characters.
+characters. A `<slug>` outside `^[a-z0-9]+(-[a-z0-9]+)*$` is refused in one line, before any shell
+use of it.
 
 Dispatch `gtm:researcher` with its inputs inline, as it reads no file:
 - `Domain:` the human's words;
