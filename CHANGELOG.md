@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-11-01
+
 ### Added
 - Art direction before any mockup: a new `art-director` role studies the brief, the taste library
   and real references found on the public web, and returns three truly different directions. You
