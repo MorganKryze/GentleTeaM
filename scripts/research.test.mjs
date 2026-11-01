@@ -39,12 +39,21 @@ const BAD = [
   '<script>1</script>', '<img src=x>', '<!-- x -->', '<https://a.example>', '![x](https://a.example/p.png)',
   '[x](javascript:alert(1))', '[x](file:///etc/passwd)', '[x](data:text/html,1)', '[x](<https://a.example>)',
   '[x][y]', '[y]: javascript:alert(1)', 'https://a.example', 'ftp://a.example', '[x]( https://a.example)',
+  '   [y]: javascript:alert(1)', '> [y]: javascript:alert(1)', '- [y]: javascript:alert(1)',
+  '> [y]: //evil.example/x', '[foo\nbar]: javascript:alert(1)', '[y\\]]: javascript:alert(1)',
+  'foo\r\r[y]: javascript:alert(1)', '\n\r[y]: javascript:alert(1)', '[x](https://a.example\r"t")',
+  '[x](https://a.example\t"t")', '[x](https://a.example "t")', '[x](https://a.example/<b>)',
+]
+const GOOD = [
+  '[Name](https://a.example): text', '[a](https://a.example)[b](https://b.example)',
+  '\tIndented with a tab.', 'Windows lines.\r\nOne more.\r\n',
 ]
 for (const body of BAD) if (!(run(report(one(1), body))[1] > 0)) errors.push(`research: the check counts 0 on ${body}`)
+for (const body of GOOD) if (run(report(one(1), body))[1] !== 0) errors.push(`research: the check refuses ${JSON.stringify(body)}`)
 if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + one(6)))[2] !== 6) errors.push('research: six proposals are not counted')
 if (run(report('### Card\nNo source.\n' + one(2)))[3] !== 1) errors.push('research: a first proposal with no source is not counted')
 if (run(report(one(1) + '### Card\nNo source.\n'))[3] !== 1) errors.push('research: a last proposal with no source is not counted')
 rmSync(dir, { recursive: true })
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + 3} samples OK`)
+console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + 3} samples OK`)

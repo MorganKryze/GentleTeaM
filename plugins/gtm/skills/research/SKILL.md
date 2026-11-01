@@ -32,9 +32,9 @@ this check. It prints the bytes, the marks left once good links are out (HTML, a
 link or URL), the proposals, and the proposals with no source:
 ```bash
 f="<draft>/report.md"
-echo "$(LC_ALL=C wc -c < "$f") $(LC_ALL=C tr '\000\r' '  ' < "$f" |
-  LC_ALL=C sed -E 's#\]\(https?://[^ ()<>]+\)#]#g' |
-  LC_ALL=C grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|^ *\[[^]]*\]:|[a-z][a-z0-9+.-]*://') $(LC_ALL=C awk '
+echo "$(LC_ALL=C wc -c < "$f") $(LC_ALL=C tr '\000\r\t' ' \n ' < "$f" |
+  LC_ALL=C sed -E 's#\]\(https?://[^ ()<>]+\)#] #g' |
+  LC_ALL=C grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://') $(LC_ALL=C awk '
   /^## /{on=/^## Proposals$/}
   on&&/^### /{n++; if(n>1&&!s)u++; s=0}
   on&&/\]\(https?:\/\//{s=1}
