@@ -14,6 +14,7 @@
 | `concurrency` | `concurrency.md` | threads, async work, shared state, races or deadlocks |
 | `csharp` | `csharp.md` | work in a C# or .NET codebase |
 | `css` | `css.md` | layout, responsive behaviour or styling at scale |
+| `data-engineering` | `data-engineering.md` | a pipeline, a batch or stream job, data quality |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
