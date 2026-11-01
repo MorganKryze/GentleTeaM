@@ -18,6 +18,7 @@
 | `databases` | `databases.md` | a schema, a migration, a slow query or a transaction |
 | `delivery` | `delivery.md` | CI/CD, a rollout, a release or a rollback |
 | `design-patterns` | `design-patterns.md` | choosing, naming or removing a design pattern |
+| `documentation` | `documentation.md` | writing or restructuring docs, tutorials or references |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
