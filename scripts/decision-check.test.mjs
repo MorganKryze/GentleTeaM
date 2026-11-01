@@ -22,7 +22,7 @@ writeFileSync(config, 'verify:\n  prefix: ""\n  lint: "node l"\n  test: "node t"
 
 const run = (...args) => {
   const r = spawnSync(process.execPath, [CHECK, ...args], { encoding: 'utf8' })
-  return { exit: r.status, out: r.stdout, all: `${r.stdout}${r.stderr}` }
+  return { exit: r.status, out: r.stdout, err: r.stderr, all: `${r.stdout}${r.stderr}` }
 }
 let samples = 0
 const checked = (text, settings = config) => {
@@ -190,6 +190,20 @@ const leak = checked(sample(EN)
   .replace('| D1 | one | A | safer | slower for the team, an hour to undo | A1, verify.test |', `| ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} |`)
   .replace('| R1 | two | B | cheaper | heavier for readers, a commit to undo | review: reviewer |', `| R1 | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} | review: ${SECRET} |`))
 if (leak.exit !== 1 || leak.all.includes(SECRET)) errors.push(`a cell's text was printed: ${leak.all}`)
+// On every outcome the output is the rule lines and nothing else, with text in each cell and card.
+const expectOnly = (label, text, exit, want) => {
+  const r = checked(text)
+  if (r.exit !== exit || r.out !== want || r.err) errors.push(`${label}: want exit ${exit} and only "${want}", got exit ${r.exit}: ${r.all}`)
+}
+const CARD = { ...EN, title: `Decision D1 ${SECRET}`, criteria: SECRET, opts: `| ${SECRET} | ${SECRET} |`, rec: SECRET }
+const inCard = (text) => text.replace('| **A** one | safer |', `| **A** ${SECRET} | ${SECRET} |`)
+const inCells = (id) => `| ${id} | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} and two more | A1, verify.test ${SECRET} | ${SECRET} |`
+const textual = (id) => inCard(sample(CARD)).replace(D1, inCells(id))
+expectOnly('text in a pass', textual('D1'), 0, 'decision-check: 2 rows, 1 cards\n')
+for (const id of [`D1 ${SECRET}`, `${SECRET} D1`, `D1-${SECRET}`, SECRET])
+  expectOnly(`text in the id ${id}`, textual(id), 1, 'row 1: id\ndecision-check: 1 gaps\n')
+expectOnly('text in a gap', textual('D1').replace('A1, verify.test', 'A9'), 1, 'D1: confirmation-line\ndecision-check: 1 gaps\n')
+expectOnly('text in an older form', inCard(older(sample(CARD, amended))).replace('| D1 | one | A | safer | proposed |', `| D1 | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} |`), 0, 'decision-check: older form, not checked\n')
 
 // The check reads its two files and runs nothing.
 const imports = [...source.matchAll(/^import .* from '([^']+)'$/gm)].map((m) => m[1]).sort()
