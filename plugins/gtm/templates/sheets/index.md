@@ -44,6 +44,7 @@
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 | `typescript` | `typescript.md` | work in a TypeScript codebase |
 | `ux-writing` | `ux-writing.md` | labels, errors, empty states or onboarding copy |
+| `vue` | `vue.md` | work in a Vue app |
 
 ## Using a sheet
 - A sheet is read only when a brief's `Sheets:` line names it; nothing here loads by itself.
