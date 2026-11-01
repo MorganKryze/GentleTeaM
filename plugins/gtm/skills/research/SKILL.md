@@ -30,11 +30,12 @@ skill's steps.
 Save the return with the Write tool, never through the shell, as `report.md` in a new `mktemp -d`,
 `<draft>`; a refused Write is a Heads-up and the run stops. Nothing goes under `<root>` before this
 check. It prints the bytes, the marks left once good links are out (HTML, an image, any other
-link or URL, an e-mail address, a control or invisible character), the proposals, and the proposals
-with no source. A line inside a three-backtick fence at the margin is code: neither a proposal nor
-a source; any other fence is read line by line. That last number takes one more for a URL with no
-proposal, for a `##` other than `## Sheet draft` that ends the proposals, and for proposals without
-the five sections in order, the sheet template's own `## Sources` ahead of the last:
+link or URL, an e-mail address, a control, zero-width, bidi or tag character), the proposals, and
+the proposals with no source. A line inside a three-backtick fence at the margin is code: neither
+a proposal nor a source; any other fence is read line by line. That last number takes one more for
+a URL with no proposal, for a `##` other than `## Sheet draft` that ends the proposals, and for
+proposals without the five sections in order, the sheet template's own `## Sources` ahead of the
+last:
 ```bash
 f="<draft>/report.md"
 clean() { LC_ALL=C tr '\000\t' '\001 ' < "$f" | LC_ALL=C sed $'s/\r$//' | LC_ALL=C tr '\r' '\001'; }
