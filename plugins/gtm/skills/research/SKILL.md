@@ -31,9 +31,10 @@ Save the return with the Write tool, never through the shell, as `report.md` in 
 `<draft>`; a refused Write is a Heads-up and the run stops. Nothing goes under `<root>` before this
 check. It prints the bytes, the marks left once good links are out (HTML, an image, any other
 link or URL, an e-mail address, a control or invisible character), the proposals, and the proposals
-with no source. That last number takes one more for a URL with no proposal, for a `##` other than
-`## Sheet draft` that ends the proposals, and for proposals without the five sections in order,
-the sheet template's own `## Sources` ahead of the last:
+with no source. A line inside a three-backtick fence at the margin is code: neither a proposal nor
+a source; any other fence is read line by line. That last number takes one more for a URL with no
+proposal, for a `##` other than `## Sheet draft` that ends the proposals, and for proposals without
+the five sections in order, the sheet template's own `## Sources` ahead of the last:
 ```bash
 f="<draft>/report.md"
 clean() { LC_ALL=C tr '\000\t' '\001 ' < "$f" | LC_ALL=C sed $'s/\r$//' | LC_ALL=C tr '\r' '\n'; }
@@ -42,10 +43,12 @@ echo "$(LC_ALL=C wc -c < "$f") $(clean |
     -e 's#\]\(https?://[^ ()<>[:cntrl:]]+\)#] #g' |
   LC_ALL=C command grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://|(^|[^a-z0-9])www\.|[a-z0-9._+-]@[a-z0-9-]+\.[a-z]|(mailto|xmpp):|[[:cntrl:]]') $(clean | LC_ALL=C awk '
   BEGIN{split("Summary,State of the art,Proposals,Sheet draft,Sources,Sources",w,",")}
+  /:\/\//{l=1}
+  /^ *([`][`][`]|~~~)/{if(c?/^[`][`][`]$/:/^[`][`][`][^`]*$/){c=!c; t=0; next} z=1}
+  c&&!z{next}
   /^ *## /{if(on&&!/^ *## +Sheet draft *$/)u++; on=/^ *## +Proposals *$/; i+=sub("^ *## +" w[i+1] " *$","")}
   on&&(/^ *###|^ *# |^ *[>*+0-9-][ >*+0-9.)-]*#+ /||(/^[ >]*(=+|-+) *$/&&t)){n++; if(n>1&&!s)u++; s=0}
   on&&/\]\(https?:\/\//{s=1}
-  /:\/\//{l=1}
   {t=!/^ *(#+( .*)?|=+|-+)?$/}
   END{if(n&&!s)u++; if(n?i<6:l)u++; print n+0, u+0}')"
 ```
