@@ -84,6 +84,7 @@ const GAPS = [
   ['D1: empty', '| safer | slower', '|  | slower'],
   ['D1: cost', 'slower for the team, an hour to undo', 'slower undo'],
   ['D1: confirmation-line', 'A1, verify.test', 'A9, verify.test'],
+  ['D1: confirmation-line', '- A1 THE', '- A10 THE'],
   ['D1: confirmation-key', 'A1, verify.test', 'A1, verify.lint'],
   ['D1: confirmation-key', 'A1, verify.test', 'A1, verify.build'],
   ['R1: confirmation-role', 'review: reviewer', 'review: release-qa'],
