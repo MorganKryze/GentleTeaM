@@ -135,16 +135,17 @@ of a domain. It runs only when you type it. The researcher holds `WebFetch` and 
 it reads no file and writes none. A run sends the domain and your stack's bare names to the search
 provider, never your files.
 
-The skill checks the return before it writes the report to `.gtm/reports/research/`. You then
-`adopt` or `leave` each card. An adopted card is a story in the backlog, and starts nothing.
+The skill checks what the researcher returns before it writes the report to
+`.gtm/reports/research/`. You then `adopt` or `leave` each card. An adopted card is a story, one
+user-visible outcome, in the [backlog](/reference/glossary/#backlog), and starts nothing.
 
 ## What are speciality sheets?
 
 A [speciality sheet](/reference/glossary/#speciality-sheet) is one file per speciality, read only
 when a plan names it, at most 2 per task. Sheets cost 0 tokens per session.
 
-A sheet adds a lens and never softens a check. What can be measured goes into the gate as code; the
-experts keep the judgment.
+A sheet adds a [lens](/reference/glossary/#lens), the method behind a finding, and never softens a
+check. What can be measured goes into the gate as code; the experts keep the judgment.
 
 ## How are several screens designed?
 
