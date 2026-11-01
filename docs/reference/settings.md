@@ -58,8 +58,8 @@ Yes. A key you add under `verify` runs when `verify.gate` lists it:
 
 ```text
 verify:
-  crap: "<your command>"
-  gate: [lint, typecheck, test, crap]
+  crap: "<command>"
+  gate: [lint, test, crap]
 ```
 
 One example is a CRAP (Change Risk Anti-Patterns) score, per function. Complexity here means
