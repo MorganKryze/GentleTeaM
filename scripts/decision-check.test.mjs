@@ -109,6 +109,11 @@ for (const [lang, l] of [['en', EN], ['fr', FR]]) {
 // Which cell is empty does not matter.
 for (const [i, cell] of [' one ', ' A ', ' safer ', ' slower for the team, an hour to undo ', ' A1, verify.test ', ' proposed '].entries())
   expectGap(`empty cell ${i + 1}`, sample(EN).replace(D1, D1.replace(`|${cell}|`, '|  |')), 'D1: empty')
+// Each of the six roles is accepted, not only the one in the sample.
+for (const role of ['reviewer', 'security-reviewer', 'data-reviewer', 'final-reviewer', 'ux-qa', 'design-critic']) {
+  const r = checked(sample(EN).replace('review: reviewer', `review: ${role}`))
+  if (r.exit !== 0) errors.push(`review: ${role} is refused: ${r.all}`)
+}
 // Where a table and a card begin and end.
 expectGap('an earlier table is not the record', sample(EN).replace('## Acceptance', '| a | b |\n| --- | --- |\n| c | d |\n\n## Acceptance').replace(D1, D1.replace('A1, verify.test', 'A9')), 'D1: confirmation-line')
 const noOptions = sample(EN).replace(/\| Option[\s\S]*?\| \*\*B\*\* other \| slower \|\n/, '')
