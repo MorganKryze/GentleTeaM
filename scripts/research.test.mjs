@@ -50,14 +50,20 @@ const BAD = [
   '[x](https://a.example\t"t")', '[x](https://a.example "t")', '[x](https://a.example/<b>)',
   'www.evil.example/pixel', 'WWW.evil.example', 'evil@evil.example', 'mailto:evil', 'xmpp:evil',
   'a\x1b]52;c;aGk=\x07b', '\x1b[2J', 'a\0b', 'a\u200bb', 'a\u200db', 'a\u202eb', 'a\u2066b', 'a\u061cb',
-  'a\ufeffb', 'a\u{e0041}b',
+  'a\ufeffb', 'a\u{e0041}b', 'a\u200fb', 'a\u202ab', 'a\u2060b', 'a\u206fb',
+  'a\u0080b', 'a\u0085b', 'a\u009bb', 'a\u009d0;t\u009cb', 'a\u009fb',
+  '[x](https://a.example/\x1b]52;c;aGk=\x07)', '[x](https://a.example/\x1b[2J)', '[x](https://a.example/\x07)',
+  '[x](https://a.example/\0)', '[x](https://a.example/\x7f)', '[x](https://a.example/\x08\x08)',
+  '[x](https://a.example/\x0c)', '[x](https://a.example/a\u200bb)', '[x](https://a.example/a\u202eb)',
+  '[x](https://a.example/\ufeff)', '[x](https://a.example/\u{e0049})', '[x](https://a.example/\u009b2J)',
 ]
 const GOOD = [
   '[Name](https://a.example): text', '[a](https://a.example)[b](https://b.example)',
   '\tIndented with a tab.', 'Windows lines.\r\nOne more.\r\n',
   'L\u2019accessibilit\u00e9 \u2014 \u00ab mesur\u00e9e \u00bb\u202f: 3\u00a0tests\u2026',
+  'a\u200ab\u2010c\u205fd\u2070e\u00a0f', '[x](https://a.example/caf\u00e9)', '[x](https://a.example/a\u202fb)',
 ]
-for (const body of BAD) if (!(run(report(one(1), body))[1] > 0)) errors.push(`research: the check counts 0 on ${body}`)
+for (const body of BAD) if (!(run(report(one(1), body))[1] > 0)) errors.push(`research: the check counts 0 on ${JSON.stringify(body)}`)
 for (const body of GOOD) if (run(report(one(1), body))[1] !== 0) errors.push(`research: the check refuses ${JSON.stringify(body)}`)
 if (run(report(''))[2] !== 0) errors.push('research: a return with no proposal reads a proposal')
 if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + one(6)))[2] !== 6) errors.push('research: six proposals are not counted')

@@ -36,8 +36,8 @@ with no source, one more when `###` lines come without the five sections in orde
 f="<draft>/report.md"
 clean() { LC_ALL=C tr '\000\t' '\001 ' < "$f" | LC_ALL=C sed $'s/\r$//' | LC_ALL=C tr '\r' '\n'; }
 echo "$(LC_ALL=C wc -c < "$f") $(clean |
-  LC_ALL=C sed -E -e 's#\]\(https?://[^ ()<>]+\)#] #g' \
-    -e $'s/\xe2\x80[\x8b-\x8f\xaa-\xae]|\xe2\x81[\xa0-\xaf]|\xd8\x9c|\xef\xbb\xbf|\xf3\xa0/\x01/g' |
+  LC_ALL=C sed -E -e $'s/\xc2[\x80-\x9f]|\xe2\x80[\x8b-\x8f\xaa-\xae]|\xe2\x81[\xa0-\xaf]|\xd8\x9c|\xef\xbb\xbf|\xf3\xa0/\x01/g' \
+    -e 's#\]\(https?://[^ ()<>[:cntrl:]]+\)#] #g' |
   LC_ALL=C command grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://|(^|[^a-z0-9])www\.|[a-z0-9._+-]@[a-z0-9-]+\.[a-z]|(mailto|xmpp):|[[:cntrl:]]') $(clean | LC_ALL=C awk '
   BEGIN{split("Summary,State of the art,Proposals,Sheet draft,Sources",w,",")}
   /^ *###/{k=1}
