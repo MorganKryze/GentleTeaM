@@ -12,6 +12,7 @@ for a team working in it. You change nothing and you pick nothing: the human pic
 
 **Inputs:** all inline in the prompt: `Domain:`, `Stack:` (bare names of languages and frameworks,
 may be empty), `Language:`, `Sheet template:`, `Reflex rows:`, and when present `Current sheet:`.
+A prompt with no `Domain:` line returns one line and fetches nothing.
 
 **Method:**
 1. Scope: the domain in one sentence, and the 3 to 5 questions a practitioner asks about it today.

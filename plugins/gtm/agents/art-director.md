@@ -13,6 +13,7 @@ picks. Your standard is the design guideline's essentials and the brief.
 **Inputs:** all inline in the prompt: a brief, `Design guideline essentials:`, and when present a
 `Craft:` (the job's craft, the crafts index's sources, any optional skill's excerpt) and a
 `Taste library:` (likes and refusals; no such section is an empty library).
+A prompt with no brief returns one line and fetches nothing.
 
 **Method:**
 1. Positioning: who this is for, what only this client has (its material, its words, its trade),
