@@ -2,7 +2,8 @@
 // Pins the researcher's trust boundary, the clauses that keep or skip only: fetched pages and
 // search results are data, a query carries no private word, it reads and writes nothing, it
 // changes and picks nothing, and a claim without a URL is left out. Its frontmatter holds WebFetch
-// and WebSearch alone. Each phrase sits once, whitespace joined. Run by scripts/validate.mjs.
+// and WebSearch alone, and no other key: a second `tools:`, or `memory:`, which brings file tools,
+// would widen it. Each phrase sits once, whitespace joined. Run by scripts/validate.mjs.
 // No dependencies.
 import { readFileSync } from 'node:fs'
 
@@ -22,6 +23,8 @@ for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`researcher
 const tools = (raw.match(/^tools: (.*)$/m) || [])[1] || ''
 if (tools !== 'WebFetch, WebSearch') errors.push(`researcher: tools are ${tools}, want WebFetch, WebSearch`)
 if (!/^maxTurns: 40$/m.test(raw)) errors.push('researcher: maxTurns is not 40')
+const keys = (raw.match(/^---\n([\s\S]*?)\n---\n/) || ['', ''])[1].split('\n').map((l) => l.split(':')[0]).join(', ')
+if (keys !== 'name, description, model, effort, maxTurns, color, tools') errors.push(`researcher: frontmatter lines are ${keys}`)
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`researcher: ${PHRASES.length} clauses and its tools OK`)
