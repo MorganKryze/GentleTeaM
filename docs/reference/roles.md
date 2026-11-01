@@ -69,6 +69,7 @@ found carries a tag such as `(lens: Steelmanning)`, so `/gtm:tune` can count whi
 - `data-reviewer`: Failure Mode Analysis, Cascading Failure Simulation (what writes here next?).
 - `final-reviewer`: Pre-mortem Analysis of the merge, Second-Order Thinking.
 - `art-director`: Cross-Pollination, Reverse Brainstorming.
+- `researcher`: Literature Review Personas, Comparative Analysis Matrix.
 - `designer` and `design-critic`: Crazy 8s, SCAMPER Method, Empathy Map.
 - `/gtm:retro`: Five Whys, Hindsight Reflection, Lessons Learned Extraction.
 - `/gtm:tune`: Occam's Razor Application, Constraint Mapping.
