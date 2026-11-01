@@ -19,22 +19,32 @@ Success looks like: <one measurable sentence>.
 - <What this spec does not do, and where it goes instead.>
 
 ## Acceptance (EARS)
-Each line is testable and becomes at least one test.
-- THE SYSTEM SHALL <always-true behaviour>.
-- WHEN <event> THE SYSTEM SHALL <response>.
-- WHILE <state> THE SYSTEM SHALL <behaviour>.
-- WHERE <optional feature is present> THE SYSTEM SHALL <behaviour>.
-- IF <unwanted condition> THEN THE SYSTEM SHALL <safe response>.
+Each line is numbered, testable, and becomes at least one test.
+- A1 THE SYSTEM SHALL <always-true behaviour>.
+- A2 WHEN <event> THE SYSTEM SHALL <response>.
+- A3 WHILE <state> THE SYSTEM SHALL <behaviour>.
+- A4 WHERE <optional feature is present> THE SYSTEM SHALL <behaviour>.
+- A5 IF <unwanted condition> THEN THE SYSTEM SHALL <safe response>.
 
 ## Decisions
-| # | Decision | Choice | Why | Status |
-| --- | --- | --- | --- | --- |
-| D1 | <question> | <choice> | <one line> | proposed / approved |
+One row per decision: `D<n>` for what the human answers, `R<n>` for what the team decides alone.
+
+A cost says what the choice makes worse and for whom, even when the choice is right, and what
+undoing it costs. A confirmation names one or more of: an acceptance line of this spec (`A<n>`), a
+`verify` key of the gate (`verify.<key>`), `review: <role>`. A review is named only when the
+decision cannot be measured.
+
+| # | Decision | Choice | Why | Cost if wrong | Confirmation | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+| D1 | <question> | <choice> | <one line> | <what gets worse, for whom, what undoing costs> | A1, verify.test, review: reviewer | proposed / approved |
+| R1 | <what the team decided> | <choice> | <one line> | <what gets worse, for whom, what undoing costs> | A2 | ruling |
 
 Open decision cards (the human answers these; zero left before the plan), as plain Markdown in
 the human's language, never in a code fence:
 
-**Decision: <question>**
+**Decision D1: <question>**
+
+Criteria: <what the choice is judged on, one line, before any option>.
 
 | Option | What it means |
 | --- | --- |
@@ -42,6 +52,9 @@ the human's language, never in a code fence:
 | **B** <name> | <one line> |
 
 **I recommend: <letter>**, <why, one line>. **Cost if wrong:** <one line>.
+
+The title stays on one line and carries its `D<n>`; the labels follow the human's language. The
+second reading adds its objection after the recommendation: `/gtm:spec` writes it, you never do.
 
 ## Screens
 <Only when screens change: one short block per screen, pointing at the validated mockup page.>

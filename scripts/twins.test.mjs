@@ -26,6 +26,7 @@ const TWINS = [
   { test: 'brainstorm', file: skill('brainstorm'), from: 'never overwrites a note', to: 'may overwrite a note', says: 'never overwrites a note' },
   { test: 'companions', file: agent('reviewer'), from: 'tools: Read, Bash, Glob, Grep', to: 'tools: Read, Write, Bash, Glob, Grep', says: 'agents/reviewer.md: tools changed' },
   { test: 'crafts', file: 'plugins/gtm/templates/crafts/index.md', from: 'Read the first 150 lines at most.', to: 'Read it all.', says: 'Read the first 150 lines at most.' },
+  { test: 'decision-check', file: script('decision-check'), from: 'COST_WORDS = 3', to: 'COST_WORDS = 1', says: 'D1: cost' },
   { test: 'design-flow', file: skill('design'), from: "The pick is the human's answer", to: "The pick is the art director's answer", says: "The pick is the human's answer" },
   { test: 'design-wiring', file: 'docs/reference/settings.md', from: '7 out of 10', to: '6 out of 10', says: '7 out of 10' },
   { test: 'footprint-check', file: script('footprint-check'), from: "kind: 'attribution', re: new RegExp(escape(f), 'gi')", to: "kind: 'attribution', re: new RegExp(escape(f) + 'x', 'gi')", says: 'expected' },
