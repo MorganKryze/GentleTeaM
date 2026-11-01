@@ -63,7 +63,16 @@ const bare2 = [' ### Card 2\nNo source.\n', '#### Card 2\nNo source.\n', '###\tC
 for (const card of bare2) if (run(report(one(1) + card)).slice(2).join() !== '2,1') errors.push(`research: ${JSON.stringify(card)} slips past the count`)
 if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + ' ### 6\n ### 7\n ### 8\n'))[2] !== 8) errors.push('research: indented proposals pass the cap')
 if (run(report(one(1) + '\n---\n\n' + one(2))).slice(2).join() !== '2,0') errors.push('research: a rule between proposals reads as one')
+const reads = (body, wanted, why) => { if (run(body).slice(2).join() !== wanted) errors.push(`research: ${why} reads ${run(body).slice(2).join()}`) }
+for (const h of ['## Propositions', '## Proposals (3)', '## **Proposals**']) reads(good.replace('## Proposals', h), '0,1', `the heading ${h}`)
+for (const h of ['## Proposals ', ' ## Proposals']) reads(good.replace('## Proposals', h), '2,0', `the heading ${JSON.stringify(h)}`)
+reads(good.replaceAll('\n', '\r\n'), '2,0', 'a CRLF report')
+reads(good.split('## Sheet draft')[0], '2,1', 'a report cut before its sheet draft')
+reads(good.split('### Card 2')[0], '1,1', 'a report cut after its first proposal')
+reads(`## Proposals\n${one(1)}`, '1,1', 'proposals alone')
+reads(good.replace('## Summary', '## Note').replace('## Sources', '## Summary\n\n## Sources'), '2,1', 'sections out of order')
+reads('## Summary\nNo source fetched.\n', '0,0', 'the return of a run with no source')
 rmSync(dir, { recursive: true })
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + bare2.length + 6} samples OK`)
+console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + bare2.length + 15} samples OK`)

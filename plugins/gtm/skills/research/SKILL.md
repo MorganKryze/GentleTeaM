@@ -30,7 +30,7 @@ skill's steps.
 Save the return as `report.md` in a new `mktemp -d`, `<draft>`. Nothing goes under `<root>` before
 this check. It prints the bytes, the marks left once good links are out (HTML, an image, any other
 link or URL, an e-mail address, a control or invisible character), the proposals, and the proposals
-with no source:
+with no source, one more when `###` lines come without the five sections in order:
 ```bash
 f="<draft>/report.md"
 clean() { LC_ALL=C tr '\000\t' '\001 ' < "$f" | LC_ALL=C sed $'s/\r$//' | LC_ALL=C tr '\r' '\n'; }
@@ -38,15 +38,17 @@ echo "$(LC_ALL=C wc -c < "$f") $(clean |
   LC_ALL=C sed -E -e 's#\]\(https?://[^ ()<>]+\)#] #g' \
     -e $'s/\xe2\x80[\x8b-\x8f\xaa-\xae]|\xe2\x81[\xa0-\xaf]|\xd8\x9c|\xef\xbb\xbf|\xf3\xa0/\x01/g' |
   LC_ALL=C command grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://|(^|[^a-z0-9])www\.|[a-z0-9._+-]@[a-z0-9-]+\.[a-z]|(mailto|xmpp):|[[:cntrl:]]') $(clean | LC_ALL=C awk '
-  /^## /{on=/^## Proposals$/}
+  BEGIN{split("Summary,State of the art,Proposals,Sheet draft,Sources",w,",")}
+  /^ *###/{k=1}
+  /^ *## /{on=/^ *## +Proposals *$/; i+=sub("^ *## +" w[i+1] " *$","")}
   on&&(/^ *###/||(/^ *(=+|-+) *$/&&t)){n++; if(n>1&&!s)u++; s=0}
   on&&/\]\(https?:\/\//{s=1}
   {t=!/^ *(#.*|=+|-+)?$/}
-  END{if(n&&!s)u++; print n+0, u+0}')"
+  END{if(n&&!s)u++; if(k&&i<5)u++; print n+0, u+0}')"
 ```
-It passes at 30,000 bytes or fewer, 0 marks, 1 to 5 proposals and 0 with no source. No proposal at
-all: a Heads-up, "no source fetched", nothing written. Any other reading: a Heads-up with the four
-numbers, nothing written, and one card (run it again / stop).
+It passes at 30,000 bytes or fewer, 0 marks, 1 to 5 proposals and 0 with no source. 0 proposals and
+0 with no source: a Heads-up, "no source fetched", nothing written. Any other reading: a Heads-up
+with the four numbers, nothing written, and one card (run it again / stop).
 
 ## 3. Write
 Write `<root>/reports/research/<YYYY-MM-DD>-<slug>.md`, adding a numeric suffix (`-2`, `-3`) when it
