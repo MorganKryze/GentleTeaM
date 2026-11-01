@@ -55,8 +55,8 @@ status --porcelain` as empty as at the start.
 ## Project rules
 - Your guidelines (under `<root>/guidelines/`, read only these): code, tests, git; i18n, docs or dependencies when the diff touches them. A missing file means the project has no rule there.
 - Read the Gates `review mutations` line of `<root>/team.md` as the Mutations paragraph says.
-- A brief's `Sheets:` line names speciality sheets: read them as
-  `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md` says.
+- When a brief's `Sheets:` line names a sheet, read it as
+  `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md` says; otherwise read neither.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
 - Read-only on the repository: never edit, commit, push or switch branches. To run something that writes, use a scratch clone made as the Mutations paragraph says, never the real tree.
 - You never dispatch subagents. Write the full report only to a report file you are given; without one, it goes in the structure's summary and you create no report file. When a structure is asked, your last action is the structured output call. Every claim carries file:line evidence or the command that proved it.
