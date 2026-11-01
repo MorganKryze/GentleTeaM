@@ -91,11 +91,13 @@ const GAPS = [
   ['R1: confirmation-none', 'review: reviewer', 'someone will look'],
   ['D1: options', `${OPTION_B}\n`, ''],
 ]
-const gaps = (r) => r.out.split('\n').filter((l) => /: /.test(l) && !l.startsWith('decision-check'))
-const expectGap = (label, text, want, settings) => {
+// On every outcome the output is the rule lines and nothing else: a line off them fails, on either
+// stream, so no text from a spec can cross.
+const expectOnly = (label, text, exit, want, settings) => {
   const r = checked(text, settings)
-  if (r.exit !== 1 || gaps(r).join('\n') !== want) errors.push(`${label}: want "${want}" alone at exit 1, got exit ${r.exit}: ${r.all}`)
+  if (r.exit !== exit || r.out !== want || r.err) errors.push(`${label}: want exit ${exit} and only "${want}", got exit ${r.exit}: ${r.all}`)
 }
+const expectGap = (label, text, want, settings) => expectOnly(label, text, 1, `${want}\ndecision-check: ${want.split('\n').length} gaps\n`, settings)
 for (const [lang, l] of [['en', EN], ['fr', FR]]) {
   const good = sample(l)
   const pass = checked(good)
@@ -182,7 +184,10 @@ for (const [label, args] of [
   ['a missing config', ['--spec', specFile, '--config', join(dir, 'none.yml')]],
   ['a folder for a spec', ['--spec', dir, '--config', config]],
   ['an unknown flag', ['--spec', specFile, '--config', config, '--fix']],
-]) if (run(...args).exit !== 2) errors.push(`unread: ${label} does not exit 2`)
+]) {
+  const r = run(...args)
+  if (r.exit !== 2 || r.out || r.err.trimEnd().includes('\n')) errors.push(`unread: ${label}: want exit 2 and one line on stderr, got exit ${r.exit}: ${r.all}`)
+}
 
 // Nothing from a cell comes out, a malformed id included.
 const SECRET = 'ZZSECRET'
@@ -190,19 +195,15 @@ const leak = checked(sample(EN)
   .replace('| D1 | one | A | safer | slower for the team, an hour to undo | A1, verify.test |', `| ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} |`)
   .replace('| R1 | two | B | cheaper | heavier for readers, a commit to undo | review: reviewer |', `| R1 | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} | review: ${SECRET} |`))
 if (leak.exit !== 1 || leak.all.includes(SECRET)) errors.push(`a cell's text was printed: ${leak.all}`)
-// On every outcome the output is the rule lines and nothing else, with text in each cell and card.
-const expectOnly = (label, text, exit, want) => {
-  const r = checked(text)
-  if (r.exit !== exit || r.out !== want || r.err) errors.push(`${label}: want exit ${exit} and only "${want}", got exit ${r.exit}: ${r.all}`)
-}
+// The same with text in each cell and card, a malformed id included.
 const CARD = { ...EN, title: `Decision D1 ${SECRET}`, criteria: SECRET, opts: `| ${SECRET} | ${SECRET} |`, rec: SECRET }
 const inCard = (text) => text.replace('| **A** one | safer |', `| **A** ${SECRET} | ${SECRET} |`)
 const inCells = (id) => `| ${id} | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} and two more | A1, verify.test ${SECRET} | ${SECRET} |`
 const textual = (id) => inCard(sample(CARD)).replace(D1, inCells(id))
 expectOnly('text in a pass', textual('D1'), 0, 'decision-check: 2 rows, 1 cards\n')
 for (const id of [`D1 ${SECRET}`, `${SECRET} D1`, `D1-${SECRET}`, SECRET])
-  expectOnly(`text in the id ${id}`, textual(id), 1, 'row 1: id\ndecision-check: 1 gaps\n')
-expectOnly('text in a gap', textual('D1').replace('A1, verify.test', 'A9'), 1, 'D1: confirmation-line\ndecision-check: 1 gaps\n')
+  expectGap(`text in the id ${id}`, textual(id), 'row 1: id')
+expectGap('text in a gap', textual('D1').replace('A1, verify.test', 'A9'), 'D1: confirmation-line')
 expectOnly('text in an older form', inCard(older(sample(CARD, amended))).replace('| D1 | one | A | safer | proposed |', `| D1 | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} |`), 0, 'decision-check: older form, not checked\n')
 
 // The check reads its two files and runs nothing.
