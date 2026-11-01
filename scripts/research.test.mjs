@@ -69,9 +69,12 @@ if (run(report(''))[2] !== 0) errors.push('research: a return with no proposal r
 if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + one(6)))[2] !== 6) errors.push('research: six proposals are not counted')
 if (run(report('### Card\nNo source.\n' + one(2)))[3] !== 1) errors.push('research: a first proposal with no source is not counted')
 if (run(report(one(1) + '### Card\nNo source.\n'))[3] !== 1) errors.push('research: a last proposal with no source is not counted')
-const bare2 = [' ### Card 2\nNo source.\n', '#### Card 2\nNo source.\n', '###\tCard 2\nNo source.\n', 'Card 2\n---\n', 'Card 2\n===\n', 'Card 2\r\n---\r\n', 'x\r### Card 2\n']
+const bare2 = [' ### Card 2\nNo source.\n', '#### Card 2\nNo source.\n', '###\tCard 2\nNo source.\n', 'Card 2\n---\n', 'Card 2\n===\n', 'Card 2\r\n---\r\n', 'x\r### Card 2\n',
+  '# Card 2\nNo source.\n', '> ### Card 2\nNo source.\n', '- ### Card 2\nNo source.\n', '1. ### Card 2\nNo source.\n', '> Card 2\n> ---\n']
 for (const card of bare2) if (run(report(one(1) + card)).slice(2).join() !== '2,1') errors.push(`research: ${JSON.stringify(card)} slips past the count`)
-if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + ' ### 6\n ### 7\n ### 8\n'))[2] !== 8) errors.push('research: indented proposals pass the cap')
+for (const h of [' ### ', '# ', '> ### ']) if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + `${h}6\n${h}7\n${h}8\n`))[2] !== 8) errors.push(`research: "${h}" proposals pass the cap`)
+if (run(report(one(1) + '## Card 2\nNo source.\n')).slice(2).join() !== '1,1') errors.push('research: a second-level heading ends the proposals unseen')
+if (run(report(one(1) + 'C# stays.\n#1 too.\n- #tag\n')).slice(2).join() !== '1,0') errors.push('research: a hash in a line reads as a proposal')
 if (run(report(one(1) + '\n---\n\n' + one(2))).slice(2).join() !== '2,0') errors.push('research: a rule between proposals reads as one')
 if (run(report('### Card [a](https://a.example/x)\n---\n')).slice(2).join() !== '1,0') errors.push('research: a rule under a heading reads as a proposal')
 const reads = (body, wanted, why) => { if (run(body).slice(2).join() !== wanted) errors.push(`research: ${why} reads ${run(body).slice(2).join()}`) }
@@ -96,4 +99,4 @@ else {
 rmSync(dir, { recursive: true })
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + bare2.length + 17} samples OK`)
+console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + bare2.length + 21} samples OK`)

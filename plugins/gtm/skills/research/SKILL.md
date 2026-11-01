@@ -31,7 +31,8 @@ Save the return with the Write tool, never through the shell, as `report.md` in 
 `<draft>`; a refused Write is a Heads-up and the run stops. Nothing goes under `<root>` before this
 check. It prints the bytes, the marks left once good links are out (HTML, an image, any other
 link or URL, an e-mail address, a control or invisible character), the proposals, and the proposals
-with no source, one more when `###` lines come without the five sections in order:
+with no source, one more when `###` lines come without the five sections in order or a `##`
+heading other than `## Sheet draft` ends the proposals:
 ```bash
 f="<draft>/report.md"
 clean() { LC_ALL=C tr '\000\t' '\001 ' < "$f" | LC_ALL=C sed $'s/\r$//' | LC_ALL=C tr '\r' '\n'; }
@@ -41,8 +42,8 @@ echo "$(LC_ALL=C wc -c < "$f") $(clean |
   LC_ALL=C command grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://|(^|[^a-z0-9])www\.|[a-z0-9._+-]@[a-z0-9-]+\.[a-z]|(mailto|xmpp):|[[:cntrl:]]') $(clean | LC_ALL=C awk '
   BEGIN{split("Summary,State of the art,Proposals,Sheet draft,Sources",w,",")}
   /^ *###/{k=1}
-  /^ *## /{on=/^ *## +Proposals *$/; i+=sub("^ *## +" w[i+1] " *$","")}
-  on&&(/^ *###/||(/^ *(=+|-+) *$/&&t)){n++; if(n>1&&!s)u++; s=0}
+  /^ *## /{if(on&&!/^ *## +Sheet draft *$/)u++; on=/^ *## +Proposals *$/; i+=sub("^ *## +" w[i+1] " *$","")}
+  on&&(/^ *###|^ *# |^ *[>*+0-9.-][ >*+0-9.-]*#+ /||(/^[ >]*(=+|-+) *$/&&t)){n++; if(n>1&&!s)u++; s=0}
   on&&/\]\(https?:\/\//{s=1}
   {t=!/^ *(#.*|=+|-+)?$/}
   END{if(n&&!s)u++; if(k&&i<5)u++; print n+0, u+0}')"
@@ -63,8 +64,8 @@ set -C
 ```
 
 ## 4. Cards
-Show the report's Summary and path, then one decision card per proposal, in its order, in the
-briefing format: its options `adopt` and `leave`, its sources as the evidence line.
+Show the report's Summary and path, then one decision card per proposal the check counted, in its
+order, in the briefing format: its options `adopt` and `leave`, its sources as the evidence line.
 - `adopt`: a line in `<root>/backlog.md`, under `## Research (P2)`, made when missing: `| <title>
   (<report path>) | story | P2 | todo | Feature | — |`, the title on one line, without `|`, at most
   160 characters.
