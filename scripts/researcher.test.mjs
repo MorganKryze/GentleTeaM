@@ -25,6 +25,7 @@ const HEADINGS = 'The section headings stay exactly as written here, in English,
 if (text.split(HEADINGS).length !== 2) errors.push(`researcher: "${HEADINGS}" must appear once`)
 const tools = (raw.match(/^tools: (.*)$/m) || [])[1] || ''
 if (tools !== 'WebFetch, WebSearch') errors.push(`researcher: tools are ${tools}, want WebFetch, WebSearch`)
+if (!/^model: opus$/m.test(raw)) errors.push('researcher: model is not opus')
 if (!/^maxTurns: 40$/m.test(raw)) errors.push('researcher: maxTurns is not 40')
 const keys = (raw.match(/^---\n([\s\S]*?)\n---\n/) || ['', ''])[1].split('\n').map((l) => l.split(':')[0]).join(', ')
 if (keys !== 'name, description, model, effort, maxTurns, color, tools') errors.push(`researcher: frontmatter lines are ${keys}`)
