@@ -180,6 +180,16 @@ const deliver = [
     ],
   },
   {
+    name: "mutations: a specialist's own plants never block, and still count",
+    args: { triggers: TRIGGERS },
+    reply: implementer(['scripts/a.js'], (d) => (d.label === 'security-reviewer' ? { ...ok, mutations: { planted: 3, survived: 3 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], minors: [],
+      stats: { 'security-reviewer': { critical: 0, important: 0, minor: 0, planted: 3, survived: 3 } },
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:security-reviewer', label: 'security-reviewer' }],
+  },
+  {
     name: 'mutations: a survivor reported with its finding adds no second one',
     args: {},
     reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...bad, mutations: { planted: 2, survived: 1 } } : ok)),
