@@ -19,11 +19,17 @@ versions follow [SemVer](https://semver.org/).
 - A taste library, `taste.md`: what you liked and refused, read by the art director and the critic.
   Your picks and your words append to it, and a new look keeps its own folder.
 
+- `/gtm:research <domain>`, typed by you: a new `researcher` role, limited to web search and
+  fetch, writes a sourced state of the art and proposes improvements as cards you pick from. It
+  changes nothing, and only the domain and your stack's bare names leave the machine.
+- Speciality sheets, read on demand: a plan names at most two per task. The first, `quality`,
+  covers what to measure and what to refactor first, including an optional CRAP-style step.
+
 ### Changed
 - Review mutations target executable lines only. A task whose every line is prose in a Markdown
   document, prompt, skill or template, or a test pinning that prose, skips the step: a planted
   change to wording proves nothing. A command it runs and frontmatter still count as code.
-- The per-session footprint rises to about 730 tokens for the twelfth role. A project with no
+- The per-session footprint rises to about 760 tokens for the two new roles. A project with no
   design kit gets the art direction stage on its next new design, a project with a kit or a picked
   look keeps its loop; nothing to migrate.
 

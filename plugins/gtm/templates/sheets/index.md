@@ -7,6 +7,7 @@
 ## Sheets
 | Speciality | Sheet | When |
 | --- | --- | --- |
+| `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 
 ## Using a sheet
 - A sheet is read only when a brief's `Sheets:` line names it; nothing here loads by itself.
