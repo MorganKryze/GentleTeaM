@@ -29,7 +29,9 @@ for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`research: 
 
 const check = ([...raw.matchAll(/```bash\n([\s\S]*?)```/g)].map((m) => m[1]).find((c) => c.includes('grep -Eic')) ?? '')
 const dir = mkdtempSync(join(tmpdir(), 'gtm-research-'))
+let samples = 0
 const run = (body) => {
+  samples++
   writeFileSync(join(dir, 'report.md'), body)
   // A Claude Code shell defines grep as a function that skips binary input: the fence must go past it.
   const r = spawnSync('bash', ['-c', `grep() { echo 0; }\n${check.replaceAll('<draft>', dir)}`], { encoding: 'utf8' })
@@ -110,4 +112,4 @@ else {
 rmSync(dir, { recursive: true })
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + bare2.length + 33} samples OK`)
+console.log(`research: ${PHRASES.length} clauses, the check on ${samples} samples OK`)
