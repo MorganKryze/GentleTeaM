@@ -11,6 +11,7 @@
 | `api-design` | `api-design.md` | a public or internal API, a contract, its versioning or its errors |
 | `architecture` | `architecture.md` | a new module or dependency direction, a lasting trade-off, a decision record |
 | `code-review` | `code-review.md` | reviewing a change, or deciding what a review must catch |
+| `concurrency` | `concurrency.md` | threads, async work, shared state, races or deadlocks |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
