@@ -12,7 +12,8 @@ import { execFileSync } from 'node:child_process'
 const root = new URL('..', import.meta.url).pathname
 const LIMIT = 100
 const FROZEN = Object.freeze({
-  // Two source URLs longer than a line: they cannot wrap.
+  // Source URLs longer than a line: they cannot wrap.
+  'plugins/gtm/templates/sheets/quality.md': 1,
   'plugins/gtm/templates/sheets/tests.md': 2,
   'docs/index.md': 1,
   'docs/reference/gtm-folder.md': 13,
