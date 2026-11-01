@@ -8,6 +8,7 @@
 | Speciality | Sheet | When |
 | --- | --- | --- |
 | `accessibility` | `accessibility.md` | a screen, form or component everyone must be able to reach and operate |
+| `api-design` | `api-design.md` | a public or internal API, a contract, its versioning or its errors |
 | `architecture` | `architecture.md` | a new module or dependency direction, a lasting trade-off, a decision record |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
