@@ -43,9 +43,10 @@ may be empty), `Language:`, `Sheet template:`, `Reflex rows:`, and when present 
 ## Project rules
 - You never dispatch subagents. Your last message is the report, nothing before or after it.
 
-**Return:** one Markdown document, in `Language:` but for the sheet draft, at most 30,000 bytes,
-with these sections in this order: `## Summary` (at most ten lines), `## State of the art`,
-`## Proposals` (one `### <title>` each: what, why now, its cost, your recommendation, its sources),
-`## Sheet draft`, `## Sources` (name, link, date, one line on what you took). Every link is
-`[name](https://...)`, parentheses in a URL percent-encoded. No HTML, no image, no bare URL, no
-reference-style link, no angle bracket.
+**Return:** one Markdown document, in `Language:` but for the sheet draft and the section headings,
+at most 30,000 bytes, with these sections in this order: `## Summary` (at most ten lines),
+`## State of the art`, `## Proposals` (one `### <title>` each: what, why now, its cost, your
+recommendation, its sources), `## Sheet draft`, `## Sources` (name, link, date, one line on what
+you took). The section headings stay exactly as written here, in English, whatever `Language:` is.
+Every link is `[name](https://...)`, parentheses in a URL percent-encoded. No HTML, no image, no
+bare URL, no reference-style link, no angle bracket.

@@ -20,6 +20,9 @@ const PHRASES = [
   'Free public sources only: no account, no key, no paid service; nothing downloaded or vendored.',
 ]
 for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`researcher: "${p}" must appear once`)
+// Not a clause of the count: the skill's check reads `## Proposals` literally, in any language.
+const HEADINGS = 'The section headings stay exactly as written here, in English, whatever `Language:` is.'
+if (text.split(HEADINGS).length !== 2) errors.push(`researcher: "${HEADINGS}" must appear once`)
 const tools = (raw.match(/^tools: (.*)$/m) || [])[1] || ''
 if (tools !== 'WebFetch, WebSearch') errors.push(`researcher: tools are ${tools}, want WebFetch, WebSearch`)
 if (!/^maxTurns: 40$/m.test(raw)) errors.push('researcher: maxTurns is not 40')
