@@ -38,7 +38,7 @@ proposals without the five sections in order, the sheet template's own `## Sourc
 last:
 ```bash
 f="<draft>/report.md"
-clean() { LC_ALL=C tr '\000\t' '\001 ' < "$f" | LC_ALL=C sed $'s/\r$//' | LC_ALL=C tr '\r' '\001'; }
+clean() { LC_ALL=C tr '\000\t' '\001 ' < "$f" | LC_ALL=C sed $'s/\r$//'; }
 echo "$(LC_ALL=C wc -c < "$f") $(clean |
   LC_ALL=C sed -E -e $'s/\xc2[\x80-\x9f]|\xe2\x80[\x8b-\x8f\xaa-\xae]|\xe2\x81[\xa0-\xaf]|\xd8\x9c|\xef\xbb\xbf|\xf3\xa0/\x01/g' \
     -e 's#\]\(https?://[^ ()<>[:cntrl:]]+\)#] #g' |
