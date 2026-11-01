@@ -22,6 +22,7 @@
 | `go` | `go.md` | work in a Go codebase |
 | `i18n` | `i18n.md` | translated interfaces, locales, dates, plurals or right-to-left text |
 | `infrastructure` | `infrastructure.md` | infrastructure as code, containers or cluster setup |
+| `java` | `java.md` | work in a Java or Spring codebase |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
