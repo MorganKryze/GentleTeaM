@@ -66,7 +66,7 @@ const COVER = [
   ['README', 'Install', 'start/install.md', /plugin marketplace add MorganKryze\/GentleTeaM/],
   ['README', 'Quick start', 'start/install.md', /\/gtm:gtm\b/],
   ['README', 'What it costs', 'guides/too-slow.md', /71 s\b/],
-  ['README', 'Roles', 'reference/roles.md', /\btwelve\b/i],
+  ['README', 'Roles', 'reference/roles.md', /\bthirteen\b/i],
   ['README', 'Principles', 'why/positions.md', /light over complete/i],
   ['README', 'Docs', 'README.md', /morgankryze\.github\.io\/GentleTeaM/],
   ['README', 'Inspirations', 'why/credits.md', /github\.com\/github\/spec-kit/],
@@ -411,7 +411,7 @@ check('A11', () => {
   const ceiling = +(team.match(/Fix track ceiling: (\d+) files/) || [])[1];
   const threshold = +(team.match(/design threshold: (\d+)\/10/) || [])[1];
   const agents = readdirSync(join(repo, 'plugins/gtm/agents')).filter(n => n.endsWith('.md'));
-  const words = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12 };
+  const words = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13 };
   const num = s => (/^\d+$/.test(s) ? +s : words[s.toLowerCase()]);
   const all = PAGES.map(([, , file]) => [file, prose(page(file) || '', { mermaid: true })]);
   // The session figure is size.mjs's total rounded to 10 (absent before the size check lands).
@@ -435,7 +435,7 @@ check('A11', () => {
     }
     for (const m of t.matchAll(/\b(\d+|three|four|five)[- ]files? (limit|at most)|file limit[^.]{0,40}?\b(\d+) files?/gi)) { const n = num(m[1] || m[3]); if (n !== ceiling) f.push(`${file}: "${m[0]}", default is ${ceiling}`); }
     for (const m of t.matchAll(/\b(\d+)\/10\b/g)) if (+m[1] !== threshold) f.push(`${file}: "${m[0]}", default is ${threshold}/10`);
-    for (const m of t.matchAll(/\b(\d+|ten|eleven|twelve)\s+(role agents|roles)\b/gi)) if (num(m[1]) !== agents.length) f.push(`${file}: "${m[0]}", there are ${agents.length} agents`);
+    for (const m of t.matchAll(/\b(\d+|ten|eleven|twelve|thirteen)\s+(role agents|roles)\b/gi)) if (num(m[1]) !== agents.length) f.push(`${file}: "${m[0]}", there are ${agents.length} agents`);
     if (tokens) for (const m of t.matchAll(/\b(about|around)\s+([\d,]+)\s+tokens\b/gi)) {
       if (m[2] !== tokens) f.push(`${file}: "${m[0]}", the measured figure is ${tokens}`);
       // A page that dates the figure dates it like every other page does.

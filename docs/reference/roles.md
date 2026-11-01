@@ -1,15 +1,15 @@
 ---
 title: Roles
-description: The twelve role agents, what each one does, and when it runs.
+description: The thirteen role agents, what each one does, and when it runs.
 ---
 
 ::: callout summary
-- **You will learn:** what each of the twelve roles does, how hard it thinks, and when it runs.
+- **You will learn:** what each of the thirteen roles does, how hard it thinks, and when it runs.
 - **Reading time:** 5 minutes, or look up one row.
 - **Before this:** [Which size is my change?](/guides/which-size/) for the tracks.
 :::
 
-GTM ships twelve role agents. Each has one job, reads only the guidelines its role needs, and
+GTM ships thirteen role agents. Each has one job, reads only the guidelines its role needs, and
 writes its full report to a file you never have to open. Reviewers are read-only. Every role
 runs Opus, Claude's largest model, and roles differ by effort (defined below); your
 [team settings](/reference/glossary/#team-settings) can change any of them.
@@ -46,6 +46,7 @@ The words in the table and below it:
 | `ux-qa` | captures and measures screens | medium | the diff touches screens |
 | `final-reviewer` | the whole branch against the spec; read-only | xhigh | once per branch |
 | `release-qa` | the live journey after you deploy | low | after deployment |
+| `researcher` | writes a sourced state of the art and proposes cards; changes and picks nothing | high | `/gtm:research`, when you ask |
 
 When `verify.ui` is set, a committed test checks accessibility, overflow, touch targets and the
 dark theme of every route at each commit. `ux-qa` then runs once per branch: it takes the test's
