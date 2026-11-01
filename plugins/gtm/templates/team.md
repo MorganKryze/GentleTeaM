@@ -35,6 +35,7 @@ Model: `opus`, `sonnet`, `haiku`, `fable`, a full model id, or `inherit`. Effort
 | ux-qa | opus | medium | measures more than it reasons | YYYY-MM-DD |
 | final-reviewer | opus | xhigh | once per branch, last line of defence | YYYY-MM-DD |
 | release-qa | opus | low | runs a script, reports what it sees | YYYY-MM-DD |
+| researcher | opus | high | runs on demand; a thin survey wastes every card after it | YYYY-MM-DD |
 
 ## Specialists
 A specialist reviews a task only when a changed path matches one of its triggers (JavaScript

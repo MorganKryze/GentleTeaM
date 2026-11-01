@@ -24,6 +24,7 @@ const TOOLS = {
   'final-reviewer': 'Read, Bash, Glob, Grep',
   implementer: 'Read, Write, Edit, Bash, Glob, Grep',
   'release-qa': 'Read, Write, Edit, Bash, Glob, Grep',
+  researcher: 'WebFetch, WebSearch',
   reviewer: 'Read, Bash, Glob, Grep',
   'security-reviewer': 'Read, Bash, Glob, Grep',
   'ux-qa': 'Read, Write, Bash, Glob, Grep',
