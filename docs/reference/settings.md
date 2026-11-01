@@ -74,7 +74,8 @@ The formula comes from crap4j, a Java tool, whose limit is 30. Complexity 10 rea
 and 10 fully covered, so a complex untested function stands out.
 
 The score is language-neutral: any tool that gives cyclomatic complexity and coverage per function
-will do. Your command exits non-zero above your limit. GTM ships no such command and runs none by default.
+will do. Your command exits non-zero above your limit. GTM ships no such command and runs none by
+default.
 
 ## What does `team.md` hold?
 
