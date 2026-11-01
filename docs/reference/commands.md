@@ -4,12 +4,12 @@ description: Every /gtm command, what it does, when to run it and what it asks o
 ---
 
 ::: callout summary
-- **You will learn:** what each of the thirteen commands does, when to run it and what it asks.
+- **You will learn:** what each of the fourteen commands does, when to run it and what it asks.
 - **Reading time:** 4 minutes, or look up one row.
 - **Before this:** [Which size is my change?](/guides/which-size/) for the tracks.
 :::
 
-GTM adds thirteen commands to Claude Code. You type the first one; it routes you to the others.
+GTM adds fourteen commands to Claude Code. You type the first one; it routes you to the others.
 Each command dispatches the roles it needs and comes back to you only at a
 [checkpoint](/reference/glossary/#checkpoint).
 
@@ -30,6 +30,7 @@ Each command dispatches the roles it needs and comes back to you only at a
 | `/gtm:brief-me` | re-presents any GTM file (spec, plan, mockups, review, report, logbook, team settings) at the detail you choose, or digs into it with a thinking method and returns at most five findings, largest risk first; a dig changes no file | whenever you want to understand a file without reading it, or to challenge a spec before you approve it | the file, and brief, standard or deep; for a dig, the method or your pick of three, then each finding's option, "leave it" included |
 | `/gtm:status` | shows where a run is; rebuilds that view after a crash | any time during a run | nothing |
 | `/gtm:pause` | stops what runs, keeps every commit, worktree and file, writes the [handoff](/reference/glossary/#handoff) | when you need to stop a run before it ends | nothing; resume later with the command it prints |
+| `/gtm:research` | has the researcher write a sourced state of the art of a domain, then shows its proposals as cards; a run sends the domain and your stack's names to the search provider, never your files | when you want to know what the field does today | the domain, then adopt or leave on each card |
 
 ## What should I run next?
 
