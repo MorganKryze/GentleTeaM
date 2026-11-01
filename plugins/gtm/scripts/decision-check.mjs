@@ -95,9 +95,11 @@ const checkCards = () => {
 }
 
 const table = tables(lines).find((t) => t.rows.some((r) => ID.test(r[0])))
-// The Status of the header block alone: a quote in the body cannot widen the exemption.
+// The Status of the header's quote alone, joined so a wrap still reads, and in the amend's own form:
+// a quote in the body or a Status that denies it cannot widen the exemption.
 const header = lines.slice(0, Math.max(0, lines.findIndex((l) => /^## /.test(l))))
-const amended = header.some((l) => /^>\s*Status:.*\bamended\b/.test(l))
+const quote = header.filter((l) => l.startsWith('>')).map((l) => l.slice(1).trim()).join(' ')
+const amended = /\bStatus:\s*draft \(amended\b/.test(quote)
 if (!table) gaps.push('table: none')
 else if (table.head.length === OLDER_COLUMNS && amended) {
   console.log('decision-check: older form, not checked')

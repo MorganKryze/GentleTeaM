@@ -147,7 +147,25 @@ const older = (text) => text.replace(/^\|.*\| Confirmation \|.*$/m, '| # | Decis
 const amended = 'draft (amended 2026-11-02; approved by the human on 2026-11-01)'
 const passed = checked(older(sample(EN, amended)))
 if (passed.exit !== 0 || !passed.out.includes('older form, not checked')) errors.push(`older form: an amended spec reads exit ${passed.exit}: ${passed.all}`)
+// As real specs hold it: mid-line, or wrapped anywhere in the header's quote.
+const amendedOlder = older(sample(EN, amended))
+for (const [label, from, to] of [
+  ['mid-line', '> Track: Feature.\n> Status:', '> Track: Feature. Date: 2026-11-01. Status:'],
+  ['wrapped after Status', 'Status: draft', 'Status:\n> draft'],
+  ['wrapped after draft', 'draft (amended', 'draft\n> (amended'],
+  ['wrapped after amended', '(amended 2026', '(amended\n> 2026'],
+]) {
+  const r = checked(amendedOlder.replace(from, to))
+  if (r.exit !== 0 || !r.out.includes('older form, not checked')) errors.push(`older form, ${label}: exit ${r.exit}: ${r.all}`)
+}
 expectGap('older form, not amended', older(sample(EN)), 'table: five columns')
+expectGap('older form, amended denied', older(sample(EN, 'approved, not amended')), 'table: five columns')
+expectGap('older form, the amend written in the body', `${older(sample(EN))}\n> Status: ${amended}\n`, 'table: five columns')
+expectGap('older form, the amend under another field', older(sample(EN)).replace('> Track: Feature.', `> Track: ${amended}.`), 'table: five columns')
+expectGap('older form, another field ending in Status', amendedOlder.replace('> Status:', '> SubStatus:'), 'table: five columns')
+expectGap('older form, a longer word', amendedOlder.replace('(amended', '(amendedly'), 'table: five columns')
+expectGap('older form, Status outside the quote', amendedOlder.replace('> Status:', 'Status:'), 'table: five columns')
+expectGap('older form, no heading ends a header', amendedOlder.replace(/^## /gm, ''), 'table: five columns')
 expectGap('older form, amended only in the body', `${older(sample(EN))}\n> Status: amended\n`, 'table: five columns')
 expectGap('older form, amended in another line', older(sample(EN)).replace('> Track: Feature.', '> Track: amended.'), 'table: five columns')
 const four = older(sample(EN, amended)).replace('| Why | Status |', '| Status |').replace('| --- | --- | --- | --- | --- |', '| --- | --- | --- | --- |')
