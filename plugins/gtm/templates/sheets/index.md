@@ -27,6 +27,7 @@
 | `llm-agents` | `llm-agents.md` | a prompt, an agent, an eval or a tool a model calls |
 | `mobile` | `mobile.md` | iOS or Android work: lifecycle, offline use, store release |
 | `nextjs` | `nextjs.md` | work in a Next.js app |
+| `nodejs` | `nodejs.md` | work on a Node.js service, script or CLI |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
