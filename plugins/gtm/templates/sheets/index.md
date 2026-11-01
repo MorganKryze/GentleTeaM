@@ -40,6 +40,7 @@
 | `rust` | `rust.md` | work in a Rust codebase |
 | `security` | `security.md` | authorization, a trust boundary, a dependency, a release or a vulnerability report |
 | `sql` | `sql.md` | writing, reviewing or tuning SQL |
+| `swift` | `swift.md` | work in a Swift codebase |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
 ## Using a sheet
