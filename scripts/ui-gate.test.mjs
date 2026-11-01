@@ -32,6 +32,10 @@ for (const [, line] of readFileSync(template, 'utf8').matchAll(/failures\.push\(
   if (!namesSelector(sample)) errors.push(`template: "${line}" hides its selector from the check`)
 }
 
+const source = readFileSync(template, 'utf8')
+const block = /^export const UI = \{[\s\S]*?^\}$/m
+if (!block.test(source)) errors.push('template: no top `export const UI = { … }` block ending in a lone `}`')
+
 function packageDir(name) {
   const from = process.env.PLAYWRIGHT_PATH ? join(process.env.PLAYWRIGHT_PATH, 'x.js') : join(root, 'x.js')
   const paths = createRequire(from).resolve.paths(name) || []
@@ -73,9 +77,6 @@ const work = mkdtempSync(join(tmpdir(), 'ui-gate-'))
 const started = process.hrtime.bigint()
 const server = await serve(fixtures)
 const base = `http://127.0.0.1:${server.address().port}`
-const source = readFileSync(template, 'utf8')
-const block = /^export const UI = \{[\s\S]*?^\}$/m
-if (!block.test(source)) errors.push('template: no top `export const UI = { … }` block ending in a lone `}`')
 
 try {
   for (const [name, dir] of [['@playwright/test', pw], ['@axe-core/playwright', axe]]) {

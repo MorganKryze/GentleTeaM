@@ -5,6 +5,11 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.13.1] - 2026-11-01
+
+### Changed
+- The tests guideline: a test that fails then passes is a bug, and no rerun turns a red gate green.
+
 ## [0.13.0] - 2026-11-01
 
 ### Added

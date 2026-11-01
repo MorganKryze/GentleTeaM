@@ -8,8 +8,9 @@
   person's path through a screen. <Project frameworks and where each level lives.>
 - **Coverage:** every changed behaviour is tested; no percentage target unless set here: <target>.
 - **Accessibility:** every new screen gets an automated check (e.g. axe) in light and dark.
-- **Flaky tests:** a flake is rerun alone once; if it fails again it is a bug. Known flakes are
-  listed below with their symptom and how to confirm; a flake is fixed or deleted within <N> weeks.
+- **Flaky tests:** a test that fails then passes is a bug: no rerun turns a red gate green, a rerun
+  alone only confirms it. Known flakes are listed below with their symptom and how to confirm; a
+  flake is fixed or deleted within <N> weeks.
 - Every commit leaves the gate green.
 
 ## Known flakes
