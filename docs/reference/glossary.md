@@ -12,6 +12,10 @@ description: Every term GTM uses, in one line each.
 
 ## What does each term mean?
 
+### Art direction {#art-direction}
+The stage of `/gtm:design` for a new look: the art director proposes three directions and you pick
+one before any designer draws.
+
 ### Backlog {#backlog}
 `.gtm/backlog.md`: epics, their stories, priority and status, one table per epic.
 
@@ -33,6 +37,10 @@ The project's rules, one file per area: `conventions.md` in `.gtm/`, and its fil
 ### Correction round {#correction-round}
 The implementer fixes open findings, then the same reviewers re-check. 3 at most, the
 `fix rounds per task` line in `team.md`; each raises the implementer's effort one level.
+
+### Craft {#craft}
+What a studio knows about a kind of job, one file per job (brand, website, mobile) under the
+plugin's `templates/crafts/`, read only when a prompt names it.
 
 ### Decision card {#decision-card}
 A question, its options, a firm recommendation and the cost if wrong, shown by `/gtm:spec` and
@@ -96,6 +104,10 @@ chat, each line prefixed with its speaker.
 The document the architect writes before any code, in `.gtm/specs/`: what will be built, what is
 left out, and how each part is checked.
 
+### Speciality sheet {#speciality-sheet}
+One file per speciality that a plan names for a task, at most 2 per task: it adds a lens to the
+roles that read it and never softens a check.
+
 ### Stealth {#stealth}
 `stealth: on` in `config.yml`: GTM keeps its files out of the tracked tree and its names out of
 everything it writes into the project.
@@ -104,8 +116,16 @@ everything it writes into the project.
 Who brings the ideas in a brainstorm: facilitator (only you), partner (you and the team) or
 ideate for me (the team, and you keep or drop).
 
+### State of the art {#state-of-the-art}
+What `/gtm:research` reports on a domain from public sources: its practices, its tools and what
+changed, with cards you `adopt` or `leave`.
+
 ### Summary {#summary}
 The ten lines at the top of a spec in `.gtm/specs/`, written for you.
+
+### Taste score {#taste-score}
+The lowest of the design critic's five grades on a board drawn from a picked direction. The bar is
+the `taste threshold` line in `team.md`, 7 out of 10 by default.
 
 ### Team settings {#team-settings}
 `team.md`, in `.gtm/`: which roles run, how hard each one thinks, and why, each with its date.

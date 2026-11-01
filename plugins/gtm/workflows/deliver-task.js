@@ -244,10 +244,12 @@ for (; round <= limit; round++) {
       s.planted = (s.planted || 0) + m.planted
       s.survived = (s.survived || 0) + m.survived
     }
-    if (m && m.survived > found) {
+    // The guards read the reviewer alone: a specialist's own plants are counted and never block.
+    const held = r === 'reviewer' ? m : null
+    if (held && held.survived > found) {
       count('important')
       blocking.push({ severity: 'important', summary: `${r} reported ${m.survived} surviving mutations and ${found} findings: ${res.summary}` })
-    } else if (m && m.survived && pending[i].findings && !res.findings.some((f) => f.status === 'open' && f.severity !== 'minor')) {
+    } else if (held && held.survived && pending[i].findings && !res.findings.some((f) => f.status === 'open' && f.severity !== 'minor')) {
       // A re-review that leaves no blocking finding open while a survivor still survives: the
       // survivor it replayed was not addressed after all.
       count('important')

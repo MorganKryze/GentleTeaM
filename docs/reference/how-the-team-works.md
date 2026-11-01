@@ -34,9 +34,9 @@ THE SYSTEM SHALL.
 
 Each task review plants up to five mutations first: one small change per acceptance line the task
 touches, in a throwaway clone, with the project's own tests run against each. A mutation the tests
-miss is a finding, never a silent pass, and a re-review replays it against the fix. A docs-only
-task, one with no executable test, a red suite or a `review mutations: off` line in `team.md` skips
-the step, and the summary says why.
+miss is a finding, never a silent pass, and a re-review replays it against the fix. A task with no
+executable code, one with no executable test, a red suite or a `review mutations: off` line in
+`team.md` skips the step, and the summary says why.
 
 The final review replays two of the mutations the task reports planted, those that move or drop a
 pinned threshold, plan order on a tie (all of them when two or fewer); one that survives is a
@@ -105,6 +105,47 @@ A branch name with a character other than letters, digits and `._/-`, a moved br
 overlap of files, a conflict, a red gate, a failed check or files left in a worktree's GTM folder
 stops the merges, and nothing is undone without you. A task left open or blocked does not hold back
 its clean siblings, which still merge, but no later task starts.
+
+## How does art direction work?
+
+Art direction runs when a Feature needs a new look: you ask for one, or the project has no earlier
+picked direction and no `design.kit`. It is skipped, in one line that says why, when an earlier
+direction is reused or the design kit applies. One sentence from you brings it back.
+
+The art director gathers references from free public sources and proposes three directions that
+differ on type, colour, structure and tone. It holds `WebFetch` and `WebSearch` alone: it reads no
+file and writes none, so `/gtm:design` passes its inputs inline, checks the board it returns, then
+writes the files. A design run sends category words to the search provider, never your brief's
+text. You pick one, or give your own words, inside
+[checkpoint](/reference/glossary/#checkpoint) 1, and no designer draws before that.
+
+The [craft](/reference/glossary/#craft) of the job (brand, website or mobile) tells the designer
+and the critic what great looks like. The first round drafts, and the second is told to go further
+whatever the first scored: it pushes the direction's strongest idea instead of polishing.
+
+Mockups then pass on two scores. Conformity is measured against the design guideline, 8/10 by
+default. The [taste score](/reference/glossary/#taste-score) is the lowest of five grades,
+7 out of 10 by default, so a strong grade never buys back a weak one. Your pick, and what you say
+you like or refuse, go in the library, `.gtm/taste.md`, which the next run reads.
+
+## How does research work?
+
+`/gtm:research <domain>` writes a sourced [state of the art](/reference/glossary/#state-of-the-art)
+of a domain. It runs only when you type it. The researcher holds `WebFetch` and `WebSearch` alone:
+it reads no file and writes none. A run sends the domain and your stack's bare names to the search
+provider, never your files.
+
+The skill checks what the researcher returns before it writes the report to
+`.gtm/reports/research/`. You then `adopt` or `leave` each card. An adopted card is a story, one
+user-visible outcome, in the [backlog](/reference/glossary/#backlog), and starts nothing.
+
+## What are speciality sheets?
+
+A [speciality sheet](/reference/glossary/#speciality-sheet) is one file per speciality, read only
+when a plan names it, at most 2 per task. Sheets cost 0 tokens per session.
+
+A sheet adds a [lens](/reference/glossary/#lens), the method behind a finding, and never softens a
+check. What can be measured goes into the gate as code; the experts keep the judgment.
 
 ## How are several screens designed?
 

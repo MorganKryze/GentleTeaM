@@ -26,6 +26,8 @@ const REFLEXES = {
   'agents/security-reviewer.md': ['Red Team vs Blue Team [elicitation]', 'Security Audit Personas [elicitation]'],
   'agents/data-reviewer.md': ['Failure Mode Analysis [elicitation]', 'Cascading Failure Simulation [elicitation]'],
   'agents/final-reviewer.md': ['Pre-mortem Analysis [elicitation]', 'Second-Order Thinking [elicitation]'],
+  'agents/art-director.md': ['Cross-Pollination [brain]', 'Reverse Brainstorming [brain]'],
+  'agents/researcher.md': ['Literature Review Personas [elicitation]', 'Comparative Analysis Matrix [elicitation]'],
   'agents/designer.md': ['Crazy 8s [brain]', 'SCAMPER Method [brain]', 'Empathy Map [brain]'],
   'agents/design-critic.md': ['Crazy 8s [brain]', 'SCAMPER Method [brain]', 'Empathy Map [brain]'],
   'skills/retro/SKILL.md': ['Five Whys [brain]', 'Hindsight Reflection [elicitation]', 'Lessons Learned Extraction [elicitation]'],
@@ -38,6 +40,8 @@ const GLUE = {
   'agents/reviewer.md': [', then ', '; the steelman never softens a check above'],
   'agents/data-reviewer.md': [', ', ' (what writes here next?)'],
   'agents/final-reviewer.md': [' of the merge, ', ''],
+  'agents/art-director.md': [', ', ' (the rows come inline, in the essentials)'],
+  'agents/researcher.md': [', ', ' (the rows come inline)'],
 }
 const NONE = ['agents/implementer.md', 'agents/ux-qa.md', 'agents/release-qa.md']
 const LINE = /^- Reflexes \(\$\{CLAUDE_PLUGIN_ROOT\}\/templates\/methods\/reflexes\.md\): (.+)\.$/

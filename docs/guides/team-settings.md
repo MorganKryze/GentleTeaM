@@ -19,7 +19,7 @@ Four parts, read by every command and every role.
 
 - **Priorities:** security, data integrity, UX and accessibility, performance, delivery speed,
   usage and cost sensitivity. Each is low, normal or high, with a reason and a date.
-- **Roles:** the model and effort of each of the eleven roles, each with a reason. The roles keep
+- **Roles:** the model and effort of each of the thirteen roles, each with a reason. The roles keep
   defaults in their own files; GTM passes your values on every call, so your settings win.
 - **Specialists:** the security, data and screen reviewers, each with the paths that call it in.
   A specialist reviews a task only when a changed path matches one of its triggers; `off`
@@ -36,6 +36,7 @@ Four parts, read by every command and every role.
 | Correction rounds per task | 3 | past three, the plan is wrong, not the code: you choose what happens next |
 | File limit for a fix | 3 files | a change above it grows into a Feature with a spec |
 | Mockup threshold | 8/10, nothing left that the critic says must be fixed | a screen below it is redrawn |
+| Taste threshold | 7 out of 10, the lowest of the critic's five grades | with a picked direction, a screen below it is redrawn |
 | Mockup rounds | 3 | a screen is redrawn at most three times |
 
 A correction round is the implementer fixing open findings, then the same reviewers checking again;

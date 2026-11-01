@@ -24,6 +24,7 @@ Model: `opus`, `sonnet`, `haiku`, `fable`, a full model id, or `inherit`. Effort
 | Role | Model | Effort | Why | Decided |
 | --- | --- | --- | --- | --- |
 | analyst | opus | medium | clarifies once per request | YYYY-MM-DD |
+| art-director | opus | high | a bland direction costs every round after it | YYYY-MM-DD |
 | designer | opus | medium | the critic catches what it misses | YYYY-MM-DD |
 | design-critic | opus | high | measured judgment gates every mockup page | YYYY-MM-DD |
 | architect | opus | high | a wrong plan costs every task after it | YYYY-MM-DD |
@@ -34,6 +35,7 @@ Model: `opus`, `sonnet`, `haiku`, `fable`, a full model id, or `inherit`. Effort
 | ux-qa | opus | medium | measures more than it reasons | YYYY-MM-DD |
 | final-reviewer | opus | xhigh | once per branch, last line of defence | YYYY-MM-DD |
 | release-qa | opus | low | runs a script, reports what it sees | YYYY-MM-DD |
+| researcher | opus | high | runs on demand; a thin survey wastes every card after it | YYYY-MM-DD |
 
 ## Specialists
 A specialist reviews a task only when a changed path matches one of its triggers (JavaScript
@@ -60,6 +62,7 @@ section has none on: nothing to migrate.
 - tasks per branch: 8 · why: each task costs a fixed ceremony; slices, not layers, keep a branch at 8 or fewer · YYYY-MM-DD
 - Fix track ceiling: 3 files · why: above it, the change deserves a spec · YYYY-MM-DD
 - design threshold: 8/10, zero must-fix · why: <reason> · YYYY-MM-DD
+- taste threshold: 7/10 · why: the lowest of the five grades, so a bland board fails · YYYY-MM-DD
 - design rounds: 3 · why: <reason> · YYYY-MM-DD
 - replay risky tasks: yes · risky paths `migrations?/`, `(sync|contract|schema)`, `(db|store|storage)/` · why: <reason> · YYYY-MM-DD
 - budget per task: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD

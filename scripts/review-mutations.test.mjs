@@ -29,7 +29,7 @@ const PHRASES = {
   ],
   P3: ['A surviving mutation is a finding, never a silent pass: important when the mutated tree breaks a spec acceptance line, minor otherwise.'],
   P7: ['(also a minor finding', '; none: the step runs)'],
-  P4: ['mutations skipped: <reason>', 'prompts, skills and templates are not docs'],
+  P4: ['mutations skipped: <reason>', 'minimal change to an executable line'],
   P5: [
     'A re-review replays only the survivors it sent back, in a fresh clone, and plants no new one.',
     'It marks a finding addressed only when a test now fails at the fix head.',
@@ -48,9 +48,11 @@ for (const [id, list] of Object.entries(PHRASES)) {
 }
 // The skip reasons are a closed list: each named once, and no other between `when the reason is`
 // and the re-review sentence.
-const REASONS = ['docs-only', 'no executable test', 'no acceptance line', 'tests do not pass in the clone', 'off in team.md']
+const REASONS = ['no executable code', 'no executable test', 'no acceptance line', 'tests do not pass in the clone', 'off in team.md']
 const skip = (text.split('when the reason is')[1] || '').split('A re-review')[0]
 const named = [...skip.matchAll(/(?:^ |is |, |or )`([^`]+)`/g)].map((m) => m[1])
+const SKIP = " `no executable code` (every changed line is prose in a Markdown document, prompt, skill or template, whose wording no mutation may target, or a test that only pins that prose; a command or fence it runs, frontmatter and every other file are code), `no executable test`, `no acceptance line` (none maps to the task), `tests do not pass in the clone` (also a minor finding, as when they cannot run there) or `off in team.md` (its Gates hold the off line; none: the step runs). "
+if (skip !== SKIP) errors.push('the skip sentence changed: its list and its class are closed')
 if (named.join('|') !== REASONS.join('|')) errors.push(`skip reasons are not exactly ${REASONS.join(', ')}: ${named.join(', ')}`)
 if (!text.includes('on a Fix, a survivor is important')) errors.push('R2 missing: on a Fix, a survivor is important')
 const CLONE_PATH = [

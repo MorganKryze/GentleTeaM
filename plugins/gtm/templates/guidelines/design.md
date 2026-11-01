@@ -35,6 +35,7 @@ primary, primary-soft. Radius, borders, shadows. Navigation per form factor.>
 - One mockup page per topic; every new screen in light and dark; a caption under each frame saying what
   it shows and the decision it embodies; realistic data in the human's language, no lorem ipsum.
 - The mockup page's top line lists the decisions the human must make, each with a recommendation.
+- With a picked direction, draw it; a reference is never reproduced.
 
 ## 6. How the critic scores
 Score /10, must-fix list, should-fix list. Measured, not felt:
@@ -43,3 +44,5 @@ Score /10, must-fix list, should-fix list. Measured, not felt:
 - Contrast: compute WCAG ratios of the token pairs used.
 - Rules §2 one by one; patterns §4 reused where they apply; consistency with previous mockup pages.
 - 10 ships as is; 8 minor polish only; below 8 or any must-fix means another round.
+- With a picked direction, a second score, taste: the lowest of five grades against the references;
+  below the team's taste threshold means another round.

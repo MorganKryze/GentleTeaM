@@ -29,6 +29,7 @@ covers it.>
 **Constraints:** C1, C2
 **Files:** Create: `…` · Modify: `…`
 **Tier:** <guarded | standard>
+**Sheets:** <at most 2 specialities from templates/sheets/index.md, or none>
 **Risky:** <no | yes: migration / contract / persistence; dry run on <date>, gate counts>
 **Interfaces:** Consumes: `…` · Produces: `…` (signatures)
 

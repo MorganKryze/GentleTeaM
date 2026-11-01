@@ -29,6 +29,8 @@ verdict rule, a threshold or a severity.
 | security-reviewer | Red Team vs Blue Team, Security Audit Personas (elicitation) |
 | data-reviewer | Failure Mode Analysis, Cascading Failure Simulation, "what writes here next?" (elicitation) |
 | final-reviewer | Pre-mortem Analysis of the merge, Second-Order Thinking (elicitation) |
+| art-director | Cross-Pollination, Reverse Brainstorming (brain) |
+| researcher | Literature Review Personas, Comparative Analysis Matrix (elicitation) |
 | designer, design-critic | Crazy 8s, SCAMPER Method, Empathy Map (brain) |
 | retro skill | Five Whys (brain), Hindsight Reflection, Lessons Learned Extraction (elicitation) |
 | tune skill | Occam's Razor Application (elicitation), Constraint Mapping (brain) |
