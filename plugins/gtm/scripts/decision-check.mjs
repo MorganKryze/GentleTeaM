@@ -17,6 +17,7 @@ const OLDER_COLUMNS = 5
 const COST = 4, CONFIRMATION = 5
 const COST_WORDS = 3
 const ID = /^[DR]\d+$/
+const hasCommand = (k) => typeof verify[k] === 'string' && !/^\s*(~|null)?\s*$/i.test(verify[k])
 
 const stop = (msg) => { console.error(`decision-check: ${msg}`); process.exit(2) }
 const argv = process.argv.slice(2), opt = {}
@@ -67,7 +68,7 @@ const confirmation = (cell, name) => {
   const roles = [...cell.matchAll(/\breview:\s*([\w-]+)/g)].map((m) => m[1])
   if (!acceptance.length && !keys.length && !roles.length) gaps.push(`${name}: confirmation-none`)
   if (acceptance.some((a) => !lines.some((l) => l.startsWith(`- ${a} `)))) gaps.push(`${name}: confirmation-line`)
-  if (keys.some((k) => !gate.includes(k) || !verify[k])) gaps.push(`${name}: confirmation-key`)
+  if (keys.some((k) => !gate.includes(k) || !hasCommand(k))) gaps.push(`${name}: confirmation-key`)
   if (roles.some((r) => !ROLES.includes(r))) gaps.push(`${name}: confirmation-role`)
 }
 const checkRows = (rows) => {

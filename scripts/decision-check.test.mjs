@@ -25,10 +25,10 @@ const run = (...args) => {
   return { exit: r.status, out: r.stdout, all: `${r.stdout}${r.stderr}` }
 }
 let samples = 0
-const checked = (text) => {
+const checked = (text, settings = config) => {
   samples++
   writeFileSync(specFile, text)
-  return run('--spec', specFile, '--config', config)
+  return run('--spec', specFile, '--config', settings)
 }
 
 const EN = {
@@ -92,8 +92,8 @@ const GAPS = [
   ['D1: options', `${OPTION_B}\n`, ''],
 ]
 const gaps = (r) => r.out.split('\n').filter((l) => /: /.test(l) && !l.startsWith('decision-check'))
-const expectGap = (label, text, want) => {
-  const r = checked(text)
+const expectGap = (label, text, want, settings) => {
+  const r = checked(text, settings)
   if (r.exit !== 1 || gaps(r).join('\n') !== want) errors.push(`${label}: want "${want}" alone at exit 1, got exit ${r.exit}: ${r.all}`)
 }
 for (const [lang, l] of [['en', EN], ['fr', FR]]) {
@@ -119,6 +119,17 @@ for (const role of ['reviewer', 'security-reviewer', 'data-reviewer', 'final-rev
   const r = checked(sample(EN).replace('review: reviewer', `review: ${role}`))
   if (r.exit !== 0) errors.push(`review: ${role} is refused: ${r.all}`)
 }
+// A gate step confirms nothing unless it holds a command, however it was left empty.
+const lintConfig = join(dir, 'lint.yml')
+const lintAs = (line) => {
+  writeFileSync(lintConfig, `verify:\n  ${line}\n  test: "node t"\n  gate: [lint, test]\n`)
+  return lintConfig
+}
+const citesLint = sample(EN).replace('A1, verify.test', 'A1, verify.lint')
+const filled = checked(citesLint, lintAs('lint: "node l"'))
+if (filled.exit !== 0) errors.push(`a gate step with a command is refused: ${filled.all}`)
+for (const line of ['lint: ""', 'lint:', 'lint:   # nothing yet', 'lint: {}', 'lint: []', 'lint: "   "', 'lint: ~', 'lint: null', 'lint: NULL'])
+  expectGap(`a gate step as ${line}`, citesLint, 'D1: confirmation-key', lintAs(line))
 // Where a table and a card begin and end.
 expectGap('an earlier table is not the record', sample(EN).replace('## Acceptance', '| a | b |\n| --- | --- |\n| c | d |\n\n## Acceptance').replace(D1, D1.replace('A1, verify.test', 'A9')), 'D1: confirmation-line')
 const noOptions = sample(EN).replace(/\| Option[\s\S]*?\| \*\*B\*\* other \| slower \|\n/, '')
