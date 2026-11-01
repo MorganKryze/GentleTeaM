@@ -73,9 +73,9 @@ set -C
 ## 4. Cards
 Show the report's Summary and path, then one decision card per proposal the check counted, in its
 order, in the briefing format: its options `adopt` and `leave`, its sources as the evidence line.
-- `adopt`: a line in `<root>/backlog.md`, under `## Research (P2)`, made when missing: `| <title>
-  (<report path>) | story | P2 | todo | Feature | — |`, the title on one line, without `|`, at most
-  160 characters.
+- `adopt`: with the Edit tool, never through the shell, a line in `<root>/backlog.md`, under
+  `## Research (P2)`, made when missing: `| <title> (<report path>) | story | P2 | todo | Feature |
+  — |`, the title on one line, without `|`, at most 160 characters.
 - Each answer: a `ruling` line in the ledger quoting the human, with the report path.
 
 An adopted card starts nothing: the human runs `/gtm:gtm` when they want the story.

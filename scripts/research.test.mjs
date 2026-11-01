@@ -26,6 +26,10 @@ const PHRASES = [
   'This check is a filter on a report the human reads, not a proof.',
   'A `<slug>` outside `^[a-z0-9]+(-[a-z0-9]+)*$` is refused in one line, before any shell use of it.',
   'An adopted card starts nothing: the human runs `/gtm:gtm` when they want the story.',
+  'with the Edit tool, never through the shell,',
+  'the title on one line, without `|`, at most 160 characters.',
+  'nothing written, and one card (run it again / stop).',
+  'so the bytes written are the bytes checked',
 ]
 for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`research: "${p}" must appear once`)
 
@@ -128,6 +132,8 @@ reads(report([1, 2, 3].map((n) => one(n) + code('# fail')).join('')), '3,0', 'a 
 reads(report(`### Card\n[a](https://a.example/x)\n${code('# fail')}[b](https://b.example)\n`), '1,0', 'a comment between two links')
 reads(report(one(1) + code('# a') + code('# b')), '1,0', 'two fences in a proposal')
 reads(report(one(1) + '```\n# a\n```\n'), '1,0', 'a fence with no language')
+// A draft fenced whole hides its `## Sources`: refused, so the researcher's Return forbids the fence.
+reads(report(one(1)).replace('## Sheet draft\n', '## Sheet draft\n```markdown\n') + '```\n', '1,1', 'a fenced sheet draft')
 reads(report(one(1) + '``x`` is code.\n' + code('# a')), '1,0', 'inline code above a fence')
 reads(report(one(1) + '~~x~~ is struck.\n' + code('# a')), '1,0', 'a struck word above a fence')
 reads(report(one(1) + code('## two\n### three\n- # four\nfive\n---\n===') + one(2)), '2,0', 'headings in a fence')

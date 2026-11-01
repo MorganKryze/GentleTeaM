@@ -43,7 +43,7 @@
   computes it for Rust; elsewhere join lizard with the project's coverage report. Up to complexity 5
   the score never exceeds 30; between 6 and 30 either test or split; above 30 only splitting works.
 - Mutation on changed code: StrykerJS `--incremental` for TypeScript and JavaScript, mutmut for
-  Python (it re-tests changed functions, pytest and fork required), Gremlins on pull request changes
+  Python (it re-tests changed functions, fork required), Gremlins on pull request changes
   for Go (0.x, small modules), `cargo mutants --in-diff` for Rust. A report step first, with
   survivors shown in review and capped, and a periodic full run. No source here justifies a score
   target.

@@ -24,6 +24,8 @@ for (const p of PHRASES) if (text.split(p).length !== 2) errors.push(`researcher
 // Not a clause of the count: the skill's check reads `## Proposals` literally, in any language.
 const HEADINGS = 'The section headings stay exactly as written here, in English, whatever `Language:` is.'
 if (text.split(HEADINGS).length !== 2) errors.push(`researcher: "${HEADINGS}" must appear once`)
+const NO_FENCE = "The sheet draft sits at the margin with the template's `##` headings, in no fence."
+if (text.split(NO_FENCE).length !== 2) errors.push(`researcher: "${NO_FENCE}" must appear once`)
 const tools = (raw.match(/^tools: (.*)$/m) || [])[1] || ''
 if (tools !== 'WebFetch, WebSearch') errors.push(`researcher: tools are ${tools}, want WebFetch, WebSearch`)
 if (!/^model: opus$/m.test(raw)) errors.push('researcher: model is not opus')

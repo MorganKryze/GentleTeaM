@@ -49,5 +49,6 @@ at most 30,000 bytes, with these sections in this order: `## Summary` (at most t
 `## State of the art`, `## Proposals` (one `### <title>` each: what, why now, its cost, your
 recommendation, its sources), `## Sheet draft`, `## Sources` (name, link, date, one line on what
 you took). The section headings stay exactly as written here, in English, whatever `Language:` is.
+The sheet draft sits at the margin with the template's `##` headings, in no fence.
 Every link is `[name](https://...)`, parentheses in a URL percent-encoded. No HTML, no image, no
 bare URL, no reference-style link, no angle bracket.
