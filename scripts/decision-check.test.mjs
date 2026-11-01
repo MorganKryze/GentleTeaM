@@ -138,6 +138,9 @@ if (passed.exit !== 0 || !passed.out.includes('older form, not checked')) errors
 expectGap('older form, not amended', older(sample(EN)), 'table: five columns')
 expectGap('older form, amended only in the body', `${older(sample(EN))}\n> Status: amended\n`, 'table: five columns')
 expectGap('older form, amended in another line', older(sample(EN)).replace('> Track: Feature.', '> Track: amended.'), 'table: five columns')
+const four = older(sample(EN, amended)).replace('| Why | Status |', '| Status |').replace('| --- | --- | --- | --- | --- |', '| --- | --- | --- | --- |')
+  .replace('| safer | proposed |', '| proposed |').replace('| cheaper | ruling |', '| ruling |')
+expectGap('four columns are not the older form', four, 'D1: cells\nR1: cells')
 expectGap('seven columns stay checked when amended', sample(EN, amended).replace(D1, D1.replace('A1, verify.test', 'A9')), 'D1: confirmation-line')
 
 // Unread: its own exit, never a gap's, never a pass.
