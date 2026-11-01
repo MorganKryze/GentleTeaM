@@ -206,9 +206,10 @@ expectOnly('text in a gap', textual('D1').replace('A1, verify.test', 'A9'), 1, '
 expectOnly('text in an older form', inCard(older(sample(CARD, amended))).replace('| D1 | one | A | safer | proposed |', `| D1 | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} |`), 0, 'decision-check: older form, not checked\n')
 
 // The check reads its two files and runs nothing.
-const imports = [...source.matchAll(/^import .* from '([^']+)'$/gm)].map((m) => m[1]).sort()
-if (imports.join() !== './footprint-check.mjs,node:fs') errors.push(`check imports ${imports}`)
-for (const w of [/\bimport\(/, /\brequire\(/, /\beval\(/, /new Function/, /fetch\(/, /(write|append|rm|unlink|rename|copy|mkdir)\w*Sync/, /process\.(env|binding)/])
+// Every import or re-export, whatever its quotes and line breaks, names what it takes.
+const imports = [...source.matchAll(/\b(?:import|export)\b([^'"]*)['"]([^'"]+)['"]/g)].map((m) => `${m[2]} ${m[1].replace(/\s|\bfrom\b/g, '')}`).sort()
+if (imports.join() !== './footprint-check.mjs {parseYaml},node:fs {readFileSync}') errors.push(`check imports ${imports}`)
+for (const w of [/\bimport\(/, /\brequire\(/, /\beval\(/, /new Function/, /fetch\(/, /(write|append|rm|unlink|rename|copy|mkdir)\w*Sync/, /process\.(env|binding|getBuiltinModule)/])
   if (w.test(source)) errors.push(`check source holds ${w}`)
 if ((source.match(/readFileSync\(/g) ?? []).length !== 1) errors.push('check reads files in more than one place')
 
