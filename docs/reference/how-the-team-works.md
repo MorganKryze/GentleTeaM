@@ -128,6 +128,24 @@ default. The [taste score](/reference/glossary/#taste-score) is the lowest of fi
 7 out of 10 by default, so a strong grade never buys back a weak one. Your pick, and what you say
 you like or refuse, go in the library, `.gtm/taste.md`, which the next run reads.
 
+## How does research work?
+
+`/gtm:research <domain>` writes a sourced [state of the art](/reference/glossary/#state-of-the-art)
+of a domain. It runs only when you type it. The researcher holds `WebFetch` and `WebSearch` alone:
+it reads no file and writes none. A run sends the domain and your stack's bare names to the search
+provider, never your files.
+
+The skill checks the return before it writes the report to `.gtm/reports/research/`. You then
+`adopt` or `leave` each card. An adopted card is a story in the backlog, and starts nothing.
+
+## What are speciality sheets?
+
+A [speciality sheet](/reference/glossary/#speciality-sheet) is one file per speciality, read only
+when a plan names it, at most 2 per task. Sheets cost 0 tokens per session.
+
+A sheet adds a lens and never softens a check. What can be measured goes into the gate as code; the
+experts keep the judgment.
+
 ## How are several screens designed?
 
 The design loop gives each screen its own designer and critic, all at once. Each screen is redrawn
