@@ -34,6 +34,7 @@
 | `privacy` | `privacy.md` | personal data, consent, retention or GDPR obligations |
 | `python` | `python.md` | work in a Python codebase |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
+| `react` | `react.md` | work in a React app |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
 ## Using a sheet
