@@ -76,6 +76,9 @@ None.
 const GAPS = [
   ['table: none', `${D1}\n${R1}\n`, ''],
   ['row 1: id', '| D1 | one', '| X1 | one'],
+  ['row 1: id', '| D1 | one', '| D1x | one'],
+  ['row 1: id', '| D1 | one', '| xD1 | one'],
+  ['row 2: id', '| R1 | two', '| R1 text | two'],
   ['R1: twice', R1, `${R1}\n${R1}`],
   ['D1: cells', '| A | safer | slower', '| A safer | slower'],
   ['D1: empty', '| safer | slower', '|  | slower'],
