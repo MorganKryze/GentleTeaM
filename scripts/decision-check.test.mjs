@@ -107,6 +107,7 @@ for (const [lang, l] of [['en', EN], ['fr', FR]]) {
   expectGap(`${lang} no card`, good.replace(`**${l.title}**`, '**Which one?**'), 'D1: no-card')
   expectGap(`${lang} no options at all`, good.replace(/\| Option[\s\S]*?\| \*\*B\*\* other \| slower \|\n/, ''), 'D1: options')
   expectGap(`${lang} no criteria`, good.replace(`${l.criteria}\n\n`, ''), 'D1: criteria')
+  expectGap(`${lang} a line of spaces is no criteria`, good.replace(`${l.criteria}\n`, '   \n'), 'D1: criteria')
   expectGap(`${lang} a pipe in a cell`, good.replace('| safer | slower', '| sa|fer | slower'), 'D1: cells')
   if (checked(good.replace('| safer | slower', '| sa\\|fer | slower')).exit !== 0) errors.push(`${lang}: an escaped pipe is refused`)
 }
