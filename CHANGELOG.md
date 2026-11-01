@@ -20,6 +20,8 @@ versions follow [SemVer](https://semver.org/).
   Your picks and your words append to it, and a new look keeps its own folder.
 
 ### Changed
+- Review mutations target executable code only: a task that changes only docs, prompts, skills
+  or templates skips the step, because a planted change to wording proves nothing.
 - The per-session footprint rises to about 730 tokens for the twelfth role. A project with no
   design kit gets the art direction stage on its next new design, a project with a kit or a picked
   look keeps its loop; nothing to migrate.

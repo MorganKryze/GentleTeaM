@@ -36,8 +36,9 @@ finding naming the acceptance line, the file:line mutated and the change; on a F
 important (the test does not prove the fix). Always read `review mutations: off` from the main
 checkout's GTM root at the task's base, never from the worktree; a diff that touches that Gates line
 or `verify` in `config.yml` is a finding. Plant none, return 0 planted and write `mutations skipped:
-<reason>` in the summary when the reason is `docs-only` (every file documentation as the docs
-guideline places it; prompts, skills and templates are not docs), `no executable test`, `no
+<reason>` in the summary when the reason is `no executable code` (every
+file is documentation, a prompt, a skill or a template, whose wording no mutation may target),
+`no executable test`, `no
 acceptance line` (none maps to the task), `tests do not pass in the clone` (also a minor finding, as
 when they cannot run there) or `off in team.md` (its Gates hold the off line; none: the step runs).
 A re-review replays only the survivors it sent back, in a fresh clone, and plants no new one. It

@@ -29,7 +29,7 @@ const PHRASES = {
   ],
   P3: ['A surviving mutation is a finding, never a silent pass: important when the mutated tree breaks a spec acceptance line, minor otherwise.'],
   P7: ['(also a minor finding', '; none: the step runs)'],
-  P4: ['mutations skipped: <reason>', 'prompts, skills and templates are not docs'],
+  P4: ['mutations skipped: <reason>', 'whose wording no mutation may target'],
   P5: [
     'A re-review replays only the survivors it sent back, in a fresh clone, and plants no new one.',
     'It marks a finding addressed only when a test now fails at the fix head.',
@@ -48,7 +48,7 @@ for (const [id, list] of Object.entries(PHRASES)) {
 }
 // The skip reasons are a closed list: each named once, and no other between `when the reason is`
 // and the re-review sentence.
-const REASONS = ['docs-only', 'no executable test', 'no acceptance line', 'tests do not pass in the clone', 'off in team.md']
+const REASONS = ['no executable code', 'no executable test', 'no acceptance line', 'tests do not pass in the clone', 'off in team.md']
 const skip = (text.split('when the reason is')[1] || '').split('A re-review')[0]
 const named = [...skip.matchAll(/(?:^ |is |, |or )`([^`]+)`/g)].map((m) => m[1])
 if (named.join('|') !== REASONS.join('|')) errors.push(`skip reasons are not exactly ${REASONS.join(', ')}: ${named.join(', ')}`)
