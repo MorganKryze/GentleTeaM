@@ -13,6 +13,7 @@ const root = new URL('..', import.meta.url).pathname
 const LIMIT = 100
 const FROZEN = Object.freeze({
   // Source URLs longer than a line: they cannot wrap.
+  'plugins/gtm/templates/sheets/csharp.md': 6,
   'plugins/gtm/templates/sheets/concurrency.md': 3,
   'plugins/gtm/templates/sheets/code-review.md': 3,
   'plugins/gtm/templates/sheets/api-design.md': 1,
