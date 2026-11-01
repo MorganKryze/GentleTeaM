@@ -43,7 +43,7 @@ echo "$(LC_ALL=C wc -c < "$f") $(clean |
   LC_ALL=C command grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://|(^|[^a-z0-9])www\.|[a-z0-9._+-]@[a-z0-9-]+\.[a-z]|(mailto|xmpp):|[[:cntrl:]]') $(clean | LC_ALL=C awk '
   BEGIN{split("Summary,State of the art,Proposals,Sheet draft,Sources,Sources",w,",")}
   /^ *## /{if(on&&!/^ *## +Sheet draft *$/)u++; on=/^ *## +Proposals *$/; i+=sub("^ *## +" w[i+1] " *$","")}
-  on&&(/^ *###|^ *# |^ *[>*+0-9.-][ >*+0-9.)-]*#+ /||(/^[ >]*(=+|-+) *$/&&t)){n++; if(n>1&&!s)u++; s=0}
+  on&&(/^ *###|^ *# |^ *[>*+0-9-][ >*+0-9.)-]*#+ /||(/^[ >]*(=+|-+) *$/&&t)){n++; if(n>1&&!s)u++; s=0}
   on&&/\]\(https?:\/\//{s=1}
   /:\/\//{l=1}
   {t=!/^ *(#+( .*)?|=+|-+)?$/}

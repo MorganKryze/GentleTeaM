@@ -58,6 +58,9 @@ const BAD = [
   '[x](https://a.example/\0)', '[x](https://a.example/\x7f)', '[x](https://a.example/\x08\x08)',
   '[x](https://a.example/\x0c)', '[x](https://a.example/a\u200bb)', '[x](https://a.example/a\u202eb)',
   '[x](https://a.example/\ufeff)', '[x](https://a.example/\u{e0049})', '[x](https://a.example/\u009b2J)',
+  '[a](https://a.example)[b](javascript:alert(1))', '[a](https://a.example)[b](file:///etc/passwd)',
+  '[a](https://a.example)![p](https://a.example/p.png)', '[a](https://a.example/![p](https://a.example/p.png)',
+  '[a](https://a.example)www.evil.example/p)',
 ]
 const GOOD = [
   '[Name](https://a.example): text', '[a](https://a.example)[b](https://b.example)',
@@ -74,10 +77,13 @@ if (run(report(one(1) + '### Card\nNo source.\n'))[3] !== 1) errors.push('resear
 const bare2 = [' ### Card 2\nNo source.\n', '#### Card 2\nNo source.\n', '###\tCard 2\nNo source.\n', 'Card 2\n---\n', 'Card 2\n===\n', 'Card 2\r\n---\r\n', 'x\r### Card 2\n',
   '# Card 2\nNo source.\n', '> ### Card 2\nNo source.\n', '- ### Card 2\nNo source.\n', '1. ### Card 2\nNo source.\n', '> Card 2\n> ---\n',
   '1) ### Card 2\nNo source.\n', '1) # Card 2\nNo source.\n', '1) ## Card 2\nNo source.\n', '- 1) ### Card 2\nNo source.\n', '> 1) ### Card 2\nNo source.\n',
-  '#Card 2\n---\n', '#Card 2\n===\n', '##Card 2\n---\n']
+  '#Card 2\n---\n', '#Card 2\n===\n', '##Card 2\n---\n',
+  ' # Card 2\nNo source.\n', '* ### Card 2\nNo source.\n', '+ ### Card 2\nNo source.\n', '- > ### Card 2\nNo source.\n', '> > ### Card 2\nNo source.\n',
+  '- * ### Card 2\nNo source.\n', '- + ### Card 2\nNo source.\n', '> - ### Card 2\nNo source.\n']
 for (const card of bare2) if (run(report(one(1) + card)).slice(2).join() !== '2,1') errors.push(`research: ${JSON.stringify(card)} slips past the count`)
-for (const h of [' ### ', '# ', '> ### ', '1) ### ']) if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + `${h}6\n${h}7\n${h}8\n`))[2] !== 8) errors.push(`research: "${h}" proposals pass the cap`)
+for (const h of [' ### ', '# ', ' # ', '> ### ', '1) ### ']) if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + `${h}6\n${h}7\n${h}8\n`))[2] !== 8) errors.push(`research: "${h}" proposals pass the cap`)
 if (run(report(one(1) + '## Card 2\nNo source.\n')).slice(2).join() !== '1,1') errors.push('research: a second-level heading ends the proposals unseen')
+if (run(report(one(1) + '## Sheet note\n### Card 2\nNo source.\n')).slice(2).join() !== '1,1') errors.push('research: a heading near the sheet draft ends the proposals unseen')
 if (run(report(one(1) + 'C# stays.\n#1 too.\n- #tag\n#tag line\n1) Use C# here.\n')).slice(2).join() !== '1,0') errors.push('research: a hash in a line reads as a proposal')
 if (run(report(one(1) + '\n---\n\n' + one(2))).slice(2).join() !== '2,0') errors.push('research: a rule between proposals reads as one')
 if (run(report('### Card [a](https://a.example/x)\n---\n')).slice(2).join() !== '1,0') errors.push('research: a rule under a heading reads as a proposal')
@@ -97,6 +103,7 @@ reads('## Summary\nNo source fetched.\n', '0,0', 'the return of a run with no so
 reads('## Summary\n\n## State of the art\n\n## Proposals\n\n## Sheet draft\n\n## Sources\n', '0,0', 'five empty sections')
 reads(good.replace('### Card 1', '**Card 1**').replace('### Card 2', '**Card 2**'), '0,1', 'bold proposals')
 reads(good.replace('### Card 1', '1. Card 1').replace('### Card 2', '2. Card 2'), '0,1', 'numbered proposals')
+reads(report(one(1) + '. ### not a list\n'), '1,0', 'a line that opens with a dot')
 reads(good.replace('## Proposals', '## Propositions').replace('### Card 1', '**Card 1**').replace('### Card 2', '**Card 2**'), '0,1', 'bold proposals under a translated heading')
 reads(good.split('## Proposals')[0], '0,1', 'a report cut in its state of the art')
 reads('## Note\nSee [a](https://a.example/x).\n', '0,1', 'a return with links and no section')
