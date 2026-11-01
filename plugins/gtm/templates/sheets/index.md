@@ -32,6 +32,7 @@
 | `performance` | `performance.md` | a speed or memory claim, a performance gate, or start-up time |
 | `php` | `php.md` | work in a PHP or Laravel codebase |
 | `privacy` | `privacy.md` | personal data, consent, retention or GDPR obligations |
+| `python` | `python.md` | work in a Python codebase |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
