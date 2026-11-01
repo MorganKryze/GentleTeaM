@@ -60,7 +60,7 @@ const BAD = [
   '[x](https://a.example/\ufeff)', '[x](https://a.example/\u{e0049})', '[x](https://a.example/\u009b2J)',
   '[a](https://a.example)[b](javascript:alert(1))', '[a](https://a.example)[b](file:///etc/passwd)',
   '[a](https://a.example)![p](https://a.example/p.png)', '[a](https://a.example/![p](https://a.example/p.png)',
-  '[a](https://a.example)www.evil.example/p)',
+  '[a](https://a.example)www.evil.example/p)', 'x\r### Card 2\n', 'Do not adopt this.\rAdopt now!',
 ]
 const GOOD = [
   '[Name](https://a.example): text', '[a](https://a.example)[b](https://b.example)',
@@ -74,7 +74,7 @@ if (run(report(''))[2] !== 0) errors.push('research: a return with no proposal r
 if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + one(6)))[2] !== 6) errors.push('research: six proposals are not counted')
 if (run(report('### Card\nNo source.\n' + one(2)))[3] !== 1) errors.push('research: a first proposal with no source is not counted')
 if (run(report(one(1) + '### Card\nNo source.\n'))[3] !== 1) errors.push('research: a last proposal with no source is not counted')
-const bare2 = [' ### Card 2\nNo source.\n', '#### Card 2\nNo source.\n', '###\tCard 2\nNo source.\n', 'Card 2\n---\n', 'Card 2\n===\n', 'Card 2\r\n---\r\n', 'x\r### Card 2\n',
+const bare2 = [' ### Card 2\nNo source.\n', '#### Card 2\nNo source.\n', '###\tCard 2\nNo source.\n', 'Card 2\n---\n', 'Card 2\n===\n', 'Card 2\r\n---\r\n',
   '# Card 2\nNo source.\n', '> ### Card 2\nNo source.\n', '- ### Card 2\nNo source.\n', '1. ### Card 2\nNo source.\n', '> Card 2\n> ---\n',
   '1) ### Card 2\nNo source.\n', '1) # Card 2\nNo source.\n', '1) ## Card 2\nNo source.\n', '- 1) ### Card 2\nNo source.\n', '> 1) ### Card 2\nNo source.\n',
   '#Card 2\n---\n', '#Card 2\n===\n', '##Card 2\n---\n',
