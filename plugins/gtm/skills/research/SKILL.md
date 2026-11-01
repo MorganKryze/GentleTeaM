@@ -35,7 +35,7 @@ f="<draft>/report.md"
 echo "$(LC_ALL=C wc -c < "$f") $(LC_ALL=C tr '\000\r' '  ' < "$f" |
   LC_ALL=C sed -E 's#\]\(https?://[^ ()<>]+\)#]#g' |
   LC_ALL=C grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|^ *\[[^]]*\]:|[a-z][a-z0-9+.-]*://') $(LC_ALL=C awk '
-  /^## /{on=($0=="## Proposals")}
+  /^## /{on=/^## Proposals$/}
   on&&/^### /{n++; if(n>1&&!s)u++; s=0}
   on&&/\]\(https?:\/\//{s=1}
   END{if(n&&!s)u++; print n+0, u+0}' "$f")"

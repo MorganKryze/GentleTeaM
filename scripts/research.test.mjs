@@ -11,6 +11,8 @@ const raw = readFileSync(new URL('../plugins/gtm/skills/research/SKILL.md', impo
 const text = raw.replace(/\s+/g, ' ')
 const errors = []
 if (!/^disable-model-invocation: true$/m.test(raw)) errors.push('research: the model can invoke it')
+// Claude Code puts the arguments in place of $<digit> before the model reads a skill, fences included.
+if (/\$\d/.test(raw)) errors.push('research: a $<digit> in the skill is replaced by the arguments')
 const PHRASES = [
   'Nothing else read locally goes in.',
   'Nothing goes under `<root>` before this check.',
