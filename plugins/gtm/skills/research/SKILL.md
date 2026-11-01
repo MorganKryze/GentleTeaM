@@ -33,14 +33,16 @@ link or URL, an e-mail address, a control or invisible character), the proposals
 with no source:
 ```bash
 f="<draft>/report.md"
-echo "$(LC_ALL=C wc -c < "$f") $(LC_ALL=C tr '\000\r\t' '\001\n ' < "$f" |
+clean() { LC_ALL=C tr '\000\t' '\001 ' < "$f" | LC_ALL=C sed $'s/\r$//' | LC_ALL=C tr '\r' '\n'; }
+echo "$(LC_ALL=C wc -c < "$f") $(clean |
   LC_ALL=C sed -E -e 's#\]\(https?://[^ ()<>]+\)#] #g' \
     -e $'s/\xe2\x80[\x8b-\x8f\xaa-\xae]|\xe2\x81[\xa0-\xaf]|\xd8\x9c|\xef\xbb\xbf|\xf3\xa0/\x01/g' |
-  LC_ALL=C command grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://|(^|[^a-z0-9])www\.|[a-z0-9._+-]@[a-z0-9-]+\.[a-z]|(mailto|xmpp):|[[:cntrl:]]') $(LC_ALL=C awk '
+  LC_ALL=C command grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://|(^|[^a-z0-9])www\.|[a-z0-9._+-]@[a-z0-9-]+\.[a-z]|(mailto|xmpp):|[[:cntrl:]]') $(clean | LC_ALL=C awk '
   /^## /{on=/^## Proposals$/}
-  on&&/^### /{n++; if(n>1&&!s)u++; s=0}
+  on&&(/^ *###/||(/^ *(=+|-+) *$/&&t)){n++; if(n>1&&!s)u++; s=0}
   on&&/\]\(https?:\/\//{s=1}
-  END{if(n&&!s)u++; print n+0, u+0}' "$f")"
+  {t=!/^ *(#.*|=+|-+)?$/}
+  END{if(n&&!s)u++; print n+0, u+0}')"
 ```
 It passes at 30,000 bytes or fewer, 0 marks, 1 to 5 proposals and 0 with no source. No proposal at
 all: a Heads-up, "no source fetched", nothing written. Any other reading: a Heads-up with the four

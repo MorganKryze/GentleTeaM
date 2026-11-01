@@ -59,7 +59,11 @@ if (run(report(''))[2] !== 0) errors.push('research: a return with no proposal r
 if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + one(6)))[2] !== 6) errors.push('research: six proposals are not counted')
 if (run(report('### Card\nNo source.\n' + one(2)))[3] !== 1) errors.push('research: a first proposal with no source is not counted')
 if (run(report(one(1) + '### Card\nNo source.\n'))[3] !== 1) errors.push('research: a last proposal with no source is not counted')
+const bare2 = [' ### Card 2\nNo source.\n', '#### Card 2\nNo source.\n', '###\tCard 2\nNo source.\n', 'Card 2\n---\n', 'Card 2\n===\n', 'Card 2\r\n---\r\n', 'x\r### Card 2\n']
+for (const card of bare2) if (run(report(one(1) + card)).slice(2).join() !== '2,1') errors.push(`research: ${JSON.stringify(card)} slips past the count`)
+if (run(report(one(1) + one(2) + one(3) + one(4) + one(5) + ' ### 6\n ### 7\n ### 8\n'))[2] !== 8) errors.push('research: indented proposals pass the cap')
+if (run(report(one(1) + '\n---\n\n' + one(2))).slice(2).join() !== '2,0') errors.push('research: a rule between proposals reads as one')
 rmSync(dir, { recursive: true })
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + 4} samples OK`)
+console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + bare2.length + 6} samples OK`)
