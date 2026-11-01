@@ -29,6 +29,7 @@
 | `nextjs` | `nextjs.md` | work in a Next.js app |
 | `nodejs` | `nodejs.md` | work on a Node.js service, script or CLI |
 | `observability` | `observability.md` | logs, metrics, traces, alerts or service-level objectives |
+| `performance` | `performance.md` | a speed or memory claim, a performance gate, or start-up time |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
