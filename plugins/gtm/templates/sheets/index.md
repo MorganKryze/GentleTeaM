@@ -31,6 +31,7 @@
 | `observability` | `observability.md` | logs, metrics, traces, alerts or service-level objectives |
 | `performance` | `performance.md` | a speed or memory claim, a performance gate, or start-up time |
 | `php` | `php.md` | work in a PHP or Laravel codebase |
+| `privacy` | `privacy.md` | personal data, consent, retention or GDPR obligations |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 

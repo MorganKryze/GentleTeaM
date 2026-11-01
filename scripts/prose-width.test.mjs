@@ -13,6 +13,7 @@ const root = new URL('..', import.meta.url).pathname
 const LIMIT = 100
 const FROZEN = Object.freeze({
   // Source URLs longer than a line: they cannot wrap.
+  'plugins/gtm/templates/sheets/privacy.md': 10,
   'plugins/gtm/templates/sheets/php.md': 1,
   'plugins/gtm/templates/sheets/observability.md': 2,
   'plugins/gtm/templates/sheets/nodejs.md': 1,
