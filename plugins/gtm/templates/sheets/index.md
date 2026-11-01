@@ -42,6 +42,7 @@
 | `sql` | `sql.md` | writing, reviewing or tuning SQL |
 | `swift` | `swift.md` | work in a Swift codebase |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
+| `typescript` | `typescript.md` | work in a TypeScript codebase |
 
 ## Using a sheet
 - A sheet is read only when a brief's `Sheets:` line names it; nothing here loads by itself.
