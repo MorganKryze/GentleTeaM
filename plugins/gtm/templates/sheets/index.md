@@ -24,6 +24,7 @@
 | `infrastructure` | `infrastructure.md` | infrastructure as code, containers or cluster setup |
 | `java` | `java.md` | work in a Java or Spring codebase |
 | `kotlin` | `kotlin.md` | work in a Kotlin codebase |
+| `llm-agents` | `llm-agents.md` | a prompt, an agent, an eval or a tool a model calls |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 
