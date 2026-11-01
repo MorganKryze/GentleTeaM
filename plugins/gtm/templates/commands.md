@@ -16,3 +16,4 @@
 - `/gtm:status` · show where the current run stands
 - `/gtm:pause` · stop the run cleanly and write how to resume it
 - `/gtm:tune` · re-tune team settings from the ledger, as decision cards
+- `/gtm:research` · write a sourced state of the art of a domain, then cards
