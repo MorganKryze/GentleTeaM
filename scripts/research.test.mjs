@@ -35,7 +35,7 @@ const run = (body) => {
   const r = spawnSync('bash', ['-c', `grep() { echo 0; }\n${check.replaceAll('<draft>', dir)}`], { encoding: 'utf8' })
   return (r.stdout || '').trim().split(/\s+/).map(Number)
 }
-const report = (proposals, extra = '') => `## Summary\nOK.\n\n## State of the art\nSee [a](https://a.example/x).\n\n## Proposals\n${proposals}\n## Sheet draft\n[late](https://b.example)\n\n## Sources\n- [a](https://a.example/x)\n${extra}`
+const report = (proposals, extra = '') => `## Summary\nOK.\n\n## State of the art\nSee [a](https://a.example/x).\n\n## Proposals\n${proposals}\n## Sheet draft\n# Sheet\n\n## Method\n1. Step.\n\n## Sources\n- [late](https://b.example)\n\n## Sources\n- [a](https://a.example/x)\n${extra}`
 const one = (n) => `### Card ${n}\nDo it. Sources: [a](https://a.example/x_%28y%29).\n`
 const good = report(one(1) + one(2))
 const [bytes, marks, cards, bare] = run(good)
@@ -84,6 +84,9 @@ reads(good.replaceAll('\n', '\r\n'), '2,0', 'a CRLF report')
 reads(good.split('## Sheet draft')[0], '2,1', 'a report cut before its sheet draft')
 reads(good.split('### Card 2')[0], '1,1', 'a report cut after its first proposal')
 reads(good.split('## Sources')[0], '2,1', 'a report cut before its sources')
+reads(good.slice(0, good.indexOf('## Sources') + 10), '2,1', 'a report cut after the sheet draft\'s sources heading')
+reads(good.slice(0, good.lastIndexOf('## Sources')), '2,1', 'a report cut before its last section')
+for (const h of ['Card\n---', '# Card']) reads(good.replace('### Card 1', h).replace('### Card 2', h).split('## Sheet draft')[0], '2,1', `a cut report of ${JSON.stringify(h)} proposals`)
 reads(`## Proposals\n${one(1)}`, '1,1', 'proposals alone')
 reads(good.replace('## Summary', '## Note').replace('## Sources', '## Summary\n\n## Sources'), '2,1', 'sections out of order')
 reads('## Summary\nNo source fetched.\n', '0,0', 'the return of a run with no source')
@@ -105,4 +108,4 @@ else {
 rmSync(dir, { recursive: true })
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + bare2.length + 27} samples OK`)
+console.log(`research: ${PHRASES.length} clauses, the check on ${BAD.length + GOOD.length + bare2.length + 31} samples OK`)

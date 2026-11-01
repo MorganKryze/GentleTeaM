@@ -31,8 +31,9 @@ Save the return with the Write tool, never through the shell, as `report.md` in 
 `<draft>`; a refused Write is a Heads-up and the run stops. Nothing goes under `<root>` before this
 check. It prints the bytes, the marks left once good links are out (HTML, an image, any other
 link or URL, an e-mail address, a control or invisible character), the proposals, and the proposals
-with no source, one more for links with no proposal, for `###` lines without the five sections in
-order, or for a `##` other than `## Sheet draft` that ends the proposals:
+with no source. That last number takes one more for links with no proposal, for a `##` other than
+`## Sheet draft` that ends the proposals, and for proposals or `###` lines without the five
+sections in order, the sheet template's own `## Sources` ahead of the last:
 ```bash
 f="<draft>/report.md"
 clean() { LC_ALL=C tr '\000\t' '\001 ' < "$f" | LC_ALL=C sed $'s/\r$//' | LC_ALL=C tr '\r' '\n'; }
@@ -40,13 +41,13 @@ echo "$(LC_ALL=C wc -c < "$f") $(clean |
   LC_ALL=C sed -E -e $'s/\xc2[\x80-\x9f]|\xe2\x80[\x8b-\x8f\xaa-\xae]|\xe2\x81[\xa0-\xaf]|\xd8\x9c|\xef\xbb\xbf|\xf3\xa0/\x01/g' \
     -e 's#\]\(https?://[^ ()<>[:cntrl:]]+\)#] #g' |
   LC_ALL=C command grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://|(^|[^a-z0-9])www\.|[a-z0-9._+-]@[a-z0-9-]+\.[a-z]|(mailto|xmpp):|[[:cntrl:]]') $(clean | LC_ALL=C awk '
-  BEGIN{split("Summary,State of the art,Proposals,Sheet draft,Sources",w,",")}
+  BEGIN{split("Summary,State of the art,Proposals,Sheet draft,Sources,Sources",w,",")}
   /^ *###/{k=1}
   /^ *## /{if(on&&!/^ *## +Sheet draft *$/)u++; on=/^ *## +Proposals *$/; i+=sub("^ *## +" w[i+1] " *$","")}
   on&&(/^ *###|^ *# |^ *[>*+0-9.-][ >*+0-9.-]*#+ /||(/^[ >]*(=+|-+) *$/&&t)){n++; if(n>1&&!s)u++; s=0}
   /\]\(https?:\/\//{l=1; if(on)s=1}
   {t=!/^ *(#.*|=+|-+)?$/}
-  END{if(n&&!s)u++; if((l&&!n)||(k&&i<5))u++; print n+0, u+0}')"
+  END{if(n&&!s)u++; if((l&&!n)||((k||n)&&i<6))u++; print n+0, u+0}')"
 ```
 It passes at 30,000 bytes or fewer, 0 marks, 1 to 5 proposals and 0 with no source. 0 proposals and
 0 with no source: a Heads-up, "no source fetched", nothing written. Any other reading: a Heads-up
