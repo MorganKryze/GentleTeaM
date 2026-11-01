@@ -43,10 +43,14 @@ const BAD = [
   '> [y]: //evil.example/x', '[foo\nbar]: javascript:alert(1)', '[y\\]]: javascript:alert(1)',
   'foo\r\r[y]: javascript:alert(1)', '\n\r[y]: javascript:alert(1)', '[x](https://a.example\r"t")',
   '[x](https://a.example\t"t")', '[x](https://a.example "t")', '[x](https://a.example/<b>)',
+  'www.evil.example/pixel', 'WWW.evil.example', 'evil@evil.example', 'mailto:evil', 'xmpp:evil',
+  'a\x1b]52;c;aGk=\x07b', '\x1b[2J', 'a\0b', 'a\u200bb', 'a\u200db', 'a\u202eb', 'a\u2066b', 'a\u061cb',
+  'a\ufeffb', 'a\u{e0041}b',
 ]
 const GOOD = [
   '[Name](https://a.example): text', '[a](https://a.example)[b](https://b.example)',
   '\tIndented with a tab.', 'Windows lines.\r\nOne more.\r\n',
+  'L\u2019accessibilit\u00e9 \u2014 \u00ab mesur\u00e9e \u00bb\u202f: 3\u00a0tests\u2026',
 ]
 for (const body of BAD) if (!(run(report(one(1), body))[1] > 0)) errors.push(`research: the check counts 0 on ${body}`)
 for (const body of GOOD) if (run(report(one(1), body))[1] !== 0) errors.push(`research: the check refuses ${JSON.stringify(body)}`)

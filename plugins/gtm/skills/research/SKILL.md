@@ -29,12 +29,14 @@ skill's steps.
 ## 2. Check
 Save the return as `report.md` in a new `mktemp -d`, `<draft>`. Nothing goes under `<root>` before
 this check. It prints the bytes, the marks left once good links are out (HTML, an image, any other
-link or URL), the proposals, and the proposals with no source:
+link or URL, an e-mail address, a control or invisible character), the proposals, and the proposals
+with no source:
 ```bash
 f="<draft>/report.md"
-echo "$(LC_ALL=C wc -c < "$f") $(LC_ALL=C tr '\000\r\t' ' \n ' < "$f" |
-  LC_ALL=C sed -E 's#\]\(https?://[^ ()<>]+\)#] #g' |
-  LC_ALL=C grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://') $(LC_ALL=C awk '
+echo "$(LC_ALL=C wc -c < "$f") $(LC_ALL=C tr '\000\r\t' '\001\n ' < "$f" |
+  LC_ALL=C sed -E -e 's#\]\(https?://[^ ()<>]+\)#] #g' \
+    -e $'s/\xe2\x80[\x8b-\x8f\xaa-\xae]|\xe2\x81[\xa0-\xaf]|\xd8\x9c|\xef\xbb\xbf|\xf3\xa0/\x01/g' |
+  LC_ALL=C grep -Eic '<[a-z!?/]|!\[|\]\(|\]\[|\]:|[a-z][a-z0-9+.-]*://|(^|[^a-z0-9])www\.|[a-z0-9._+-]@[a-z0-9-]+\.[a-z]|(mailto|xmpp):|[[:cntrl:]]') $(LC_ALL=C awk '
   /^## /{on=/^## Proposals$/}
   on&&/^### /{n++; if(n>1&&!s)u++; s=0}
   on&&/\]\(https?:\/\//{s=1}
