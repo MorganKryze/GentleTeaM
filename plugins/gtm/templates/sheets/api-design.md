@@ -34,7 +34,6 @@
 ## Reflexes
 - Which existing client breaks if this ships today, including one that depends on undocumented
   behavior?
-- What happens if this request arrives twice after a timeout?
 - Can a caller reach another tenant's object by changing an identifier, or write a property it
   should only read?
 - Can a regular caller reach an administrative operation by guessing its path or switching the
@@ -43,16 +42,14 @@
 - Is this decision expensive to change after the first release: pagination, identifiers, error
   format?
 - Is every deployed version of this interface listed somewhere, old ones included?
-- For each source behind a decision: is it a standard, a draft, one company's practice or a tool's
-  behavior, and how old is it?
 
 ## What is measured
 - Contract style: rule violations in the interface description against the team's ruleset; the
   verify step runs the linter with the ruleset named explicitly and fails at warning level, since a
   linter that finds no ruleset may check nothing.
 - Breaking changes: definite breaks between the main-branch contract and the proposed one; the
-  verify step fails on any; possible breaks go to human review, and each accepted exception is
-  written down with its reason.
+  verify step fails on any; possible breaks go to review, and each accepted exception is written
+  down with its reason.
 - Contract conformance: the running service answers only as its interface description declares,
   since a diff between contracts cannot see a break made only in code; the verify step sends
   requests generated from the description to a test deployment and fails on any undeclared status

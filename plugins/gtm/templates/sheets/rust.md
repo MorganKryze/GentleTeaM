@@ -5,10 +5,11 @@
 
 ## When it applies
 - Writing, reviewing or refactoring Rust code built with Cargo.
+- Deciding how code fails: returned errors, panics, unwrap and expect.
 - Adding, removing or upgrading a crate dependency, or acting on an ecosystem security advisory.
 - Writing or reviewing unsafe code, FFI declarations or concurrency primitives.
 - Setting up or changing CI, the toolchain pin, the declared rust-version (MSRV) or the edition.
-- Preparing a library crate for publication.
+- Preparing a library crate for publication: SemVer checks, release workflow, trusted publishing.
 
 ## Method
 1. Read the toolchain contract first: edition, declared rust-version and its published policy,
@@ -38,22 +39,16 @@
    bump as compatible; review by hand what the tool cannot lint: changed types, generics and
    lifetimes, breakage under some feature sets, behaviour.
 10. Return an error, not a panic, for every failure that input can cause, and count configuration
-    and data files your own systems generate as input; keep unwrap and expect for invariants the
-    code itself upholds, with an expect message that states the invariant.
+    and data files your own systems generate as input; keep a panic for invariants the code itself
+    upholds, through an expect message that states the invariant.
 11. Publish library releases from CI through crates.io trusted publishing, not a long-lived API
     token: tie it to one repository, one workflow file and a protected release environment, and
     review every action that workflow runs; only the first release is published by hand.
 
 ## Reflexes
-- Which toolchain, edition and rust-version must this change build on, and does CI prove it?
-- Does this dependency arrive through a reviewed lockfile change, and could anything that builds it
-  read a secret?
 - If a crate we depend on were republished maliciously today, what would it reach before we noticed?
-- If our own crates.io publish token leaked today, how long would it work, and from where could it
-  publish?
 - What invariant does this unsafe block rely on, is it written next to it, and do tests reach it
   under Miri?
-- Am I silencing one lint at one site, or weakening the gate for everyone?
 
 ## What is measured
 - Zero compiler and lint warnings on all targets and features with the pinned toolchain: verify with

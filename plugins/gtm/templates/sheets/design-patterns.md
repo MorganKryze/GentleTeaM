@@ -8,13 +8,12 @@
   behaviour, indirection around object creation, a layer or ports-and-adapters boundary, a single
   shared instance.
 - A review of code that implements or names a catalogued pattern, generated code included.
-- A remote interaction that must cope with transient or lasting faults, duplicate messages, load
-  spikes or partial failure.
+- A remote call or message flow that must cope with transient or lasting faults, duplicate
+  delivery or partial failure: retries, timeouts, idempotency, an outbox or a saga.
 - A pattern that no longer repays its indirection and is a candidate for removal.
 
 ## Method
-1. State the problem as context and forces before naming a pattern; a pattern is a good fit when the
-   problem it describes is the one at hand and its trade-offs are acceptable here.
+1. State the problem as context and forces before naming a pattern.
 2. List the options, always including simple code with no pattern and a language mechanism
    (first-class function, closure), then the pattern in its simplest form; score them on the same
    weighted criteria: indirection added, a change actually requested, shared vocabulary,
@@ -28,16 +27,14 @@
    placement, naming) that run with the tests; baseline existing violations so that only new ones
    fail, and let a rule that matches no code fail too.
 6. For remote interactions, start from a named constraint or risk, write which quality goals the
-   pattern serves and which it costs, pair patterns to cover a gap one of them leaves open (retry
-   with circuit breaker, saga with compensating transactions), and check the antipattern list.
+   pattern serves and which it costs, and pair patterns to cover a gap one of them leaves open
+   (retry with circuit breaker, saga with compensating transactions).
 7. Revisit: a pattern that no longer repays its cost is refactored out and its record superseded.
 
 ## Reflexes
 - Is this pattern making up for a mechanism the language already offers?
-- Is the change this flexibility serves already requested, or only guessed?
 - For a single shared instance: do I need the class, one instance only, global access, control over
   initialization? Could the object simply be passed in?
-- Would a newcomer find why this pattern is here without asking anyone?
 - Would generated code that breaks this pattern fail a check, or only rely on a reviewer noticing?
 - Would a retried call or a redelivered message take effect twice? Is the operation idempotent by
   nature, or keyed by a stable identifier saved in the same transaction as its effect, under a

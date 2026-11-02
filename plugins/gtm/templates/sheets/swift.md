@@ -11,19 +11,24 @@
 - Writing new tests, or converting XCTest tests to Swift Testing.
 - Setting CI gates on a Swift codebase: warnings, formatting, tests, language mode.
 - Designing, naming or documenting a public Swift API.
+- Writing or reviewing actors, task cancellation or locks.
 
 ## Method
 1. Pin the toolchain and read its release post before relying on a feature. A feature named only by
    a secondary source stays unconfirmed until the pinned toolchain accepts it.
 2. Migrate data-race safety outward-in, starting with the module nothing depends on:
-   - in the Swift 5 mode, enable upcoming concurrency features one at a time, then complete checking;
+   - in the Swift 5 mode, enable upcoming concurrency features one at a time, then complete
+     checking;
    - fix each diagnostic with the smallest change that states what is true now;
    - list every unsafe opt-out as debt;
    - switch the target to the Swift 6 mode, and move on without waiting for zero warnings elsewhere.
-   Before the switch ships, run each synchronous isolated function that unchecked code can call, such as `@objc` members and closures handed to modules without strict checking. The Swift 6 mode checks their actor at runtime and stops the program on a mismatch. `@preconcurrency` conformances get the same check in any mode.
+   Before the switch ships, run each synchronous isolated function that unchecked code can call,
+   such as `@objc` members and closures handed to modules without strict checking. The Swift 6 mode
+   checks their actor at runtime and stops the program on a mismatch. `@preconcurrency` conformances
+   get the same check in any mode.
 3. Before enabling an upcoming feature, run the migration tooling and apply the fix-its that keep
    current behavior.
-4. Decide each target's default isolation explicitly, from a weighted comparison of options:
+4. Decide each target's default isolation explicitly:
    - keep libraries nonisolated;
    - in main-actor-default targets, mark work meant for the thread pool `@concurrent`;
    - record the decision with the toolchain version.
@@ -36,7 +41,8 @@
    - `#expect` to continue after a failure, `#require` to stop or unwrap;
    - traits or test cancellation to skip;
    - confirmations for events.
-   Convert XCTest files as they are touched. Keep tests parallel, and serialize only suites that share state, as recorded debt.
+   Convert XCTest files as they are touched. Keep tests parallel, and serialize only suites that
+   share state, as recorded debt.
 8. Design APIs for clarity at the point of use:
    - a summary comment on every declaration;
    - variables, parameters and associated types named by role;
@@ -47,9 +53,6 @@
    constructs. Enable strict memory safety only where security requirements justify it.
 
 ## Reflexes
-- Which toolchain release brought this feature, and does the pinned toolchain have it?
-- Is this target an application, an executable or a library, and does its default isolation fit?
-- Does this fix state what is true now, or does it hide a data race behind an unchecked opt-out?
 - Does this actor method read its state, await, then act on what it read? Actors are reentrant, so
   the state may have changed while the method was suspended. Keep each state update in a synchronous
   method.
@@ -59,8 +62,6 @@
   must finish? The pool has no more threads than cores and depends on each thread making progress,
   so that wait can hang a thread. Hold locks only around short critical sections, and never across
   an `await`.
-- Which tests share global state and break when run in parallel?
-- Does the call site read clearly without the declaration in view?
 
 ## What is measured
 - Build warnings outside deprecations: zero on migrated targets. `verify` builds from a clean

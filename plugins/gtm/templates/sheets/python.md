@@ -5,7 +5,8 @@
 
 ## When it applies
 - Creating or restructuring a Python project, its `pyproject.toml` or its dependency declarations.
-- Adding, upgrading or removing a dependency, or regenerating a lock file.
+- Adding, upgrading or removing a dependency, regenerating a lock file, setting a library's
+  dependency ranges, or installing from a private index.
 - Changing the supported interpreter range, or moving to a new yearly CPython release.
 - Setting up or tightening lint, format, type-check or test gates in continuous integration.
 - Publishing a package to an index, or auditing dependencies for known vulnerabilities.
@@ -51,17 +52,9 @@
     place.
 
 ## Reflexes
-- Does this change touch dependencies, and does the lock file still match what is declared?
-- Which interpreters does this run on, and does CI prove it on the oldest and the newest?
 - Does any file or stream rely on an implicit encoding, or on an API removed in the target release?
-- Did this change make type checking stricter or looser, and is every new exemption justified?
-- Does a speed or conformance claim come from the tool's own vendor, and is there an exit to a
-  standard format?
 - Beyond "no known vulnerability", why should this new dependency be trusted?
 - Did this change start relying on a dependency feature newer than the declared floor?
-- Could a public index serve a name this project expects from a private one?
-- Who and what can run the job that is allowed to publish, and does a release wait for a human
-  approval?
 
 ## What is measured
 - Lock freshness: the lock matches the declared dependencies. Verify step: the locker's check mode,
@@ -74,8 +67,7 @@
 - Interpreter coverage: the suite passes on the oldest and newest supported versions, with strict
   runner settings and encoding warnings as errors. Verify step: a test matrix.
 - Support floor: the declared minimum version is not end-of-life. Verify step: a script comparing
-  `requires-python` with a maintained floor. Whether a library keeps users on older versions stays
-  judgment.
+  `requires-python` with a maintained floor.
 - Known vulnerabilities: no advisory on the locked set without a recorded ID and reason. Verify
   step: the auditor's exit code.
 - Declared floors: for a library, the suite passes with every dependency resolved to its lowest
@@ -88,7 +80,7 @@
   environment. Verify step: a script over the CI configuration that fails otherwise. Whether that
   environment really requires an approval, and who may give it, stays judgment.
 - Trust in a new dependency, adopting a pre-1.0 tool, and choosing between competing tools stay
-  judgment, framed by a weighted matrix.
+  judgment.
 
 ## Sources
 - [Status of Python versions](https://devguide.python.org/versions/), 2026-11-01: release cadence,

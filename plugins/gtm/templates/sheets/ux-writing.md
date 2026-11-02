@@ -10,6 +10,7 @@
 - Preparing strings for translation or adding a locale.
 - Setting up a voice and tone guide or a glossary.
 - Reviewing AI-drafted copy before release.
+- Wording a sign-up, consent, upsell or cancel screen.
 
 ## Method
 1. Start from the user's task and state: what they must know or do here, and whether they are
@@ -27,8 +28,9 @@
    accessible name.
 7. Keep the voice stable and adapt the tone: empathy in errors, encouragement in onboarding,
    neutrality in policy text.
-8. Write for translation: plural and gender variants selected inside the message; room for expansion
-   (strings of ten characters or fewer can triple); no fixed widths, no abbreviations to fit.
+8. Write for translation: plural and gender selection at the outermost level of the message, a full
+   sentence in each variant; room for expansion (strings of ten characters or fewer can triple); no
+   fixed widths, no abbreviations to fit.
 9. Use AI for first drafts and variants only; edit for the audience; never ship generated copy
    unreviewed.
 10. Test meaning with people on critical flows, including people with cognitive disabilities when
@@ -43,12 +45,7 @@
 - Is every hint and example visible beside its label, not in placeholder text that vanishes as the
   user types?
 - Does it still read naturally aloud, through a screen reader, and after translation?
-- Is this the glossary's word, the same as on every other screen?
-- Does this link or button say where it goes or what it does?
-- Does the tone fit the user's state at this moment?
 - Is saying no, or cancelling, worded as plainly as saying yes?
-- Was this wording tested with people, or only agreed in a review?
-- Which check can run on every change, and which needs people?
 
 ## What is measured
 - Blaming or vague words in error strings: zero; a `verify` step runs a prose linter with a
@@ -69,7 +66,7 @@
   message catalogue and fails on any message that has a placeholder and no note; sentences joined
   from fragments stay a review point.
 - Reading level: a readability score per release, read against the lower-secondary target; a signal
-  only, never a failing step, and a reviewer decides.
+  only, not a `verify` step, and a reviewer decides.
 - Comprehension: judgment; results of comprehension or usability tests on critical flows, recorded
   each quarter, not a `verify` step.
 - Error frequency after release: tracked per error to choose what to rewrite; the choice stays

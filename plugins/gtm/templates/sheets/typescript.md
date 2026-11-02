@@ -5,10 +5,12 @@
 
 ## When it applies
 - Writing or reviewing TypeScript code, type definitions or compiler configuration.
-- Upgrading the compiler across a major version, or changing module, resolution or target settings.
+- Upgrading the compiler across a major version, or changing module, resolution, target or
+  project-reference settings.
 - Running TypeScript files directly on a runtime that strips types, with no build step.
 - Publishing a package with type declarations, or sharing types between teams.
 - Bringing untrusted data (requests, messages, files, environment) into typed code.
+- Investigating slow type checking.
 
 ## Method
 1. Make the compiler configuration explicit: set `strict`, `types`, `module`, `target`, and
@@ -46,15 +48,8 @@
 - Does this project rely on a default that changed in 6.0: `strict`, `types`, `rootDir`, `module` or
   `target`?
 - Would this file still run if every type annotation became whitespace?
-- Where does this value come from, and what checked it at runtime?
 - Does this `any`, `as` assertion or expected-error directive hide the error I care about, or just a
   typo?
-- Which compiler does each tool in the chain actually load: the native one or the 6.0 API?
-- What happens at this index access when the key is missing?
-- Do consumers resolve the same types in every module mode the package claims to support?
-- Does the oldest runtime this ships to have every API that `lib` and the runtime's type packages
-  let this code call?
-- When this union gains a member, which switch stops compiling?
 
 ## What is measured
 - Errors from the compiler's no-emit check under the strict configuration: zero. A `verify` step

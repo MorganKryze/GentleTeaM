@@ -8,6 +8,7 @@
 - Upgrading Kotlin, or changing compiler options or opt-ins.
 - Writing or testing suspend functions, coroutines or flows.
 - Adding, changing or removing a public declaration of a published Kotlin library.
+- Calling Java from Kotlin, or using `!!` or another way around null safety.
 
 ## Method
 1. Pin one Kotlin version for the whole build; check that its release line is still inside its
@@ -47,19 +48,10 @@
     scope, since elsewhere it is never called, and treat it as a last report, not a recovery.
 
 ## Reflexes
-- Which release line is this build on, and when does its support window close?
-- Does this change keep the build at zero warnings?
-- Is this feature Stable, or did I just opt into something that may change?
-- Where could a null still get in here: a `!!`, a value from unannotated Java, or an object used
-  before its constructor finished?
 - Which scope owns this coroutine, and what cancels it?
 - Could this catch block or result wrapper swallow a cancellation?
-- If this coroutine fails, what else does that cancel, and is its exception handler somewhere it is
-  actually called?
-- If this call's result is ignored, is that a bug?
 - Does this public change break binaries for a caller who does not recompile, sources for one who
   does, or behaviour for either?
-- Can a consumer still on the oldest supported Kotlin release compile against this artifact?
 
 ## What is measured
 - Compiler warnings, target zero. Verify step: the compile step with warnings promoted to errors.
@@ -75,14 +67,10 @@
 - Oldest Kotlin release a published library supports. Verify step: the compile with language and API
   version set to that release fails on any later language feature and ignores declarations that use
   standard-library APIs introduced later; choosing the release stays judgment.
-- Line or branch coverage of unit tests against a minimum bound. Verify step: coverage verification
-  wired explicitly into the check task; the bound stays judgment, and the cited tool measures only
-  tests run on the JVM.
 - Support window of the Kotlin line in use. Verify step: a scheduled check that fails once the
   published end date has passed; when to upgrade inside the window stays judgment.
-- Scope ownership, main-safety and public API design stay judgment: reviewed, not measured.
-- Failure propagation between coroutines and the placement of exception handlers stay judgment:
-  reviewed, not measured.
+- Scope ownership, main-safety, failure propagation between coroutines, the placement of exception
+  handlers and public API design stay judgment: reviewed, not measured.
 
 ## Sources
 - [What's new in Kotlin 2.4.0](https://kotlinlang.org/docs/whatsnew24.html), 2026-11-01: feature
@@ -107,8 +95,6 @@
   dispatchers, scopes, cancellation, test dispatchers.
 - [detekt coroutines rule set](https://detekt.dev/docs/rules/coroutines/), 2026-11-01: coroutine
   rules, defaults, type resolution.
-- [Kover Gradle plugin](https://kotlin.github.io/kotlinx-kover/gradle-plugin/), 2026-11-01: coverage
-  bounds and units, JVM-only scope.
 - [Null safety](https://kotlinlang.org/docs/null-safety.html), 2026-11-01: the only causes of an NPE
   in Kotlin, the not-null assertion operator, leaking this and open members called during
   construction.

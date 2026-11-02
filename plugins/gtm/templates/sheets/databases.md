@@ -45,12 +45,7 @@
 
 ## Reflexes
 - Can the application version now in production run on the schema after this migration?
-- Which lock does each statement take, and for how long?
-- Does this statement rewrite or fully scan a large table?
-- Is bulk data movement mixed into the schema change?
 - If it fails halfway, what state is the database in, and do we roll forward or back?
-- Who owns the contract step, and by when?
-- Has this run on production-sized data?
 
 ## What is measured
 - Migration lint. New migrations contain no index build that blocks writes, no constraint validated
@@ -70,9 +65,6 @@
   live reads from both structures before the switch stays judgment.
 - Rehearsal. Duration and longest lock wait on production-sized data. This becomes a verify step
   once the team sets thresholds; until then it stays judgment.
-- Delivery. Share of database changes applied by the automated pipeline (target 100%), share of
-  failed changes where the database contributed, and database work's share of lead time. Tracked per
-  release, not a gate.
 
 ## Sources
 - [Parallel Change](https://martinfowler.com/bliki/ParallelChange.html), 2026-11-01: expand,

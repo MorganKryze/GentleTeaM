@@ -9,11 +9,13 @@
 - Adding, updating or auditing NuGet packages, direct or transitive.
 - Writing or changing the build, test or publish steps of a .NET pipeline, including trimmed or
   Native AOT output.
+- Enabling nullable reference types in existing code.
+- Patching what runs in production to the latest .NET servicing update.
+- Shipping a library as a package, or readying it for trimmed or AOT apps.
 
 ## Method
 1. Check every target framework against the published support dates and plan upgrades from those
-   dates. After end of support, no security fixes ship. Standard Term Support (STS) releases now get
-   24 months of support.
+   dates. Standard Term Support (STS) releases now get 24 months of support.
 2. Before raising the framework, language or SDK version, read its breaking changes and the analyzer
    rules it turns on by default.
 3. Keep shared build settings at the repository root:
@@ -27,7 +29,8 @@
    - keep package versions in one file;
    - use one feed, or map each package to its source;
    - keep the vulnerability audit on, transitive packages included;
-   - declare an audit source that serves vulnerability data, nuget.org or its data-only index, because without one the feeds stand in and a feed with no data raises no warning;
+   - declare an audit source that serves vulnerability data, nuget.org or its data-only index,
+     because without one the feeds stand in and a feed with no data raises no warning;
    - update the package closest to the direct reference first.
 6. Run every test project through one runner. Require a minimum test count, fail empty runs, and
    keep coverage as an artifact.
@@ -40,8 +43,10 @@
    link and a review date.
 9. Keep what runs in production on the latest servicing update of its .NET version, not only on a
    supported version. Updates come about once a month, and each one ends support for the one before:
-   - a framework-dependent app by default rolls forward to the newest patch on its host, so patch the host;
-   - a self-contained app, Native AOT included, by default carries the runtime patch of the SDK that published it, so republish it after each update;
+   - a framework-dependent app by default rolls forward to the newest patch on its host, so patch
+     the host;
+   - a self-contained app, Native AOT included, by default carries the runtime patch of the SDK that
+     published it, so republish it after each update;
    - move the SDK, and its global.json pin if there is one, to each new update.
 10. Validate each library shipped as a package against its last stable release when packing, so a
     public API break or a dropped target framework fails the pack. Record an accepted break in the
@@ -49,18 +54,8 @@
     baseline to it and clear the file.
 
 ## Reflexes
-- Will this target framework still get security fixes on the day we ship, and until when?
-- Which runtime patch does this artifact carry, and has a servicing update shipped since it was
-  published?
-- Is this warning an error in CI? If I silence it, where is the reason written?
-- Is this vulnerable package direct or transitive, and which top-level package should be updated
-  first?
-- Did the audit read a source that serves vulnerability data, or did it pass on none?
-- Did the test step run the number of tests we expect, or did it only exit with zero?
 - Does this code use reflection to reach members that a trimmer cannot see?
 - Would code compiled against our last release still run against this version without a rebuild?
-- Does this advice come only from the vendor's documentation, and does it describe a released
-  version or a preview?
 
 ## What is measured
 - Supported targets: no project names an out-of-support framework, and the end-of-life diagnostic is

@@ -13,9 +13,9 @@
 | `code-review` | `code-review.md` | reviewing a change, or deciding what a review must catch |
 | `concurrency` | `concurrency.md` | threads, async work, shared state, races or deadlocks |
 | `csharp` | `csharp.md` | work in a C# or .NET codebase |
-| `css` | `css.md` | layout, responsive behaviour or styling at scale |
+| `css` | `css.md` | layout, responsive behaviour, fluid type, or content that overflows or jumps |
 | `data-engineering` | `data-engineering.md` | a pipeline, a batch or stream job, data quality |
-| `databases` | `databases.md` | a schema, a migration, a slow query or a transaction |
+| `databases` | `databases.md` | a schema change, a backfill or a migration on a live database |
 | `delivery` | `delivery.md` | CI/CD, a rollout, a release or a rollback |
 | `design-patterns` | `design-patterns.md` | choosing, naming or removing a design pattern |
 | `documentation` | `documentation.md` | writing or restructuring docs, tutorials or references |
@@ -25,11 +25,11 @@
 | `java` | `java.md` | work in a Java or Spring codebase |
 | `kotlin` | `kotlin.md` | work in a Kotlin codebase |
 | `llm-agents` | `llm-agents.md` | a prompt, an agent, an eval or a tool a model calls |
-| `mobile` | `mobile.md` | iOS or Android work: lifecycle, offline use, store release |
+| `mobile` | `mobile.md` | a store app: release, field crashes, permissions, stored data |
 | `nextjs` | `nextjs.md` | work in a Next.js app |
 | `nodejs` | `nodejs.md` | work on a Node.js service, script or CLI |
 | `observability` | `observability.md` | logs, metrics, traces, alerts or service-level objectives |
-| `performance` | `performance.md` | a speed or memory claim, a performance gate, or start-up time |
+| `performance` | `performance.md` | a hot path, a latency or capacity budget, a load test, a slowdown |
 | `php` | `php.md` | work in a PHP or Laravel codebase |
 | `privacy` | `privacy.md` | personal data, consent, retention or GDPR obligations |
 | `python` | `python.md` | work in a Python codebase |
@@ -39,7 +39,7 @@
 | `ruby` | `ruby.md` | work in a Ruby on Rails codebase |
 | `rust` | `rust.md` | work in a Rust codebase |
 | `security` | `security.md` | authorization, a trust boundary, a dependency, a release or a vulnerability report |
-| `sql` | `sql.md` | writing, reviewing or tuning SQL |
+| `sql` | `sql.md` | writing, reviewing or tuning SQL, a slow query or a transaction |
 | `swift` | `swift.md` | work in a Swift codebase |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
 | `typescript` | `typescript.md` | work in a TypeScript codebase |

@@ -16,6 +16,9 @@ versions follow [SemVer](https://semver.org/).
 ### Changed
 - The `quality`, `architecture` and `tests` sheets: claims checked against their sources, and
   what they were missing added.
+- Every sheet reviewed: filler cut, lines that set a verdict or softened a check fixed, and the
+  `security`, `privacy`, `accessibility` and `llm-agents` sheets checked again against their
+  sources. Index rows now promise only what each sheet covers.
 
 ## [0.13.1] - 2026-11-01
 

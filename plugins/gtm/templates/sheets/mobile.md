@@ -7,8 +7,9 @@
 - Building or changing an app installed from a store on phones or tablets, whether native,
   cross-platform or hybrid.
 - Preparing a store submission, a version update or a staged release.
-- Investigating crashes, freezes, slow startup or memory problems seen in the field.
+- Investigating crashes, freezes, slow startup, memory problems or battery drain seen in the field.
 - Adding a third-party SDK, a permission, credentials, personal data or network calls.
+- Changing on-device stored data, or planning a minimum supported version or a forced update.
 - Designing or reviewing screens for accessibility.
 
 ## Method
@@ -16,8 +17,8 @@
    platform level, build SDK, minimum OS, declared reasons for listed APIs, third-party SDKs
    included.
 2. Read quality as a store computes it: crash and not-responding rates per daily active user,
-   overall and per device model, over a rolling window; set team thresholds below the published
-   ones.
+   overall and per device model, over a rolling window; propose team thresholds below the
+   published ones.
 3. Budget startup and responsiveness: optimize cold start, measure time to initial and to full
    display (the app must signal the latter), and track memory per app state.
 4. Treat every shipped binary as permanent: risky changes behind remotely switchable flags, a fixed
@@ -33,7 +34,7 @@
 8. Read background battery use as a store judges it: the share of user sessions whose combined wake
    locks held in the background or during a foreground service reach 2 hours in 24 (system-held
    locks with a clear user benefit that cannot be optimized further, such as audio playback, are
-   exempt), over a rolling 28 days, against the published 5%; set a team threshold below it and
+   exempt), over a rolling 28 days, against the published 5%; propose a team threshold below it and
    investigate any lock whose 90th or 99th percentile hold passes 60 minutes.
 9. Build version retirement into the first release: the app reports its version at launch and on
    every server call, the server keeps a minimum supported version it can raise, below it the app
@@ -48,12 +49,8 @@
 ## Reflexes
 - If this version turns out bad, who already has it, and how do we switch the change off without a
   new binary?
-- Which store rule takes effect before our next release, and does today's build meet it?
 - Is this rate counted per user per day or per session, and which one does the store judge?
 - What runs on the main thread at startup and on each tap, and can it wait or move off?
-- Which third-party dependency is new here, what data does it collect, and is it declared?
-- Does this screen work with a screen reader, at the largest system text size and in both
-  orientations?
 
 ## What is measured
 - Per-user crash and not-responding rates of the exposed version, overall and per device model above

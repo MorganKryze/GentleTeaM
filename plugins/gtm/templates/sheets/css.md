@@ -6,8 +6,9 @@
 ## When it applies
 - Building or changing a page layout, grid, component or navigation that must work from narrow
   phones to wide screens.
-- Adding or changing fluid type, spacing scales or type tokens.
+- Adding or changing fluid type or type tokens.
 - Adding images, video or embeds to a page.
+- Adding or changing a sticky or fixed header, footer or banner, or a template's viewport meta tag.
 - Deciding whether a CSS feature is safe for the project's audience.
 - Fixing horizontal scrolling, clipped or vanished content, text that will not grow, or content that
   jumps while loading.
@@ -36,15 +37,10 @@
    under them.
 
 ## Reflexes
-- Does this component's layout depend on its slot or on the screen? Query the one it depends on.
-- What happens at 320 CSS px, at 400 % zoom, with text at 200 %?
-- Does this font size still grow when the user zooms, or is it pinned to the viewport?
 - What does the layout do with a long word or URL, or with content that wraps onto more lines than
   the mock-up?
 - Does a flex or grid item refuse to shrink below its content, and is that intended?
-- Does every image, video and embed hold its space before it loads?
 - Does the visual order still match source and focus order?
-- Is this feature inside our Baseline target, and what does its fallback look like?
 - Did anything shown at 1280 CSS px vanish at 320, rather than move into a menu, disclosure, dialog
   or link?
 

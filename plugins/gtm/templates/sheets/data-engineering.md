@@ -41,7 +41,6 @@
     explained as intended, then roll the change out over a growing share of the data.
 
 ## Reflexes
-- If this task runs twice for the same period, is the output identical?
 - What does a reader see while this run is half done, and after it fails?
 - Which check stops a wrong type or a renamed column from upstream before publication?
 - Who learns that this dataset is late, how fast, and against which agreed threshold?
@@ -51,24 +50,17 @@
 - Rerun stability: the same partition run twice yields the same row count, distinct-key count and
   column sums; a `verify` step in continuous integration.
 - Audit result: every audit query counts zero failing rows; a `verify` step that gates publication
-  on each run.
+  on each run. The row-count bounds stay judgment.
 - Freshness: age of the newest loaded record against the agreed objective; a scheduled `verify`
   step. The threshold is a judgment made with readers.
-- Volume: row count of the new partition within agreed bounds; a scheduled `verify` step. The bounds
-  stay judgment.
 - Completeness: share of the records the source reports sending for a period that reached the
   output; a scheduled `verify` step that compares the two counts. The accepted gap stays judgment.
 - Late records: share of records that land after their partition was published, per source; a
   scheduled `verify` step. The accepted share stays judgment, agreed with readers.
-- Correctness: reference records whose output equals the known value; a `verify` step on every run.
 - Contract conformity: every promised column exists with its declared type; a `verify` step before
   merge and before publication. Whether a change breaks a given reader stays judgment.
-- Logic tests: fixture tests pass; a `verify` step in continuous integration. Which logic deserves
-  fixtures stays judgment.
 - Change diff: rows and values that differ between the changed and the live version on the same
   input; a `verify` step before rollout. Whether each difference is intended stays judgment.
-- Time to detect and time to repair: recorded per incident and reviewed as a trend; judgment, not a
-  gate.
 
 ## Sources
 - [Google SRE Workbook: Data Processing Pipelines](https://sre.google/workbook/data-processing/),

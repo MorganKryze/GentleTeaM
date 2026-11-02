@@ -26,18 +26,13 @@
    or views only where a reader needs them.
 9. When a decision is replaced, mark the record superseded and link its successor.
 10. Give each record a review plan: when the decision will be revisited, and which change in
-    technology, stakeholder feedback, quality goals or constraints reopens it sooner; once it no
-    longer holds, supersede it.
+    technology, stakeholder feedback, quality goals or constraints reopens it sooner.
 
 ## Reflexes
 - Were the criteria written before the preferred option, or reverse-engineered from it?
-- Is any listed alternative a real contender?
 - What gets worse with this choice, and for whom?
-- Who is affected and has not been asked? Who would disagree?
-- How would anyone notice that this decision has stopped being followed?
 - Is this boundary an API contract only, or does something depend on it as a security barrier?
 - Does this rule express a recorded decision, or only a preference?
-- If an AI drafted or reviewed this, who checked the output?
 
 ## What is measured
 - Record form: every decision record has context, at least two options, an outcome, a negative
@@ -52,11 +47,11 @@
 - Private paths: an import of an undeclared package subpath must fail with the runtime's
   not-exported error; a small script becomes a `verify` step.
 - Quality goals: every quality a decision rests on is a scenario with a stimulus, a response and a
-  response measure, and before the decision counts as done the chosen option is shown to meet it
-  by a spike, a proof of concept or someone credible who vouches for it; a response measure a test
-  can check becomes a `verify` step, the rest stays judgment in the named review.
-- Quality of reasoning, fairness of options and fidelity of a boundary to its domain stay judgment:
-  a human review against the mistake list, with any AI review advisory only.
+  response measure, and the chosen option is shown to meet it by a spike, a proof of concept or
+  someone credible who vouches for it; a response measure a test can check becomes a `verify`
+  step, the rest stays judgment in the named review.
+- Quality of reasoning, fairness of options and fidelity of a boundary to its domain stay judgment,
+  reviewed on context, criteria, options and consequences.
 
 ## Sources
 - [MADR](https://adr.github.io/madr/), 2026-11-01: record sections, status values, file naming, the
@@ -87,9 +82,6 @@
   canvas.
 - [arc42 quality requirements](https://docs.arc42.org/section-10/), 2026-11-01: quality scenarios
   with a stimulus, a response and a response measure, specific enough to decide whether they hold.
-- [Agentic fitness
-  functions](https://infoq.com/articles/agentic-fitness-functions-evolutionary-architecture),
-  2026-11-01: split between deterministic gates and advisory judgment, known failure modes.
 - [Architectural fitness
   function](https://www.thoughtworks.com/radar/techniques/architectural-fitness-function),
   2026-11-01: the definition only; the entry dates from 2017-2018.

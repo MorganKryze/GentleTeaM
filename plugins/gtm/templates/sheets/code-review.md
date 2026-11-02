@@ -6,8 +6,8 @@
 ## When it applies
 - A change (patch, pull or merge request, diff) is being prepared for review, reviewed, approved or
   merged.
-- A team sets or revisits its review rules: change size, response time, approval standard, comment
-  conventions.
+- A team sets or revisits its review rules: change size, response time, approval standard, merge
+  rule, comment conventions.
 - A review is stuck: long wait, disagreement, or a change too large to read.
 - A team considers adding an automated or AI-based reviewer.
 
@@ -17,30 +17,28 @@
    or by reviewer area, layer or feature.
 2. Author: get every machine-decidable check (formatting, lint, tests, static analysis) green before
    asking a human.
-3. Author: make the change easy to understand, since understanding is the key aspect of code
-   reviewing. Say what changes and why.
-4. Reviewer: respond within one business day, at a natural break rather than mid-focus. If busy, say
-   when you will look or suggest another reviewer.
+3. Author: say what changes and why: understanding is the key aspect of code reviewing.
+4. Reviewer: respond within one business day. If busy, say when you will look or suggest another
+   reviewer.
 5. Reviewer: read the design first: does it belong here, does it fit the system? Then behaviour
    (edge cases, concurrency), complexity (nothing speculative), tests (would they fail if the code
-   broke), naming, comments (why, not what) and documentation. Read every hand-written line and,
-   when needed, the whole file; generated code may be skimmed.
+   broke), naming, comments (why, not what) and documentation. Read every line and, when needed,
+   the whole file.
 6. Reviewer: for parts outside your competence, such as security or concurrency, get a qualified
    reviewer added instead of approving blind.
 7. Reviewer: open each comment with its intent (issue, suggestion, question, nitpick, praise) and
-   say whether it blocks. Name what is done well.
-8. Reviewer: favor approving once the change clearly improves overall code health, even if
-   imperfect. Do not approve one that definitely worsens it, except in an emergency. When approving
-   with comments, say which ones remain expected.
+   say whether it blocks.
+8. Reviewer: weigh a change by its effect on overall code health, not against perfection, and name
+   any change that definitely worsens it; the verdict rule in force decides, not this sheet. When
+   approving with comments, say which ones remain expected.
 9. Disagreement: data beats preference, the style guide settles style, and the author chooses
    between equally valid designs. If that fails, talk it through live and record the outcome on the
-   change, then escalate. Never let the change sit.
+   change, then escalate.
 10. Automated reviewer, if any: judge each of its comments on merit. A human still approves. Watch
     its noise and its effect on cycle time.
 11. Author: read and check every line an AI assistant wrote before asking anyone to review it, and
     be ready to answer for it as its author; label substantial AI-assisted content in the
-    description. Reviewers read such code in full, as hand-written, never skim it as generated, and
-    it counts toward change size.
+    description. Such code counts toward change size.
 12. Reviewer: cover security-relevant properties in every review, not only when a specialist joins:
     untrusted input validated, access control enforced, no secret in the diff, nothing sensitive
     logged. Treat an added or upgraded third-party dependency as code the team will ship: is it
@@ -58,10 +56,6 @@
 - Do I understand every line? If not, is the code unclear, or am I the wrong reviewer for it?
 - Is this small enough to review well, or should it come back split?
 - Is my comment a fact, a principle or a preference, and did I say whether it blocks?
-- Who has been waiting on me since yesterday?
-- Would these tests fail if the code broke?
-- Does this solve today's problem, or a future one that may never come?
-- Is this automated comment right for this code, or am I accepting it because it is there?
 - Has the author read and understood this AI-assisted code, or am I its first human reader?
 
 ## What is measured
