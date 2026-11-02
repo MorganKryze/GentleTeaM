@@ -38,6 +38,9 @@ phase's lines are summed in the run line.
   every file, and a cadence keeping `reviewer` per-task makes every task guarded; a missing or
   wrong one goes back.
 - Every EARS line of the spec maps to at least one task's test.
+- Every row of the spec's Decisions table confirmed by `review:` is named as a requirement in the
+  task that implements it, so it reaches the brief; a missing one goes back to the architect:
+  where a final review is skipped, that task's reviewer is the row's only reader.
 - Risky tasks dry-run as the architect's Dry-run policy says, with gate counts recorded; a plan
   of one task gets no dry run, its TDD steps plant the mutations instead.
 - The plan lists the ledger lessons it applied.

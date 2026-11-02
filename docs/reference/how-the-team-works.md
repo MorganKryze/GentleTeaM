@@ -22,7 +22,7 @@ A gate is a check that must pass before work moves on. There are six, one per st
 | Gate | Passes when | Otherwise |
 | --- | --- | --- |
 | [Mockups](/reference/glossary/#mockups) | the critic scores at or above the threshold (`8/10` by default) with zero must-fix, within the round limit | you choose: approve as is, one more round, or change the [brief](/reference/glossary/#brief) |
-| Spec | zero `[NEEDS CLARIFICATION]`, every [decision card](/reference/glossary/#decision-card) answered, your approval | back to the architect, or a card to you |
+| Spec | zero `[NEEDS CLARIFICATION]`, the form check run on its decisions, every [decision card](/reference/glossary/#decision-card) answered, your approval | back to the architect, or a card to you |
 | Plan | every task has files, test steps and a verify command; every acceptance line maps to a test; risky tasks get a [dry run](/reference/glossary/#dry-run) | one [correction round](/reference/glossary/#correction-round) with the architect |
 | Task | every triggered reviewer approves (no critical or important finding) within the correction-round limit | you choose: revise the plan, accept with findings logged, or take over |
 | Branch | the final review says ready, after at most one fix wave, or is skipped | a decision card to you |
@@ -45,6 +45,27 @@ every triggered specialist, was the last, and the `run` line in `ledger.md` says
 round, a commit outside the tasks' ranges (a [Fix](/reference/glossary/#fix) that grew, a hand
 commit) or a specialist whose trigger matched a task's changed paths but who did not review it
 brings the final review back.
+
+## How is a decision recorded?
+
+A decision has one record: its row in the spec's Decisions table and, when you answer it, its
+[decision card](/reference/glossary/#decision-card). There is no file per decision. A row says what
+the choice costs, even when it is right, and how anyone would notice that it has stopped being
+followed: its [confirmation](/reference/glossary/#confirmation), an acceptance line, a step of the
+gate, or a named review when nothing can be measured. A confirmation by review reaches the task's
+brief, and the final review states whether the decision holds; one that does not hold is a
+must-fix.
+
+A card shows its criteria between its title and its options, so you judge with them in front of
+you. Before you see a spec, a form check reads every row and card and sends any gap back to the
+architect once; what remains is shown to you, never hidden. The check proves form, not quality: a
+false alternative still passes.
+
+So a second reader looks at what the check cannot see. Before you read a card still open, the
+reviewer, who did not write it, reads it against the reflexes of the architecture sheet and adds at
+most one objection, one sentence, after the recommendation. It is advice: it blocks nothing, you
+stay free to answer against it, and it stays on the card. A reading costs about 20k tokens by
+estimate, not yet measured; a `decision review: off` line in the Gates of `team.md` stops it.
 
 ## How do roles pass work to each other?
 
