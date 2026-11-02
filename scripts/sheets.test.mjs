@@ -6,7 +6,8 @@
 // `.md` files only; each sheet keeps the
 // template's sections in order and cites a source; the roles that read a sheet point at the index,
 // so the rule stays in one place, and a task review's sheet work rests on its dispatch alone: the
-// reviewers' prompts order none, and only the card reading points at the index.
+// reviewers' prompts order none, and only the card reading points at the index. The counts keep one
+// form from deliver's progress line to the ledger's run line, and retro counts and proposes alone.
 // Run by scripts/validate.mjs. No dependencies.
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -72,6 +73,18 @@ const CARD = "against the Reflexes of the sheet the `Sheets:` line names, read a
 if (prompt('agents/reviewer.md').split(CARD).length !== 2) errors.push(`agents/reviewer.md: the card reading must say once: ${CARD}`)
 if (!readFileSync(join(plugin, 'agents/architect.md'), 'utf8').includes('/templates/sheets/index.md')) errors.push('agents/architect.md: does not point at the sheets index')
 if (!readFileSync(join(plugin, 'templates/plan.md'), 'utf8').includes('**Sheets:** <at most 2 specialities from templates/sheets/index.md, or none>')) errors.push('plan template: Sheets line does not take specialities from the index')
+
+const flat = (f) => readFileSync(join(plugin, f), 'utf8').replace(/\n> /g, ' ').replace(/\s+/g, ' ')
+const FIELD = '· sheets <name> <passes> <c>/<i>/<m>, ...'
+if (!flat('skills/deliver/SKILL.md').includes(`\` ${FIELD}\``)) errors.push(`deliver: the progress line must add ${FIELD}`)
+if (!flat('templates/ledger.md').includes(`${FIELD} · mutations <planted>`)) errors.push(`ledger template: the run line must hold ${FIELD} before \`mutations\``)
+const RETRO = [
+  'A line without the segment counts for no sheet.',
+  '0 findings of any severity over the last 3 runs that name it gets one decision card',
+  'retro never edits or deletes it',
+  'a kept sheet is proposed again only after 3 runs newer than that line.',
+]
+for (const p of RETRO) if (flat('skills/retro/SKILL.md').split(p).length !== 2) errors.push(`retro: "${p}" must appear once`)
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`sheets: ${PHRASES.length} clauses and ${sheets.length} sheets OK`)

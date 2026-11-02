@@ -19,11 +19,11 @@ const line = (d, m) => `- 2026-10-1${d} · run-${d} · run · tasks 4 (one wave)
   + `reviewer 0/0/5 · no design · measured ${m}m 1588k 47a: spec 10.4m 129k 1a, plan 17.8m 190k 1a, `
   + `tasks ${m - 40}m 682k 21a, final 17.5m 211k 2a, fix 1.6m 25k 1a; roles ? · limits 5h +3% 7d +1%`
 
-function eta(withSegment) {
+function eta(withSegment, sheets = '') {
   const tmp = mkdtempSync(join(tmpdir(), 'gtm-mutations-'))
   try {
     const lines = [line(1, 61.1), line(2, 72.3), line(3, 80.5)]
-      .map((l) => l + (withSegment ? MUTATIONS : '') + LENSES)
+      .map((l) => l + sheets + (withSegment ? MUTATIONS : '') + LENSES)
     writeFileSync(join(tmp, 'ledger.md'), `# Ledger\n\n${lines.join('\n')}\n`)
     // Outside a git repository the script prints its facts with `?` and exits 1.
     const r = spawnSync('node', [script, '--root', tmp, '--now', NOW], { encoding: 'utf8' })
@@ -35,6 +35,8 @@ function eta(withSegment) {
 const plain = eta(false), counted = eta(true)
 if (!plain || plain.runs !== 3) errors.push(`eta without mutations reads ${JSON.stringify(plain)}, want 3 runs`)
 if (JSON.stringify(plain) !== JSON.stringify(counted)) errors.push(`eta differs: ${JSON.stringify(plain)} vs ${JSON.stringify(counted)}`)
+const sheeted = eta(true, ' · sheets security 3 0/1/2, nodejs 3 0/0/0')
+if (JSON.stringify(plain) !== JSON.stringify(sheeted)) errors.push(`eta differs with sheets: ${JSON.stringify(plain)} vs ${JSON.stringify(sheeted)}`)
 
 const read = (p) => readFileSync(join(root, p), 'utf8').replace(/\n> /g, ' ').replace(/\n(?!\n)/g, ' ').replace(/ {2,}/g, ' ')
 const template = read('plugins/gtm/templates/ledger.md')

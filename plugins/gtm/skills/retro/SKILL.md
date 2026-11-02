@@ -23,6 +23,12 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
   (file, the line to add) as a decision card; apply on the human's answer.
 - **Minors:** strike through (`~~ ~~`) the ones fixed since, with a `resolved` line naming them.
 - **Superseded:** strike entries a newer one contradicts; never delete.
+- **Sheets:** count, per sheet, across the `sheets` segments of every `run` line not struck through:
+  runs, passes, findings by severity. A line without the segment counts for no sheet. A sheet with
+  0 findings of any severity over the last 3 runs that name it gets one decision card: remove it or
+  keep it. A sheet lives in the plugin: retro never edits or deletes it, and its removal is the
+  human's, a reviewed commit there. Either answer is a `ruling` line; a kept sheet is proposed
+  again only after 3 runs newer than that line.
 
 ## 3. Spot patterns for /gtm:tune
 Suggest `/gtm:tune` in one line when the `run` lines show: correction rounds hitting the cap in two runs
@@ -30,4 +36,5 @@ or more; a specialist that found nothing across three runs it ran on; a final-re
 specialist should have caught; design loops ending at the last round; `usage` notes about limits.
 
 ## 4. Report
-TL;DR (lessons added, guideline proposals, minors closed), then the decision cards, if any.
+TL;DR (lessons added, guideline proposals, minors closed), the sheets' counts in one table (sheet,
+runs, passes, findings `c/i/m`) when a line has them, then the decision cards, if any.
