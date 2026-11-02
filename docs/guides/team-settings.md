@@ -78,6 +78,11 @@ survive, `/gtm:tune` offers one card: keep the step or switch it off. An approve
 a dated line in the settings, with a line in the history; until then no such line exists and the
 step runs. A later card can switch it back on, which removes the line.
 
+Before you read a spec's open [decision cards](/reference/glossary/#decision-card), the reviewer
+adds at most one objection to each, about 20k tokens a spec by estimate. To stop it, add a
+`decision review: off` line to the limits in `team.md` by hand; with no such line, the reading runs.
+`/gtm:tune` does not offer this one yet.
+
 | Setting | Values |
 | --- | --- |
 | Effort | `low`, `medium`, `high`, `xhigh`, `max` |
