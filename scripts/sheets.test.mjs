@@ -84,6 +84,7 @@ const RETRO = [
   'with fewer than 3 such runs, retro proposes nothing.',
   'retro never edits or deletes it',
   'a kept sheet is proposed again only after 3 runs newer than that line.',
+  'A sheet with a standing remove ruling, or with no row in `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md`, gets no card.',
 ]
 for (const p of RETRO) if (flat('skills/retro/SKILL.md').split(p).length !== 2) errors.push(`retro: "${p}" must appear once`)
 

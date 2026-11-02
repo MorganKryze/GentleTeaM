@@ -29,6 +29,8 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
   keep it; with fewer than 3 such runs, retro proposes nothing. A sheet lives in the plugin:
   retro never edits or deletes it, and its removal is the human's, a reviewed commit there. Either
   answer is a `ruling` line; a kept sheet is proposed again only after 3 runs newer than that line.
+  A sheet with a standing remove ruling, or with no row in
+  `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md`, gets no card.
 
 ## 3. Spot patterns for /gtm:tune
 Suggest `/gtm:tune` in one line when the `run` lines show: correction rounds hitting the cap in two runs
