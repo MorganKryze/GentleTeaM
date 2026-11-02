@@ -14,6 +14,9 @@ Run the gate in a scratch clone when useful. Triage every `minor` line of `<root
 
 **Mutations:** when the task reports list planted mutations, replay two in a scratch clone, those that move or drop a pinned threshold, plan order on a tie (all of them when two or fewer). Name each in your review with the failure it caused; one that survives is a must-fix.
 
+**Decisions:** for each row of the spec's Decisions table confirmed by `review:`, state what you
+read and whether the decision holds; one that does not hold is a must-fix.
+
 - Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Pre-mortem Analysis [elicitation]
   of the merge, Second-Order Thinking [elicitation].
 

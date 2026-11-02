@@ -30,6 +30,10 @@ in a note under `.gtm/brainstorms/` that the spec cites.
 A moment where you decide, three per Feature: the mockups, the summary and the go, at
 `/gtm:design`, `/gtm:spec` and `/gtm:ship`.
 
+### Confirmation {#confirmation}
+What would show a decision still holds, named in its row of the spec: an acceptance line, a step
+of the gate, or a named review when nothing can be measured.
+
 ### Conventions {#conventions}
 The project's rules, one file per area: `conventions.md` in `.gtm/`, and its files under
 `guidelines/`.
@@ -43,8 +47,8 @@ What a studio knows about a kind of job, one file per job (brand, website, mobil
 plugin's `templates/crafts/`, read only when a prompt names it.
 
 ### Decision card {#decision-card}
-A question, its options, a firm recommendation and the cost if wrong, shown by `/gtm:spec` and
-`/gtm:deliver`.
+A question, its options, a firm recommendation and the cost if wrong; in a spec, also its criteria
+and at most one objection. Shown by `/gtm:spec` and `/gtm:deliver`.
 
 ### Decisions made for you {#decisions-made-for-you}
 What the team decided without asking, each with its cost if wrong, kept in `ledger.md` as
