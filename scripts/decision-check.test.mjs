@@ -91,8 +91,8 @@ const GAPS = [
   ['R1: confirmation-none', 'review: reviewer', 'someone will look'],
   ['D1: options', `${OPTION_B}\n`, ''],
 ]
-// On every outcome the output is the rule lines and nothing else: a line off them fails, on either
-// stream, so no text from a spec can cross.
+// On a pass or a gap the output is the rule lines and nothing else: a line off them fails, on
+// either stream, so no text from a spec can cross. Exit 2 has its own pin, with the unread files.
 const expectOnly = (label, text, exit, want, settings) => {
   const r = checked(text, settings)
   if (r.exit !== exit || r.out !== want || r.err) errors.push(`${label}: want exit ${exit} and only "${want}", got exit ${r.exit}: ${r.all}`)
@@ -175,20 +175,6 @@ const four = older(sample(EN, amended)).replace('| Why | Status |', '| Status |'
 expectGap('four columns are not the older form', four, 'D1: cells\nR1: cells')
 expectGap('seven columns stay checked when amended', sample(EN, amended).replace(D1, D1.replace('A1, verify.test', 'A9')), 'D1: confirmation-line')
 
-// Unread: its own exit, never a gap's, never a pass.
-const usable = checked(sample(EN))
-if (usable.exit !== 0) errors.push('unread: the baseline is not a pass')
-for (const [label, args] of [
-  ['no arguments', []],
-  ['a missing spec', ['--spec', join(dir, 'none.md'), '--config', config]],
-  ['a missing config', ['--spec', specFile, '--config', join(dir, 'none.yml')]],
-  ['a folder for a spec', ['--spec', dir, '--config', config]],
-  ['an unknown flag', ['--spec', specFile, '--config', config, '--fix']],
-]) {
-  const r = run(...args)
-  if (r.exit !== 2 || r.out || r.err.trimEnd().includes('\n')) errors.push(`unread: ${label}: want exit 2 and one line on stderr, got exit ${r.exit}: ${r.all}`)
-}
-
 // Nothing from a cell comes out, a malformed id included.
 const SECRET = 'ZZSECRET'
 const leak = checked(sample(EN)
@@ -205,6 +191,23 @@ for (const id of [`D1 ${SECRET}`, `${SECRET} D1`, `D1-${SECRET}`, SECRET])
   expectGap(`text in the id ${id}`, textual(id), 'row 1: id')
 expectGap('text in a gap', textual('D1').replace('A1, verify.test', 'A9'), 'D1: confirmation-line')
 expectOnly('text in an older form', inCard(older(sample(CARD, amended))).replace('| D1 | one | A | safer | proposed |', `| D1 | ${SECRET} | ${SECRET} | ${SECRET} | ${SECRET} |`), 0, 'decision-check: older form, not checked\n')
+
+// Unread: its own exit, never a gap's, never a pass, and one line on stderr holding nothing of the
+// spec, which is already in memory when the config cannot be read. The marker sits on every line
+// and in every cell, so any of it printed shows, and the line's wording stays free.
+const marked = sample(CARD).replace(/^[^|*\n].*/gm, `$& ${SECRET}`).replace(/(?<=\| )(?![DR]\d |-)/g, `${SECRET} `)
+const usable = checked(marked)
+if (usable.exit !== 0) errors.push(`unread: the baseline is not a pass: ${usable.all}`)
+for (const [label, args] of [
+  ['no arguments', []],
+  ['a missing spec', ['--spec', join(dir, 'none.md'), '--config', config]],
+  ['a missing config', ['--spec', specFile, '--config', join(dir, 'none.yml')]],
+  ['a folder for a spec', ['--spec', dir, '--config', config]],
+  ['an unknown flag', ['--spec', specFile, '--config', config, '--fix']],
+]) {
+  const r = run(...args)
+  if (r.exit !== 2 || r.out || !/^[^\n]+\n$/.test(r.err) || r.err.includes(SECRET)) errors.push(`unread: ${label}: want exit 2 and one line on stderr with nothing of the spec, got exit ${r.exit}: ${r.all}`)
+}
 
 // The check reads its two files and runs nothing.
 // Every import or re-export, whatever its quotes and line breaks, names what it takes.
