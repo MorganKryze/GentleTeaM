@@ -5,6 +5,18 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- 35 more speciality sheets, read on demand: `accessibility`, `api-design`, `code-review`,
+  `concurrency`, `css`, `data-engineering`, `databases`, `delivery`, `design-patterns`,
+  `documentation`, `i18n`, `infrastructure`, `llm-agents`, `mobile`, `observability`, `performance`,
+  `privacy`, `security`, `ux-writing`, and for a stack `csharp`, `go`, `java`, `kotlin`, `nextjs`,
+  `nodejs`, `php`, `python`, `react`, `react-native`, `ruby`, `rust`, `sql`, `swift`, `typescript`,
+  `vue`. Each went through live research, then two checks against its sources and a gap review.
+
+### Changed
+- The `quality`, `architecture` and `tests` sheets: claims checked against their sources, and
+  what they were missing added.
+
 ## [0.13.1] - 2026-11-01
 
 ### Changed
