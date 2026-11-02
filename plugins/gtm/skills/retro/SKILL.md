@@ -26,9 +26,9 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
 - **Sheets:** count, per sheet, across the `sheets` segments of every `run` line not struck through:
   runs, passes, findings by severity. A line without the segment counts for no sheet. A sheet with
   0 findings of any severity over the last 3 runs that name it gets one decision card: remove it or
-  keep it. A sheet lives in the plugin: retro never edits or deletes it, and its removal is the
-  human's, a reviewed commit there. Either answer is a `ruling` line; a kept sheet is proposed
-  again only after 3 runs newer than that line.
+  keep it; with fewer than 3 such runs, retro proposes nothing. A sheet lives in the plugin:
+  retro never edits or deletes it, and its removal is the human's, a reviewed commit there. Either
+  answer is a `ruling` line; a kept sheet is proposed again only after 3 runs newer than that line.
 
 ## 3. Spot patterns for /gtm:tune
 Suggest `/gtm:tune` in one line when the `run` lines show: correction rounds hitting the cap in two runs

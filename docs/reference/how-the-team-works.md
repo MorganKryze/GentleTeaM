@@ -178,7 +178,8 @@ from that pass carries the sheet's name and is graded like any other, with no qu
 
 Each `run` line counts what the sheets found, as in `sheets security 2 0/1/0`: 2 passes, then
 critical, important and minor findings. A sheet with no finding over its last 3 runs is what
-`/gtm:retro` proposes to remove; the removal stays your call.
+`/gtm:retro` proposes to remove, and one with fewer than 3 runs is never proposed; the removal stays
+your call.
 
 ## How are several screens designed?
 

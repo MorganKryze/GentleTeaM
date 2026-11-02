@@ -81,6 +81,7 @@ if (!flat('templates/ledger.md').includes(`${FIELD} · mutations <planted>`)) er
 const RETRO = [
   'A line without the segment counts for no sheet.',
   '0 findings of any severity over the last 3 runs that name it gets one decision card',
+  'with fewer than 3 such runs, retro proposes nothing.',
   'retro never edits or deletes it',
   'a kept sheet is proposed again only after 3 runs newer than that line.',
 ]
