@@ -30,6 +30,8 @@ const CASES = [
   ['the index and the template are no rows', '**Sheets:** index, template', []],
   ['a path', '**Sheets:** ../../agents/reviewer, ../security', []],
   ['an upper-case name', '**Sheets:** Security', []],
+  ['a name with no row before two', `**Sheets:** ${SENTINEL}, security, nodejs`, ['security', 'nodejs']],
+  ['two names with no row before two', `**Sheets:** ${SENTINEL}, nosuch, security, nodejs`, ['security', 'nodejs']],
   ['at most 2', '**Sheets:** security, nodejs, tests', ['security', 'nodejs']],
   ['each once', '**Sheets:** security, security, nodejs', ['security', 'nodejs']],
   ['the first line wins', '**Sheets:** none\n**Sheets:** security', []],
