@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-11-02
+
 ### Added
 - Decisions keep one record and a way to see they still hold: each row of a spec's Decisions table
   names its Confirmation (an acceptance line, a gate step or a named review), a check in `/gtm:spec`
