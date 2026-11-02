@@ -56,6 +56,7 @@ const TWINS = [
   { test: 'ui-gate', file: GUARD, from: 'export const UI = {', to: 'export const UI2 = {', says: 'no top `export const UI' },
   { test: 'usage-line', file: script('usage-line'), from: 'flagged = projected >= 100', to: 'flagged = projected >= 1000', says: 'flag' },
   { test: 'workflows', file: 'plugins/gtm/workflows/design-loop.js', from: 'taste >= TASTE_BAR', to: 'taste >= 0', says: 'design-loop' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'const MAX_SHEETS = 2', to: 'const MAX_SHEETS = 3', says: 'a third entry in bound' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []

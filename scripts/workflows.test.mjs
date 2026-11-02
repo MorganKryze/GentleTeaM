@@ -1236,6 +1236,16 @@ const deliver = [
     unlogged: ['sheet', 'security'],
   },
   {
+    name: 'sheets: a third entry in bound gets no pass, an entry off it takes no place',
+    args: { sheets: [{ name: '../x', path: '/p/templates/sheets/../x.md' }, SHEET, NODE, { name: 'tests', path: '/p/gtm/templates/sheets/tests.md' }] },
+    reply: implementer(['src/a.js'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 0, minor: 0, sheets: { security: yields(), nodejs: yields() } } }, minors: [] },
+    dispatches: [implement(), reviewer()],
+    prompts: { reviewer: [`- security: ${SHEET.path}`, `- nodejs: ${NODE.path}`] },
+    unprompted: { reviewer: ['sheets/tests.md'] },
+    tags: { reviewer: { type: 'string', enum: ['security', 'nodejs'] } },
+  },
+  {
     name: 'sheets: every entry off its bound: the dispatch is as with none',
     args: { sheets: [{ name: '../x', path: '/p/templates/sheets/../x.md' }] },
     reply: implementer(['src/a.js'], () => ok),

@@ -14,9 +14,11 @@ const LEVELS = ['low', 'medium', 'high', 'xhigh']
 // The sheets /gtm:deliver resolved from the brief's `Sheets:` line (scripts/sheet-paths.mjs): this
 // runtime reads no file. What arrives is still bounded, a name in the slug's alphabet and an absolute
 // path beside the index under that name; any other entry is a missing sheet, skipped without a word.
+// Past the index's cap, a hand-made list would cost tokens and the review's turns on each role.
+const MAX_SHEETS = 2
 const bounded = (s) => typeof s?.name === 'string' && /^[a-z0-9-]+$/.test(s.name) && typeof s.path === 'string'
   && s.path.startsWith('/') && s.path.endsWith(`/templates/sheets/${s.name}.md`) && !/\/\.\.\/|[\x00-\x1f`]/.test(s.path)
-const SHEETS = new Map((Array.isArray(A.sheets) ? A.sheets : []).filter(bounded).map((s) => [s.name, s.path]))
+const SHEETS = new Map((Array.isArray(A.sheets) ? A.sheets : []).filter(bounded).slice(0, MAX_SHEETS).map((s) => [s.name, s.path]))
 const IMPL = {
   type: 'object',
   properties: {
