@@ -22,7 +22,7 @@ A gate is a check that must pass before work moves on. There are six, one per st
 | Gate | Passes when | Otherwise |
 | --- | --- | --- |
 | [Mockups](/reference/glossary/#mockups) | the critic scores at or above the threshold (`8/10` by default) with zero must-fix, within the round limit | you choose: approve as is, one more round, or change the [brief](/reference/glossary/#brief) |
-| Spec | zero `[NEEDS CLARIFICATION]`, the form check run on its decisions, every [decision card](/reference/glossary/#decision-card) answered, your approval | back to the architect, or a card to you |
+| Spec | zero `[NEEDS CLARIFICATION]`, its decisions checked for gaps, every [decision card](/reference/glossary/#decision-card) answered, your approval | back to the architect, or a card to you |
 | Plan | every task has files, test steps and a verify command; every acceptance line maps to a test; risky tasks get a [dry run](/reference/glossary/#dry-run) | one [correction round](/reference/glossary/#correction-round) with the architect |
 | Task | every triggered reviewer approves (no critical or important finding) within the correction-round limit | you choose: revise the plan, accept with findings logged, or take over |
 | Branch | the final review says ready, after at most one fix wave, or is skipped | a decision card to you |
@@ -62,10 +62,13 @@ architect once; what remains is shown to you, never hidden. The check proves for
 false alternative still passes.
 
 So a second reader looks at what the check cannot see. Before you read a card still open, the
-reviewer, who did not write it, reads it against the reflexes of the architecture sheet and adds at
-most one objection, one sentence, after the recommendation. It is advice: it blocks nothing, you
-stay free to answer against it, and it stays on the card. A reading costs about 20k tokens by
-estimate, not yet measured; a `decision review: off` line in the Gates of `team.md` stops it.
+reviewer, who did not write it, opens the architecture
+[speciality sheet](/reference/glossary/#speciality-sheet), the team's file on that subject, and
+reads the card against its [reflexes](/reference/glossary/#reflex), methods applied every time. It
+adds at most one objection, one sentence, after the recommendation. It is advice: it blocks
+nothing, you stay free to answer against it, and it stays on the card. A reading costs about 20k
+tokens by estimate, not yet measured; a `decision review: off` line in the Gates of `team.md` stops
+it.
 
 ## How do roles pass work to each other?
 
