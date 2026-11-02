@@ -10,7 +10,6 @@ versions follow [SemVer](https://semver.org/).
   names its Confirmation (an acceptance line, a gate step or a named review), a check in `/gtm:spec`
   reads the form of the table and cards, and a fresh reader writes the strongest objection on each
   open card, as advice. About 20k tokens per spec, an estimate; `decision review: off` stops it.
-
 - 35 more speciality sheets, read on demand: `accessibility`, `api-design`, `code-review`,
   `concurrency`, `css`, `data-engineering`, `databases`, `delivery`, `design-patterns`,
   `documentation`, `i18n`, `infrastructure`, `llm-agents`, `mobile`, `observability`, `performance`,
