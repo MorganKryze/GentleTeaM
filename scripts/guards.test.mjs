@@ -17,7 +17,9 @@ const PINS = {
   'plugins/gtm/skills/ship/SKILL.md': ['--base <git.base> --pr <root>/reports/<slug>/pr.md`'],
   'plugins/gtm/skills/plan/SKILL.md': [
     'so it reaches the brief; a missing one goes back to the architect:',
-    'delivery runs a specialist by its triggers, never by a row.',
+    '`security-reviewer`, `data-reviewer` or `ux-qa` sits on a task with a File matching a trigger of',
+    'that specialist, which is on; a row naming `design-critic` or `final-reviewer`, or a match that',
+    'fails, goes back too: delivery runs a specialist by its triggers, never by a row.',
   ],
 }
 const errors = []
