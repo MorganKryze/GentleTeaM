@@ -24,7 +24,8 @@ Ground rules: as in the `gtm` skill §0.
   <t>k · <a> agents` from Claude Code's `duration_ms`, `subagent_tokens`, `agent_count` (a dispatch
   is 1 agent), `?` if unreported, never an estimate; workflows add `· run <id>`. A line (task,
   deferred or re-run review) whose result holds `stats.reviewer.planted` adds ` · mutations
-  <planted>/<survived>` from it; a re-run review, a direct dispatch, from its own `mutations`.
+  <planted>/<survived>` from it; a re-run review, a direct dispatch, from its own `mutations`. One
+  holding `stats.<role>.sheets` adds ` · sheets <name> <passes> <c>/<i>/<m>, ...`, roles summed.
 - `[CHECK]` verify commands in `config.yml`: run each once on the branch with `verify.prefix`; it
   runs → remove the mark; it cannot run or fails on the untouched base → stop before any task: a
   Heads-up and a card (correct the command / drop it / accept the failure as pre-existing, logged).
@@ -42,9 +43,11 @@ Ground rules: as in the `gtm` skill §0.
    the spec, `<root>/team.md`, the validated mockup and the guidelines it touches; nothing else.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report: "<root>/reports/<slug>/task-<n>.md",
    branch, base: <head before this task>, worktree (in a wave only), mockup, triggers, team,
-   fixRounds, fixCeiling, track, tier, cadence, standardRounds, review, head, files }`, an arg not
-   given omitted, never "none": `tier` the plan's, `guarded` once a progress line of it says so
-   (resumes too); `review`, `head`, `files`: step 5 only.
+   fixRounds, fixCeiling, track, tier, cadence, standardRounds, sheets, review, head, files }`, an
+   arg not given omitted, never "none": `tier` the plan's, `guarded` once a progress line of it says
+   so (resumes too); `sheets` what `node "${CLAUDE_PLUGIN_ROOT}/scripts/sheet-paths.mjs" --brief
+   "<brief>"` prints, omitted on `[]` or any other exit than 0, the task going on; `review`, `head`,
+   `files`: step 5 only.
 3. Measure it, any result: its run id (`wf_...` in the diagnostics) on `^wf_[0-9a-f-]+$`, the one
    folder `"<config>"/projects/*/*/subagents/workflows/<id>` (`<config>` =
    `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`), `node "${CLAUDE_PLUGIN_ROOT}/scripts/role-split.mjs"
