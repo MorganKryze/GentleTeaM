@@ -40,7 +40,10 @@ phase's lines are summed in the run line.
 - Every EARS line of the spec maps to at least one task's test.
 - Every row of the spec's Decisions table confirmed by `review:` is named as a requirement in the
   task that implements it, so it reaches the brief; a missing one goes back to the architect:
-  where a final review is skipped, that task's reviewer is the row's only reader.
+  where a final review is skipped, that task's reviewer is the row's only reader. A row naming
+  `security-reviewer`, `data-reviewer` or `ux-qa` sits on a task with a File matching a trigger of
+  that specialist, which is on; a row naming `design-critic` or `final-reviewer`, or a match that
+  fails, goes back too: delivery runs a specialist by its triggers, never by a row.
 - Risky tasks dry-run as the architect's Dry-run policy says, with gate counts recorded; a plan
   of one task gets no dry run, its TDD steps plant the mutations instead.
 - The plan lists the ledger lessons it applied.
