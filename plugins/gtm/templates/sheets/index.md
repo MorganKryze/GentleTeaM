@@ -7,9 +7,44 @@
 ## Sheets
 | Speciality | Sheet | When |
 | --- | --- | --- |
+| `accessibility` | `accessibility.md` | a screen, form or component everyone must be able to reach and operate |
+| `api-design` | `api-design.md` | a public or internal API, a contract, its versioning or its errors |
 | `architecture` | `architecture.md` | a new module or dependency direction, a lasting trade-off, a decision record |
+| `code-review` | `code-review.md` | reviewing a change, or deciding what a review must catch |
+| `concurrency` | `concurrency.md` | threads, async work, shared state, races or deadlocks |
+| `csharp` | `csharp.md` | work in a C# or .NET codebase |
+| `css` | `css.md` | layout, responsive behaviour, fluid type, or content that overflows or jumps |
+| `data-engineering` | `data-engineering.md` | a pipeline, a batch or stream job, data quality |
+| `databases` | `databases.md` | a schema change, a backfill or a migration on a live database |
+| `delivery` | `delivery.md` | CI/CD, a rollout, a release or a rollback |
+| `design-patterns` | `design-patterns.md` | choosing, naming or removing a design pattern |
+| `documentation` | `documentation.md` | writing or restructuring docs, tutorials or references |
+| `go` | `go.md` | work in a Go codebase |
+| `i18n` | `i18n.md` | translated interfaces, locales, dates, plurals or right-to-left text |
+| `infrastructure` | `infrastructure.md` | infrastructure as code, containers or cluster setup |
+| `java` | `java.md` | work in a Java or Spring codebase |
+| `kotlin` | `kotlin.md` | work in a Kotlin codebase |
+| `llm-agents` | `llm-agents.md` | a prompt, an agent, an eval or a tool a model calls |
+| `mobile` | `mobile.md` | a store app: release, field crashes, permissions, stored data |
+| `nextjs` | `nextjs.md` | work in a Next.js app |
+| `nodejs` | `nodejs.md` | work on a Node.js service, script or CLI |
+| `observability` | `observability.md` | logs, metrics, traces, alerts or service-level objectives |
+| `performance` | `performance.md` | a hot path, a latency or capacity budget, a load test, a slowdown |
+| `php` | `php.md` | work in a PHP or Laravel codebase |
+| `privacy` | `privacy.md` | personal data, consent, retention or GDPR obligations |
+| `python` | `python.md` | work in a Python codebase |
 | `quality` | `quality.md` | a refactor, a quality gate, or tests that must protect moved code |
+| `react-native` | `react-native.md` | work in a React Native or Expo app |
+| `react` | `react.md` | work in a React app |
+| `ruby` | `ruby.md` | work in a Ruby on Rails codebase |
+| `rust` | `rust.md` | work in a Rust codebase |
+| `security` | `security.md` | authorization, a trust boundary, a dependency, a release or a vulnerability report |
+| `sql` | `sql.md` | writing, reviewing or tuning SQL, a slow query or a transaction |
+| `swift` | `swift.md` | work in a Swift codebase |
 | `tests` | `tests.md` | what to test, a flaky test, whether a suite really detects defects |
+| `typescript` | `typescript.md` | work in a TypeScript codebase |
+| `ux-writing` | `ux-writing.md` | labels, errors, empty states or onboarding copy |
+| `vue` | `vue.md` | work in a Vue app |
 
 ## Using a sheet
 - A sheet is read only when a brief's `Sheets:` line names it; nothing here loads by itself.

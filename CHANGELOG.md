@@ -11,6 +11,20 @@ versions follow [SemVer](https://semver.org/).
   reads the form of the table and cards, and a fresh reader writes the strongest objection on each
   open card, as advice. About 20k tokens per spec, an estimate; `decision review: off` stops it.
 
+- 35 more speciality sheets, read on demand: `accessibility`, `api-design`, `code-review`,
+  `concurrency`, `css`, `data-engineering`, `databases`, `delivery`, `design-patterns`,
+  `documentation`, `i18n`, `infrastructure`, `llm-agents`, `mobile`, `observability`, `performance`,
+  `privacy`, `security`, `ux-writing`, and for a stack `csharp`, `go`, `java`, `kotlin`, `nextjs`,
+  `nodejs`, `php`, `python`, `react`, `react-native`, `ruby`, `rust`, `sql`, `swift`, `typescript`,
+  `vue`. Each went through live research, then two checks against its sources and a gap review.
+
+### Changed
+- The `quality`, `architecture` and `tests` sheets: claims checked against their sources, and
+  what they were missing added.
+- Every sheet reviewed: filler cut, lines that set a verdict or softened a check fixed, and the
+  `security`, `privacy`, `accessibility` and `llm-agents` sheets checked again against their
+  sources. Index rows now promise only what each sheet covers.
+
 ## [0.13.1] - 2026-11-01
 
 ### Changed
