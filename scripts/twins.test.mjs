@@ -35,6 +35,8 @@ const TWINS = [
   { test: 'guards', file: GUARD, from: 'r.width >= 44 && r.height >= 44', to: 'r.width >= 40 && r.height >= 40', says: 'r.width >= 44' },
   { test: 'guards', file: GUARD, from: 'document.documentElement.scrollWidth > width', to: 'document.documentElement.scrollWidth >= width', says: 'scrollWidth > width' },
   { test: 'guards', file: skill('deliver'), from: 'git merge --no-ff --no-edit', to: 'git merge --squash --no-edit', says: '--no-ff' },
+  { test: 'guards', file: skill('plan'), from: 'a missing one goes back to the architect:', to: 'a missing one is noted:', says: 'a missing one goes back' },
+  { test: 'guards', file: skill('plan'), from: 'never by a row.', to: 'or by a row.', says: 'never by a row' },
   { test: 'guards', file: skill('ship'), from: '--base <git.base> --pr <root>', to: '--base <git.base> <root>', says: '--pr' },
   { test: 'lenses', file: LEDGER, from: '· lenses <role>', to: '· lens <role>', says: 'does not state the `lenses` segment' },
   { test: 'methods', file: agent('reviewer'), from: 'Steelmanning [elicitation]', to: 'Steelman [elicitation]', says: 'reviewer' },

@@ -5,6 +5,12 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Decisions keep one record and a way to see they still hold: each row of a spec's Decisions table
+  names its Confirmation (an acceptance line, a gate step or a named review), a check in `/gtm:spec`
+  reads the form of the table and cards, and a fresh reader writes the strongest objection on each
+  open card, as advice. About 20k tokens per spec, an estimate; `decision review: off` stops it.
+
 ## [0.13.1] - 2026-11-01
 
 ### Changed
