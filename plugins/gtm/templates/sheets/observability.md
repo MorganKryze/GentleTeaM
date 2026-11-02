@@ -9,7 +9,7 @@
 - Adding, renaming or removing a metric, span, log event or telemetry attribute.
 - Defining or changing a service-level objective, an alert or an on-call page.
 - Wiring a call across services that trace context must cross.
-- Reviewing telemetry cost (labels, sampling) or personal data in telemetry.
+- Reviewing telemetry cost (labels, sampling), or personal data or secrets in telemetry.
 
 ## Method
 1. Start from the user: pick a few indicators (latency of successes and of failures kept apart,
@@ -32,15 +32,13 @@
    stateful tier is accepted.
 7. Minimise sensitive data at the source: no attribute without an observability purpose; truncate or
    generalise rather than hash small identifier spaces; redact in the pipeline as a second line.
-8. Verify in continuous integration: run instrumented tests against a live conformance check of
-   emitted telemetry, failing on any violation.
-9. Keep signals whose specification is not yet stable, such as continuous profiling, as pilots off
+8. Keep signals whose specification is not yet stable, such as continuous profiling, as pilots off
    critical paths.
-10. Make silence loud: export zero for every counter an indicator needs, so its ratio exists before
-    the first failure; alert when an indicator's series goes missing; check the whole alert path end
-    to end from outside the monitoring system; probe critical user journeys from outside the
-    service, which can catch outages that in-process telemetry cannot see.
-11. Keep secrets out of values as well as keys: never record passwords, access tokens, encryption
+9. Make silence loud: export zero for every counter an indicator needs, so its ratio exists before
+   the first failure; alert when an indicator's series goes missing; check the whole alert path end
+   to end from outside the monitoring system; probe critical user journeys from outside the
+   service, which can catch outages that in-process telemetry cannot see.
+10. Keep secrets out of values as well as keys: never record passwords, access tokens, encryption
     keys or connection strings; capture headers only from an explicit list; redact credentials and
     signed parameter values in recorded URLs; record query text only parameterised or with its
     literals replaced.
@@ -50,12 +48,9 @@
 - If this service, or only its telemetry, went dark, which page would fire?
 - At this objective and traffic, would one failed request page, and can the fast-burn alert fire at
   all?
-- Is the latency of failed requests counted apart, or is it flattering the average?
 - Can this label's values grow with users, requests or time? Then why is it on a metric?
-- Am I renaming, retyping or dropping a stable telemetry field that a dashboard or alert relies on?
 - Does the trace survive this hop: queue, thread pool, retry, third-party call?
 - Would this attribute be acceptable in a breach report?
-- Is this signal's specification stable enough to page on?
 
 ## What is measured
 - Telemetry conformance: registry violations in telemetry emitted by the tests; `verify` runs the

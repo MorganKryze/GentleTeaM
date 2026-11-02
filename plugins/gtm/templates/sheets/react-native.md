@@ -8,7 +8,9 @@
   Expo's build and update services.
 - Upgrading the Expo SDK or React Native, or adding, removing or bumping a library that ships native
   code.
-- Deciding whether a change can go out as an over-the-air update or needs a new store build.
+- Deciding whether a change can go out as an over-the-air update or needs a new store build, or
+  releasing either in stages.
+- Adding or changing an environment variable the app bundle reads.
 - Setting up or reviewing CI gates: dependency health, typed API, end-to-end smoke tests, update
   rollout.
 - Diagnosing a regression after an engine, architecture or build-toolchain change.
@@ -45,18 +47,10 @@
 
 ## Reflexes
 - Does this change touch the native layer? Then it cannot reach installed builds over the air.
-- Which dependency here ships native code, and when were its New Architecture status and upkeep last
-  checked?
-- Which API used here is deprecated in the target release, and when is it removed?
-- Was this performance gain measured on our app and our weakest devices, or quoted from another
-  team's single-app benchmark?
-- If an update needs native code the binary lacks, what stops it before users see it, and how fast
-  can it be rolled back?
 - Which values does this bundle inline, and from where? Anyone who has the app or an update can read
   `EXPO_PUBLIC_` variables and anything else in client code, whatever visibility the build service
   gives them, so secrets stay on a server. An update inlines the values found where it is bundled,
   so name its target environment when publishing.
-- Who wrote these sources?
 
 ## What is measured
 - Dependency health: the project health check reports no failure (directory compatibility, upkeep,

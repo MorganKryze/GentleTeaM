@@ -11,46 +11,46 @@
 - A dependency, a build or release step, or CI permissions are added or changed.
 - A release is prepared for customers or for a public registry.
 - A vulnerability report, a dependency advisory or a sign of exploitation arrives.
+- A secret or credential, a deployment or environment setting, or a security log or alert is added
+  or changed.
 
 ## Method
-1. Before coding, model the change with at least two people: what are we working on, what can go
-   wrong, what are we going to do about it, did we do a good enough job. Keep the answers next to
-   the design and revisit them every iteration.
+1. Early in the change, model it from varied viewpoints: what are we working on, what can go wrong,
+   what are we going to do about it, did we do a good enough job. Record the answers and revisit
+   them as the design changes.
 2. Review authorization first: for each operation, who may do it on which object, checked on the
    server. Outbound requests to user-supplied addresses belong to this review.
 3. Review error, timeout and fallback paths as security paths; the current awareness list gives
    mishandling of exceptional conditions a category of its own.
-4. Select the in-scope requirements of the verification standard (ASVS: a level, then additions) and
-   cite each version-prefixed ID where it is tested or reviewed.
-5. Keep the supply chain checkable: dependencies declared and pinned, CI tokens read-only by
-   default, no dangerous CI patterns, an update tool running, known-vulnerable dependencies blocked.
-6. Release with integrity: protected branches, reviewed changes, and signed releases with build
-   provenance that consumers verify. Aim for the build and source levels (SLSA) the platform can
-   reach.
-7. Verify with access to code and configuration: black-box testing alone is insufficient.
+4. Select the in-scope requirements of the verification standard (ASVS, by level) and cite each
+   version-prefixed ID where it is tested or reviewed.
+5. Keep the supply chain checkable: dependencies declared and pinned, CI tokens read-only, no
+   dangerous CI patterns, an update tool running, known-vulnerable dependencies blocked.
+6. Release with integrity: protected branches, reviewed changes, and signed releases or build
+   provenance that consumers verify. Aim for a level on the build and source tracks (SLSA).
+7. Verify with access to internal artifacts: black-box testing alone is insufficient.
 8. Map each confirmed flaw to its root-cause weakness at Base or Variant level whenever possible
    (CWE), then feed it back into the threat model and the gates.
-9. Publish a security policy. Where the EU regulation applies, keep a runbook for actively exploited
-   vulnerabilities and severe incidents: early warning within 24 hours, notification within 72
-   hours, final report no later than 14 days after a corrective measure is available, or one month
-   after notification for an incident.
+9. Publish a security policy. Where the EU Cyber Resilience Act applies, keep a runbook for actively
+   exploited vulnerabilities and severe incidents: early warning within 24 hours of becoming aware,
+   notification within 72 hours, final report no later than 14 days after a corrective measure is
+   available, or one month after notification for an incident.
 10. Keep secrets out of code, history and logs: catch them before commit and scan the whole history.
-    Prefer federated, short-lived credentials over stored static secrets, with pipeline credentials
-    that expire when the job ends. On a leak, first revoke the key, then rotate it, then remove it
-    from code and logs. Removing it from the history is time-intensive and often unnecessary once
-    the key is revoked.
+    Prefer federated or short-lived credentials over stored static secrets, with pipeline
+    credentials that expire when the job ends. On a leak, first revoke the key, then rotate it, then
+    remove it from code and logs. Removing it from the history is time-intensive and often
+    unnecessary once the key is revoked.
 11. Ship and deploy secure by default: no default accounts or passwords, no unused features, ports,
     pages or samples, no stack traces shown to users, and security settings and headers set to
     secure values. Build every environment from one repeatable hardening process, give each its own
     credentials, and check the settings automatically in all of them.
-12. Make exploitation visible: log every failed login, access-control denial and server-side
-    input-validation failure with enough user context to investigate. Write logs in a format log
-    tools can parse, encode log data against injection, keep secrets and personal data out, protect
-    logs against tampering and keep a copy off the host. Give each alert a threshold, an escalation
-    path and an owner. A penetration test or scan that raises no alert is a finding.
+12. Make exploitation visible: ensure every failed login, access-control denial and server-side
+    input-validation failure can be logged with enough user context to investigate. Write logs in a
+    format log tools can parse, encode log data against injection, keep secrets and personal data
+    out, protect logs against tampering and keep a copy off the host. Give each alert a threshold
+    and an escalation path. A penetration test or scan that raises no alert points to this failure.
 
 ## Reflexes
-- Who may do this, to which object, and where on the server is that checked?
 - On the error, timeout or partial-failure path, what access or state is left behind?
 - Which outside code does this change trust, pinned to what, and who checks where it was built?
 - Which version-prefixed requirement IDs does this change touch, and which are tested rather than
@@ -64,8 +64,8 @@
 ## What is measured
 - Known vulnerabilities in shipped dependencies at or above the written severity threshold: zero. A
   `verify` step runs the team's dependency audit and fails on any hit.
-- Untriaged high-severity static-analysis findings: zero. A `verify` step runs the analyzer and
-  fails otherwise.
+- Untriaged static-analysis findings at or above the written severity threshold: zero. A `verify`
+  step runs the analyzer and fails otherwise.
 - Repository hygiene (pinned dependencies, read-only CI tokens, no dangerous CI patterns): checked
   by a `verify` step. A 0-10 practice score does not pass or fail anything by itself, so the team
   writes the threshold.
@@ -78,12 +78,12 @@
   the scanner and fails otherwise. A real secret counts as triaged only once it has been revoked.
 - Secure configuration: `verify` compares each environment's settings with the hardening baseline
   (no default credentials, no unused or debug features, security headers set) and fails on any
-  deviation. A setting that cannot be checked automatically gets a dated manual review at least once
-  a year.
+  deviation. A setting that cannot be checked automatically should get a dated manual review at
+  least once a year.
 - Security events: for failed logins, access-control denials and server-side input-validation
   failures, a test asserts a parseable log entry with user context, and `verify` runs those tests.
-  Whether alerts reach their owner in time stays judgment, tested by expecting every penetration
-  test or scan to raise one.
+  Whether alerts are received and reviewed in time stays judgment, tested by whether penetration
+  tests and scans raise one.
 - Judgment, not gate: the quality of a threat model, whether a vulnerability is actively exploited
   or an incident severe, the choice of verification level, and priorities drawn from rankings.
 
@@ -104,13 +104,14 @@
 - [OpenSSF Scorecard](https://github.com/ossf/scorecard), 2026-11-01: repository practice checks,
   risk weights, no described pass threshold.
 - [Threat Modeling Manifesto](https://www.threatmodelingmanifesto.org/), 2026-11-01: the four
-  questions, varied viewpoints, anti-patterns.
+  questions, early and frequent analysis, following design changes, varied viewpoints, recording
+  what was understood.
 - [European Commission, CRA
   reporting](https://digital-strategy.ec.europa.eu/en/policies/cra-reporting), 2026-11-01: what to
   report, deadlines and channel.
 - [Orca Security, OWASP Top 10 2025 key
   changes](https://orca.security/resources/blog/owasp-top-10-2025-key-changes/), 2026-11-01: SSRF
-  folded into access control.
+  folded into access control, server-side access checks.
 - [OWASP Secrets Management Cheat
   Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html),
   2026-11-01: detection before commit, false positives, pipeline credentials that expire after the

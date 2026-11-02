@@ -12,6 +12,8 @@
 - Adding or reviewing nullness contracts in existing code.
 - Writing integration tests that need a database, a broker or another external service.
 - Keeping a modular monolith inside its declared module boundaries.
+- Declaring transaction boundaries on write paths, or exposing management endpoints over HTTP.
+- Keeping the packaged artifact's dependencies clear of known vulnerabilities.
 
 ## Method
 1. Inventory the stack: Boot and JDK versions, dependency versions pinned outside Boot's management,
@@ -42,18 +44,12 @@
 11. Keep a bill of materials for every component in the packaged artifact, transitive dependencies
     included, and scan it in CI against public vulnerability databases; staying on a supported
     branch does not cover libraries pinned outside Boot's management or flaws disclosed between
-    patch releases. Remove a dependency nothing uses rather than patching it.
+    patch releases.
 
 ## Reflexes
-- Is this Boot branch still getting OSS releases, and which minor is the next target?
-- What does the next minor remove that the current one only deprecated?
 - Does a build flag, an image recipe or a runbook rely on something that changed meaning or was
   removed: test skipping, jar modes, launch scripts, an embedded server, a JVM diagnostic property?
-- Where can this value be null, and does its type say so?
 - What can still pin a virtual thread here: native callbacks, class loading, class initialisation?
-- Which downstream resource did a pool size protect that virtual threads no longer bound?
-- Does each test container live exactly as long as the context that uses it?
-- Which module reaches into another module's internals?
 - Does each call to a transactional method arrive through the proxy, or from inside the same class,
   where no transaction starts, or from initialisation code, where transactional behaviour should not
   be relied on?

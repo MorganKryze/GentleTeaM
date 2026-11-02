@@ -6,9 +6,11 @@
 ## When it applies
 - Writing or restructuring a tutorial, how-to guide, reference page, explanation, README or design
   document.
-- A change to code, an interface, a configuration or a behaviour that readers will notice.
+- A change to code, an interface, a configuration or a behaviour that readers will notice, and the
+  docs or changelog entry it needs.
 - Reviewing a documentation change, or auditing a documentation set for gaps, staleness or
   duplication.
+- Publishing docs per released version.
 - Deciding which documentation checks to automate and which to leave to reviewers.
 
 ## Method
@@ -18,27 +20,19 @@
    what is wrong or dead.
 3. Pick the page type from the need (tutorial, how-to guide, reference, explanation), declare it in
    the page metadata, and split a page that serves two needs.
-4. Write in plain language for that reader, and use each term the same way across pages and authors.
-5. Change the docs in the same change as the code they describe; the reviewer checks the docs in
+4. Change the docs in the same change as the code they describe; the reviewer checks the docs in
    that review; a skip is written down with its reason.
-6. Back documented behaviour with tests wherever the behaviour is testable.
-7. Run the mechanical checks before human review: links, anchors, heading order, alternative text,
-   descriptive link text, house terms.
-8. Spend review time on substance: is it correct, does it serve the declared need, can a reader act
-   on it.
-9. Give every page an owner and a review date; at review, update, merge or delete, and delete by
+5. Back documented behaviour with tests wherever the behaviour is testable.
+6. Once the mechanical checks pass, spend review time on substance: is it correct, does it serve the
+   declared need, can a reader act on it.
+7. Give every page an owner and a review date; at review, update, merge or delete, and delete by
    default when the page is dead.
-10. Ask readers from time to time how clear, findable and reliable the docs are.
-11. Publish the docs per released version: readers land on the latest release by default, docs built
-    from the development line warn that they may describe unreleased behaviour, and older versions
-    warn that they may be out of date.
+8. Publish the docs per released version: readers land on the latest release by default, docs built
+   from the development line warn that they may describe unreleased behaviour, and older versions
+   warn that they may be out of date.
 
 ## Reflexes
-- Which single need does this page serve, and what on it belongs on another page?
-- Does this already exist somewhere I should link to instead of rewriting it?
-- The code changed: did the docs change in the same change, or is the skip written down?
 - Is this page still true, who owns it, and who would notice if it stopped being true?
-- This page looks dead: what would be lost by deleting it?
 - Will this section still read correctly when an assistant quotes it on its own?
 - Is the check I rely on mechanical, so a gate, or a judgment, so a reviewer?
 
@@ -82,9 +76,6 @@
   in the code workflow, merging of new features without docs can be blocked.
 - [ISO/IEC/IEEE 26514:2022, IEC Webstore](https://webstore.iec.ch/publication/73614), 2026-11-01:
   user needs, structure, content and format across the life cycle.
-- [ISO 24495-1:2023,
-  AccessibleEU](https://accessible-eu-centre.ec.europa.eu/content-corner/digital-library/iso-24495-12023-plain-language-part-1-governing-principles-and-guidelines_en),
-  2026-11-01: plain language also covers technical writing.
 - [markdownlint](https://github.com/DavidAnson/markdownlint), 2026-11-01: heading, link and
   accessibility rules behind the structure measure.
 - [lychee](https://github.com/lycheeverse/lychee), 2026-11-01: offline link and anchor checks;

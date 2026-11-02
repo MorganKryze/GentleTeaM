@@ -8,14 +8,16 @@
 - Setting up or tightening the checks a Vue project runs before merge.
 - Rendering user-provided HTML, URLs or styles in a Vue view.
 - Diagnosing slow page loads or slow updates in a Vue application.
+- Rendering a Vue app on the server, building views for keyboard and assistive technology, or
+  wiring error tracking.
 - Upgrading Vue, its router or its build and test tooling, or trialling Vapor Mode.
 
 ## Method
 1. Pin the ground: note the stable Vue line and its companions' versions, read release notes and
    migration guides before touching code, and run release candidates only in a scheduled canary.
-2. Gate statically first: a Vite-based build only transpiles, so add a type check that understands
+2. Check statically first: a Vite-based build only transpiles, so run a type check that understands
    single-file components and templates, and the Vue lint rules at a chosen tier with every finding
-   an error.
+   an error; where `verify` lacks them, propose them rather than adding them.
 3. Write components with script setup and the Composition API; keep global state in the officially
    recommended store (Pinia); derive values in the parent so the props children receive stay stable;
    move logic that needs thorough tests into composables or plain functions.
@@ -56,24 +58,14 @@
 - By which path can user content reach v-html, innerHTML, an href or a style, and who sanitized it,
   where?
 - Which prop change makes every item of this list re-render?
-- Is this large structure deeply reactive when it is only ever replaced whole?
-- Is the version I target stable, and what do its notes list as unsupported?
-- Where is the measure taken before this optimization, and where is the one after?
 - If this code runs on the server, what outlives the request, and whose data could the next request
   see?
-- Can this view be operated with a keyboard and a screen reader alone, and where does focus land
-  after a route change?
-- If this lazy chunk fails to load after a deploy, what does the user see, and does the error
-  tracker hear of it?
 
 ## What is measured
 - Type errors in single-file components, templates included, when the project is typed: zero. The
   `verify` step runs the SFC-aware type check without emitting.
 - Lint findings at the chosen tier of the Vue rules, all as errors: zero. The `verify` step lints
   the whole tree.
-- Unit, composable and component tests: all pass. The `verify` step runs the suite once,
-  real-browser tests as their own project. Whether tests stay on the public interface is judgment,
-  checked in review.
 - Accessibility violations an automated checker finds at the WCAG version and level the team
   chooses, on each route and key component state: zero. The `verify` step runs the checker inside
   the real-browser tests and fails on any violation. Automated rules catch only part of WCAG, so

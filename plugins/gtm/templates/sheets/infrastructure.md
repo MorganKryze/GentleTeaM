@@ -7,9 +7,9 @@
 - Writing or reviewing infrastructure definitions, deployment manifests or image build files.
 - Planning, testing or applying an infrastructure change; investigating a gap between code and
   reality.
-- Choosing, updating or replacing a base image or a third-party image source.
+- Choosing, updating, scanning or replacing a base image or a third-party image source.
 - Setting a workload's runtime privileges or a cluster's admission rules.
-- Handling credentials that infrastructure code or image builds need.
+- Handling credentials that infrastructure code, its pipeline or image builds need.
 
 ## Method
 1. Review the tool's preview of the change, not only the code diff; a preview made earlier may be
@@ -47,21 +47,12 @@
     an approval gate on apply does not stop: give the preview phase a narrower identity than apply,
     preview only changes from trusted authors, and load providers only from a source you control
     with outbound network blocked.
-13. Scan each image for known vulnerabilities as it is built and gate deployment on the result
-    against the team's rules. Rescan deployed digests on a schedule, and patch by rebuilding or
-    updating the affected software.
 
 ## Reflexes
-- Is the preview I reviewed exactly what will be applied, or may the target have moved?
-- Which line of this preview deletes or replaces something that holds data?
 - Which tag here could point to other content tomorrow?
 - If this base stopped getting updates today, how would we notice, and where would we go?
 - Where can this secret land: a layer, a log, a saved preview, the state?
 - Does "sensitive" here mean hidden from output, or not stored at all?
-- Whose credentials does this preview run with, and what could the code under review do with them?
-- Can I show which build, from which revision, produced this artifact?
-- What does this workload need beyond the restricted profile, and is the reason written?
-- Is this drift a mistake to revert or a fix to encode?
 - Is this finding new, or has it been open for months?
 
 ## What is measured

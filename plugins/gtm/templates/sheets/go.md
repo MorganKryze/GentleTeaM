@@ -9,6 +9,7 @@
 - Adding or updating a dependency or a development tool.
 - Testing code built on goroutines, timers, timeouts or network calls.
 - Handling untrusted input: parsers, decoders, HTTP handlers, file paths.
+- Configuring an HTTP server or client, or building the binaries a release ships.
 
 ## Method
 1. Before an upgrade, read the release notes of every version crossed and list the behavior changes
@@ -19,39 +20,27 @@
 3. Then run the modernizer pass from a clean tree, twice, with one change per prolific analyzer and
    one pass per platform that has its own code; fix generators, not generated files; build and test
    after each pass.
-4. Keep the gate blocking: vet, race-enabled tests, a reachable-vulnerability scan in a mode whose
-   exit code carries the verdict, and the team's pinned linter on new code with report caps off.
-5. Test timers, timeouts and goroutine coordination inside a synthetic-time bubble, not with real
+4. Test timers, timeouts and goroutine coordination inside a synthetic-time bubble, not with real
    sleeps; start goroutines with `sync.WaitGroup.Go`.
-6. Fuzz code that parses untrusted input; confine file access to a root directory when paths come
+5. Fuzz code that parses untrusted input; confine file access to a root directory when paths come
    from outside.
-7. Pin development tools: the maintainers' tested binary when they advise against source builds,
+6. Pin development tools: the maintainers' tested binary when they advise against source builds,
    module-tracked tools for small helpers.
-8. Review and test every dependency update; follow the security announcement list and apply point
-   releases.
-9. Treat announced performance gains as hypotheses: benchmark your own workload before and after.
-10. Ship only binaries built by one of the two newest major releases: an older major gets no further
-    security point release, and a patch reaches users only once each binary is rebuilt with the
-    patched toolchain and redeployed.
-11. Bound what a remote peer can hold: serve HTTP through a configured server with a header-read
-    timeout and read, write and idle timeouts that fit its handlers, since the zero values and the
-    package-level serve functions leave every timeout off; cap request bodies; give every outbound
-    call a client timeout or a deadline, since the default client has none.
+7. Ship only binaries built by one of the two newest major releases: an older major gets no further
+   security point release, and a patch reaches users only once each binary is rebuilt with the
+   patched toolchain and redeployed.
+8. Bound what a remote peer can hold: serve HTTP through a configured server with a header-read
+   timeout and read, write and idle timeouts that fit its handlers, since the zero values and the
+   package-level serve functions leave every timeout off; cap request bodies; give every outbound
+   call a client timeout or a deadline, since the default client has none.
 
 ## Reflexes
 - Does the module's `go` line allow the idiom I am writing, or the fix the tool proposes?
 - Did this dependency update raise the `go` or `toolchain` line, and with it the GODEBUG defaults
   and the toolchain the go command switches to?
-- Is a result used before its error is checked?
-- Did a test execute this concurrent path, or only compile it?
 - Could this vulnerable code be reached through reflection or unsafe code, where the scanner may
   miss it?
-- Is this test waiting on the wall clock where a synthetic clock would do?
 - Who waits for this goroutine, and what makes it stop?
-- Will the next toolchain change an error text or a byte stream that a test compares?
-- Does this tool belong in the module graph, or in a pinned binary?
-- What does each source gain from its claim, which blind spot does it admit, and what survives both
-  readings?
 
 ## What is measured
 - Vet findings: zero. Verify: `go vet ./...` exits 0.
@@ -97,7 +86,8 @@
 - [Security Best Practices for Go Developers](https://go.dev/doc/security/best-practices),
   2026-11-01: vulnerability scan, fuzzing, updates, race detector, vet.
 - [govulncheck command](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck), 2026-11-01: exit
-  codes per output format, blind spots.
+  codes per output format, blind spots, binary mode, the toolchain whose standard library each
+  mode checks, false positives in binaries.
 - [golangci-lint configuration file](https://golangci-lint.run/docs/configuration/file/),
   2026-11-01: new-code-only options and default report caps.
 - [golangci-lint local installation](https://golangci-lint.run/docs/welcome/install/local/),
@@ -108,8 +98,6 @@
   fixes and their use in CI.
 - [Go Release History](https://go.dev/doc/devel/release), 2026-11-01: a major release is supported
   until two newer ones exist; security fixes ship as point releases of supported majors.
-- [govulncheck command](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck), 2026-11-01: binary
-  mode, the toolchain whose standard library each mode checks, false positives in binaries.
 - [go command](https://pkg.go.dev/cmd/go), 2026-11-01: go version on a file reports the toolchain
   that built it.
 - [net/http package](https://pkg.go.dev/net/http), 2026-11-01: zero-value server timeouts mean none,

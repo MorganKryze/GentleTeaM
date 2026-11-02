@@ -36,13 +36,10 @@
    served degraded, and that the system recovers unaided once load falls back.
 
 ## Reflexes
-- Is this a mean where a percentile or a whole distribution is needed?
-- Would this load generator have stopped sending while the system stalled?
-- Did baseline and candidate share one machine and its noise, and how many runs back the claim?
 - Is the change larger than run-to-run noise, and larger than the smallest effect worth acting on?
 - Lasting shift or spike: do enough later data points confirm it?
 - Which resource saturates first, and is anything failing quietly or failing slowly?
-- Does the lab agree with what real users see at a high percentile, per device class?
+- Does the lab agree with what real users see at the 75th percentile, per device class?
 - Does the run hold enough samples for the percentile it reports?
 - What limited the benchmark while it ran, as seen with other tools at the time: the code under
   test, or the load generator, the network or the harness itself?
@@ -50,23 +47,23 @@
 ## What is measured
 - Candidate-to-baseline ratio from repeated paired runs on one host: a `verify` step fails when the
   lower bound of its confidence interval exceeds one plus the budget.
-- Latency percentiles (median, 99th, 99.9th, maximum) at a fixed offered rate, timed from intended
-  start, successes and failures apart: a `verify` step fails when the 99th percentile of successes
-  exceeds the objective at the target rate.
+- Latency percentiles (median, 99th, maximum) at a fixed offered rate, timed from intended start,
+  successes and failures apart: a `verify` step fails when the 99th percentile of successes exceeds
+  the objective at the target rate.
 - Failure rate at the target rate, counting explicit errors, timeouts and success responses with
   wrong content, and the latency of those failures: a `verify` step fails when the rate exceeds its
   threshold, so a change cannot pass the latency gate by failing fast, failing slowly or answering
   wrongly; reading failure latency stays judgment.
 - Capacity, the highest offered rate that holds both the latency objective and the failure
   threshold: a scheduled `verify` step fails when it falls below the target rate plus the chosen
-  safety margin; behaviour beyond it and recovery stay judgment.
+  safety margin; how far successful throughput may fall beyond it and how long recovery may take
+  stay judgment.
 - Change points in each benchmark's main-line history: a scheduled `verify` step fails while an
   untriaged unfavourable change point remains; fixing, reverting or accepting it stays judgment.
 - User-perceived metrics at the 75th percentile of real usage, per device class: a scheduled
   `verify` step on field data, not a merge gate; lab proxies only warn early.
-- Utilisation, saturation and errors per resource: a diagnostic checklist, not a gate; reading it
-  stays judgment.
-- Profiles of the hot path: evidence for a diagnosis, not a gate; interpreting them stays judgment.
+- Utilisation, saturation and errors per resource, and profiles of the hot path: evidence for a
+  diagnosis, not a gate; reading them stays judgment.
 
 ## Sources
 - [The USE Method](https://www.brendangregg.com/usemethod.html), 2026-11-01: per-resource

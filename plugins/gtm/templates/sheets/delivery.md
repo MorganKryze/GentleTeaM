@@ -7,8 +7,11 @@
 - Designing or changing a build, release or deployment pipeline.
 - Choosing how a change reaches users: release train, feature flag, canary, deployment experiment.
 - Deciding whether an artifact may be deployed: provenance, integrity, reproducibility.
+- Changing stored data or a shared interface while old and new versions run side by side.
+- Setting how a change is approved before production.
 - Setting up or reading delivery metrics for an application or service.
-- Shipping a corrective release under a deadline, including legal vulnerability reporting.
+- Shipping a corrective release under a deadline, or meeting a legal release duty: vulnerability
+  reporting, bill of materials, support period.
 
 ## Method
 1. Keep the mainline releasable: small batches merged at least daily, very few active branches,
@@ -28,33 +31,29 @@
 7. Ship on a fixed cadence: a late change takes the next release; only very seldom is a release held
    for a feature.
 8. Record every production deployment and derive the five delivery metrics per service; read trends,
-   never set targets.
-9. Keep a corrective-release path and, where the law requires it, a reporting chain with named
-   owners and timed drills.
-10. Where the law requires it, have the pipeline produce a machine-readable software bill of
-    materials with every release, listing at least the top-level dependencies, and keep it with the
-    artifact; keep the corrective path able to ship a security fix apart from functionality changes,
-    where technically feasible, throughout the support period (at least five years unless expected
-    use is shorter), for the latest release and for any older one whose users cannot move to it at
-    no cost.
+   never set targets or rank teams.
+9. Keep a corrective-release path and, where the EU Cyber Resilience Act applies, a reporting chain
+   with named owners and timed drills. Under that act the path must be able to ship a security fix
+   apart from functionality changes, where technically feasible, throughout the support period (at
+   least five years unless expected use is shorter), for the latest release and for any older one
+   whose users cannot move to it at no cost.
+10. Where that act applies, have the pipeline produce a machine-readable software bill of materials
+    with every release, listing at least the top-level dependencies, and keep it with the artifact.
 11. Change stored data and shared interfaces in expand, migrate and contract steps, each releasable
     alone: leave existing structures in place while old and new versions run, so canary and control
     can share the same data and the application can roll back while the schema stays migrated;
     rehearse each migration on production-like data with sensitive fields removed, and contract only
     once nothing uses the old form, never skipping it.
 12. Approve changes by peer review in the delivery platform, recorded with the change and backed by
-    the automated checks; give flagged high-risk changes extra scrutiny, keep any change board for
-    coordination rather than as a gate on each deployment, and answer instability with smaller,
-    safer changes, not more approvals.
+    the automated checks, and give flagged high-risk changes extra scrutiny. When the process is up
+    for decision, propose any change board for coordination rather than as a gate on each
+    deployment, and smaller, safer changes rather than more approvals as the answer to instability.
 
 ## Reflexes
 - Could this change be merged and deployed today, hidden if unfinished?
 - If it goes wrong, what turns it off: a rollback, a flag, or nothing?
 - Could the previous version still run against the data and interfaces this change leaves behind?
 - Is what we deploy provably what was built from the reviewed source?
-- Is the canary signal attributable to the canary population, over a long enough window?
-- Which flags are past their expiry, and who owns them?
-- Is a delivery metric turning into a target or a ranking between teams?
 
 ## What is measured
 - The five delivery metrics (deployment frequency, change lead time, failed deployment recovery

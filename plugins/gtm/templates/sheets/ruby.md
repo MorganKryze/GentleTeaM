@@ -9,6 +9,7 @@
 - Reviewing a Rails change for security, queries or job safety.
 - Defining the checks a Rails change must pass before merge.
 - Tuning processes, threads, JIT or memory of a Rails deployment.
+- Writing or reviewing a schema migration or data backfill on a live application.
 
 ## Method
 1. Place the app in time: Rails series and its security end date, Ruby version against that series'
@@ -27,38 +28,28 @@
 7. Tune from measurements only: a dedicated load tool on production-like hosts, warmed up, reading
    P50, P95 or P99, and throughput; keep the production JIT on and a fragmentation-resistant
    allocator; change one setting at a time.
-8. Before adopting a feature from a release announcement, read its changelog and deprecations and
-   score the options against explicit criteria.
-9. Change the schema so the code still running survives each migration: ignore a column in the model
+8. Change the schema so the code still running survives each migration: ignore a column in the model
    and deploy that before the migration that drops it; build indexes on populated tables without
    blocking writes; keep data backfills apart from the schema change, in throttled batches outside a
    transaction; give migrations a short lock timeout and a long statement timeout.
 
 ## Reflexes
-- Until when does this Rails series get security fixes, and what is the plan before then?
-- Which framework defaults does this app really run with?
-- Does this change add a deprecation, or lean on something the next release removes?
 - Can user input reach SQL, HTML, a redirect, a header or a file path unescaped?
 - Is every record this action reads or changes found through what the current user may access, never
   by a bare id from the request?
-- How many queries does this page or job run, and does that grow with the data?
 - Is each uniqueness validation also a unique index over the same columns and scope, so two
   concurrent saves cannot both pass?
 - If the process dies mid-job or the transaction rolls back, what happens to this job?
-- Will the code already deployed keep working, and other queries keep moving, while this migration
-  runs?
-- Is this tuning choice backed by a measured percentile on a production-like host?
 
 ## What is measured
 - Security window: days left before the running series loses security fixes; a `verify` step fails
-  past the date and warns in the last 90 days.
+  past the date.
 - Static security analysis: zero warnings; a `verify` step runs it in fail-on-warning mode.
 - Dependency advisories: zero known-vulnerable packages, server and browser side; a `verify` step
   runs both audits.
 - Authorization: every action checks access or skips the check explicitly; a `verify` step adds an
   after-action check so tests raise when an action ends without one; whether each rule is right
   stays judgment.
-- Style: zero offenses against the team's rules; a `verify` step runs the linter.
 - Tests and seeds: suite green and seed replant passing; one `verify` step each.
 - Migration safety: no flagged operation outside an explicit override; a `verify` step runs new
   migrations under a safety checker that stops on dangerous operations; backfills, which it does not

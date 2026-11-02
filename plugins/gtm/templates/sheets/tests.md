@@ -20,7 +20,7 @@
    fail.
 5. On changed code, use coverage to find what no test reaches, then use mutants on changed and
    covered lines to find what is reached but not asserted. Filter out logging, tracing, and deadline
-   code, and read survivors as review findings.
+   code, and read survivors in review.
 6. For Markdown, test the structure a reader or a script relies on, not the wording. Run code
    examples as ordinary tests instead of comparing their text output.
 7. For complex logic with a wide input space, consider properties and generators, and check that
@@ -37,12 +37,8 @@
     doubles with a larger test on the real dependency.
 
 ## Reflexes
-- If I remove the line this test claims to protect, does it fail?
 - Would a refactor with no behavior change break this test?
-- Is this line covered because its effect is checked, or only because it ran?
 - Does this test depend on order, the clock, the network, or an unbounded wait?
-- If a test passes on a rerun, who owns the cause?
-- Am I pinning wording that a reader does not depend on?
 - When someone says unit or integration, what do they mean here?
 - Does this new test catch a fault that no existing test catches?
 
@@ -62,8 +58,6 @@
 - Stability: repeated runs, in random order where the runner allows it, each test with a time limit.
   As a `verify` step, run periodically and fail on any divergence. Passing runs do not prove absence
   of flakiness.
-- Documentation: code examples marked as runnable all execute. As a `verify` step, run them with the
-  test suite.
 - Judgment only: the split between kinds of tests, a test's relevance, and whether a generated test
   is worth keeping.
 

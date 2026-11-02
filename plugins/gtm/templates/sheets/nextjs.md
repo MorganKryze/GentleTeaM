@@ -5,11 +5,12 @@
 
 ## When it applies
 - Writing or reviewing routes, layouts, Server Components, Server Functions, route handlers or the
-  proxy file of a Next.js app.
-- Deciding what to prerender, cache, stream or prefetch, or migrating to Cache Components.
+  proxy file of a Next.js App Router app.
+- Deciding what to prerender, cache or stream, or migrating to Cache Components.
 - Upgrading Next.js, applying a scheduled or out-of-band security release, or choosing where to host
   the app.
-- Auditing authentication, authorization and data exposure in a Next.js codebase.
+- Auditing authentication, authorization, data exposure or public environment variables in a
+  Next.js codebase.
 
 ## Method
 1. Check the installed version against the support policy and the latest security release, then book
@@ -32,8 +33,7 @@
 8. Lock intent: declare static guarantees on routes that must stay static, and cover key journeys
    with instant-navigation end-to-end tests.
 9. Host on a verified adapter or on one that passes the adapter test suite. Self-hosted instances
-   must keep cached content in sync; setting one Server Functions encryption key makes them all use
-   the same key.
+   must keep cached content in sync and share one Server Functions encryption key.
 10. Put each access check where it runs for what it guards: the page, the component that shows the
     data, or the data access layer, never only a layout. A layout doesn't re-run on navigation, and
     hiding its children doesn't stop them rendering into the RSC payload. Neither the static shell
@@ -49,17 +49,9 @@
     keeps the value it was built with. Read per-environment values on the server at request time.
 
 ## Reflexes
-- Could someone call this Server Function directly, and does it check who they are and what they
-  own?
 - Could this prop or return value carry a field the client must not see?
 - Does this runtime read sit inside a Suspense boundary, or does it block the static shell?
-- Is this access check only in a layout, or does it guard content prerendered into the static shell
-  or a server cache, where no check runs per request?
 - Where is this cached value stored, and does it survive another instance or the next deploy?
-- Is our version covered by the latest security release, and when is the next one?
-- Is this performance figure a vendor benchmark, or did we measure it on our app?
-- Scored on durability, performance, migration cost and operations, which option wins, and by how
-  much?
 
 ## What is measured
 - Version floor: a verify step fails when the installed framework version is below the team's

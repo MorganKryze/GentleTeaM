@@ -5,8 +5,7 @@
 
 ## When it applies
 - Writing, reviewing or refactoring React components, hooks or Effects.
-- Starting a React app, or choosing between a full-stack framework, a client-only setup and a bare
-  build.
+- Writing or reviewing Server Components, Server Functions, error boundaries or raw HTML rendering.
 - Enabling the React Compiler, or adding or removing manual memoization.
 - Upgrading React, or acting on a React security advisory.
 - Investigating a slow interaction, a stale value or an Effect that fires too often.
@@ -15,9 +14,9 @@
 1. Note the React line in use and read every release post and security advisory since the last
    upgrade. If React renders on a server with Server Components, bring the React server packages and
    the framework that ships them to the patched floor before any other work.
-2. Turn on the official hooks lint preset (Rules of Hooks, exhaustive dependencies and the
-   compiler-derived rules) and let errors fail the build. It works without the compiler, so fix
-   violations before changing behavior.
+2. Run the official hooks lint preset (Rules of Hooks, exhaustive dependencies and the
+   compiler-derived rules) and fix its errors before changing behavior. It works without the
+   compiler.
 3. Keep render pure: derive values during render; never mutate props, state or globals; never read
    or write refs during render.
 4. Put logic caused by the user in event handlers. Keep an Effect only to synchronize with an
@@ -26,22 +25,24 @@
    - subscribe to external stores with useSyncExternalStore;
    - move the non-reactive part into an Effect Event, kept out of the dependency list;
    - prefer the framework's data loading, or else a fetch whose cleanup ignores stale responses.
-5. Mark non-urgent updates as transitions:
-   - animate only transitions, with ViewTransition;
-   - keep hidden screens and their state with Activity;
-   - have client-only components call use(browser()), so the server shows the nearest Suspense fallback.
+5. Mark non-urgent updates as transitions, and animate only those, with ViewTransition. Keep hidden
+   screens and their state with Activity. Have client-only components call use(browser()), so the
+   server shows the nearest Suspense fallback.
 6. Adopt the compiler in steps: clean lint, exact version pin, one area at a time, end-to-end tests
    on.
    - Leave existing memoization alone in that change, and remove it later only under tests.
-   - Keep it, with a comment, where a library, an Effect or an outside listener needs a stable identity.
-   - Count opt-out directives as debt.
+   - Keep it, with a comment, where a library, an Effect or an outside listener needs a stable
+     identity.
 7. Profile the same scenario before and after any change sold as an optimization, reading the
    scheduler and component tracks. Treat published gains and devtools badges as hypotheses.
 8. Keep secrets out of Server Function source; read them at runtime.
 9. Where Server Components or Server Functions are in use, treat the boundary between server and
    client as public in both directions:
-   - any client can call a Server Function with arguments of its choosing, so each one checks its arguments at runtime (static types are not enforced) and confirms the current user may take the action before doing anything;
-   - props a Server Component passes to a Client Component are serialized to the browser, so pass only the fields it renders, never a whole record.
+   - any client can call a Server Function with arguments of its choosing, so each one checks its
+     arguments at runtime (static types are not enforced) and confirms the current user may take
+     the action before doing anything;
+   - props a Server Component passes to a Client Component are serialized to the browser, so pass
+     only the fields it renders, never a whole record.
 10. Put Error Boundaries at the level where a fallback message makes sense to the user, not around
     every component, since a rendering error no boundary catches takes the whole UI off the screen.
     Report errors through the root's onCaughtError, onUncaughtError and onRecoverableError options,
@@ -55,20 +56,8 @@
 
 ## Reflexes
 - Does this code run because the component appeared, or because the user did something?
-- Can this value be derived from props or state instead of stored?
-- Does anything mutate during render: a prop, a global, a ref?
-- Is this memoization load-bearing (a library or an Effect needs a stable identity), or decorative?
-- Is this update urgent, or can it be a transition?
-- If React renders on a server here, is every React server package, and the framework shipping it,
-  at or above the patched floor of its line?
-- Did I measure, or am I trusting a badge or someone else's number?
-- Could any client call this Server Function with arguments its own UI never sends, and would it
-  refuse a user who may not take the action?
-- Does a prop sent from a Server Component to a Client Component carry anything the component does
-  not render?
 - If this part throws while rendering, what does the user still see, and does the error reach
   reporting?
-- Where does this raw HTML come from, and what sanitized it?
 
 ## What is measured
 - Hooks lint: zero errors under the official preset. A `verify` step runs the linter over the whole
@@ -90,8 +79,6 @@
   before acting, and Client Component props carry only rendered fields; both stay judgment at
   review. A `verify` step compares the files containing `'use server'` with a committed, reviewed
   list and fails on a new one, so no new endpoint skips that review.
-- Error containment: judgment at review, asking what the user still sees when one region throws and
-  whether caught and uncaught errors reach reporting.
 - Raw HTML: the number of dangerouslySetInnerHTML uses does not grow unreviewed. A `verify` step
   compares it with a committed baseline; whether each input is trusted and sanitized stays judgment.
 
@@ -106,8 +93,6 @@
   the lint rules, usable without the compiler.
 - [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect), 2026-11-01:
   the Effect decision rules.
-- [Creating a React App](https://react.dev/learn/creating-a-react-app), 2026-11-01: framework or
-  bare build.
 - [Critical Security Vulnerability in React Server
   Components](https://react.dev/blog/2025/12/03/critical-security-vulnerability-in-react-server-components),
   2026-11-01: who is exposed, upgrade path.

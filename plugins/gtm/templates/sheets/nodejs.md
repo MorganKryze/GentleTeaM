@@ -9,6 +9,8 @@
 - Running TypeScript directly, choosing a module format, or setting up tests and coverage.
 - Hardening an HTTP server or limiting what a process may touch.
 - Publishing a package to the public registry.
+- Keeping a server's event loop free, or deciding how a process reacts to an uncaught exception or
+  unhandled rejection.
 
 ## Method
 1. Pick the runtime line from the official release table: production only on LTS lines, recorded in
@@ -22,8 +24,8 @@
 4. When Node.js strips TypeScript types, use erasable syntax only (no enum, parameter property,
    runtime namespace or decorator), explicit .ts extensions, type-only imports and "#" subpath
    imports. Type-check as a separate step, and publish compiled output.
-5. Test with one process per file and enforce coverage thresholds. Experimental features stay in CI
-   tooling, never in production.
+5. Test with one process per file and enforce coverage thresholds. Features at stability 1
+   (experimental) stay in CI tooling, never in production.
 6. Harden HTTP servers: socket error handlers, header, request and keep-alive timeouts, a reverse
    proxy, never the insecure parser, constant-time comparison of secrets, prototype-less objects and
    own-property checks against prototype pollution, and no inspector in production.
@@ -42,21 +44,10 @@
     never resume, and let an external supervisor restart the process.
 
 ## Reflexes
-- Is this runtime line LTS today, and for how long?
 - Does the exact Node.js version I run have a published security fix I have not rolled out?
-- Was this dependency version published inside the cooldown window, and does it run an install
-  script?
 - If an install script were malicious, which secrets on this machine or CI runner could it read?
-- Is this feature at stability 1 (experimental)? If so, it stays out of production.
-- Does this code need code generation (enum, parameter property, decorator) that type stripping
-  refuses?
-- Would a CommonJS caller hit top-level await anywhere in this module graph?
 - Could crafted input hold the event loop in this handler: a backtracking regex, a huge JSON body, a
   synchronous call?
-- Does any uncaughtException or unhandledRejection listener log and carry on instead of exiting
-  non-zero?
-- Am I using the permission model as a seat belt, or wrongly as protection against malicious code?
-- What exactly is in the tarball I am about to publish?
 
 ## What is measured
 - Runtime line: a verify step fails unless the running major version is in an allowed list kept in
@@ -67,12 +58,13 @@
 - Install: a verify step fails without a committed lockfile, and installs only with the
   clean-install command, which errors on drift.
 - Cooldown: a verify step fails unless the package-manager config sets a minimum release age of at
-  least one day. The duration and any one-off exception for an urgent fix stay judgment.
+  least one day. The duration stays judgment.
 - Install scripts: a verify step fails unless dependency install scripts are off or held to a strict
   reviewed allowlist. Approving a script stays judgment.
 - Known vulnerabilities: the audit command exits non-zero at a chosen severity. The level stays
   judgment.
-- Types: a no-emit type-check that enforces erasable-only syntax must pass.
+- Types: where Node.js strips types, a no-emit type-check that enforces erasable-only syntax must
+  pass.
 - Coverage: the test run exits non-zero below line, branch and function thresholds. The values stay
   judgment.
 - Least privilege: tests pass with the permission model enforced and the committed grants. The

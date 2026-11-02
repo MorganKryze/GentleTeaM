@@ -6,7 +6,8 @@
 ## When it applies
 - A change that starts tasks, threads, workers or asynchronous jobs, or shares mutable state between
   them.
-- A change to locks, atomics, queues, channels, caches, pools or any hand-written synchronization.
+- A change to locks, atomics, queues, channels, caches, pools or any hand-written synchronization,
+  or a fix for a race or a deadlock.
 - A distributed or asynchronous protocol: retries, timeouts, replication, failover.
 - A performance goal that depends on adding cores, workers or nodes.
 
@@ -44,17 +45,7 @@
 ## Reflexes
 - Who else can reach this state while I hold it, and which happens-before edge orders our accesses?
 - Can this task outlive the code that started it? Who waits for it, sees its error, cancels it?
-- Would a reader need the memory model to understand this code? Then it is too clever.
-- Did it pass once, or for N seeds that I can replay?
 - Which clock, random source, I/O or scheduling choice in this test escapes the test's control?
-- Does the race detector see all the code, or can uninstrumented parts hide or invent races?
-- Does one more worker add throughput, or only contention and coherency cost?
-- When producers outrun consumers and keep doing so, where does the excess wait, what bounds it, and
-  who is told no?
-- If this call times out and is retried, can its effect happen twice, and how many attempts can one
-  request cause at the bottom of the stack?
-- Which locks can this path hold at once, are they taken in the declared order, and does it call
-  code I do not control while holding one?
 
 ## What is measured
 - Race reports on the instrumented test suite: zero, and the suppression count never grows. The

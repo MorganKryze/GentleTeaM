@@ -17,18 +17,15 @@
 4. Check change coupling: files that move together are read together.
 5. Before a refactor, secure the code: add tests first, then refactor, then run mutation on what
    moved.
-6. Keep new debt out with gates on changed code only, and leave existing debt to the prioritised
-   list.
+6. Propose gates on changed code only, to keep new debt out, and leave existing debt to the
+   prioritised list.
 7. Ship each refactor as its own change, apart from features and bug fixes; only small local
    cleanups ride along with those, and a bug found while moving code gets its own change. Build the
    refactor from small behaviour-preserving steps, none leaving the system broken for more than
    minutes.
 
 ## Reflexes
-- Does this file change often, or did it spike once?
-- Is this a score, or a burden someone actually reports?
 - Would this number end up rating people? Then it stays out of reports.
-- Is complexity above 30? Tests cannot clear it: only lowering complexity does.
 - What did the diff-only run miss: a test-only change, a dependency change?
 - Does this surviving mutant point at a missing test, or at noise?
 - Would these tests pass unchanged through the refactor? Killed mutants show tests catch behaviour
@@ -45,7 +42,7 @@
   above the limit in lizard's whitelist file, `whitelizard.txt`, as `path:function` entries whose
   path matches the relative path lizard scans, so a change touching a hotspot fails only on new
   offenders. Listed functions are ignored, growth included, so the whitelist is read with the
-  prioritised list and shrinks as it is worked. It is part of the lizard `verify` step.
+  prioritised list and shrinks as it is worked.
 - Cognitive complexity: a reading signal, with partial validation. It stays judgment and is not a
   gate.
 - CRAP score: `CRAP(m) = comp(m)^2 * (1 - cov(m)/100)^3 + comp(m)`, where `comp`
@@ -53,16 +50,15 @@
   automated tests. An optional `verify` step: for each function touched by the diff, compute the
   score and exit non-zero above a limit, 30 by default. It needs per-function coverage. cargo-crap
   computes it for Rust; elsewhere join lizard with the project's coverage report. Up to complexity 5
-  the score never exceeds 30; between 6 and 30 either test or split; above 30 only lowering complexity works.
+  the score never exceeds 30; between 6 and 30 either test or split; above 30 only lowering
+  complexity works.
 - Mutation on changed code: StrykerJS `--incremental` for TypeScript and JavaScript, mutmut for
   Python (it re-tests changed functions, fork required), Gremlins on pull request changes
   for Go (0.x, small modules), `cargo mutants --in-diff` for Rust. A report step first, with
-  survivors shown in review and capped, and a periodic full run. No source here justifies a score
-  target.
+  survivors shown in review, and a periodic full run. No source here justifies a score target.
 - Duplication: jscpd with `--threshold` set at the repository's current level and lowered as it
   falls; confirm Python, Go and Rust support and the exit code first. As a `verify` step, it holds
   the line.
-- Code smells: they feed a health score, but which ones matter stays judgment.
 - What to refactor first stays judgment: scores structure the discussion and never rank alone.
 
 ## Sources

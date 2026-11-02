@@ -10,6 +10,8 @@
 - Adding or tightening continuous-integration checks: code style, static analysis, dependency audit,
   architecture or mutation tests.
 - Reviewing Eloquent data access or request handling for performance traps and security flaws.
+- Handling the application key or `.env` files, record-level authorization, or queued work
+  dispatched inside a database transaction.
 
 ## Method
 1. Read the official support tables first: note the security end date of the PHP branch and of the
@@ -29,37 +31,27 @@
 7. Review security against the framework cheat sheet: debug off in production, only validated or
    filtered input in mass assignment, bound parameters in raw queries and allowlisted column names,
    escaped output, no user-supplied redirect target, request forgery protection kept on.
-8. Before adopting a practice, weigh its sources as an optimist, a skeptic and a synthesizer would,
-   then score the options against weighted criteria: risk covered, cost, measurability, strength of
-   evidence.
-9. Treat the application key as a secret: generate it with `php artisan key:generate`, never commit
+8. Treat the application key as a secret: generate it with `php artisan key:generate`, never commit
    an unencrypted `.env` file or a per-environment copy of it, and after any exposure rotate the key
    rather than only deleting the commit, since anyone holding it can craft encrypted payloads that
    the framework decrypts and unserializes, a path to remote code execution; a key listed in
    `APP_PREVIOUS_KEYS` is still tried on decryption, so a leaked one stays there only until data
    encrypted with it has been re-encrypted.
-10. Make queued work wait for the commit: set `after_commit` to true on the queue connection, or
-    chain `afterCommit()` on each dispatch made inside a transaction; otherwise a worker can run the
-    job before the commit and find its records missing or stale. With the option on, jobs from a
-    transaction rolled back by an exception are discarded, and queued listeners, mail, notifications
-    and broadcast events wait as well.
+9. Make queued work wait for the commit: set `after_commit` to true on the queue connection, or
+   chain `afterCommit()` on each dispatch made inside a transaction; otherwise a worker can run the
+   job before the commit and find its records missing or stale. With the option on, jobs from a
+   transaction rolled back by an exception are discarded, and queued listeners, mail, notifications
+   and broadcast events wait as well.
 
 ## Reflexes
-- On what date does security support end for the PHP branch and the Laravel major this change runs
-  on?
 - Does this code call framework methods with named arguments, which the backward-compatibility
   guidelines do not cover?
 - Is a relation loaded inside a loop, and would a test fail if it were?
-- Does any model receive request data that was not validated or filtered first?
 - Can user input reach a column name, a raw query without bindings, unescaped output, a redirect
   target or a shell command?
 - Can a signed-in user read or change another user's record by editing the key in the URL: does the
   action authorize through a policy, a gate or the route's `can` middleware, and is a nested binding
   scoped to its parent with `scopeBindings` when it has no custom key?
-- Did this change grow the static-analysis baseline instead of fixing errors?
-- Would any test fail if this condition were inverted?
-- Is this advice dated: does it predate the current application structure or the current tool
-  configuration keys?
 
 ## What is measured
 - Supported versions: the runtime branch and the framework major are inside their security window on

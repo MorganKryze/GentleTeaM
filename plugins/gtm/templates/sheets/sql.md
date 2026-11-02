@@ -9,8 +9,9 @@
   run time.
 - Changing the schema of a database that serves live traffic (a migration).
 - Listing or paging results, or chasing a query that slowed down as tables grew.
-- Deciding whether to use a newer standard feature: native JSON type, property graph queries, NULL
-  handling in unique constraints.
+- A read-then-write, an upsert or a counter update that two sessions can run at the same moment.
+- Deciding whether to rely on a newer SQL standard feature, such as NULL handling in unique
+  constraints.
 
 ## Method
 1. Pin the target: name the engine and its version, and set the linter to that dialect. Before
@@ -32,41 +33,39 @@
    the offending rows. Run them all after the migrations apply on a fresh database: zero rows
    passes.
 5. For a query on a hot path:
-   - read its plan with real execution on production-sized data, inside a transaction that is rolled back when the statement writes;
+   - read its plan with real execution on production-sized data, inside a transaction that is
+     rolled back when the statement writes;
    - compare estimated and actual rows;
-   - make the ORDER BY of any limited or paged query unique, adding a unique column last when needed: tied rows come back in no fixed order, so pages can repeat or drop them, and paging by a last key that is not unique skips the rest of its tie;
+   - make the ORDER BY of any limited or paged query unique, adding a unique column last when
+     needed: tied rows come back in no fixed order, so pages can repeat or drop them, and paging by
+     a last key that is not unique skips the rest of its tie;
    - page by the last key seen rather than by offset when users page deep or rows keep arriving.
 6. Change a live schema in three phases:
    - expand: add the new shape beside the old;
    - migrate: move the code that reads and writes;
    - contract: remove the old shape once nothing uses it.
 
-   Where the engine allows, build indexes without blocking writes, add constraints without checking existing rows and validate them in a later step, and set a lock timeout.
+   Where the engine allows, build indexes without blocking writes, add constraints without checking
+   existing rows and validate them in a later step, and set a lock timeout.
 
-   Backfill existing rows as a separate step. Never run it inside the transaction that changes the schema, and never as one statement over a large table: update in batches, commit each batch, and pause between batches.
-7. Gate each change with the SQL linter, the migration linter where the engine has one, and the
-   invariant queries. Plan reading and data-model choices stay reviewed judgment.
-8. Keep each read-then-write correct when two sessions run it at the same moment:
-   - let a unique constraint, not an earlier SELECT, reject a duplicate, and use an insert-or-update that the engine documents as atomic under concurrency;
-   - change a counter or balance in one statement relative to its stored value, not by reading it into code and writing it back, or else lock the rows read before writing them;
-   - learn what the engine's default isolation level lets through, and trust no level by its name: the same name gives different guarantees in different engines;
-   - at a stricter level, catch serialization failure (SQLSTATE 40001) and retry the whole transaction from the start;
-   - keep each transaction to what integrity requires, and do not let one sit open and idle longer than necessary.
+   Backfill existing rows as a separate step. Never run it inside the transaction that changes the
+   schema, and never as one statement over a large table: update in batches, commit each batch, and
+   pause between batches.
+7. Keep each read-then-write correct when two sessions run it at the same moment:
+   - let a unique constraint, not an earlier SELECT, reject a duplicate, and use an insert-or-update
+     that the engine documents as atomic under concurrency;
+   - change a counter or balance in one statement relative to its stored value, not by reading it
+     into code and writing it back, or else lock the rows read before writing them;
+   - learn what the engine's default isolation level lets through, and trust no level by its name:
+     the same name gives different guarantees in different engines;
+   - at a stricter level, catch serialization failure (SQLSTATE 40001) and retry the whole
+     transaction from the start.
 
 ## Reflexes
-- Can any part of this statement's text come from outside the code? If so, is it a bound value or a
-  choice from a fixed list?
 - What does this predicate return when the column, or the subquery, holds a NULL?
-- Does this time range count the boundary instant in two adjacent periods?
-- Is this feature in the standard, does our engine version support it, and with which default?
-- Was this plan read on production-sized data, and do estimated rows match actual rows?
 - Which lock does this migration take, for how long, and what happens to traffic while it waits?
 - After this migration, can both the old and the new code run against the schema?
 - Which invariant would a bug here break, and which zero-row query would catch it?
-- If two sessions run this read-then-write at the same moment, what stops a duplicate row or a lost
-  update?
-- Who says this practice holds, how old is the source, and does the engine's own documentation
-  agree?
 
 ## What is measured
 - **SQL lint violations on changed files.** Zero passes. The `verify` step runs the linter set to
@@ -89,8 +88,6 @@
 - **Plan health of hot queries.** Gap between estimated and actual rows, and run time, on
   production-sized data. This is judgment recorded in review, not a gate, because plans read on
   small test data cannot be assumed to apply to large tables.
-- **Schema-change discipline.** Releases where deployed code and schema were incompatible, and
-  expansions never contracted. This is judgment, checked in review.
 
 ## Sources
 - [SQL:2023 is finished: Here is what's new, Peter
