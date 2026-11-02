@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Pins the spec skill's decision steps: each clause that keeps, skips or exempts sits once in the
 // skill, whitespace joined, and the check's command, run as the skill writes it, passes a spec the
-// check accepts. No other wording is pinned. Run by scripts/validate.mjs. No dependencies.
+// check accepts and keeps its exit 2 on a missing spec. No other wording is pinned. Run by
+// scripts/validate.mjs. No dependencies.
 import { spawnSync } from 'node:child_process'
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -26,10 +27,12 @@ if (!command) errors.push('spec skill: no decision-check command')
 else {
   const dir = mkdtempSync(join(tmpdir(), 'gtm-decision-reading-'))
   writeFileSync(join(dir, 'config.yml'), 'verify:\n  test: "node t"\n  gate: [test]\n')
-  const line = command.replaceAll('<spec>', join(plugin, 'templates/spec.md')).replaceAll('<root>', dir)
-  const r = spawnSync('bash', ['-c', line], { encoding: 'utf8', env: { ...process.env, CLAUDE_PLUGIN_ROOT: plugin } })
+  const run = (spec) => spawnSync('bash', ['-c', command.replaceAll('<spec>', spec).replaceAll('<root>', dir)], { encoding: 'utf8', env: { ...process.env, CLAUDE_PLUGIN_ROOT: plugin } })
+  const r = run(join(plugin, 'templates/spec.md'))
+  const unread = run(join(dir, 'missing.md'))
   rmSync(dir, { recursive: true, force: true })
   if (r.status !== 0 || !r.stdout.includes('2 rows, 1 cards')) errors.push(`spec skill: its command reads exit ${r.status}: ${r.stdout}${r.stderr}`)
+  if (unread.status !== 2) errors.push(`spec skill: its command reads exit ${unread.status} on a missing spec, never a pass: ${unread.stdout}${unread.stderr}`)
 }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
