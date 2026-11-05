@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-11-05
+
 ### Changed
 - A speciality sheet now earns its place. When a task names one, the review dispatch orders a
   second pass after the normal review: the reviewer goes through the sheet line by line against
