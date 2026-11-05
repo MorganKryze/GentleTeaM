@@ -27,8 +27,9 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
   runs, passes, findings by severity. A line without the segment counts for no sheet. A sheet with
   0 findings of any severity over the last 3 runs that name it gets one decision card: remove it or
   keep it; with fewer than 3 such runs, retro proposes nothing. A sheet lives in the plugin:
-  retro never edits or deletes it, and its removal is the human's, a reviewed commit there. Either
-  answer is a `ruling` line; a kept sheet is proposed again only after 3 runs newer than that line.
+  retro never edits or deletes it or its index row; its removal is the human's, a reviewed commit
+  there. Either answer is a `ruling` line naming the sheet and quoting the answer; a kept sheet is
+  proposed again only after 3 runs that name it, newer than that line.
   A sheet with a standing remove ruling, or with no row in
   `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md`, gets no card.
 

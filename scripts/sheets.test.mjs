@@ -82,8 +82,9 @@ const RETRO = [
   'A line without the segment counts for no sheet.',
   '0 findings of any severity over the last 3 runs that name it gets one decision card',
   'with fewer than 3 such runs, retro proposes nothing.',
-  'retro never edits or deletes it',
-  'a kept sheet is proposed again only after 3 runs newer than that line.',
+  'retro never edits or deletes it or its index row',
+  'a `ruling` line naming the sheet and quoting the answer',
+  'a kept sheet is proposed again only after 3 runs that name it, newer than that line.',
   'A sheet with a standing remove ruling, or with no row in `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md`, gets no card.',
 ]
 for (const p of RETRO) if (flat('skills/retro/SKILL.md').split(p).length !== 2) errors.push(`retro: "${p}" must appear once`)

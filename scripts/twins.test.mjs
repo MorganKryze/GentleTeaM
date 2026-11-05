@@ -52,6 +52,7 @@ const TWINS = [
   { test: 'sheets', file: agent('reviewer'), from: 'line names, read as', to: 'line names, seen as', says: 'the card reading must say once' },
   { test: 'sheets', file: skill('retro'), from: 'retro never edits or deletes it', to: 'retro may edit or delete it', says: 'retro never edits or deletes it' },
   { test: 'sheets', file: skill('retro'), from: 'with fewer than 3 such runs, retro proposes nothing.', to: 'with fewer than 3 such runs, retro proposes a card.', says: 'with fewer than 3 such runs' },
+  { test: 'sheets', file: skill('retro'), from: 'proposed again only after 3 runs that name it,', to: 'proposed again only after 3 runs,', says: '3 runs that name it, newer than that line' },
   { test: 'sheets', file: skill('retro'), from: 'with a standing remove ruling', to: 'with a standing keep ruling', says: 'with a standing remove ruling' },
   { test: 'site-checks', file: 'docmd.config.json', from: '"out": "site"', to: '"out": "dist"', says: 'docmd config src/out' },
   { test: 'size', file: script('size'), from: 'Math.ceil(', to: 'Math.floor(', says: 'want' },
