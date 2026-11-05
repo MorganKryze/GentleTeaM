@@ -56,7 +56,7 @@ for (const [file, words] of Object.entries(ABSENT)) {
 }
 for (const name of readdirSync(join(root, 'plugins/gtm/agents')).filter((f) => f.endsWith('.md'))) {
   const file = `plugins/gtm/agents/${name}`
-  if (/^effort: xhigh$/m.test(readFileSync(join(root, file), 'utf8'))) errors.push(`${file} ships effort xhigh`)
+  if (/^effort:\s*["']?xhigh["']?\s*$/m.test(readFileSync(join(root, file), 'utf8'))) errors.push(`${file} ships effort xhigh`)
 }
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('guards: the promised lines hold')
