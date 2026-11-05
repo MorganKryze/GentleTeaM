@@ -18,7 +18,6 @@ const PINS = {
   'plugins/gtm/skills/deliver/SKILL.md': [
     '`git merge --no-ff --no-edit "<branch>-t<n>"`',
     '- Efforts: `team`\'s, raised or lowered on each dispatch\'s range as the Roles note of',
-    '`${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the Gates `risky paths` (`yes` or `no`).',
     'the must-fix list at a correction round\'s effort on the branch range',
   ],
   'plugins/gtm/templates/team.md': [
@@ -58,5 +57,21 @@ for (const name of readdirSync(join(root, 'plugins/gtm/agents')).filter((f) => f
   const file = `plugins/gtm/agents/${name}`
   if (/^effort:\s*["']?xhigh["']?\s*$/m.test(readFileSync(join(root, file), 'utf8'))) errors.push(`${file} ships effort xhigh`)
 }
+// The risky paths: settings.md quotes the template's regexes, and `async` is not `sync`.
+const quoted = (line) => [...line.matchAll(/`([^`]+)`/g)].map((m) => m[1])
+const team = readFileSync(join(root, 'plugins/gtm/templates/team.md'), 'utf8')
+const risky = quoted(team.match(/risky paths (.*?) · why/)?.[1] ?? '')
+const settings = readFileSync(join(root, 'docs/reference/settings.md'), 'utf8')
+const doc = settings.split('\n').slice(102, 105).join(' ')
+const shown = quoted(doc.slice(doc.indexOf('on paths matching'))).slice(0, risky.length)
+if (!risky.length || shown.join('\n') !== risky.join('\n')) {
+  errors.push(`settings.md shows ${shown}, the template holds ${risky}`)
+}
+const hits = (path) => risky.some((r) => new RegExp(r).test(path))
+if (hits('src/async.ts') || !hits('src/schema.ts')) {
+  errors.push('team.md risky paths: src/async.ts must not match, src/schema.ts must')
+}
+const deliver = readFileSync(join(root, 'plugins/gtm/skills/deliver/SKILL.md'), 'utf8')
+if (/`risky`[^\n]*\(`yes` or `no`\)/.test(deliver)) errors.push('deliver: `risky` read as yes or no')
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('guards: the promised lines hold')
