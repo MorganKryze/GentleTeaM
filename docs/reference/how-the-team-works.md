@@ -197,7 +197,7 @@ alone until it passes or its rounds run out (3 by default), and the
 
 One fix wave at most per branch: the implementer at a correction round's effort, then a
 re-review of the fix range, one effort level lower when that range touches no specialist's
-ground.
+ground and no risky path.
 
 ## How is a risky task proved before delivery?
 
