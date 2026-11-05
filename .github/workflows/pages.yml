@@ -25,7 +25,10 @@ jobs:
         with:
           node-version: 22
       - name: Build the site
-        run: npx -y @docmd/core@0.9.7 build
+        # docmd from the committed lockfile, so a new upstream release cannot change the site.
+        run: |
+          npm ci --prefix .github/site-build
+          .github/site-build/node_modules/.bin/docmd build
       - name: Install the site test tools
         run: |
           npm install --prefix "$RUNNER_TEMP/site-tools" --no-save --no-package-lock playwright@1.64.0 axe-core@4.10.3
