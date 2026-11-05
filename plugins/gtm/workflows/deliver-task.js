@@ -11,6 +11,15 @@ const ROUNDS = A.fixRounds ?? 3
 const ROLES = ['analyst', 'designer', 'design-critic', 'architect', 'implementer', 'reviewer',
   'security-reviewer', 'data-reviewer', 'ux-qa', 'final-reviewer', 'release-qa']
 const LEVELS = ['low', 'medium', 'high', 'xhigh']
+// `steps` levels up the ladder, never past `cap` nor below where it starts. An effort off the
+// ladder, such as max, is kept: changing it would undo the project's choice.
+function up(effort, steps, cap) {
+  const i = LEVELS.indexOf(effort)
+  return i < 0 ? effort : LEVELS[Math.max(i, Math.min(i + steps, LEVELS.indexOf(cap)))]
+}
+// The security reviewer's default effort (agents/security-reviewer.md), where a raise starts when
+// the profile gives none.
+const SECURITY = 'high'
 // The sheets /gtm:deliver resolved from the brief's `Sheets:` line (scripts/sheet-paths.mjs): this
 // runtime reads no file. What arrives is still bounded, a name in the slug's alphabet and an absolute
 // path beside the index under that name; any other entry is a missing sheet, skipped without a word.
@@ -84,13 +93,15 @@ function as(role, extra) {
   if (t.effort && !o.effort) o.effort = t.effort
   return o
 }
-// Each fix round thinks one level harder than the last, capped at xhigh. An effort off that
-// ladder, such as max, is kept: lowering it would undo the project's choice.
+// Each fix round thinks one level harder than the last: up to high, or up to xhigh once a file the
+// task has changed is risky; a profile above that cap keeps its own effort.
 function raised(round) {
-  const effort = (TEAM.implementer || {}).effort || 'low'
-  const base = LEVELS.indexOf(effort)
-  return base < 0 ? effort : LEVELS[Math.min(base + round, LEVELS.length - 1)]
+  return up((TEAM.implementer || {}).effort || 'low', round, risky(changed) ? 'xhigh' : 'high')
 }
+// On risky work, the security reviewer thinks one level harder than its profile, at most xhigh: on
+// a first review, a re-review or a retry alike. Off it, and for every other role, the profile holds.
+const harder = (role) => (role === 'security-reviewer' && risky(changed)
+  ? { effort: up((TEAM[role] || {}).effort || SECURITY, 1, 'xhigh') } : {})
 // Specialists run only when the diff touches their ground. A bad regex runs the specialist anyway.
 const triggers = {}
 for (const [role, list] of Object.entries(A.triggers || {})) {
@@ -104,6 +115,17 @@ for (const [role, list] of Object.entries(A.triggers || {})) {
   })
 }
 const ground = (files) => Object.keys(triggers).filter((r) => files.some((f) => triggers[r].some((re) => re.test(f))))
+// The Gates line's risky paths: a file matching one makes the work risky. None given: no raise. A
+// bad regex reads every file as risky, as an invalid trigger runs its specialist.
+const RISKY = [].concat(A.risky ?? []).map((src) => {
+  try {
+    return new RegExp(src)
+  } catch {
+    log(`Invalid risky path: ${src}. Until it is fixed, every file reads as risky.`)
+    return /./
+  }
+})
+const risky = (files) => files.some((f) => RISKY.some((re) => re.test(f)))
 // A role reviews per task unless the profile says per-wave or per-branch. An unknown cadence, or a
 // lighter one for the security or data reviewer, reads as per-task; a cadence that is not a role
 // map reads as per-task for every role. The reviewer joins the range review only, so its
@@ -229,7 +251,7 @@ for (; round <= limit; round++) {
           (A.mockup ? `\nValidated mockup: ${A.mockup}` : '') +
           (p.findings ? `\nYour findings this fix must address. Return each with status "addressed" or "open", then only new breakage in the fix diff; approve when none is left open. Each finding sent keeps its severity until it is addressed:\n${JSON.stringify(p.findings, null, 2)}` : '') +
           SCOPE(`${A.base}..${head}`) + WT,
-        as(p.r, { schema: REVIEW, label: `${p.r}${round ? ` · round ${round}` : ''}`, phase: 'Review' }),
+        as(p.r, { schema: REVIEW, label: `${p.r}${round ? ` · round ${round}` : ''}`, phase: 'Review', ...harder(p.r) }),
         pass,
       )
     }),

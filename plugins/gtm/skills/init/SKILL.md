@@ -41,7 +41,7 @@ model and effort, specialists and their path triggers, correction rounds, the de
 runs of risky tasks, and the companions found as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md`
 says; as a table (priority, role or companion · value · reason) with your recommendation. Write
 what the human approves, with each value's reason and today's date. Derive, do not guess:
-- several accounts, a server or secrets → security high: security-reviewer on, effort xhigh;
+- several accounts, a server or secrets → security high: security-reviewer on, effort high;
 - stored or synced personal records → data integrity high: data-reviewer on, risky tasks dry-run;
 - screens used daily or by many → UX high: ux-qa on, design threshold 8 or more;
 - a reading under 30 minutes old (`usage-line.mjs --read`) at 5h ≥ 80%, or 7d ≥ 50% with ≥ 3 days to

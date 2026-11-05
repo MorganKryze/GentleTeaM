@@ -19,7 +19,12 @@ Weights: low · normal · high. They justify everything below.
 
 ## Roles
 Model: `opus`, `sonnet`, `haiku`, `fable`, a full model id, or `inherit`. Effort: `low`, `medium`,
-`high`, `xhigh`, `max`. The implementer's correction rounds raise its effort one level per round.
+`high`, `xhigh`, `max`. On risky work, a task or range with a file matching the Gates `risky paths`
+(a regex that fails matches all), the security reviewer and the final reviewer rise one level from
+their row (none: `high`), at most `xhigh`. Each correction round raises the implementer one level,
+up to `high`, or `xhigh` on risky work, never below its row. The final review's second pass takes
+the final reviewer's effort for its fix range, one level lower (`low` at least) when that range
+matches no specialist trigger. An effort off that ladder, such as `max`, is never changed.
 
 | Role | Model | Effort | Why | Decided |
 | --- | --- | --- | --- | --- |
@@ -30,10 +35,10 @@ Model: `opus`, `sonnet`, `haiku`, `fable`, a full model id, or `inherit`. Effort
 | architect | opus | high | a wrong plan costs every task after it | YYYY-MM-DD |
 | implementer | opus | low | the plan carries the thinking; reviews catch the rest | YYYY-MM-DD |
 | reviewer | opus | medium | runs on every task | YYYY-MM-DD |
-| security-reviewer | opus | xhigh | rare, and a miss is the costliest | YYYY-MM-DD |
+| security-reviewer | opus | high | a miss is the costliest; `xhigh` on risky work | YYYY-MM-DD |
 | data-reviewer | opus | high | lost data cannot be undone | YYYY-MM-DD |
 | ux-qa | opus | medium | measures more than it reasons | YYYY-MM-DD |
-| final-reviewer | opus | xhigh | once per branch, last line of defence | YYYY-MM-DD |
+| final-reviewer | opus | high | last line of defence; `xhigh` on a risky branch | YYYY-MM-DD |
 | release-qa | opus | low | runs a script, reports what it sees | YYYY-MM-DD |
 | researcher | opus | high | runs on demand; a thin survey wastes every card after it | YYYY-MM-DD |
 
