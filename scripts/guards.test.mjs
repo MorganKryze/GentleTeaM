@@ -72,6 +72,6 @@ if (hits('src/async.ts') || !hits('src/schema.ts')) {
   errors.push('team.md risky paths: src/async.ts must not match, src/schema.ts must')
 }
 const deliver = readFileSync(join(root, 'plugins/gtm/skills/deliver/SKILL.md'), 'utf8')
-if (/`risky`[^\n]*\(`yes` or `no`\)/.test(deliver)) errors.push('deliver: `risky` read as yes or no')
+if (/`risky`[^\n]*\(`yes` or `no`\)/.test(deliver)) errors.push('deliver: `risky` as yes or no')
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('guards: the promised lines hold')
