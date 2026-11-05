@@ -593,7 +593,12 @@ check('A27', () => {
 check('A28', () => {
   const f = [];
   const tracked = git('ls-files').split('\n');
-  for (const p of tracked) if (/(^|\/)(package(-lock)?\.json|yarn\.lock|pnpm-lock\.yaml|npm-shrinkwrap\.json)$/.test(p)) f.push(`tracked manifest or lockfile: ${p}`);
+  // The site build's own install (pages.yml), CI only: the plugin still has no manifest.
+  const siteBuild = ['.github/site-build/package.json', '.github/site-build/package-lock.json'];
+  const manifest = /(^|\/)(package(-lock)?\.json|yarn\.lock|pnpm-lock\.yaml|npm-shrinkwrap\.json)$/;
+  for (const p of tracked) {
+    if (!siteBuild.includes(p) && manifest.test(p)) f.push(`tracked manifest or lockfile: ${p}`);
+  }
   for (const p of tracked) if (/^site\//.test(p)) f.push(`tracked build output: ${p}`);
   try { git('check-ignore', '-q', 'site/index.html'); } catch { f.push('site/ is not ignored'); }
   const cfg = JSON.parse(read('docmd.config.json') || '{}');
