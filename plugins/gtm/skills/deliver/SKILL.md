@@ -19,7 +19,7 @@ Ground rules: as in the `gtm` skill §0.
   it names in `team`, on every dispatch (resumes too), unless struck through or beyond what `gtm`
   §0's card A allows (then ignored, a Heads-up).
 - Efforts: `team`'s, raised or lowered on each dispatch's range as the Roles note of
-  `${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the Gates `risky paths` (`yes` or `no`).
+  `${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the `risky paths` regexes, a list.
 - Progress: `<root>/reports/<slug>/progress.md`, one line per run, any result (reruns append):
   status, tier, correction rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each run's
   line (design, spec, plan, task, final review, re-review, re-run review, fix wave) ends `· <s> s ·

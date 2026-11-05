@@ -9,6 +9,9 @@ versions follow [SemVer](https://semver.org/).
 - Three small holes in the task workflow. A reviewer's retry no longer counts a sheet pass, even
   when its reply claims one. A sheet path holding DEL or a Unicode line break is now refused, as
   ASCII control characters already were. An empty risky path no longer marks every file as risky.
+- The default risky path `((?<!a)sync|contract|schema)` no longer matches `async`, so `src/async.ts`
+  is not risky work; neither is a name where `sync` follows an `a`, such as `datasync`. Existing
+  team settings keep their old line until edited.
 
 ## [0.15.0] - 2026-11-05
 

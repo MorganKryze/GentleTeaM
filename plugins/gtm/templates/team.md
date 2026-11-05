@@ -69,7 +69,7 @@ section has none on: nothing to migrate.
 - design threshold: 8/10, zero must-fix · why: <reason> · YYYY-MM-DD
 - taste threshold: 7/10 · why: the lowest of the five grades, so a bland board fails · YYYY-MM-DD
 - design rounds: 3 · why: <reason> · YYYY-MM-DD
-- replay risky tasks: yes · risky paths `migrations?/`, `(sync|contract|schema)`, `(db|store|storage)/` · why: <reason> · YYYY-MM-DD
+- replay risky tasks: yes · risky paths `migrations?/`, `((?<!a)sync|contract|schema)`, `(db|store|storage)/` · why: <reason> · YYYY-MM-DD
 - budget per task: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD
 - budget per branch: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD
 
