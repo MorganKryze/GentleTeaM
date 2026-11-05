@@ -5,6 +5,15 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- A speciality sheet now earns its place. When a task names one, the review dispatch orders a
+  second pass after the normal review: the reviewer goes through the sheet line by line against
+  the diff and adds what the first pass missed, each finding tagged with the sheet. In a test on
+  three seeded diffs at a light setting, reviewers opened a named sheet 0 times in 15 when only the
+  role prompt asked, and 24 of 24 times with the order in the dispatch.
+- Each `run` line counts what every sheet yielded, and `/gtm:retro` proposes removing a sheet that
+  found nothing over its last 3 runs. Removal stays your call.
+
 ## [0.14.0] - 2026-11-02
 
 ### Added
