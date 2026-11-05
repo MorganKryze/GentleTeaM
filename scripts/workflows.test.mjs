@@ -436,6 +436,40 @@ const deliver = [
     dispatches: [reviewer(), security('security-reviewer', { effort: 'xhigh' })],
   },
   {
+    name: 'risky: an empty source matches no file, a real risky path still raises',
+    args: {
+      risky: ['', ' ', ...RISKY], triggers: SEC, team: { 'security-reviewer': { effort: 'high' } },
+    },
+    reply: implementer(['scripts/x.mjs'], () => ok),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'],
+      stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer(), security('security-reviewer', { effort: 'high' })],
+  },
+  {
+    name: 'risky: [""] alone raises no effort',
+    args: { risky: [''], triggers: SEC, team: { 'security-reviewer': { effort: 'high' } } },
+    reply: implementer([WF], () => ok),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'],
+      stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer(), security('security-reviewer', { effort: 'high' })],
+  },
+  {
+    name: 'risky: an empty source beside a real one, a file on the real one raises',
+    args: {
+      risky: ['', ...RISKY], triggers: SEC, team: { 'security-reviewer': { effort: 'high' } },
+    },
+    reply: implementer([WF], () => ok),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'],
+      stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer(), security('security-reviewer', { effort: 'xhigh' })],
+  },
+  {
     name: 'risky: a retry keeps the raise',
     args: { risky: RISKY, triggers: SEC },
     reply: implementer([WF], (d) => {
@@ -1462,6 +1496,33 @@ const deliver = [
     unprompted: { 'reviewer · retry': ['Second pass', SHEET.path] },
   },
   {
+    name: 'sheets: a retry that adds an undeclared passed: true counts no pass',
+    args: { sheets: [SHEET] },
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') throw new Error('no structured output')
+      return { ...ok, passed: true }
+    }),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · retry')],
+    undeclared: ['reviewer · retry.passed'],
+  },
+  {
+    name: 'sheets: a path holding DEL, U+0085, U+2028 or U+2029 is dropped, no pass ordered',
+    args: {
+      sheets: ['\x7f', '\u0085', '\u2028', '\u2029']
+        .map((c) => ({ name: 'security', path: `/p/${c}Line-mark/templates/sheets/security.md` })),
+    },
+    reply: implementer(['src/a.js'], () => ok),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [],
+    },
+    dispatches: [implement(), reviewer()],
+    unprompted: { reviewer: ['Second pass', 'Line-mark'] },
+    tags: { reviewer: null },
+  },
+  {
     name: 'sheets: a tag naming no sheet of this run, or from a role with no pass, counts for no sheet',
     args: { sheets: [SHEET], triggers: TRIGGERS },
     reply: implementer(['templates/b.md'], (d) => ({ ...ok, findings: [{ ...typo, sheet: d.label === 'reviewer' ? 'constructor' : 'security' }], ...(d.label === 'reviewer' ? { mutations: { planted: 1, survived: 1 } } : {}) })),
@@ -2050,7 +2111,11 @@ for (const s of scenarios) {
     if (s.log && logs.filter((line) => s.log.every((part) => line.includes(part))).length !== 1) differs(where, 'log', s.log, logs)
     // And no log line may hold any of these.
     for (const part of s.unlogged || []) if (logs.some((line) => line.includes(part))) differs(where, `log without "${part}"`, [], logs)
-    if (extra.length) failures.push(`${where}: reply fields the schema does not declare: ${extra.join(', ')}`)
+    // A scenario may plant such a field on purpose, as a model adding one; it lists each by path.
+    const unplanted = extra.filter((f) => !(s.undeclared || []).includes(f))
+    if (unplanted.length) {
+      failures.push(`${where}: reply fields the schema does not declare: ${unplanted.join(', ')}`)
+    }
     // The schema sent to each listed label requires exactly these fields.
     for (const [label, fields] of Object.entries(s.required || {})) if (canon(required[label]) !== canon(fields)) differs(where, `fields required of ${label}`, fields, required[label])
     // The schema sent to each listed label caps exactly these fields of a direction, then of the return.

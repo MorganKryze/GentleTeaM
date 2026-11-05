@@ -5,6 +5,11 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- Three small holes in the task workflow. A reviewer's retry no longer counts a sheet pass, even
+  when its reply claims one. A sheet path holding DEL or a Unicode line break is refused like any
+  other control character. An empty risky path no longer marks every file as risky.
+
 ## [0.15.0] - 2026-11-05
 
 ### Changed
