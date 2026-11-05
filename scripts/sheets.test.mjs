@@ -5,7 +5,10 @@
 // its file, named after its speciality in the slug's alphabet (a-z, 0-9, -), and the folder holds
 // `.md` files only; each sheet keeps the
 // template's sections in order and cites a source; the roles that read a sheet point at the index,
-// so the rule stays in one place. Run by scripts/validate.mjs. No dependencies.
+// so the rule stays in one place, and a task review's sheet work rests on its dispatch alone: the
+// reviewers' prompts order none, and only the card reading points at the index. The counts keep one
+// form from deliver's progress line to the ledger's run line, and retro counts and proposes alone.
+// Run by scripts/validate.mjs. No dependencies.
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -61,11 +64,30 @@ for (const f of ['template.md', ...sheets]) {
 }
 
 const READ = "When a brief's `Sheets:` line names a sheet, read it as `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md` says; otherwise read neither."
-for (const f of ['agents/implementer.md', 'agents/reviewer.md', 'agents/security-reviewer.md']) {
-  if (readFileSync(join(plugin, f), 'utf8').replace(/\s+/g, ' ').split(READ).length !== 2) errors.push(`${f}: must say once: ${READ}`)
+const prompt = (f) => readFileSync(join(plugin, f), 'utf8').replace(/\s+/g, ' ')
+if (prompt('agents/implementer.md').split(READ).length !== 2) errors.push(`agents/implementer.md: must say once: ${READ}`)
+for (const f of ['agents/reviewer.md', 'agents/security-reviewer.md']) {
+  if (prompt(f).includes(READ)) errors.push(`${f}: its task review must rest on the dispatch, not on: ${READ}`)
 }
+const CARD = "against the Reflexes of the sheet the `Sheets:` line names, read as `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md` says."
+if (prompt('agents/reviewer.md').split(CARD).length !== 2) errors.push(`agents/reviewer.md: the card reading must say once: ${CARD}`)
 if (!readFileSync(join(plugin, 'agents/architect.md'), 'utf8').includes('/templates/sheets/index.md')) errors.push('agents/architect.md: does not point at the sheets index')
 if (!readFileSync(join(plugin, 'templates/plan.md'), 'utf8').includes('**Sheets:** <at most 2 specialities from templates/sheets/index.md, or none>')) errors.push('plan template: Sheets line does not take specialities from the index')
+
+const flat = (f) => readFileSync(join(plugin, f), 'utf8').replace(/\n> /g, ' ').replace(/\s+/g, ' ')
+const FIELD = '· sheets <name> <passes> <c>/<i>/<m>, ...'
+if (!flat('skills/deliver/SKILL.md').includes(`\` ${FIELD}\``)) errors.push(`deliver: the progress line must add ${FIELD}`)
+if (!flat('templates/ledger.md').includes(`${FIELD} · mutations <planted>`)) errors.push(`ledger template: the run line must hold ${FIELD} before \`mutations\``)
+const RETRO = [
+  'A line without the segment counts for no sheet.',
+  '0 findings of any severity over the last 3 runs that name it gets one decision card',
+  'with fewer than 3 such runs, retro proposes nothing.',
+  'retro never edits or deletes it or its index row',
+  'a `ruling` line naming the sheet and quoting the answer',
+  'a kept sheet is proposed again only after 3 runs that name it, newer than that line.',
+  'A sheet with a standing remove ruling, or with no row in `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md`, gets no card.',
+]
+for (const p of RETRO) if (flat('skills/retro/SKILL.md').split(p).length !== 2) errors.push(`retro: "${p}" must appear once`)
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`sheets: ${PHRASES.length} clauses and ${sheets.length} sheets OK`)

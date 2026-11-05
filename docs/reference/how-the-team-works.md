@@ -171,6 +171,16 @@ when a plan names it, at most 2 per task. Sheets cost 0 tokens per session.
 A sheet adds a [lens](/reference/glossary/#lens), the method behind a finding, and never softens a
 check. What can be measured goes into the gate as code; the experts keep the judgment.
 
+The reviewer and the security reviewer use a named sheet in a second pass. After a normal review,
+each goes through the sheet's method and reflexes line by line against the diff and adds what it
+missed, for about a fifth more tokens per review in our test. A re-review repeats nothing. A finding
+from that pass carries the sheet's name and is graded like any other, with no quota.
+
+Each `run` line counts what the sheets found, as in `sheets security 2 0/1/0`: 2 passes, then
+critical, important and minor findings. A sheet with no finding over its last 3 runs is what
+`/gtm:retro` proposes to remove, and one with fewer than 3 runs is never proposed; the removal stays
+your call.
+
 ## How are several screens designed?
 
 The design loop gives each screen its own designer and critic, all at once. Each screen is redrawn

@@ -47,13 +47,20 @@ const TWINS = [
   { test: 'review-mutations', file: agent('reviewer'), from: 'only in a scratch clone outside the repository', to: 'only in a scratch clone in the repository', says: 'P1 missing' },
   { test: 'role-split', file: script('role-split'), from: 'lstatSync', to: 'statSync', says: 'expected exit' },
   { test: 'run-mutations', file: LEDGER, from: '· mutations <planted>', to: '· mutants <planted>', says: 'does not state the `mutations` segment' },
+  { test: 'sheet-paths', file: script('sheet-paths'), from: 'const MAX = 2', to: 'const MAX = 3', says: 'at most 2' },
   { test: 'sheets', file: 'plugins/gtm/templates/sheets/quality.md', from: '## Method', to: '## Approach', says: 'quality.md: sections' },
+  { test: 'sheets', file: agent('reviewer'), from: 'line names, read as', to: 'line names, seen as', says: 'the card reading must say once' },
+  { test: 'sheets', file: skill('retro'), from: 'retro never edits or deletes it', to: 'retro may edit or delete it', says: 'retro never edits or deletes it' },
+  { test: 'sheets', file: skill('retro'), from: 'with fewer than 3 such runs, retro proposes nothing.', to: 'with fewer than 3 such runs, retro proposes a card.', says: 'with fewer than 3 such runs' },
+  { test: 'sheets', file: skill('retro'), from: 'proposed again only after 3 runs that name it,', to: 'proposed again only after 3 runs,', says: '3 runs that name it, newer than that line' },
+  { test: 'sheets', file: skill('retro'), from: 'with a standing remove ruling', to: 'with a standing keep ruling', says: 'with a standing remove ruling' },
   { test: 'site-checks', file: 'docmd.config.json', from: '"out": "site"', to: '"out": "dist"', says: 'docmd config src/out' },
   { test: 'size', file: script('size'), from: 'Math.ceil(', to: 'Math.floor(', says: 'want' },
   { test: 'taste', file: agent('design-critic'), from: "Put a rival's name on the board", to: 'Put a name on the board', says: "Put a rival's name on the board" },
   { test: 'ui-gate', file: GUARD, from: 'export const UI = {', to: 'export const UI2 = {', says: 'no top `export const UI' },
   { test: 'usage-line', file: script('usage-line'), from: 'flagged = projected >= 100', to: 'flagged = projected >= 1000', says: 'flag' },
   { test: 'workflows', file: 'plugins/gtm/workflows/design-loop.js', from: 'taste >= TASTE_BAR', to: 'taste >= 0', says: 'design-loop' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'const MAX_SHEETS = 2', to: 'const MAX_SHEETS = 3', says: 'a third entry in bound' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []
