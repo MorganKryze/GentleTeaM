@@ -481,6 +481,19 @@ const deliver = [
     log: ['Invalid risky path: (', 'every file reads as risky'],
   },
   {
+    name: 'risky: a single source, not an array, reads as one risky path',
+    args: { risky: '^plugins/gtm/workflows/', triggers: SEC },
+    reply: implementer([WF], (d) => (d.label.startsWith('security-reviewer') ? bad : ok)),
+    returns: { ...OPEN3('security-reviewer', 4), reviewers: ['reviewer', 'security-reviewer'] },
+    dispatches: [
+      implement(), reviewer(), security('security-reviewer', { effort: 'xhigh' }),
+      ...rounds(3, (n) => [
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: ['medium', 'high', 'xhigh'][n - 1] },
+        security(`security-reviewer · round ${n}`, { effort: 'xhigh' }),
+      ]),
+    ],
+  },
+  {
     name: 'risky: an empty list raises nothing, fix rounds stop at high',
     args: { risky: [], triggers: SEC, team: { 'security-reviewer': { effort: 'high' } } },
     reply: implementer([WF], (d) => (d.label.startsWith('reviewer') ? bad : ok)),
