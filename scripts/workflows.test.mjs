@@ -440,7 +440,7 @@ const deliver = [
     args: {
       risky: ['', ' ', ...RISKY], triggers: SEC, team: { 'security-reviewer': { effort: 'high' } },
     },
-    reply: implementer(['scripts/x.mjs'], () => ok),
+    reply: implementer(['scripts/a b.mjs'], () => ok),
     returns: {
       status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'],
       stats: {}, minors: [],
