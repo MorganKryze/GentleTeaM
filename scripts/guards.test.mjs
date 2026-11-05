@@ -68,9 +68,11 @@ if (!risky.length || shown.join('\n') !== risky.join('\n')) {
   errors.push(`settings.md shows ${shown}, the template holds ${risky}`)
 }
 const hits = (path) => risky.some((r) => new RegExp(r).test(path))
-if (hits('src/async.ts') || !hits('src/schema.ts')) {
-  errors.push('team.md risky paths: src/async.ts must not match, src/schema.ts must')
+const must = ['src/schema.ts', 'api/contract/x.ts', 'lib/db_sync.go', 'src/data_sync.py']
+if (hits('src/async.ts') || !must.every(hits)) {
+  errors.push(`team.md risky paths: src/async.ts must not match, ${must.join(', ')} must`)
 }
+if (risky.some((r) => r.includes('\\'))) errors.push('team.md risky paths: a backslash breaks JSON')
 const deliver = readFileSync(join(root, 'plugins/gtm/skills/deliver/SKILL.md'), 'utf8')
 if (/`risky`[^\n]*\(`yes` or `no`\)/.test(deliver)) errors.push('deliver: `risky` as yes or no')
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
