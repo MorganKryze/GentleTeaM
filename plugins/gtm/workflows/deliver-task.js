@@ -26,7 +26,8 @@ const SECURITY = 'high'
 // Past the index's cap, a hand-made list would cost tokens and the review's turns on each role.
 const MAX_SHEETS = 2
 const bounded = (s) => typeof s?.name === 'string' && /^[a-z0-9-]+$/.test(s.name) && typeof s.path === 'string'
-  && s.path.startsWith('/') && s.path.endsWith(`/templates/sheets/${s.name}.md`) && !/\/\.\.\/|[\x00-\x1f`]/.test(s.path)
+  && s.path.startsWith('/') && s.path.endsWith(`/templates/sheets/${s.name}.md`)
+  && !/\/\.\.\/|[\x00-\x1f\x7f\u0085\u2028\u2029`]/.test(s.path)
 const SHEETS = new Map((Array.isArray(A.sheets) ? A.sheets : []).filter(bounded).slice(0, MAX_SHEETS).map((s) => [s.name, s.path]))
 const IMPL = {
   type: 'object',
@@ -116,8 +117,9 @@ for (const [role, list] of Object.entries(A.triggers || {})) {
 }
 const ground = (files) => Object.keys(triggers).filter((r) => files.some((f) => triggers[r].some((re) => re.test(f))))
 // The Gates line's risky paths: a file matching one makes the work risky. None given: no raise. A
-// bad regex reads every file as risky, as an invalid trigger runs its specialist.
-const RISKY = [].concat(A.risky ?? []).map((src) => {
+// bad regex reads every file as risky, as an invalid trigger runs its specialist; an empty one,
+// which would match every file too, is dropped.
+const RISKY = [].concat(A.risky ?? []).filter((src) => String(src).trim() !== '').map((src) => {
   try {
     return new RegExp(src)
   } catch {
@@ -181,7 +183,7 @@ async function retried(prompt, opts, pass = '') {
   }
   const second = await attempt(prompt + RETRY, { ...opts, label: `${opts.label} · retry` })
   if (second == null) log(`${opts.label}: no result after its retry, no third dispatch`)
-  return second
+  return second && { ...second, passed: false }
 }
 
 phase('Implement')
