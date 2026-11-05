@@ -18,6 +18,8 @@ Ground rules: as in the `gtm` skill §0.
   standard review: N` (1). A ledger `ruling` `limits: lighter …` for this slug overrides the roles
   it names in `team`, on every dispatch (resumes too), unless struck through or beyond what `gtm`
   §0's card A allows (then ignored, a Heads-up).
+- Efforts: `team`'s, raised or lowered on each dispatch's range as the Roles note of
+  `${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the Gates `risky paths` (`yes` or `no`).
 - Progress: `<root>/reports/<slug>/progress.md`, one line per run, any result (reruns append):
   status, tier, correction rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each run's
   line (design, spec, plan, task, final review, re-review, re-run review, fix wave) ends `· <s> s ·
@@ -42,7 +44,7 @@ Ground rules: as in the `gtm` skill §0.
    the global constraints it names, by number (none named: all the plan's), and paths to the plan,
    the spec, `<root>/team.md`, the validated mockup and the guidelines it touches; nothing else.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report: "<root>/reports/<slug>/task-<n>.md",
-   branch, base: <head before this task>, worktree (in a wave only), mockup, triggers, team,
+   branch, base: <head before this task>, worktree (in a wave only), mockup, triggers, risky, team,
    fixRounds, fixCeiling, track, tier, cadence, standardRounds, sheets, review, head, files }`, an
    arg not given omitted, never "none": `tier` the plan's, `guarded` once a progress line of it says
    so (resumes too); `sheets` what `node "${CLAUDE_PLUGIN_ROOT}/scripts/sheet-paths.mjs" --brief
@@ -112,10 +114,8 @@ Skip it only when all hold; then leave this slug's minors for `/gtm:retro`, disp
 
 Otherwise dispatch `gtm:final-reviewer` with the spec, the plan, the branch range, the ledger and
 the report path `<root>/reports/<slug>/final.md`. `fix-first` → one fix wave: `gtm:implementer` with
-the must-fix list at a correction round's effort (one level above its profile, at most `xhigh`; an
-effort off that ladder, such as `max`, kept), then `gtm:final-reviewer` once more on the fix range
-only, one level below its profile (`low` at least, `max` kept) when that range's files (§1) match no
-specialist trigger. Still not ready → a Heads-up and a card. `resolved` lines for the minors fixed,
+the must-fix list at a correction round's effort on the branch range, then `gtm:final-reviewer` on
+the fix range only. Still not ready → a Heads-up and a card. `resolved` lines for the minors fixed,
 the rest kept. Each dispatch: its progress line, budget as §2 step 3, roles via `--also`.
 
 ## 5. Record and report

@@ -39,8 +39,8 @@ The project's rules, one file per area: `conventions.md` in `.gtm/`, and its fil
 `guidelines/`.
 
 ### Correction round {#correction-round}
-The implementer fixes open findings, then the same reviewers re-check. 3 at most, the
-`fix rounds per task` line in `team.md`; each raises the implementer's effort one level.
+The implementer fixes open findings, then the same reviewers re-check; 3 at most (`team.md`), each
+raising the implementer one level, up to `high`, or `xhigh` on a risky path.
 
 ### Craft {#craft}
 What a studio knows about a kind of job, one file per job (brand, website, mobile) under the
@@ -55,8 +55,8 @@ What the team decided without asking, each with its cost if wrong, kept in `ledg
 `ruling` lines.
 
 ### Dry run {#dry-run}
-The architect runs a risky task's code in a scratch copy while planning (`/gtm:plan`), to prove
-the plan; risky paths are set in `team.md`.
+The architect runs a risky task's code in a scratch copy while planning, to prove the plan; risky
+paths are set in `team.md`, and work on them raises the security and final reviewers one level.
 
 ### Dig {#dig}
 `/gtm:brief-me` asked to challenge an artifact with one method; it changes no file.

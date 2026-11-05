@@ -2,7 +2,7 @@
 name: security-reviewer
 description: "GTM security reviewer for diffs on its configured paths. Read-only."
 model: opus
-effort: xhigh
+effort: high
 maxTurns: 60
 color: red
 tools: Read, Bash, Glob, Grep

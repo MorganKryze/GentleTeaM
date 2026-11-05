@@ -40,7 +40,8 @@ Four parts, read by every command and every role.
 | Mockup rounds | 3 | a screen is redrawn at most three times |
 
 A correction round is the implementer fixing open findings, then the same reviewers checking again;
-each round raises the implementer's effort one level. The file limit decides when a
+each round raises the implementer's effort one level, up to `high`, or `xhigh` on a risky path.
+The file limit decides when a
 [Fix](/reference/glossary/#fix) becomes a Feature. The design critic scores the mockups. The full
 list, with the paths that make a task risky, is in [Settings](/reference/settings/).
 
@@ -54,8 +55,9 @@ you approve or edit them in one pass. A few rules shape the proposal:
 - tight usage limits lower the effort of the roles that run most often first.
 
 By default every role runs the strongest model, and roles differ by effort: high where a miss is
-costly (security review, the final review), low where the plan carries the thinking (the
-implementer). Mixing models adds ways to fail; effort is the cheaper and more predictable lever.
+costly (security review, the final review), one level more on risky paths, low where the plan
+carries the thinking (the implementer). Mixing models adds ways to fail; effort is the cheaper
+and more predictable lever.
 The cost is a higher price per token than a mixed team on simple tasks.
 
 ## How do I change them later?

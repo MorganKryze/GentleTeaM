@@ -102,9 +102,9 @@ open to review.
 ### 7. One strong model, effort by role
 
 By default every role runs the strongest model, and roles differ by how hard they think: high
-where a miss is costly, such as security and the final review, low where the plan carries the
-thinking, such as implementation. Mixing models adds ways to fail; effort is the cheaper and more
-predictable lever.
+where a miss is costly, such as security and the final review, one level more on risky paths, low
+where the plan carries the thinking, such as implementation. Mixing models adds ways to fail;
+effort is the cheaper and more predictable lever.
 
 <p class="gtm-cost">Cost: a higher price per token than a mixed fleet on simple tasks.</p>
 
@@ -132,7 +132,7 @@ cannot be apologised away or rolled back. A schema, migration or sign-in change 
 the start, the security and data reviewers check every change on their ground, their findings
 always block the task, and the final review reads security and data first.
 
-<p class="gtm-cost">Cost: specialist reviews at the highest effort, and now and then a blocked task.</p>
+<p class="gtm-cost">Cost: specialist reviews at a high effort, the security and final reviews a level higher on risky paths, and now and then a blocked task.</p>
 
 :::
 

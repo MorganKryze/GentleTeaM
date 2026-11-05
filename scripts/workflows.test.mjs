@@ -111,6 +111,16 @@ const PASS = ['Second pass, once the review above is finished', 'open no sheet b
 const SHEET_FIELD = { type: 'string', enum: ['security', 'nodejs'] }
 const yields = (over = {}) => ({ passes: 1, critical: 0, important: 0, minor: 0, ...over })
 const tagged = { ...badFinding, sheet: 'security' }
+// Risky stubs: the Gates line's risky paths as /gtm:deliver hands them, a file on one, and a
+// security reviewer whose triggers cover both that file and one off every risky path.
+const RISKY = ['^plugins/gtm/workflows/']
+const WF = 'plugins/gtm/workflows/a.js'
+const SEC = { 'security-reviewer': ['^plugins/', '^scripts/'] }
+const security = (label = 'security-reviewer', extra = {}) => ({ agentType: 'gtm:security-reviewer', label, ...extra })
+const OPEN3 = (by, important) => ({
+  status: 'OPEN', head: 'h3', fixRounds: 3, open: [{ ...badFinding, by }], minors: [],
+  stats: { [by]: { critical: 0, important, minor: 0 } },
+})
 
 const deliver = [
   {
@@ -298,7 +308,7 @@ const deliver = [
     ],
   },
   {
-    name: 'default fix rounds: OPEN after 3, efforts raised from low',
+    name: 'default fix rounds: OPEN after 3, efforts raised from low up to high',
     args: { team: { implementer: { model: 'opus', effort: 'low' }, reviewer: { model: 'inherit', effort: 'medium' } } },
     reply: implementer(['src/a.js'], () => bad),
     returns: {
@@ -310,7 +320,7 @@ const deliver = [
       implement('gtm:implementer', { model: 'opus', effort: 'low' }),
       reviewer('reviewer', { effort: 'medium' }),
       ...rounds(3, (n) => [
-        { agentType: 'gtm:implementer', label: `fix · round ${n}`, model: 'opus', effort: ['medium', 'high', 'xhigh'][n - 1] },
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, model: 'opus', effort: ['medium', 'high', 'high'][n - 1] },
         reviewer(`reviewer · round ${n}`, { effort: 'medium' }),
       ]),
     ],
@@ -333,7 +343,7 @@ const deliver = [
     ],
   },
   {
-    name: 'high effort: capped at xhigh from fix round 1',
+    name: 'high effort: kept at high on every fix round off risky paths',
     args: { team: { implementer: { effort: 'high' } } },
     reply: implementer(['src/a.js'], () => bad),
     returns: {
@@ -344,7 +354,7 @@ const deliver = [
     dispatches: [
       implement('gtm:implementer', { effort: 'high' }), reviewer(),
       ...rounds(3, (n) => [
-        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: 'xhigh' },
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: 'high' },
         reviewer(`reviewer · round ${n}`),
       ]),
     ],
@@ -378,7 +388,120 @@ const deliver = [
     dispatches: [
       implement(), reviewer(),
       ...rounds(3, (n) => [
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: ['medium', 'high', 'high'][n - 1] },
+        reviewer(`reviewer · round ${n}`),
+      ]),
+    ],
+  },
+  {
+    name: 'risky: the security reviewer rises one level above its profile, the reviewer keeps its own',
+    args: { risky: RISKY, triggers: SEC, team: { reviewer: { effort: 'medium' }, 'security-reviewer': { effort: 'high' } } },
+    reply: implementer([WF], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer('reviewer', { effort: 'medium' }), security('security-reviewer', { effort: 'xhigh' })],
+  },
+  {
+    name: 'risky: off every risky path the security reviewer keeps its profile',
+    args: { risky: RISKY, triggers: SEC, team: { 'security-reviewer': { effort: 'high' } } },
+    reply: implementer(['scripts/x.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), security('security-reviewer', { effort: 'high' })],
+  },
+  {
+    name: 'risky: an empty profile effort rises from high, the agent default',
+    args: { risky: RISKY, triggers: SEC, team: { 'security-reviewer': { effort: '' } } },
+    reply: implementer([WF], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), security('security-reviewer', { effort: 'xhigh' })],
+  },
+  {
+    name: 'risky: an effort off the ladder, max, is kept',
+    args: { risky: RISKY, triggers: SEC, team: { 'security-reviewer': { effort: 'max' } } },
+    reply: implementer([WF], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), security('security-reviewer', { effort: 'max' })],
+  },
+  {
+    name: 'risky: a profile at low, as a lighter limit sets it, rises to medium only',
+    args: { risky: RISKY, triggers: SEC, team: { 'security-reviewer': { model: 'sonnet', effort: 'low' } } },
+    reply: implementer([WF], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), security('security-reviewer', { model: 'sonnet', effort: 'medium' })],
+  },
+  {
+    name: 'risky: a deferred range review rises on the range files git listed, with no profile',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['docs/a.md', WF], cadence: CAD, triggers: SEC, risky: RISKY },
+    reply: () => ok,
+    returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [reviewer(), security('security-reviewer', { effort: 'xhigh' })],
+  },
+  {
+    name: 'risky: a retry keeps the raise',
+    args: { risky: RISKY, triggers: SEC },
+    reply: implementer([WF], (d) => {
+      if (d.label === 'security-reviewer') throw new Error('no structured output')
+      return ok
+    }),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), security('security-reviewer', { effort: 'xhigh' }), security('security-reviewer · retry', { effort: 'xhigh' })],
+    log: ['security-reviewer: lost its structured result, one retry'],
+  },
+  {
+    name: 'risky: fix rounds rise to xhigh once a changed file is risky',
+    args: { risky: RISKY },
+    reply: implementer([WF], () => bad),
+    returns: { ...OPEN3('reviewer', 4), reviewers: ['reviewer'] },
+    dispatches: [
+      implement(), reviewer(),
+      ...rounds(3, (n) => [
         { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: ['medium', 'high', 'xhigh'][n - 1] },
+        reviewer(`reviewer · round ${n}`),
+      ]),
+    ],
+  },
+  {
+    name: 'risky: a fix round that reaches a risky file raises the re-reviews and the next rounds',
+    args: { risky: RISKY, triggers: SEC },
+    reply: implementer(['scripts/x.mjs'], (d) => (d.label.startsWith('security-reviewer') ? bad : ok), [WF]),
+    returns: { ...OPEN3('security-reviewer', 4), reviewers: ['reviewer', 'security-reviewer'] },
+    dispatches: [
+      implement(), reviewer(), security(),
+      ...rounds(3, (n) => [
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: ['medium', 'high', 'xhigh'][n - 1] },
+        security(`security-reviewer · round ${n}`, { effort: 'xhigh' }),
+      ]),
+    ],
+  },
+  {
+    name: 'risky: a risky path that does not compile is logged and reads every file as risky',
+    args: { risky: ['('], triggers: SEC },
+    reply: implementer(['scripts/x.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), security('security-reviewer', { effort: 'xhigh' })],
+    log: ['Invalid risky path: (', 'every file reads as risky'],
+  },
+  {
+    name: 'risky: a single source, not an array, reads as one risky path',
+    args: { risky: '^plugins/gtm/workflows/', triggers: SEC },
+    reply: implementer([WF], (d) => (d.label.startsWith('security-reviewer') ? bad : ok)),
+    returns: { ...OPEN3('security-reviewer', 4), reviewers: ['reviewer', 'security-reviewer'] },
+    dispatches: [
+      implement(), reviewer(), security('security-reviewer', { effort: 'xhigh' }),
+      ...rounds(3, (n) => [
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: ['medium', 'high', 'xhigh'][n - 1] },
+        security(`security-reviewer · round ${n}`, { effort: 'xhigh' }),
+      ]),
+    ],
+  },
+  {
+    name: 'risky: an empty list raises nothing, fix rounds stop at high',
+    args: { risky: [], triggers: SEC, team: { 'security-reviewer': { effort: 'high' } } },
+    reply: implementer([WF], (d) => (d.label.startsWith('reviewer') ? bad : ok)),
+    returns: { ...OPEN3('reviewer', 4), reviewers: ['reviewer', 'security-reviewer'] },
+    dispatches: [
+      implement(), reviewer(), security('security-reviewer', { effort: 'high' }),
+      ...rounds(3, (n) => [
+        { agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: ['medium', 'high', 'high'][n - 1] },
         reviewer(`reviewer · round ${n}`),
       ]),
     ],

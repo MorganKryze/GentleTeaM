@@ -14,6 +14,11 @@ versions follow [SemVer](https://semver.org/).
   review, for both reviewers, on every task that names a sheet; `Sheets: none` in a plan stops it.
 - Each `run` line counts what every sheet yielded, and `/gtm:retro` proposes removing a sheet that
   found nothing over its last 3 runs. Removal stays your call.
+- Effort goes where it matters. The security reviewer and the final reviewer now ship at `high`,
+  not `xhigh`, and rise one level only when a task or a branch touches the risky paths in your
+  team settings. Off those paths, the implementer's correction rounds stop at `high`. Your
+  `team.md` is never rewritten: an effort you already wrote stays as it is; to adopt the new
+  default, change it there or with `/gtm:tune`.
 
 ## [0.14.0] - 2026-11-02
 
