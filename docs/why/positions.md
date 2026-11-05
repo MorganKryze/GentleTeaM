@@ -132,7 +132,7 @@ cannot be apologised away or rolled back. A schema, migration or sign-in change 
 the start, the security and data reviewers check every change on their ground, their findings
 always block the task, and the final review reads security and data first.
 
-<p class="gtm-cost">Cost: specialist reviews at a high effort, the highest on risky paths, and now and then a blocked task.</p>
+<p class="gtm-cost">Cost: specialist reviews at a high effort, the security and final reviews a level higher on risky paths, and now and then a blocked task.</p>
 
 :::
 
