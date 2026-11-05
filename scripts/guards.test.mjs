@@ -18,6 +18,7 @@ const PINS = {
   'plugins/gtm/skills/deliver/SKILL.md': [
     '`git merge --no-ff --no-edit "<branch>-t<n>"`',
     '- Efforts: `team`\'s, raised or lowered on each dispatch\'s range as the Roles note of',
+    '`${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the `risky paths` regexes, a list.',
     'the must-fix list at a correction round\'s effort on the branch range',
   ],
   'plugins/gtm/templates/team.md': [
