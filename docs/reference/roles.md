@@ -41,10 +41,10 @@ The words in the table and below it:
 | `architect` | writes the spec and the task plan | high | after the mockups |
 | `implementer` | one task, test-first; the only role that writes code | low, raised per round | every task |
 | `reviewer` | checks the spec, then code quality; read-only | medium | every guarded task; standard ones once per wave; a spec's open cards |
-| `security-reviewer` | trust boundaries, sign-in, secrets; read-only | xhigh | the diff touches its paths |
+| `security-reviewer` | trust boundaries, sign-in, secrets; read-only | high, xhigh on risky paths | the diff touches its paths |
 | `data-reviewer` | lost, duplicated or altered data; read-only | high | the diff touches its paths |
 | `ux-qa` | captures and measures screens | medium | the diff touches screens |
-| `final-reviewer` | the whole branch against the spec; read-only | xhigh | once per branch |
+| `final-reviewer` | the whole branch against the spec; read-only | high, xhigh on a risky branch | once per branch |
 | `release-qa` | the live journey after you deploy | low | after deployment |
 | `researcher` | writes a sourced state of the art and proposes cards; changes and picks nothing | high | `/gtm:research`, when you ask |
 

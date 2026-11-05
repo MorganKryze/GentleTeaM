@@ -116,7 +116,13 @@ reviewed on its range and stays guarded from then on.
 
 A task gets 3 [correction rounds](/reference/glossary/#correction-round) at most by default. Each
 round raises the implementer's effort one level on the ladder `low`, `medium`, `high`, `xhigh`,
-capped at `xhigh`. An effort off that ladder, such as `max`, is kept as set in `team.md`.
+up to `high`, or `xhigh` once the task touches a risky path (set in `team.md`), and never below
+its `team.md` effort. An effort off that ladder, such as `max`, is kept as set in `team.md`.
+
+## When do two reviewers think harder?
+
+The security and final reviewers run at `high`. On work that touches a risky path they run one
+level more, `xhigh` by default.
 
 ## When do tasks run at the same time?
 

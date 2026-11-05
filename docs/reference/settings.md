@@ -93,12 +93,13 @@ defaults in the role files.
 | History | one line per change made by `/gtm:tune`: date, setting, old and new value, why | empty | `/gtm:tune`, `/gtm:retro` |
 
 The limits and their defaults: a task gets 3
-[correction rounds](/reference/glossary/#correction-round), each raising the implementer's effort one level; the
+[correction rounds](/reference/glossary/#correction-round), each raising the implementer's effort one level, up to `high`, or `xhigh` on a risky path; the
 [file limit for a fix](/reference/glossary/#file-limit-for-a-fix) is 3 files; mockups pass at 8/10 with no
 must-fix finding and are redrawn 3 times at most, and with a picked direction the
 `taste threshold` is 7 out of 10; risky tasks get a
 [dry run](/reference/glossary/#dry-run), on paths matching `migrations?/`, `(sync|contract|schema)` and
-`(db|store|storage)/`. The `review cadence` line sets how often each reviewer runs: by default
+`(db|store|storage)/`; work on those paths also raises the security and final reviewers one
+level. The `review cadence` line sets how often each reviewer runs: by default
 the reviewer once per wave of standard tasks, ux-qa once per branch, the security and data
 reviewers on every task they concern; `fix rounds per standard review` gives a wave's review one
 correction round. The two budgets, `budget per task` and `budget per branch`, are `none`

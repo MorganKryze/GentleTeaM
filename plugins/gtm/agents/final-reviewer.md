@@ -2,7 +2,7 @@
 name: final-reviewer
 description: "GTM whole-branch reviewer before the go; triages deferred minors. Read-only."
 model: opus
-effort: xhigh
+effort: high
 maxTurns: 80
 color: purple
 tools: Read, Bash, Glob, Grep
