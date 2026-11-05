@@ -24,7 +24,7 @@ Model: `opus`, `sonnet`, `haiku`, `fable`, a full model id, or `inherit`. Effort
 their row (none: `high`), at most `xhigh`. Each correction round raises the implementer one level,
 up to `high`, or `xhigh` on risky work, never below its row. The final review's second pass takes
 the final reviewer's effort for its fix range, one level lower (`low` at least) when that range
-matches no specialist trigger. An effort off that ladder, such as `max`, is never changed.
+matches no trigger and no risky path. An effort off that ladder, such as `max`, is never changed.
 
 | Role | Model | Effort | Why | Decided |
 | --- | --- | --- | --- | --- |

@@ -26,6 +26,7 @@ const PINS = {
     'their row (none: `high`), at most `xhigh`.',
     'up to `high`, or `xhigh` on risky work, never below its row.',
     'the final reviewer\'s effort for its fix range, one level lower (`low` at least) when that range',
+    'matches no trigger and no risky path.',
     'An effort off that ladder, such as `max`, is never changed.',
     '| security-reviewer | opus | high |',
     '| final-reviewer | opus | high |',

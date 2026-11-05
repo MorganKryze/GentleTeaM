@@ -41,6 +41,7 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/team.md', from: 'or `xhigh` on risky work, never below its row.', to: 'or `xhigh` on risky work.', says: 'never below its row' },
   { test: 'guards', file: 'plugins/gtm/templates/team.md', from: '| security-reviewer | opus | high |', to: '| security-reviewer | opus | xhigh |', says: 'holds | xhigh |' },
   { test: 'guards', file: skill('deliver'), from: 'on each dispatch\'s range as the Roles note', to: 'as the Roles note', says: 'raised or lowered on each dispatch' },
+  { test: 'guards', file: 'plugins/gtm/templates/team.md', from: 'no trigger and no risky path.', to: 'no trigger.', says: 'matches no trigger and no risky path.' },
   { test: 'guards', file: agent('final-reviewer'), from: 'effort: high', to: 'effort: xhigh', says: 'final-reviewer.md ships effort xhigh' },
   { test: 'guards', file: skill('init'), from: 'security-reviewer on, effort high;', to: 'security-reviewer on, effort xhigh;', says: 'holds effort xhigh' },
   { test: 'lenses', file: LEDGER, from: '· lenses <role>', to: '· lens <role>', says: 'does not state the `lenses` segment' },
