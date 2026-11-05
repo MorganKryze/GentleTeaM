@@ -139,7 +139,8 @@ const per = (files, c) => ground(files).filter((r) => CADENCE[r] === c)
 // fallback below. A null is a blocked spawn, a human's skip or an API error already logged: it is
 // never retried. An implementer is never retried (a second one could stack commits on a half-done
 // attempt): a throw is BLOCKED, as nothing back is. The retry drops the sheet pass: its budget is for
-// the verdict, and a sheet left unread must not turn into a finding. So `passed` says the pass ran.
+// the verdict, and a sheet left unread must not turn into a finding. So `passed` says the order was
+// sent and the dispatch returned, not that the sheet was opened or used.
 const RETRY = '\n\nThis is a retry: your previous run ended without the structured result. Use at most 25 tool calls, write no report file, and make the structured output call your last action. What you could not check within that budget is an important finding, never an approval.'
 async function attempt(prompt, opts) {
   try {
@@ -246,7 +247,8 @@ for (; round <= limit; round++) {
     const blocking = []
     const at = () => (stats[r] = stats[r] || { critical: 0, important: 0, minor: 0 })
     const count = (severity) => { at()[severity]++ }
-    // One pass per sheet, zeros kept: a sheet that yields nothing must not read as one never used.
+    // One pass per sheet, zeros kept: `passed` means the order was sent and the dispatch returned,
+    // not that the sheet was opened or used, and a pass that found nothing still counts as ordered.
     const yields = res.passed ? (at().sheets = Object.fromEntries([...SHEETS.keys()].map((n) => [n, { passes: 1, critical: 0, important: 0, minor: 0 }]))) : {}
     let found = 0
     for (const f of res.findings) {
