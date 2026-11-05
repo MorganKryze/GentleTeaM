@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.15.1] - 2026-11-05
+
 ### Fixed
 - Three small holes in the task workflow. A reviewer's retry no longer counts a sheet pass, even
   when its reply claims one. A sheet path holding DEL or a Unicode line break is now refused, as
