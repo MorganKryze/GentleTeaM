@@ -1,0 +1,33 @@
+{
+  "name": "gtm-site-build",
+  "private": true,
+  "description": "Pins the docmd install that builds the documentation site (CI only).",
+  "dependencies": {
+    "@docmd/core": "0.9.7"
+  },
+  "overrides": {
+    "@docmd/api": "0.9.8",
+    "@docmd/deployer": "0.9.8",
+    "@docmd/engine-js": "0.9.8",
+    "@docmd/engine-python": "0.9.8",
+    "@docmd/engine-rust": "0.9.8",
+    "@docmd/live": "0.9.8",
+    "@docmd/parser": "0.9.8",
+    "@docmd/plugin-ai": "0.9.8",
+    "@docmd/plugin-analytics": "0.9.8",
+    "@docmd/plugin-git": "0.9.8",
+    "@docmd/plugin-installer": "0.9.8",
+    "@docmd/plugin-llms": "0.9.8",
+    "@docmd/plugin-math": "0.9.8",
+    "@docmd/plugin-mermaid": "0.9.8",
+    "@docmd/plugin-okf": "0.9.8",
+    "@docmd/plugin-openapi": "0.9.8",
+    "@docmd/plugin-search": "0.9.8",
+    "@docmd/plugin-seo": "0.9.8",
+    "@docmd/plugin-sitemap": "0.9.8",
+    "@docmd/themes": "0.9.8",
+    "@docmd/tui": "0.9.8",
+    "@docmd/ui": "0.9.8",
+    "@docmd/utils": "0.9.8"
+  }
+}

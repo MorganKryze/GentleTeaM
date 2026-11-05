@@ -627,7 +627,17 @@ check('A29', () => {
   if (!/^  push:\s*\n\s+branches:\s*(\[\s*main\s*\]|\n\s+- main)/m.test(on)) f.push('not run on push to main only');
   const j = jobs(t);
   if (!j.build || !j.deploy) return [...f, `jobs ${Object.keys(j).join(', ')}, want build and deploy`];
-  if (!/@docmd\/core@0\.9\.7 build/.test(j.build)) f.push('build job does not run the pinned docmd build');
+  // docmd comes from the committed lockfile in .github/site-build, never a fresh npx install.
+  if (/npx\b/.test(j.build)) f.push('build job installs a package with npx');
+  if (!/npm ci --prefix \.github\/site-build\b/.test(j.build)) f.push('build job does not npm ci the site-build lockfile');
+  if (!/\.github\/site-build\/node_modules\/\.bin\/docmd build/.test(j.build)) f.push('build job does not run the locked docmd build');
+  const lock = JSON.parse(read('.github/site-build/package-lock.json') || '{}');
+  const docmd = Object.entries(lock.packages || {}).filter(([k]) => /node_modules\/@docmd\/[^/]+$/.test(k));
+  if (!docmd.length) f.push('the site-build lockfile pins no @docmd package');
+  for (const [k, v] of docmd) {
+    const m = /^0\.9\.(\d+)$/.exec(v.version || '');
+    if (!m || +m[1] > 8) f.push(`${k} locked at ${v.version}, want 0.9.x <= 0.9.8`);
+  }
   if (!/^    needs:\s*build\s*$/m.test(j.deploy)) f.push('deploy does not need build');
   if (!/^    if:\s*github\.event_name == 'push' && github\.ref == 'refs\/heads\/main'\s*$/m.test(j.deploy)) f.push("deploy is not limited to a push to main (if: github.event_name == 'push' && github.ref == 'refs/heads/main')");
   if (/continue-on-error:\s*true/.test(t)) f.push('a step may fail without failing the check');
