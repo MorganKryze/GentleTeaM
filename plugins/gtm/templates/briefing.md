@@ -65,6 +65,13 @@ decision without a recommendation; prefer the long-term option.
 A third option is a third row. The labels are written in `language.human`: in French, "Décision",
 "Option", "Ce que ça implique", "Mon avis", "Si c'est faux".
 
+Under a valid mandate (`templates/mandate.md`), a card asked at one of its four moments goes
+through Claude Code's question tool (`AskUserQuestion`) instead: header the word for "Human" in
+`language.human` (fr: `Humain`), the card's question, its options (at most four), the recommended
+option's label ending ` (Recommended)`, each description the option's meaning, and the cost if
+wrong in the recommended option's description. No question tool in the session, or more than
+four options: this Markdown card. The card file is written and deleted as for any card.
+
 ## Decisions made for you
 
 At the end of a run, every decision the orchestrator or an agent took without asking is listed,

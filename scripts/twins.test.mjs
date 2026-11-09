@@ -15,6 +15,7 @@ const agent = (name) => `plugins/gtm/agents/${name}.md`
 const script = (name) => `plugins/gtm/scripts/${name}.mjs`
 const GUARD = 'plugins/gtm/templates/ui-gate.spec.mjs'
 const LEDGER = 'plugins/gtm/templates/ledger.md'
+const MANDATE = 'plugins/gtm/templates/mandate.md'
 // A test with no twin says why here.
 const EXEMPT = {
   'twins.test.mjs': 'this file',
@@ -51,6 +52,13 @@ const TWINS = [
   { test: 'guards', file: 'docs/reference/gtm-folder.md', from: 'reader ignores the fields it does not know.', to: 'reader rejects the fields it does not know.', says: 'reader ignores the fields' },
   { test: 'guards', file: 'docs/reference/gtm-folder.md', from: 'for display, `null` while a card waits', to: 'for display', says: 'the writer\'s local `HH:MM`' },
   { test: 'guards', file: 'docs/reference/gtm-folder.md', from: '`null` until a later branch fills it, within `v` 1', to: 'kept for later versions', says: 'holds kept for later versions' },
+  { test: 'guards', file: MANDATE, from: 'drop it or accept as pre-existing: ask (1)', to: 'drop it or accept as pre-existing: default', says: 'accept as pre-existing: ask (1)' },
+  { test: 'guards', file: MANDATE, from: 'Only a valid mandate counts', to: 'Any mandate counts', says: 'Only a valid mandate counts' },
+  { test: 'guards', file: MANDATE, from: 'review finding or a check.', to: 'review finding.', says: 'review finding or a check.' },
+  { test: 'guards', file: 'plugins/gtm/templates/briefing.md', from: 'No question tool in the session, or more than', to: 'No question tool in the session: skip it, or more than', says: 'No question tool in the session, or more than' },
+  { test: 'guards', file: skill('deliver'), from: '`templates/mandate.md` first.', to: '`templates/mandate.md` if useful.', says: '`templates/mandate.md` first.' },
+  { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: '<Only when the human\'s request or answer gives a mandate;', to: '<When a mandate helps;', says: '<Only when the human\'s request' },
+  { test: 'guards', file: skill('plan'), from: 'one without a source goes back.', to: 'one without a source is kept.', says: 'one without a source goes back.' },
   { test: 'lenses', file: LEDGER, from: '· lenses <role>', to: '· lens <role>', says: 'does not state the `lenses` segment' },
   { test: 'methods', file: agent('reviewer'), from: 'Steelmanning [elicitation]', to: 'Steelman [elicitation]', says: 'reviewer' },
   { test: 'now-facts', file: script('now-facts'), from: 'return s.length % 2 ? s[m]', to: 'return s.length % 2 ? s[0]', says: 'want' },
