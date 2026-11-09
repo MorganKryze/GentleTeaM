@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // The usage step chained to the status line, its install into the user settings, and its reader.
 //   (stdin)  status-line JSON in: writes <config>/gtm/usage.json atomically (v, time, and each
-//            window's used_percentage and resets_at, nothing else), prints `5h <p>% · 7d <q>%`.
+//            window's used_percentage and resets_at, nothing else), prints `5h <p>% · 7d <q>%`,
+//            a window the status line leaves out left out here too, never as 0% or `?`.
 //            --breadcrumb also prints NOW.md's first `>` line; --quiet drops the usage line.
 //            Always exits 0: a status line must never break.
 //   --install <settings.json> [--breadcrumb]   copy this file to <config>/gtm/ and chain it before
