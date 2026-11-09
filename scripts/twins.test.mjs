@@ -79,6 +79,8 @@ const TWINS = [
   { test: 'guards', file: MANDATE, from: 'At a moment, ask as the briefing\'s Decision card says under a mandate.', to: 'At a moment, ask as you see fit.', says: 'ask as the briefing\'s Decision card says under a mandate.' },
   { test: 'guards', file: MANDATE, from: 'Ask (moment 1) only', to: 'Ask (moment 3) only', says: 'then decide as above. Ask (moment 1) only' },
   { test: 'guards', file: MANDATE, from: ' and the tool\'s documentation,', to: ',', says: 'the decision records and the tool\'s documentation' },
+  { test: 'guards', file: MANDATE, from: ' or no cost', to: '', says: 'No recommendation or no cost: first build' },
+  { test: 'guards', file: MANDATE, from: ': first build the basis', to: ': build the basis', says: 'No recommendation or no cost: first build' },
   { test: 'guards', file: 'plugins/gtm/templates/briefing.md', from: 'No question tool in the session, or more than', to: 'No question tool in the session: skip it, or more than', says: 'No question tool in the session, or more than' },
   { test: 'guards', file: skill('deliver'), from: '`templates/mandate.md` first.', to: '`templates/mandate.md` if useful.', says: '`templates/mandate.md` first.' },
   { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: '<Only when the human\'s request or answer gives a mandate;', to: '<When a mandate helps;', says: '<Only when the human\'s request' },

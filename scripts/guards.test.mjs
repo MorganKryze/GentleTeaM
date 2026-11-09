@@ -51,6 +51,7 @@ const PINS = {
     'And on any case the mandate\'s `stops for` line names.',
     'to the ledger once, when it is taken (a re-run appends none twice)',
     'when no option can be recommended from them.',
+    '- No recommendation or no cost: first build the basis from the spec, the guidelines, the ledger,',
     'researcher still runs on the human\'s command only); then decide as above. Ask (moment 1) only',
     'the decision records and the tool\'s documentation, and write it next to the ruling (the',
     '- A budget: when the branch\'s measured total passes it (minutes or tokens), ask once, before the',
