@@ -18,7 +18,8 @@ architect, go to §2. Otherwise (no one pass, a card answered otherwise, the spe
 dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: the spec path, the
 validated mockup page, the output path `<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, the
 team settings' Gates (replay risky tasks: yes/no; risky paths; `tasks per branch`), and the
-mandate the human's request or an answer gave, verbatim with where and when (none: none). Template:
+mandate the human's request or an answer gave, verbatim with where and when, or the current plan's
+`## Mandate` section with its `> Source:` line (none: none). Template:
 `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. When it returns, append its progress line (`plan`) as
 `/gtm:deliver` §1 says, and one more after each correction round and each revision (§2); a
 phase's lines are summed in the run line.
@@ -49,7 +50,8 @@ phase's lines are summed in the run line.
   of one task gets no dry run, its TDD steps plant the mutations instead.
 - The plan lists the ledger lessons it applied.
 - A `## Mandate` section only when the human's request or answer gave one, its lines verbatim under
-  a `> Source:` line naming where and when; one without a source goes back.
+  a `> Source:` line naming where and when; one without a source goes back. A rewrite carries an
+  existing section over verbatim, its `> Source:` line included.
 - The Summary holds the estimate line. Past 1.5× of the spec's (minutes or tokens): a Heads-up
   and a decision card (go on / revise the plan), with your recommendation; no numeric estimate
   in the spec: no comparison, no card.

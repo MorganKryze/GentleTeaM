@@ -93,6 +93,8 @@ const PINS = {
     'that specialist, which is on; a row naming `design-critic` or `final-reviewer`, or a match that',
     'fails, goes back too: delivery runs a specialist by its triggers, never by a row.',
     'one without a source goes back.',
+    '`## Mandate` section with its `> Source:` line (none: none).',
+    'existing section over verbatim, its `> Source:` line included.',
   ],
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
   'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m],

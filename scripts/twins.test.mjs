@@ -59,6 +59,7 @@ const TWINS = [
   { test: 'guards', file: MANDATE, from: 'an unreadable file: write nothing', to: 'an unreadable file: write that file empty', says: 'an unreadable file: write nothing' },
   { test: 'guards', file: MANDATE, from: 'its second card on the same task: ask (1: usage)', to: 'its second card on the same task: default', says: 'its second card on the same task: ask (1: usage)' },
   { test: 'guards', file: skill('deliver'), from: 'each ruling taken not already there.', to: 'each ruling taken.', says: 'each ruling taken not already there.' },
+  { test: 'guards', file: skill('plan'), from: 'existing section over verbatim', to: 'existing section only when asked', says: 'existing section over verbatim' },
   { test: 'guards', file: MANDATE, from: 'Only a valid mandate counts', to: 'Any mandate counts', says: 'Only a valid mandate counts' },
   { test: 'guards', file: MANDATE, from: 'review finding or a check.', to: 'review finding.', says: 'review finding or a check.' },
   { test: 'guards', file: 'plugins/gtm/templates/briefing.md', from: 'No question tool in the session, or more than', to: 'No question tool in the session: skip it, or more than', says: 'No question tool in the session, or more than' },
