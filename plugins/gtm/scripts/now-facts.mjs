@@ -101,7 +101,9 @@ function facts(s) {
   const of = plan ? (readFileSync(join(root, 'plans', plan), 'utf8').match(/^### Task \d+\b/gm) || []).length || '?' : null
   const status = {}, events = []
   let phase = 'spec', unknown = false, paused = null
-  for (const l of lines) {
+  // Two shapes orchestrators write, read strictly: `- task <n> · ` is task n's line, and
+  // `- wave <ids> merged · ` (`T1-T4`, `T2,T3,T5`) a wave line; any near shape stays unknown.
+  for (const l of lines.map((x) => x.replace(/^- task (\d+) · /, (_, n) => `- t${+n} · `).replace(/^- wave T\d+(?:[-,]T\d+)* merged · /, '- wave · '))) {
     const [step, second = ''] = l.slice(2).split(' · ')
     const word = (second.split(' (')[0] || '').trim()
     const done = /^(\d+ s|\?)$/.test(word)

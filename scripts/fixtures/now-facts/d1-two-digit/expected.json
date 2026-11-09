@@ -1,0 +1,15 @@
+{
+  "exit": 0,
+  "facts": {
+    "phase": "delivery",
+    "task": {
+      "n": 2,
+      "of": 12
+    },
+    "events": [
+      "spec: done",
+      "plan: done",
+      "t12: CLEAN"
+    ]
+  }
+}
