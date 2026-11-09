@@ -67,6 +67,11 @@ const PINS = {
     '| the final review still not ready after its fix wave | ask (1: a review not passed) |',
     'ask once, before the',
     'Before moment 3, first: what was added, one line per user-visible addition; whether `done when`',
+    '- A card outside the four moments, with a recommended option and a cost if wrong: take that',
+    'next dispatch (moment 1): go on or pause.',
+    '> Read by `/gtm:deliver` only, before its §1, when it gets `mandate=<file>`, the plan holds a',
+    'The plan\'s own cards (task cap, estimate, a deviation) come before delivery, unchanged.',
+    'At a moment, ask as the briefing\'s Decision card says under a mandate.',
   ],
   'plugins/gtm/templates/briefing.md': [
     'Under a valid mandate (`templates/mandate.md`), a card asked at one of its four moments goes',
