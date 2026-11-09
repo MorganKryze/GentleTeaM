@@ -282,6 +282,15 @@ try {
     const r = b.run(['--breadcrumb', '--quiet'], status(b, 'f1-status.json'))
     check('progress absolute root', r.stdout === 'run-state ▰▰▱ 2/3 · M 1/3 · attend ton go\n', JSON.stringify(r.stdout))
   }
+  { // CLAUDE.local.md's root wins over CLAUDE.md's.
+    const b = box()
+    for (const [f, r, slug] of [['CLAUDE.local.md', 'a', 'local-root'], ['CLAUDE.md', 'b', 'shared-root']]) {
+      mkdirSync(join(b.project, r)); writeFileSync(join(b.project, f), `GTM root: ${r}\n`)
+      writeFileSync(join(b.project, r, 'state.json'), JSON.stringify({ v: 1, slug }))
+    }
+    const r = b.run(['--breadcrumb', '--quiet'], status(b, 'f1-status.json'))
+    check('progress root order', r.stdout === 'local-root\n', JSON.stringify(r.stdout))
+  }
   { // A state linked to /dev/zero, then CLAUDE.local.md too: skipped fast.
     const p = prog({ config: FR })
     symlinkSync('/dev/zero', join(p.gtm, 'state.json'))
