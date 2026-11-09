@@ -30,6 +30,7 @@ const PINS = {
   'plugins/gtm/templates/mandate.md': [
     'or `<root>/reports/<slug>/mandate.md` exists.',
     'Only a valid mandate counts: without one, every card shows as the briefing',
+    '(an unreadable file: write nothing, run without a mandate, say `unreadable` in one Heads-up).',
     'That file wins over the plan\'s section and holds',
     'for the slug, resumes included, until deleted.',
     '`- decides alone: reversible`, both required',
@@ -94,6 +95,7 @@ const PINS = {
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
   'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m],
   'plugins/gtm/workflows/deliver-task.js': ["const SECURITY = 'high'"],
+  'docs/reference/commands.md': ['the plan\'s section and holds for that branch, resumes included, until you delete it.'],
 }
 // And what these files must never hold: no role ships at xhigh, which only risky work reaches.
 const ABSENT = {

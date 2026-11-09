@@ -56,6 +56,7 @@ const TWINS = [
   { test: 'guards', file: MANDATE, from: ', or `<root>/reports/<slug>/mandate.md` exists.', to: '.', says: 'mandate.md` exists.' },
   { test: 'guards', file: MANDATE, from: 'keeps its tool and targets', to: 'still runs', says: 'keeps its tool and targets' },
   { test: 'guards', file: MANDATE, from: 'one Heads-up when the run starts', to: 'one line in the report', says: 'one Heads-up when the run starts' },
+  { test: 'guards', file: MANDATE, from: 'an unreadable file: write nothing', to: 'an unreadable file: write that file empty', says: 'an unreadable file: write nothing' },
   { test: 'guards', file: MANDATE, from: 'Only a valid mandate counts', to: 'Any mandate counts', says: 'Only a valid mandate counts' },
   { test: 'guards', file: MANDATE, from: 'review finding or a check.', to: 'review finding.', says: 'review finding or a check.' },
   { test: 'guards', file: 'plugins/gtm/templates/briefing.md', from: 'No question tool in the session, or more than', to: 'No question tool in the session: skip it, or more than', says: 'No question tool in the session, or more than' },
