@@ -207,7 +207,7 @@ try {
     return { b, gtm, cmd, out: () => b.sh(cmd, status(b, 'f1-status.json')).stdout }
   }
   const line = (o, config = FR) => prog({ state: { ...base, ...o }, config }).out()
-  const NOW = '# x · 10:00\n\n> Epic › feat/x › plan\n'
+  const NOW = '# run-state · 10:00\n\n> Epic › feat/x › plan\n'
   {
     const o = prog({ state: base, config: FR, now: NOW }).out()
     check('progress fr', o === 'run-state ▰▰▱ 2/3 · M 1/3 · attend ton go\nOLD\n', JSON.stringify(o))
@@ -265,6 +265,11 @@ try {
   for (const wt of [[], ['go']]) {
     const o = line({ waiting: wt })
     check(`progress waiting ${JSON.stringify(wt)}`, o === 'run-state ▰▰▱ 2/3 · M 1/3\nOLD\n', JSON.stringify(o))
+  }
+  // A state of another slug than NOW.md's line 1 is older than it: NOW.md's line shows instead.
+  for (const [x, o] of [['go', { waiting: { kind: 'go' } }], ['shipped', { phase: 'shipped' }]]) {
+    const o2 = prog({ state: { ...base, slug: 'old-branch', ...o }, config: FR, now: '# new-branch · 10:00 · rebuilt\n\n> Epic › feat/new-branch › plan\n' }).out()
+    check(`progress stale ${x}`, o2 === 'Epic › feat/new-branch › plan\nOLD\n', JSON.stringify(o2))
   }
   { // A field of another type drops its segment; the usage line and the store still come.
     const p = prog({ state: { v: 1, slug: 'run-state', steps: {}, milestone: [], waiting: 0, eta: 'x', phase: 7, extra: { a: [1] }, others: 'y' }, config: FR })
