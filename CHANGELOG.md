@@ -5,6 +5,19 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Each run view rewrite also leaves `state.json` in the GTM root: the same facts as `NOW.md`, as
+  versioned JSON (v 1) for a program to read, such as a status line. It holds the steps, the
+  current task, the open decision card with its options, and the branch's place in an approved
+  milestone. It stays local: written only in the main checkout, never over a tracked file, and
+  kept out of commits like `NOW.md`.
+
+### Fixed
+- The run view reads progress lines written as `- task <n> · ` and `- wave <ids> merged · `, which
+  it showed as `?`. Any other shape still reads `?`.
+- A limit window the usage file leaves out is named nowhere: not at the start of a run, not in
+  its run line, not on a card.
+
 ## [0.15.1] - 2026-11-05
 
 ### Fixed
