@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
 // scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
-// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, args }) and
+// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, args }) and
 // expected.json ({ exit, facts, state? }, facts and state matched as subsets; rootName names the
 // root folder, root by default; rootIn puts the root in that worktree, cwd runs the script there,
-// track commits those root files, readonly locks the root folder; `{root}` in args is its path).
+// track commits those root files, readonly locks the root folder, links ({ path: target }) and
+// fifos ([path]) make those root entries at run time, as git keeps no FIFO; `{root}` in args is
+// its path).
 // The test builds a throwaway repository around the root (git keeps no repository inside a
 // fixture), with no global or system git config, and removes it after the run; runs the script at
 // a fixed time, and checks it changed no file but the state it was asked for, replaced by a rename,
 // no git index and no git status; that a usage error prints nothing; that the state holds no `?`
 // and none of its card or step text reached stdout. Run by scripts/validate.mjs. No dependencies.
-import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, chmodSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync, spawnSync } from 'node:child_process'
@@ -31,7 +33,9 @@ function snapshot(dir, skip) {
   const h = createHash('sha256')
   const walk = (d) => readdirSync(d, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).forEach((e) => {
     const p = join(d, e.name)
-    if (e.isDirectory()) walk(p); else if (relative(dir, p) !== skip) h.update(relative(dir, p)).update(readFileSync(p))
+    if (relative(dir, p) === skip) return
+    // A link is hashed by its target, a FIFO by its name: reading one would follow or block.
+    if (e.isDirectory()) walk(p); else h.update(relative(dir, p)).update(e.isSymbolicLink() ? `-> ${readlinkSync(p)}` : e.isFIFO() ? 'fifo' : readFileSync(p))
   })
   walk(dir)
   return h.digest('hex')
@@ -77,12 +81,14 @@ for (const name of readdirSync(fixtures).sort()) {
     if (a.broken) writeFileSync(join(tmp, a.broken, '.git'), 'gitdir: /nonexistent\n')
     for (const p of [repo, ...(a.worktrees || []).map((w) => join(tmp, w.name))]) utimesSync(join(p, 'README.md'), ago(30), ago(30))
     for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(gtm, f), ago(min), ago(min))
+    for (const [f, to] of Object.entries(a.links || {})) symlinkSync(to, join(gtm, f))
+    for (const f of a.fifos || []) execFileSync('mkfifo', [join(gtm, f)])
     const stateFile = join(gtm, 'state.json'), skip = want.state ? 'state.json' : undefined
     const before = snapshot(gtm, skip), index = indexes(repo), ino = existsSync(stateFile) ? statSync(stateFile).ino : null
     const status = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env })
     const args = (a.args || []).map((x) => x.replace(/\{ago:(\d+)\}/g, (_, m) => ago(+m).toISOString()).replaceAll('{root}', gtm))
     if (a.readonly) chmodSync(gtm, 0o555)
-    const r = spawnSync(process.execPath, [script, '--root', gtm, '--now', new Date(NOW).toISOString(), ...args], { cwd: a.cwd ? join(tmp, a.cwd) : repo, encoding: 'utf8', env: { ...env, TZ: 'UTC' } })
+    const r = spawnSync(process.execPath, [script, '--root', gtm, '--now', new Date(NOW).toISOString(), ...args], { cwd: a.cwd ? join(tmp, a.cwd) : repo, encoding: 'utf8', env: { ...env, TZ: 'UTC' }, timeout: 60000 })
     if (a.readonly) chmodSync(gtm, 0o755)
     if (r.status !== want.exit) errors.push(`${name}: exit ${r.status}, want ${want.exit} ${r.stderr.trim()}`)
     if (want.exit === 2 && r.stdout !== '') errors.push(`${name}: a usage error printed facts`)
