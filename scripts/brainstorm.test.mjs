@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Pins /gtm:brainstorm: its rules stated verbatim in the skill (writes only its note and NOW.md,
+// Pins /gtm:brainstorm: its rules stated verbatim in the skill (writes only its note, NOW.md and its state,
 // never overwrites a note, the slug pattern, the budget), the three stances, the roundtable
 // roles and the note fields; the command map names every skill folder once; the spec template
 // cites the note. Run by scripts/validate.mjs. No dependencies.
@@ -16,7 +16,7 @@ const has = (file, text, phrase) => { if (!text.includes(phrase)) errors.push(`$
 // Phrases may wrap at the 100-character prose limit: compare with whitespace collapsed.
 const skill = read('skills/brainstorm/SKILL.md').replace(/\s+/g, ' ')
 const P3 = [
-  'It writes nothing but its note and NOW.md, runs no script, and starts no other skill until the human picks.',
+  'It writes nothing but its note, NOW.md and its `state.json`, runs no script, and starts no other skill until the human picks.',
   'never overwrites a note', '^[a-z0-9]+(-[a-z0-9]+)*$', '40k', '80%', 'one prompt per message',
   'never a numbered menu', 'Propose 3 or 4 techniques', 'at most 10 lines', 'at most 40 characters',
 ]
@@ -30,8 +30,8 @@ has('brainstorm/SKILL.md', skill, 'templates/methods/brain-methods.csv')
 has('brainstorm/SKILL.md', skill, 'templates/methods/elicitation-methods.csv')
 has('brainstorm/SKILL.md', skill, '<root>/brainstorms/')
 has('brainstorm/SKILL.md', skill, 'supply no idea')
-// P3 allows NOW.md, so the gtm §0 run-view steps that write it are named as part of it.
-has('brainstorm/SKILL.md', skill, 'its `now-facts.mjs` read, the `NOW.md.bak` rename and the exclude line')
+// P3 allows NOW.md and its state, so the gtm §0 run-view steps that write them are named as part of it.
+has('brainstorm/SKILL.md', skill, 'its `now-facts.mjs` read, the `NOW.md.bak` rename, the exclude lines and the state')
 // A pause before converging keeps every raised idea: each is written down when raised.
 for (const p of ['## Ideas', '## Dropped ideas', 'every idea goes under `## Ideas` as it is raised']) has('brainstorm/SKILL.md', skill, p)
 // A same-name note is resumed only when open and picked on a card; any other gets a suffix.

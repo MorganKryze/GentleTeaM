@@ -6,8 +6,8 @@ disable-model-invocation: true
 ---
 # Research: a sourced state of the art, then cards
 
-Ground rules: as in the `gtm` skill §0. This skill writes only its report, the lines of §4 and
-NOW.md: it changes no code, guideline, sheet or team setting.
+Ground rules: as in the `gtm` skill §0. This skill writes only its report, the lines of §4, NOW.md
+and its `state.json`: it changes no code, guideline, sheet or team setting.
 
 ## 1. Send
 The domain is `$ARGUMENTS`, in category words; none: ask for it in one line and stop. `<slug>`: the
