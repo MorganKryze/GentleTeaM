@@ -273,6 +273,18 @@ function milestone() {
   }
   return null
 }
+// Text t with the lines of its fenced code blocks blanked, so an example is never read as the
+// thing; a fence closes on a run of its character at least as long, alone on its line.
+function unfenced(t) {
+  if (t === null) return null
+  let open = null
+  return t.split('\n').map((l) => {
+    const f = l.match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
+    if (open) { if (f && f[1][0] === open[0] && f[1].length >= open.length && !f[2].trim()) open = null; return '' }
+    if (f && !(f[1][0] === '`' && f[2].includes('`'))) { open = f[1]; return '' }
+    return l
+  }).join('\n')
+}
 // The mandate of slug s (deliver §1): its file when one exists, valid or not, else the plan's
 // section; only the four keys are read, each once, and an invalid mandate is no mandate.
 function mandate(s) {
@@ -281,7 +293,7 @@ function mandate(s) {
   let source = 'file', body
   try { lstatSync(file); body = small(file) } catch { source = null }
   if (source === null) {
-    const plan = facts(s).plan, t = plan ? small(join(root, 'plans', plan)) : null
+    const plan = facts(s).plan, t = plan ? unfenced(small(join(root, 'plans', plan))) : null
     const m = t && t.match(/^## Mandate[ \t]*\n([\s\S]*?)(?=^#{1,6} |(?![\s\S]))/m)
     if (!m) return no(null, 'none')
     if (!/^> Source: \S/m.test(m[1])) return no('plan', 'source')
