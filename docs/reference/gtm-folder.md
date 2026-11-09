@@ -65,6 +65,7 @@ one learned.
 | `plans/` | one plan per Feature: tasks, files, test steps | architect |
 | `reports/` | each agent's full report, and the pull request text | every role |
 | `reports/<slug>/waiting.json` | the card waiting on your answer, in the writer's words; deleted once you answer | the orchestrator |
+| `reports/<slug>/mandate.md` | the mandate given with `mandate=<file>`, its four lines only; it holds for the branch, resumes included, until you delete it | `/gtm:deliver` |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
 | `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
 
@@ -77,18 +78,24 @@ instead when the state is older than `NOW.md` or names another slug than its lin
 failed write. An unknown fact is `null`. A program reading it treats every text as untrusted, and
 keeps its own reading when `v` is a version it does not know.
 
+Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a
+reader ignores the fields it does not know.
+
 | Field | What it holds |
 | --- | --- |
 | `v` | the version of this shape, 1 |
 | `updated`, `slug`, `branch`, `epic`, `phase` | as in `NOW.md`; `phase` can be `paused` |
-| `steps` | one `{n, title, status}` per task of the plan, status `todo`, `doing`, `done` or `blocked` |
+| `steps` | one `{n, title, status}` per task of the plan, status `todo`, `doing`, `done` or `blocked`; `[]` with no plan, `null` when the plan has no task heading |
 | `task` | `{n, of}`, the task in progress |
-| `eta` | `{clock, minutes, measured}`, `measured` the number of measured runs behind the estimate |
-| `running`, `others` | what runs now, and the other branches in progress |
-| `waiting` | the card waiting on you: `{kind, task, question, options, costIfWrong}`, or `null` |
+| `eta` | `{clock, minutes, measured}`: `clock` the writer's local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`; `measured` the number of measured runs behind the estimate |
+| `running` | what runs now: one `{kind, name, since, ageMin, lastChangeMin, mayHaveStopped}` each, or `null` for an item not understood |
+| `others` | the other branches in progress: one `{slug, branch, phase, task, updated}` each |
+| `waiting` | the card waiting on you: `{kind, task, question, options, costIfWrong}`, each option `{label, recommended}`, or `null` |
 | `milestone` | `{n, of, title}`, this branch's place in an approved milestone, or `null` |
 | `story` | the backlog story this branch delivers, or `null` |
-| `mandate`, `defaults`, `landing` | kept for later versions: `null`, 0 and `null` |
+| `mandate` | `{done, stops}` from a valid mandate, `stops` `null` when it has none; `null` with no valid mandate |
+| `defaults` | the number of default rulings for this branch in `ledger.md`, 0 with none |
+| `landing` | `null` until a later branch fills it, within `v` 1 |
 
 ## What does a new project start with?
 

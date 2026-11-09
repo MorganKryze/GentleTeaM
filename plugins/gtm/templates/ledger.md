@@ -4,9 +4,11 @@
 > Superseded entries are struck through (`~~...~~`), never deleted.
 > Format: `- YYYY-MM-DD · <slug> · <kind> · <text>`
 > Kinds: `lesson` (a rule to keep), `ruling` (a decision taken without the human, with its cost if
-> wrong), `minor` (a deferred review finding), `resolved` (closes a minor, names it), `run` (one
-> line per delivered branch, `/gtm:tune` reads these), `usage` (a note on cost or limits hit, or a
-> budget passed).
+> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:
+> <choice> (cost if wrong: <one line>)`, one line each, counted in the state's `defaults`),
+> `minor` (a deferred review finding), `resolved` (closes a minor, names it), `run` (one line per
+> delivered branch, `/gtm:tune` reads these), `usage` (a note on cost or limits hit, or a budget
+> passed).
 > A `run` line: `tasks N · correction rounds per task · findings per reviewer (critical /
 > important / minor) · tiers <g>g <s>s · design rounds and score · measured <W>m <T>k <A>a:
 > <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ... · limits <window> +<a>% ...

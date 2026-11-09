@@ -1,0 +1,5 @@
+- Done when: x
+-  done when: x
+- done when : x
+- done when:x
+- decides alone: reversible

@@ -11,7 +11,8 @@
 // fixture), with no global or system git config, and removes it after the run; runs the script at
 // a fixed time, and checks it changed no file but the state it was asked for, replaced by a rename,
 // no git index and no git status; that a usage error prints nothing; that the state holds no `?`
-// and none of its card or step text reached stdout. Run by scripts/validate.mjs. No dependencies.
+// and none of its card, step or mandate text reached stdout. Run by scripts/validate.mjs. No
+// dependencies.
 import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -104,8 +105,8 @@ for (const name of readdirSync(fixtures).sort()) {
       subset(name, st, want.state, 'state')
       if (JSON.stringify(st).includes('"?"')) errors.push(`${name}: the state holds ?`)
       if (ino !== null && statSync(stateFile).ino === ino) errors.push(`${name}: the state was rewritten in place, not replaced`)
-      const own = strings([st.waiting?.question, st.waiting?.costIfWrong, st.waiting?.options, (st.steps || []).map((s) => s.title)]).filter((s) => s.length >= 8)
-      if (own.some((s) => r.stdout.includes(s))) errors.push(`${name}: card or step text reached the output`)
+      const own = strings([st.waiting?.question, st.waiting?.costIfWrong, st.waiting?.options, (st.steps || []).map((s) => s.title), st.mandate]).filter((s) => s.length >= 8)
+      if (own.some((s) => r.stdout.includes(s))) errors.push(`${name}: card, step or mandate text reached the output`)
     }
     if (want.facts === undefined) continue
     let got

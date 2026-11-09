@@ -6,12 +6,17 @@
 // git with argument arrays; it prints no message text: names outside SAFE and unknown shapes print
 // `?` and exit 1. It writes nothing but, with --state, <root>/state.json: the same facts for a
 // program (v 1, `null` for each unknown) with the plan's steps, the open card from
-// reports/<slug>/waiting.json, the branch's place in an approved milestone and its backlog story;
-// that text is stripped and cut there and never printed. It refuses with exit 3 in a linked
+// reports/<slug>/waiting.json, the branch's place in an approved milestone and its backlog story,
+// the mandate's `done when` and `stops for` and the count of the slug's default rulings in the
+// ledger; that text is stripped and cut there and never printed. It refuses with exit 3 in a linked
 // worktree, over a tracked file or over a file that is not a JSON object with an integer `v`.
+// With --mandate <slug> it prints only whether that slug's mandate is valid, its source, why not
+// and its budget: reports/<slug>/mandate.md when it exists, valid or not, else the plan's
+// `## Mandate` section; valid with `- done when: <text>` and `- decides alone: reversible`, each
+// key at most once, a budget `<n> min, <n>k tokens`; other lines ignored; no mandate text printed.
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
 //        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]
-//        [--state <root>/state.json] No dependencies.
+//        [--state <root>/state.json] [--mandate <slug>] No dependencies.
 import { readFileSync, readdirSync, statSync, lstatSync, existsSync, realpathSync, writeFileSync, renameSync, unlinkSync, openSync, closeSync } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -32,8 +37,8 @@ const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >
 
 // Usage errors exit 2: an unknown flag, a flag without its value, no --root, a --now or --since
 // that is not a date-time.
-const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state']
-const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json]'); process.exit(2) }
+const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate']
+const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug>]'); process.exit(2) }
 const argv = process.argv.slice(2), opt = { running: [] }
 for (let i = 0; i < argv.length; i += 2) {
   const k = argv[i].slice(2), v = argv[i + 1]
@@ -42,6 +47,7 @@ for (let i = 0; i < argv.length; i += 2) {
 }
 if (!opt.root) usage()
 if (opt.slug !== undefined && !/^[a-z0-9-]+$/.test(opt.slug)) { console.error('now-facts.mjs: --slug takes [a-z0-9-] only'); process.exit(2) }
+if (opt.mandate !== undefined && !/^[a-z0-9-]+$/.test(opt.mandate)) { console.error('now-facts.mjs: --mandate takes [a-z0-9-] only'); process.exit(2) }
 const root = resolve(opt.root)
 if (opt.state !== undefined && resolve(opt.state) !== join(root, 'state.json')) { console.error('now-facts.mjs: --state takes <root>/state.json only'); process.exit(2) }
 const now = opt.now === undefined ? Date.now() : Date.parse(opt.now)
@@ -267,11 +273,43 @@ function milestone() {
   }
   return null
 }
+// The mandate of slug s (deliver §1): its file when one exists, valid or not, else the plan's
+// section; only the four keys are read, each once, and an invalid mandate is no mandate.
+function mandate(s) {
+  const no = (source, why) => ({ valid: false, source, why, done: null, stops: null, budget: null })
+  const file = join(root, 'reports', s, 'mandate.md')
+  let source = 'file', body
+  try { lstatSync(file); body = small(file) } catch { source = null }
+  if (source === null) {
+    const plan = facts(s).plan, t = plan ? small(join(root, 'plans', plan)) : null
+    const m = t && t.match(/^## Mandate[ \t]*\n([\s\S]*?)(?=^#{1,6} |(?![\s\S]))/m)
+    if (!m) return no(null, 'none')
+    if (!/^> Source: \S/m.test(m[1])) return no('plan', 'source')
+    source = 'plan'; body = m[1]
+  }
+  if (body === null) return no(source, 'unreadable')
+  const got = {}
+  for (const l of body.split('\n')) {
+    const m = l.match(/^- (done when|decides alone|stops for|budget): ([^\n]*)$/)
+    if (!m) continue
+    if (m[1] in got) return no(source, 'twice')
+    got[m[1]] = m[2]
+  }
+  const done = text(got['done when'], LONG)
+  if (!done) return no(source, 'done when')
+  if (got['decides alone']?.trim() !== 'reversible') return no(source, 'decides alone')
+  const b = got.budget === undefined ? null : got.budget.trim().match(/^(\d+) min, (\d+)k tokens$/)
+  if (got.budget !== undefined && !b) return no(source, 'budget')
+  return { valid: true, source, why: null, done, stops: text(got['stops for'], LONG), budget: b ? { minutes: +b[1], k: +b[2] } : null }
+}
+// Default rulings: `- <YYYY-MM-DD> · <slug> · ruling · default: ` lines of this slug exactly.
+const DEFAULT = /^- \d{4}-\d\d-\d\d · ([a-z0-9-]+) · ruling · default: /
+const defaults = (s) => ledger.split('\n').filter((l) => (l.match(DEFAULT) || [])[1] === s).length
 const state = () => ({
   v: 1, updated: out.updated, slug: nul(out.slug), branch: nul(out.branch), epic: out.epic || null, phase: nul(out.phase), steps: steps(), task: nul(out.task),
   eta: runs.length ? { clock: out.eta.clock, minutes: nul(out.eta.minutes), measured: runs.length } : { clock: null, minutes: null, measured: 0 },
   running: nul(out.running), others: nul(out.others), waiting: out.waiting ? card() : null, milestone: milestone(), story: (story && story.label) || null,
-  mandate: null, defaults: 0, landing: null,
+  mandate: mine ? (({ valid, done, stops }) => (valid ? { done, stops } : null))(mandate(slug)) : null, defaults: mine ? defaults(slug) : 0, landing: null,
 })
 // Written only in the main checkout, never over a tracked file or one that is not a state; the old
 // file is replaced by a rename, so a reader sees one whole file, and no temporary file stays.
@@ -300,6 +338,7 @@ function write(file) {
     return no('the write failed')
   }
 }
+if (opt.mandate !== undefined) { const { valid, source, why, budget } = mandate(opt.mandate); console.log(JSON.stringify({ valid, source, why, budget })); process.exit(0) }
 const code = (opt.state !== undefined && write(join(root, 'state.json'))) || (hasUnknown(out) ? 1 : 0)
 console.log(JSON.stringify(out, null, 2))
 process.exit(code)

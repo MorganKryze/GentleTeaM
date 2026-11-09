@@ -45,6 +45,12 @@ const PINS = {
     "delete that file before the run view's rewrite.",
   ],
   'plugins/gtm/skills/ship/SKILL.md': ['--base <git.base> --pr <root>/reports/<slug>/pr.md`'],
+  'docs/reference/gtm-folder.md': [
+    'Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a',
+    'reader ignores the fields it does not know.',
+    '`clock` the writer\'s local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`',
+  ],
+  'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
   'plugins/gtm/skills/plan/SKILL.md': [
     'so it reaches the brief; a missing one goes back to the architect:',
     '`security-reviewer`, `data-reviewer` or `ux-qa` sits on a task with a File matching a trigger of',
@@ -62,6 +68,7 @@ const ABSENT = {
   'plugins/gtm/skills/gtm/SKILL.md': ['limits at start: 5h'],
   'plugins/gtm/templates/ledger.md': ['limits 5h +<a>% 7d +<b>%'],
   'docs/guides/too-slow.md': ['limits 5h +<a>% 7d +<b>%'],
+  'docs/reference/gtm-folder.md': ['kept for later versions'],
 }
 const errors = []
 for (const [file, pins] of Object.entries(PINS)) {

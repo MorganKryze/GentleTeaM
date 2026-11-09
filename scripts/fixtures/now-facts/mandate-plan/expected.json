@@ -1,0 +1,10 @@
+{
+  "exit": 1,
+  "state": {
+    "mandate": {
+      "done": "PLAN mandate done",
+      "stops": null
+    },
+    "defaults": 0
+  }
+}
