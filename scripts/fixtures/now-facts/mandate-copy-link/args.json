@@ -1,0 +1,18 @@
+{
+  "branch": "feat/where-am-i",
+  "mtimes": {
+    "NOW.md": 1,
+    "backlog.md": 5,
+    "reports/where-am-i/progress.md": 5,
+    "ledger.md": 5
+  },
+  "args": [
+    "--mandate",
+    "where-am-i",
+    "--copy",
+    "{root}/given.md"
+  ],
+  "links": {
+    "reports/where-am-i/mandate.md": "../../plans/2026-10-15-where-am-i.md"
+  }
+}

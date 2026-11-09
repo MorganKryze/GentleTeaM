@@ -65,7 +65,7 @@ one learned.
 | `plans/` | one plan per Feature: tasks, files, test steps | architect |
 | `reports/` | each agent's full report, and the pull request text | every role |
 | `reports/<slug>/waiting.json` | the card waiting on your answer, in the writer's words; deleted once you answer | the orchestrator |
-| `reports/<slug>/mandate.md` | the mandate given with `mandate=<file>`, its four lines only; it holds for the branch, resumes included, until you delete it | `/gtm:deliver` |
+| `reports/<slug>/mandate.md` | the file given with `mandate=<file>`, copied byte for byte, its fingerprint in the logbook; any other file there counts as no mandate; it holds for the branch, resumes included, until you delete it | `/gtm:deliver` |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
 | `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
 

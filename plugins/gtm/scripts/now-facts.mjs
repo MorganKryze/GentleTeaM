@@ -4,22 +4,27 @@
 // and last change; a pause's phase, handoff and resume command, uncommitted or ignored entries per
 // worktree, and with --since the slug's root files changed since a time. It reads files and runs
 // git with argument arrays; it prints no message text: names outside SAFE and unknown shapes print
-// `?` and exit 1. It writes nothing but, with --state, <root>/state.json: the same facts for a
+// `?` and exit 1. It writes nothing but, with --state, <root>/state.json (the same facts for a
 // program (v 1, `null` for each unknown) with the plan's steps, the open card from
 // reports/<slug>/waiting.json, the branch's place in an approved milestone and its backlog story,
 // the mandate's `done when` and `stops for` and the count of the slug's default rulings in the
-// ledger; that text is stripped and cut there and never printed. It refuses with exit 3 in a linked
+// ledger; that text is stripped and cut there and never printed), and, with --mandate <slug>
+// --copy <file>, the mandate file and its ledger record. It refuses with exit 3 in a linked
 // worktree, over a tracked file or over a file that is not a JSON object with an integer `v`.
 // With --mandate <slug> it prints only whether that slug's mandate is valid, its source, why not
 // and its budget: reports/<slug>/mandate.md when it exists, valid or not, else the plan's
 // `## Mandate` section; valid with `- done when: <text>` and `- decides alone: reversible`, each
 // key at most once, a budget `<n> min, <n>k tokens`; other lines ignored; no mandate text printed.
+// The file counts only with its fingerprint: the slug's last `ruling · mandate: sha256 <hex>`
+// ledger line holds the sha256 of its raw bytes, else `fingerprint`. --copy writes both: the given
+// file byte for byte by a rename, then that record appended; exit 3 when it cannot write them.
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
 //        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]
-//        [--state <root>/state.json] [--mandate <slug>] No dependencies.
-import { readFileSync, readdirSync, statSync, lstatSync, existsSync, realpathSync, writeFileSync, renameSync, unlinkSync, openSync, closeSync } from 'node:fs'
+//        [--state <root>/state.json] [--mandate <slug> [--copy <file>]] No dependencies.
+import { readFileSync, readdirSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 
 const SAFE = /^[A-Za-z0-9._/-]+$/
 const WINDOW = 5, EVENTS = 3, LABEL = 60, LONG = 200, OPTIONS = 9, STOPPED = 2
@@ -37,8 +42,8 @@ const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >
 
 // Usage errors exit 2: an unknown flag, a flag without its value, no --root, a --now or --since
 // that is not a date-time.
-const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate']
-const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug>]'); process.exit(2) }
+const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate', 'copy']
+const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug> [--copy <file>]]'); process.exit(2) }
 const argv = process.argv.slice(2), opt = { running: [] }
 for (let i = 0; i < argv.length; i += 2) {
   const k = argv[i].slice(2), v = argv[i + 1]
@@ -46,6 +51,7 @@ for (let i = 0; i < argv.length; i += 2) {
   if (k === 'running') opt.running.push(v); else opt[k] = v
 }
 if (!opt.root) usage()
+if (opt.copy !== undefined && (opt.mandate === undefined || opt.state !== undefined)) { console.error('now-facts.mjs: --copy takes --mandate and no --state'); process.exit(2) }
 if (opt.slug !== undefined && !/^[a-z0-9-]+$/.test(opt.slug)) { console.error('now-facts.mjs: --slug takes [a-z0-9-] only'); process.exit(2) }
 if (opt.mandate !== undefined && !/^[a-z0-9-]+$/.test(opt.mandate)) { console.error('now-facts.mjs: --mandate takes [a-z0-9-] only'); process.exit(2) }
 const root = resolve(opt.root)
@@ -232,7 +238,12 @@ const hasUnknown = (v) => v === '?' || (typeof v === 'string' && v.endsWith(': ?
 const nul = (v) => (v === '?' ? null : Array.isArray(v) ? v.map(nul) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, nul(x)])) : v)
 const text = (s, n) => (typeof s === 'string' && label(s, n)) || null
 // A regular file of at most 1 MiB, or null: a link, a folder or a FIFO is never read.
-const small = (f) => { try { const st = lstatSync(f); return st.isFile() && st.size <= 1 << 20 ? readFileSync(f, 'utf8') : null } catch { return null } }
+const bytes = (f) => { try { const st = lstatSync(f); return st.isFile() && st.size <= 1 << 20 ? readFileSync(f) : null } catch { return null } }
+const small = (f) => { const b = bytes(f); return b === null ? null : b.toString('utf8') }
+const sha = (buf) => createHash('sha256').update(buf).digest('hex')
+// The record --copy appends: the sha256 of the mandate file's raw bytes, the slug's last one wins.
+const RECORD = /^- \d{4}-\d\d-\d\d · ([a-z0-9-]+) · ruling · mandate: sha256 ([0-9a-f]{64})$/
+const recorded = (s, t) => { let h = null; for (const l of t.split('\n')) { const m = l.match(RECORD); if (m && m[1] === s) h = m[2] } return h }
 // Steps: done (CLEAN, GATED), blocked (BLOCKED, OPEN), in delivery the first other one doing (a
 // running task has no progress line yet), the rest todo; a PAUSED task is todo while paused.
 function steps() {
@@ -286,12 +297,18 @@ function unfenced(t) {
   }).join('\n')
 }
 // The mandate of slug s (deliver §1): its file when one exists, valid or not, else the plan's
-// section; only the four keys are read, each once, and an invalid mandate is no mandate.
-function mandate(s) {
+// section; only the four keys are read, each once, and an invalid mandate is no mandate. A file
+// counts only when the ledger text records its fingerprint, checked on its raw bytes first.
+function mandate(s, ledgerText = ledger) {
   const no = (source, why) => ({ valid: false, source, why, done: null, stops: null, budget: null })
   const file = join(root, 'reports', s, 'mandate.md')
   let source = 'file', body
-  try { lstatSync(file); body = small(file) } catch { source = null }
+  try {
+    lstatSync(file)
+    const buf = bytes(file)
+    if (buf !== null && recorded(s, ledgerText) !== sha(buf)) return no(source, 'fingerprint')
+    body = buf === null ? null : buf.toString('utf8').replace(/^\uFEFF/, '')
+  } catch { source = null }
   if (source === null) {
     const plan = facts(s).plan, t = plan ? unfenced(small(join(root, 'plans', plan))) : null
     const m = t && t.match(/^## Mandate[ \t]*\n([\s\S]*?)(?=^#{1,6} |(?![\s\S]))/m)
@@ -350,6 +367,42 @@ function write(file) {
     return no('the write failed')
   }
 }
+// --copy: the given file read once (a regular file of at most 1 MiB, else `unreadable`, nothing
+// written); the mandate file replaced by a rename, never through a link or over a non-file; then
+// the record appended to the ledger, which must exist; then the check against the ledger as written.
+function copy(s, from) {
+  const no = (why) => { console.error(`now-facts.mjs: mandate not copied: ${why}`); return 3 }
+  let buf = null, fd = null
+  try {
+    fd = openSync(from, constants.O_RDONLY | constants.O_NONBLOCK)
+    const st = fstatSync(fd)
+    if (st.isFile() && st.size <= 1 << 20) buf = readFileSync(fd)
+  } catch {} finally { if (fd !== null) try { closeSync(fd) } catch {} }
+  if (buf === null) { console.log(JSON.stringify({ valid: false, source: 'file', why: 'unreadable', budget: null })); return 0 }
+  const kind = (f) => { try { const st = lstatSync(f); return st.isFile() ? 'file' : st.isDirectory() ? 'dir' : 'other' } catch { return null } }
+  const led = join(root, 'ledger.md'), dir = join(root, 'reports', s), file = join(dir, 'mandate.md')
+  if (kind(led) !== 'file') return no('no ledger.md')
+  for (const [d, k] of [[join(root, 'reports'), 'dir'], [dir, 'dir'], [file, 'file']]) if (![null, k].includes(kind(d))) return no(`${relative(root, d)} is not a ${k === 'dir' ? 'folder' : 'file'}`)
+  const tmp = `${file}.${process.pid}.tmp`
+  let out = null, made = false
+  try {
+    mkdirSync(dir, { recursive: true })
+    out = openSync(tmp, 'wx'); made = true
+    writeFileSync(out, buf); closeSync(out); out = null
+    renameSync(tmp, file)
+  } catch {
+    if (out !== null) try { closeSync(out) } catch {}
+    if (made) try { unlinkSync(tmp) } catch {}
+    return no('the write failed')
+  }
+  const d = new Date(now), day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  const end = readFileSync(led)
+  try { appendFileSync(led, `${end.length && end[end.length - 1] !== 0x0a ? '\n' : ''}- ${day} · ${s} · ruling · mandate: sha256 ${sha(buf)}\n`) } catch { return no('the ledger write failed') }
+  const { valid, source, why, budget } = mandate(s, readFileSync(led, 'utf8'))
+  console.log(JSON.stringify({ valid, source, why, budget }))
+  return 0
+}
+if (opt.copy !== undefined) process.exit(copy(opt.mandate, resolve(opt.copy)))
 if (opt.mandate !== undefined) { const { valid, source, why, budget } = mandate(opt.mandate); console.log(JSON.stringify({ valid, source, why, budget })); process.exit(0) }
 const code = (opt.state !== undefined && write(join(root, 'state.json'))) || (hasUnknown(out) ? 1 : 0)
 console.log(JSON.stringify(out, null, 2))

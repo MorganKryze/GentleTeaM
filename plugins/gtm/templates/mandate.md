@@ -7,7 +7,9 @@
 > nothing else.
 
 ## Where it comes from
-- `mandate=<file>`: copy its four lines below, nothing else, to `<root>/reports/<slug>/mandate.md`
+- `mandate=<file>`: never copy it yourself; run the check below with `--copy <file>` added. It
+  copies the file byte for byte to `<root>/reports/<slug>/mandate.md`, then appends its sha256 to
+  the ledger as `- <YYYY-MM-DD> · <slug> · ruling · mandate: sha256 <hex>`
   (an unreadable file: write nothing, run without a mandate, say `unreadable` in one Heads-up).
   That file wins over the plan's section and holds for the slug, resumes included, until deleted.
 - The four lines: `- done when: <text>` and `- decides alone: reversible`, both required; `- stops
@@ -16,6 +18,8 @@
 - Check it: `node "${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs" --root <root> --mandate <slug>`.
   `valid` false, or an exit other than 0: run without a mandate, and say why (`why`) in one
   Heads-up.
+- A mandate file the script did not copy, or one changed since (by hand or by an agent), is no
+  mandate: the check says `fingerprint`.
 - Valid: one Heads-up when the run starts, naming the mandate's source (the file or the plan)
   and its lines; a file and a plan section that differ: say the file holds, not the plan's section.
 

@@ -2,7 +2,8 @@
 // Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
 // scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
 // dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, fsize?, args }) and
-// expected.json ({ exit, facts, state? }, facts and state matched as subsets; rootName names the
+// expected.json ({ exit, facts, state?, files? }, facts and state matched as subsets, files ({ path:
+// text | null }) the exact text of those root files after the run, null for absent; rootName names the
 // root folder, root by default; rootIn puts the root in that worktree, cwd runs the script there,
 // track commits those root files, readonly locks the root folder, links ({ path: target }) and
 // fifos ([path]) make those root entries at run time, as git keeps no FIFO, fsize caps the files
@@ -10,10 +11,10 @@
 // The test builds a throwaway repository around the root (git keeps no repository inside a
 // fixture), with no global or system git config, and removes it after the run; runs the script at
 // a fixed time, and checks it changed no file but the state it was asked for, replaced by a rename,
-// no git index and no git status; that a usage error prints nothing; that the state holds no `?`
+// and the files expected.json names, no git index and no git status; that a usage error prints nothing; that the state holds no `?`
 // and none of its card, step or mandate text reached stdout. Run by scripts/validate.mjs. No
 // dependencies.
-import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, lstatSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync, spawnSync } from 'node:child_process'
@@ -30,11 +31,11 @@ const env = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTE
 function git(cwd, args, extra = {}) {
   execFileSync('git', ['-c', 'commit.gpgsign=false', ...args], { cwd, stdio: 'pipe', env: { ...env, ...extra } })
 }
-function snapshot(dir, skip) {
+function snapshot(dir, skip = []) {
   const h = createHash('sha256')
   const walk = (d) => readdirSync(d, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).forEach((e) => {
     const p = join(d, e.name)
-    if (relative(dir, p) === skip) return
+    if (skip.includes(relative(dir, p))) return
     // A link is hashed by its target, a FIFO by its name: reading one would follow or block.
     if (e.isDirectory()) walk(p); else h.update(relative(dir, p)).update(e.isSymbolicLink() ? `-> ${readlinkSync(p)}` : e.isFIFO() ? 'fifo' : readFileSync(p))
   })
@@ -84,7 +85,7 @@ for (const name of readdirSync(fixtures).sort()) {
     for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(gtm, f), ago(min), ago(min))
     for (const [f, to] of Object.entries(a.links || {})) symlinkSync(to, join(gtm, f))
     for (const f of a.fifos || []) execFileSync('mkfifo', [join(gtm, f)])
-    const stateFile = join(gtm, 'state.json'), skip = want.state ? 'state.json' : undefined
+    const stateFile = join(gtm, 'state.json'), skip = [...(want.state ? ['state.json'] : []), ...Object.keys(want.files || {})]
     const before = snapshot(gtm, skip), index = indexes(repo), ino = existsSync(stateFile) ? statSync(stateFile).ino : null
     const status = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env })
     const args = (a.args || []).map((x) => x.replace(/\{ago:(\d+)\}/g, (_, m) => ago(+m).toISOString()).replaceAll('{root}', gtm))
@@ -99,6 +100,11 @@ for (const name of readdirSync(fixtures).sort()) {
     if (snapshot(gtm, skip) !== before) errors.push(`${name}: the script changed a file in the root`)
     if (indexes(repo) !== index) errors.push(`${name}: the script wrote a git index`)
     if (execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env }) !== status) errors.push(`${name}: the script changed git status`)
+    for (const [f, t] of Object.entries(want.files || {})) {
+      let got = null
+      try { lstatSync(join(gtm, f)); got = readFileSync(join(gtm, f), 'utf8') } catch {}
+      if (got !== t) errors.push(`${name}: files ${f} differs${t === null ? ', want absent' : ''}`)
+    }
     if (want.state) {
       let st
       try { st = JSON.parse(readFileSync(stateFile, 'utf8')) } catch { errors.push(`${name}: no state written`); continue }

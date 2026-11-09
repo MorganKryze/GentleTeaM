@@ -78,8 +78,10 @@ four lines:
 - `- stops for: <text>`: cases you still want to be asked about (optional).
 - `- budget: <minutes> min, <tokens>k tokens` (optional).
 
-With `mandate=<file>`, its lines are copied to `reports/<slug>/mandate.md`. That copy wins over
+With `mandate=<file>`, the file is copied byte for byte to `reports/<slug>/mandate.md`. It wins over
 the plan's section and holds for that branch, resumes included, until you delete it.
+Its fingerprint is kept in the logbook: a file there that anyone writes or edits by hand
+counts as no mandate, with a Heads-up; give the file again.
 
 Delivery then asks you only at four moments: a decision that is costly or irreversible if wrong
 (data, security, money, secrets, deletion, a new dependency, skipping a review finding or a check),

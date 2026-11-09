@@ -1,0 +1,10 @@
+{
+  "exit": 1,
+  "facts": {
+    "slug": "where-am-i"
+  },
+  "state": {
+    "mandate": null,
+    "defaults": 2
+  }
+}

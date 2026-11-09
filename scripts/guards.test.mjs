@@ -60,7 +60,10 @@ const PINS = {
     '| the mandate\'s budget passed | ask once (1: usage): go on or pause |',
     '| the report | ask (3), after its summary below |',
     'holds, and on what evidence; the default rulings, their count and list; the mandate\'s source.',
-    '- `mandate=<file>`: copy its four lines below, nothing else, to `<root>/reports/<slug>/mandate.md`',
+    '- `mandate=<file>`: never copy it yourself; run the check below with `--copy <file>` added. It',
+    'copies the file byte for byte to `<root>/reports/<slug>/mandate.md`, then appends its sha256 to',
+    '- A mandate file the script did not copy, or one changed since (by hand or by an agent), is no',
+    'mandate: the check says `fingerprint`.',
     '> says, in the same Markdown form, at the same points. A mandate changes who answers a card,',
     '| a `[CHECK]` command fails on the untouched base | default only when the corrected command keeps its tool and targets and adds nothing to them (no flag, no `\\|\\|`, no ignore), as a missing prefix or a wrong path does, named in a Heads-up; any other correction, drop it or accept as pre-existing: ask (1) |',
     'keeps its tool and targets and adds nothing to them (no flag, no `\\|\\|`, no ignore)',
@@ -110,6 +113,7 @@ const PINS = {
   'docs/reference/gtm-folder.md': [
     'Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a',
     'reader ignores the fields it does not know.',
+    'its fingerprint in the logbook; any other file there counts as no mandate',
     '`clock` the writer\'s local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`',
   ],
   'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
@@ -125,7 +129,10 @@ const PINS = {
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
   'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m],
   'plugins/gtm/workflows/deliver-task.js': ["const SECURITY = 'high'"],
-  'docs/reference/commands.md': ['the plan\'s section and holds for that branch, resumes included, until you delete it.'],
+  'docs/reference/commands.md': [
+    'the plan\'s section and holds for that branch, resumes included, until you delete it.',
+    'counts as no mandate, with a Heads-up; give the file again.',
+  ],
 }
 // And what these files must never hold: no role ships at xhigh, which only risky work reaches.
 const ABSENT = {
