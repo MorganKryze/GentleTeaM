@@ -1,0 +1,18 @@
+{
+  "branch": "feat/where-am-i",
+  "mtimes": {
+    "NOW.md": 1,
+    "ledger.md": 5,
+    "backlog.md": 5,
+    "reports/where-am-i/progress.md": 5
+  },
+  "fsize": 1,
+  "args": [
+    "--waiting",
+    "decision,3",
+    "--running",
+    "task,t5,{ago:10}",
+    "--state",
+    "{root}/state.json"
+  ]
+}

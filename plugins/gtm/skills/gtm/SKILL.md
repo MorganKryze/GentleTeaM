@@ -42,13 +42,13 @@ argument-hint: "[what you want done]"
   `/<rel>/NOW.md` absent from the file `git rev-parse --git-path info/exclude` names: add it on
   its own line (never `.gitignore`), create the folder if missing, and add a newline first when
   the file does not end with one. Say so in one Heads-up, only when you added the line. A `?` in
-  the facts or a failed write never holds up a dispatch.
+  the facts or a failed write never holds up a dispatch. State and card file: as `now.md` says.
 - **Limits:** when a phase starts (design, spec, plan, a task or wave, the final review, a fix
   wave), run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --read
   --ledger '<root>/ledger.md'` with `--tokens` and `--minutes` left (the plan's estimate, else the
   spec's, less the branch's measures; no estimate: leave both out). When this slug has none and
-  the reading is not `stale`, `?` or `none`, append a ledger `usage` line `limits at start: 5h
-  <p>% resets <ISO> · 7d <q>% resets <ISO>`. A `flag` line: one Heads-up and one card per window
+  the reading is not `stale`, `?` or `none`, append a ledger `usage` line `limits at start: <w>
+  <p>% resets <ISO> · …`, one per window shown. A `flag` line: one Heads-up and one card per window
   and reset in a branch, and the phase waits for the answer: A lighter for this branch (at most
   two of implementer, reviewer, architect, designer, largest `roles` share first, all `?`:
   implementer and reviewer, to `sonnet` `low`, old → new), B keep, C `/gtm:pause` until the reset;

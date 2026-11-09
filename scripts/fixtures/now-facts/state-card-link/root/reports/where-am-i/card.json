@@ -1,0 +1,1 @@
+{ "kind": "decision", "question": "A card behind a link", "options": [{ "label": "A follow", "recommended": true }], "costIfWrong": "a read through a link" }

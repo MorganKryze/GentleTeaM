@@ -45,7 +45,7 @@ what the human approves, with each value's reason and today's date. Derive, do n
 - stored or synced personal records → data integrity high: data-reviewer on, risky tasks dry-run;
 - screens used daily or by many → UX high: ux-qa on, design threshold 8 or more;
 - a reading under 30 minutes old (`usage-line.mjs --read`) at 5h ≥ 80%, or 7d ≥ 50% with ≥ 3 days to
-  its reset → usage sensitivity high, the reading quoted in its Why;
+  its reset, only for a window it shows → usage sensitivity high, the reading quoted in its Why;
 - usage or cost sensitivity high → lower the effort of the high-volume roles (implementer, reviewer)
   first; never lower a role that guards a high priority.
 

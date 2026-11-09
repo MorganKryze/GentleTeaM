@@ -1,0 +1,30 @@
+{
+  "exit": 1,
+  "facts": {
+    "task": "?"
+  },
+  "state": {
+    "slug": "where-am-i",
+    "epic": null,
+    "phase": "delivery",
+    "steps": null,
+    "task": null,
+    "eta": {
+      "clock": null,
+      "minutes": null,
+      "measured": 0
+    },
+    "waiting": {
+      "kind": "decision",
+      "task": "2",
+      "question": null,
+      "options": null,
+      "costIfWrong": null
+    },
+    "milestone": null,
+    "story": null,
+    "mandate": null,
+    "defaults": 0,
+    "landing": null
+  }
+}
