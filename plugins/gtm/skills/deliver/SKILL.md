@@ -5,8 +5,8 @@ argument-hint: "[plan path or slug] [mandate=<file>]"
 ---
 # Deliver (ends at checkpoint 3: the go)
 
-Ground rules: as in the `gtm` skill §0. A mandate: the plugin's `templates/mandate.md` first.
-
+Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's section or
+`<root>/reports/<slug>/mandate.md`): the plugin's `templates/mandate.md` first.
 ## 1. Prepare
 - Branch: from `git.base` as `git.branch` says (the orchestrator does this once; agents never switch
   branches); note the base commit. A range's files: `git -c core.quotePath=false diff --name-only

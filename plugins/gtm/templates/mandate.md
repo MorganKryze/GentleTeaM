@@ -1,7 +1,8 @@
 # Mandate
 
-> Read by `/gtm:deliver` only, before its §1, when it gets `mandate=<file>` or the plan holds a
-> `## Mandate` section. Only a valid mandate counts: without one, every card shows as the briefing
+> Read by `/gtm:deliver` only, before its §1, when it gets `mandate=<file>`, the plan holds a
+> `## Mandate` section, or `<root>/reports/<slug>/mandate.md` exists.
+> Only a valid mandate counts: without one, every card shows as the briefing
 > says, in the same Markdown form, at the same points. A mandate changes who answers a card,
 > nothing else.
 

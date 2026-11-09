@@ -23,10 +23,12 @@ const PINS = {
     '- Efforts: `team`\'s, raised or lowered on each dispatch\'s range as the Roles note of',
     '`${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the `risky paths` regexes, a list.',
     'the must-fix list at a correction round\'s effort on the branch range',
-    'A mandate: the plugin\'s `templates/mandate.md` first.',
+    'A mandate (the argument, the plan\'s section or',
+    '`<root>/reports/<slug>/mandate.md`): the plugin\'s `templates/mandate.md` first.',
     'under a mandate, its summary first (`mandate.md`).',
   ],
   'plugins/gtm/templates/mandate.md': [
+    'or `<root>/reports/<slug>/mandate.md` exists.',
     'Only a valid mandate counts: without one, every card shows as the briefing',
     'That file wins over the plan\'s section and holds',
     'for the slug, resumes included, until deleted.',
