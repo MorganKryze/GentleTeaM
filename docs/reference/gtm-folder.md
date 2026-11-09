@@ -71,9 +71,10 @@ one learned.
 ## What does state.json hold?
 
 `state.json` is the run view for a program that follows the run for you, such as a status line:
-the facts of `NOW.md` as JSON, rewritten right after it, so it is never older. GTM writes it only
-in your main checkout and never reads it back. An unknown fact is `null`. A program reading it
-treats every text as untrusted, and keeps its own reading when `v` is a version it does not know.
+the facts of `NOW.md` as JSON, rewritten right after it, so it is never older. GTM writes it only in
+your main checkout. No skill or agent reads it back; GTM's status line step only displays it. An
+unknown fact is `null`. A program reading it treats every text as untrusted, and keeps its own
+reading when `v` is a version it does not know.
 
 | Field | What it holds |
 | --- | --- |

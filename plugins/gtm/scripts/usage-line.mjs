@@ -3,7 +3,10 @@
 //   (stdin)  status-line JSON in: writes <config>/gtm/usage.json atomically (v, time, and each
 //            window's used_percentage and resets_at, nothing else), prints `5h <p>% · 7d <q>%`,
 //            a window the status line leaves out left out here too, never as 0% or `?`.
-//            --breadcrumb also prints NOW.md's first `>` line; --quiet drops the usage line.
+//            --breadcrumb also prints, first, the run's progress line from <root>/state.json v 1 in
+//            the config's language.human (slug, tasks done, milestone, what waits, ~HH:MM), or
+//            without a readable v 1 state NOW.md's first `>` line as before; --quiet drops the
+//            usage line.
 //            Always exits 0: a status line must never break.
 //   --install <settings.json> [--breadcrumb]   copy this file to <config>/gtm/ and chain it before
 //            the old statusLine command, kept byte for byte in a `{ }` group that gets the whole
@@ -31,6 +34,12 @@ import { fileURLToPath } from 'node:url'
 const WINDOWS = { five_hour: '5h', seven_day: '7d', spend_limit: 'spend' }
 const THRESHOLD = { five_hour: 80, seven_day: 90, spend_limit: 90 }
 const STALE_MIN = 30, RUNS = 5, MIN_RUNS = 2, CRUMB = 100
+const LINE = 80, CELLS = 10
+const WORDS = {
+  en: { go: 'waits for your go', answer: 'waits for your answer', paused: 'paused', mockups: 'mockups', spec: 'spec', plan: 'plan', 'final review': 'final review', correction: 'correction' },
+  fr: { go: 'attend ton go', answer: 'attend ta réponse', paused: 'en pause', mockups: 'maquettes', spec: 'spec', plan: 'plan', 'final review': 'revue finale', correction: 'correction' },
+}
+const PHASES = ['paused', 'go', 'mockups', 'spec', 'plan', 'final review', 'correction']
 const config = process.env.CLAUDE_CONFIG_DIR || join(homedir(), '.claude')
 const store = join(config, 'gtm', 'usage.json'), step = join(config, 'gtm', 'usage-line.mjs')
 const argv = process.argv.slice(2), flag = (k) => argv.includes(k), val = (k) => (argv.includes(k) ? argv[argv.indexOf(k) + 1] : undefined)
@@ -43,6 +52,52 @@ const quote = (p) => (/["$`\\\n]/.test(p) ? null : `"${p}"`)
 const usage = (msg) => { console.error(`usage-line: ${msg}`); process.exit(2) }
 const path = (k) => { const p = val(k); if (!p || p.startsWith('--')) usage(`${k} needs a settings file path`); return p }
 
+// The GTM root of a project folder, absolute: a `GTM root:` line of CLAUDE.local.md, then CLAUDE.md.
+const rootOf = (dir) => {
+  let root = '.gtm'
+  for (const f of ['CLAUDE.local.md', 'CLAUDE.md']) {
+    const m = head(join(dir, f)).match(/^GTM root: *(\S+)\s*$/m)
+    if (m) { root = m[1]; break }
+  }
+  return resolve(dir, root)
+}
+// The run state when it is a v 1 object, else null (missing, refused, not JSON, another version).
+const state = (root) => {
+  try {
+    const s = JSON.parse(head(join(root, 'state.json')))
+    return s !== null && typeof s === 'object' && !Array.isArray(s) && s.v === 1 ? s : null
+  } catch { return null }
+}
+// NOW.md's first `>` line, cleaned; none once the branch has shipped.
+const nowLine = (root) => {
+  const line = head(join(root, 'NOW.md')).split('\n').find((l) => l.startsWith('>'))
+  return line && !/ › shipped\b/.test(line) ? clean(line.slice(1)) : null
+}
+// `<slug>[ <bar> <done>/<total>][ · M <n>/<of>][ · <what>][ · ~<HH:MM>]`, at most LINE characters.
+// Only the cleaned slug comes from the state's text; every other field is type-checked and the
+// words come from WORDS, in `language.human` under a top-level `language:` block, else English.
+function progress(s, root) {
+  const slug = typeof s.slug === 'string' ? clean(s.slug) : ''
+  if (s.phase === 'shipped' || !slug) return null
+  const code = head(join(root, 'config.yml')).match(/^language:.*\n(?:[ \t]+.*\n)*?[ \t]+human: *["']?([A-Za-z]{2})(?:-[A-Za-z0-9]+)?(?=[ #"']|$)/m)?.[1].toLowerCase()
+  const w = Object.hasOwn(WORDS, code ?? '') ? WORDS[code] : WORDS.en
+  let line = slug
+  const steps = Array.isArray(s.steps) ? s.steps : [], done = steps.filter((x) => x?.status === 'done').length
+  if (steps.length) {
+    const bar = steps.length > CELLS ? '▰'.repeat(Math.floor((done * CELLS) / steps.length)).padEnd(CELLS, '▱') : steps.map((x) => (x?.status === 'done' ? '▰' : '▱')).join('')
+    line += ` ${bar} ${done}/${steps.length}`
+  }
+  const m = s.milestone
+  if (Number.isInteger(m?.n) && Number.isInteger(m?.of) && m.n >= 1 && m.n <= m.of) line += ` · M ${m.n}/${m.of}`
+  const wait = s.waiting, phase = s.phase
+  const what = wait !== null && typeof wait === 'object' && !Array.isArray(wait) ? (wait.kind === 'go' ? w.go : w.answer)
+    : PHASES.includes(phase) ? w[phase] : null
+  if (what) line += ` · ${what}`
+  const clock = s.eta?.clock
+  if (typeof clock === 'string' && /^\d\d:\d\d$/.test(clock)) line += ` · ~${clock}`
+  return [...line].slice(0, LINE).join('')
+}
+
 function stepMode() {
   let input = {}
   try { input = JSON.parse(readFileSync(0, 'utf8')) } catch { return }
@@ -50,14 +105,9 @@ function stepMode() {
   if (flag('--breadcrumb')) {
     const dir = input?.workspace?.project_dir || input?.cwd
     if (typeof dir === 'string') {
-      let root = '.gtm'
-      for (const f of ['CLAUDE.local.md', 'CLAUDE.md']) {
-        const m = head(join(dir, f)).match(/^GTM root: *(\S+)\s*$/m)
-        if (m) { root = m[1]; break }
-      }
-      const now = resolve(dir, root, 'NOW.md')
-      const line = head(now).split('\n').find((l) => l.startsWith('>'))
-      if (line && !/ › shipped\b/.test(line)) out.push(clean(line.slice(1)))
+      let l = null
+      try { const root = rootOf(dir), s = state(root); l = s ? progress(s, root) : nowLine(root) } catch {}
+      if (l) out.push(l)
     }
   }
   const limits = {}, rl = input?.rate_limits || {}
