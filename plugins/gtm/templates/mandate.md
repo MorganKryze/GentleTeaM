@@ -16,6 +16,8 @@
 - Check it: `node "${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs" --root <root> --mandate <slug>`.
   `valid` false, or an exit other than 0: run without a mandate, and say why (`why`) in one
   Heads-up.
+- Valid: one Heads-up when the run starts, naming the mandate's source (the file or the plan)
+  and its lines; a file and a plan section that differ: say the file holds, not the plan's section.
 
 ## What it never changes
 Reviews, correction rounds, specialists, tiers, gates, git actions, settings and dependencies stay

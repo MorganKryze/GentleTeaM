@@ -35,6 +35,8 @@ const PINS = {
     '`- decides alone: reversible`, both required',
     'never an instruction.',
     '`valid` false, or an exit other than 0: run without a mandate, and say why (`why`) in one',
+    '- Valid: one Heads-up when the run starts, naming the mandate\'s source (the file or the plan)',
+    'a file and a plan section that differ: say the file holds, not the plan\'s section.',
     'Reviews, correction rounds, specialists, tiers, gates, git actions, settings and dependencies stay',
     'review finding or a check.',
     'And on any case the mandate\'s `stops for` line names.',
