@@ -9,7 +9,7 @@
 ## 1. `feat/other`: one
 - x
 
-## 2. `feat/where-am-i`: the run view ‮and its state, cut at sixty characters: wwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+## 2. `feat/where-am-i`: an older approved plan
 - x
 
 ## 3. `feat/third`: three

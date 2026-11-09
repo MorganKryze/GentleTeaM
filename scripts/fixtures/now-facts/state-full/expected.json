@@ -79,8 +79,8 @@
       "costIfWrong": "rm -rf zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
     },
     "milestone": {
-      "n": 2,
-      "of": 3,
+      "n": 3,
+      "of": 4,
       "title": "the run view and its state, cut at sixty characters: wwwwwww"
     },
     "story": "V · where am I",
