@@ -35,12 +35,14 @@ on, or revise the plan.
 
 Each delivered branch adds a `run` line to the [logbook](/reference/glossary/#logbook). It ends
 with what Claude Code measured, `measured <minutes>m <tokens>k <agents>a`, phase by phase, and
-then how much of your limits it used, `limits 5h +<a>% 7d +<b>%`. The next estimates read these
-lines.
+then how much of your limits it used, one figure per window your plan reports, such as
+`limits 5h +12% 7d +3%`; a window your plan does not report is left out. The next estimates
+read these lines.
 
 ## What happens when my plan's limits run low?
 
-With the usage step from `/gtm:init`, GTM reads your 5-hour and 7-day limits before each phase.
+With the usage step from `/gtm:init`, GTM reads your 5-hour and 7-day limits before each phase,
+or the one of them your plan reports.
 When a phase would take you past one, it waits and shows a card:
 
 | Option | What it does |

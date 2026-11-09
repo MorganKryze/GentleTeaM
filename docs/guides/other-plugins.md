@@ -112,9 +112,10 @@ command is kept byte for byte and still prints what it printed. With the breadcr
 status line also shows the first line of `NOW.md`, until the branch ships.
 
 The step writes one file, `<config>/gtm/usage.json`, where `<config>` is your Claude Code
-folder (`~/.claude` by default). It holds two or three percentages and their reset times: the
-5-hour and 7-day windows, and the spend limit when there is one. No session id, path, cost or
-message text. Your credit balance is not visible to it, so GTM cannot warn you about credit.
+folder (`~/.claude` by default). It holds one to three percentages and their reset times: the
+5-hour and 7-day windows your plan reports, and the spend limit when there is one. No session
+id, path, cost or message text. Your credit balance is not visible to it, so GTM cannot warn you
+about credit.
 
 It only changes your user settings, never a project's, and not on Windows. To undo it, run the
 command init printed:

@@ -3,7 +3,8 @@
 // and target checks, merge commits on a wave, the footprint check reading the PR text, a
 // decision confirmed by review keeping its reader when the final review is skipped, and efforts
 // raised only on risky work: the template's rule, its defaults, init's proposal, and deliver
-// pointing at the rule. The agents' shipped efforts are held too: none ships at xhigh.
+// pointing at the rule. The agents' shipped efforts are held too: none ships at xhigh. A limit
+// window the status line leaves out is named nowhere: no fixed `5h … 7d` pair in the limits lines.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -44,7 +45,13 @@ const PINS = {
   'plugins/gtm/workflows/deliver-task.js': ["const SECURITY = 'high'"],
 }
 // And what these files must never hold: no role ships at xhigh, which only risky work reaches.
-const ABSENT = { 'plugins/gtm/templates/team.md': ['| xhigh |'], 'plugins/gtm/skills/init/SKILL.md': ['effort xhigh'] }
+const ABSENT = {
+  'plugins/gtm/templates/team.md': ['| xhigh |'],
+  'plugins/gtm/skills/init/SKILL.md': ['effort xhigh'],
+  'plugins/gtm/skills/gtm/SKILL.md': ['limits at start: 5h'],
+  'plugins/gtm/templates/ledger.md': ['limits 5h +<a>% 7d +<b>%'],
+  'docs/guides/too-slow.md': ['limits 5h +<a>% 7d +<b>%'],
+}
 const errors = []
 for (const [file, pins] of Object.entries(PINS)) {
   const text = readFileSync(join(root, file), 'utf8')

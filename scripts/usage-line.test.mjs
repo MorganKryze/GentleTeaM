@@ -217,6 +217,15 @@ try {
     const th = b.run(['--read', '--now', at]).stdout
     check('F8 thresholds', /^5h 79% .* min$/m.test(th) && /^spend 90% .* · flag$/m.test(th), th)
   }
+  { // A window the status line leaves out: one window line, never `5h 0%` or `5h ?`.
+    const b = box(), at = '2026-10-15T10:00:00Z', week = { used_percentage: 50, resets_at: '2026-10-18T10:00:00Z' }
+    const s = b.run([], JSON.stringify({ rate_limits: { seven_day: week } }))
+    const u = existsSync(b.store) ? JSON.parse(readFileSync(b.store, 'utf8')) : {}
+    check('7d only: step', s.status === 0 && s.stdout === '7d 50%\n' && !('five_hour' in u), JSON.stringify(s.stdout) + Object.keys(u))
+    writeFileSync(b.store, JSON.stringify({ v: 1, at, seven_day: week }))
+    const r = b.run(['--read', '--now', at]), lines = r.stdout.split('\n').filter((l) => /^(5h|7d|spend) /.test(l))
+    check('7d only: read', r.status === 0 && lines.length === 1 && lines[0].startsWith('7d 50% · ') && !r.stdout.includes('5h'), r.stdout)
+  }
   { // F9: 82%, 3.0 per 100k from the last measured runs with limits, 640k and 40 min left.
     const b = box(), at = '2026-10-15T10:00:00Z', ledger = join(root, 'scripts/fixtures/usage-line/f9-ledger.md')
     mkdirSync(join(b.config, 'gtm'), { recursive: true })
@@ -230,4 +239,4 @@ try {
 } finally { rmSync(tmp, { recursive: true, force: true }) }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log('usage-line: F1-F9, breadcrumb and undo OK')
+console.log('usage-line: F1-F9, one window, breadcrumb and undo OK')

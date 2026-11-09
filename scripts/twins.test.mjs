@@ -44,6 +44,7 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/team.md', from: 'no trigger and no risky path.', to: 'no trigger.', says: 'matches no trigger and no risky path.' },
   { test: 'guards', file: agent('final-reviewer'), from: 'effort: high', to: 'effort: xhigh', says: 'final-reviewer.md ships effort xhigh' },
   { test: 'guards', file: skill('init'), from: 'security-reviewer on, effort high;', to: 'security-reviewer on, effort xhigh;', says: 'holds effort xhigh' },
+  { test: 'guards', file: LEDGER, from: '· limits <window> +<a>% ...', to: '· limits 5h +<a>% 7d +<b>%', says: 'holds limits 5h' },
   { test: 'lenses', file: LEDGER, from: '· lenses <role>', to: '· lens <role>', says: 'does not state the `lenses` segment' },
   { test: 'methods', file: agent('reviewer'), from: 'Steelmanning [elicitation]', to: 'Steelman [elicitation]', says: 'reviewer' },
   { test: 'now-facts', file: script('now-facts'), from: 'return s.length % 2 ? s[m]', to: 'return s.length % 2 ? s[0]', says: 'want' },

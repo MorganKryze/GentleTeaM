@@ -9,7 +9,7 @@
 > budget passed).
 > A `run` line: `tasks N · correction rounds per task · findings per reviewer (critical /
 > important / minor) · tiers <g>g <s>s · design rounds and score · measured <W>m <T>k <A>a:
-> <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ... · limits 5h +<a>% 7d +<b>%
+> <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ... · limits <window> +<a>% ...
 > · sheets <name> <passes> <c>/<i>/<m>, ...
 > · mutations <planted> planted <survived> survived · lenses <role> <method name> <n>, ...`,
 > escalated
@@ -21,7 +21,9 @@
 > step 3 measures them, once over every progress line's `· run <id>` folder plus `--also
 > <role>:<s>:<tokens>` per dispatch (architect, final-reviewer, implementer, a re-run review's
 > role), roles at 5% or more, any `?` → `roles ?`; `limits` the difference from the branch's first
-> `limits at start` usage line, `?` across a reset or with no reading; `sheets` summed per sheet
+> `limits at start` usage line, one `<window> +<a>%` per window (`5h`, `7d`) that line and the
+> reading both show, a window either lacks left out, never `+0%`, `?` across a reset or with no
+> reading; `sheets` summed per sheet
 > over the progress lines that carry it: passes, then findings by severity, zeros kept, the segment
 > left out when none does; `mutations` summed over the
 > progress lines that carry it, deferred and re-run review lines included, `?` when the task
