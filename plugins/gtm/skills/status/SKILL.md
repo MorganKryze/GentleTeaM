@@ -6,8 +6,8 @@ disable-model-invocation: true
 # Status: where the run stands
 
 Ground rules: as in the `gtm` skill §0. This skill writes nothing but `<root>/NOW.md` and what
-§0 adds to it (the `NOW.md.bak` rename, the exclude line): no dispatch, no workflow, no branch,
-worktree, progress, logbook or backlog change.
+§0 adds to it (the `NOW.md.bak` rename, the exclude lines, `state.json`): no dispatch, no
+workflow, no branch, worktree, progress, logbook or backlog change.
 
 1. Read the current NOW.md and tell whether it is GTM's, as §0 says (untracked, line 1 as there).
    Only from GTM's, take each running item: kind and name from its `- ` line under what runs,

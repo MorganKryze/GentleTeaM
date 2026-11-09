@@ -3,21 +3,26 @@
 // JSON: breadcrumb parts, task n/N, worktrees, last events, waiting kind, next step, ETA, staleness
 // and last change; a pause's phase, handoff and resume command, uncommitted or ignored entries per
 // worktree, and with --since the slug's root files changed since a time. It reads files and runs
-// git with argument arrays; it writes nothing and prints no message text: names outside SAFE and
-// unknown shapes print `?` and exit 1.
+// git with argument arrays; it prints no message text: names outside SAFE and unknown shapes print
+// `?` and exit 1. It writes nothing but, with --state, <root>/state.json: the same facts for a
+// program (v 1, `null` for each unknown) with the plan's steps, the open card from
+// reports/<slug>/waiting.json, the branch's place in an approved milestone and its backlog story;
+// that text is stripped and cut there and never printed. It refuses with exit 3 in a linked
+// worktree, over a tracked file or over a file that is not a JSON object with an integer `v`.
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
-//        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] No dependencies.
-import { readFileSync, readdirSync, statSync, existsSync, realpathSync } from 'node:fs'
+//        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]
+//        [--state <root>/state.json] No dependencies.
+import { readFileSync, readdirSync, statSync, lstatSync, existsSync, realpathSync, writeFileSync, renameSync, unlinkSync } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
 
 const SAFE = /^[A-Za-z0-9._/-]+$/
-const WINDOW = 5, EVENTS = 3, LABEL = 60, STOPPED = 2
+const WINDOW = 5, EVENTS = 3, LABEL = 60, LONG = 200, OPTIONS = 9, STOPPED = 2
 // Event words: one SAFE token, or a status phrase from this closed list; any other text prints `?`.
 const PHRASES = ['re-review ready', 'second re-review ready']
 const PHASES = ['mockups', 'spec', 'plan', 'delivery', 'final review', 'correction', 'go', 'shipped']
 const safe = (s) => (typeof s === 'string' && SAFE.test(s) ? s : '?')
-const label = (s) => [...s.replace(/[\x00-\x1f\x7f-\x9f\p{Cf}\u2028\u2029]/gu, '').trim()].slice(0, LABEL).join('')
+const label = (s, n = LABEL) => [...s.replace(/[\x00-\x1f\x7f-\x9f\p{Cf}\u2028\u2029]/gu, '').trim()].slice(0, n).join('')
 const read = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : null)
 const mtime = (f) => (existsSync(f) ? statSync(f).mtimeMs : null)
 // Optional locks off: git status then never takes index.lock nor rewrites a tree's index.
@@ -27,8 +32,8 @@ const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >
 
 // Usage errors exit 2: an unknown flag, a flag without its value, no --root, a --now or --since
 // that is not a date-time.
-const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since']
-const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]'); process.exit(2) }
+const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state']
+const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json]'); process.exit(2) }
 const argv = process.argv.slice(2), opt = { running: [] }
 for (let i = 0; i < argv.length; i += 2) {
   const k = argv[i].slice(2), v = argv[i + 1]
@@ -38,6 +43,7 @@ for (let i = 0; i < argv.length; i += 2) {
 if (!opt.root) usage()
 if (opt.slug !== undefined && !/^[a-z0-9-]+$/.test(opt.slug)) { console.error('now-facts.mjs: --slug takes [a-z0-9-] only'); process.exit(2) }
 const root = resolve(opt.root)
+if (opt.state !== undefined && resolve(opt.state) !== join(root, 'state.json')) { console.error('now-facts.mjs: --state takes <root>/state.json only'); process.exit(2) }
 const now = opt.now === undefined ? Date.now() : Date.parse(opt.now)
 if (Number.isNaN(now)) { console.error('now-facts.mjs: --now takes an ISO date-time'); process.exit(2) }
 const repo = (git(root, ['rev-parse', '--show-toplevel']) || '').trim() || null
@@ -129,8 +135,8 @@ function facts(s) {
   const cmd = paused && RESUME[paused] ? RESUME[paused](s, { plan, spec }) : null
   const command = typeof cmd === 'string' && /^\/gtm:[a-z]+( [A-Za-z0-9._/-]+)?$/.test(cmd) ? cmd : '?'
   const handoff = existsSync(join(root, 'reports', s, 'handoff.md')) ? `reports/${s}/handoff.md` : '?'
-  if (paused !== null) return { phase: unknown ? '?' : 'paused', resumes: unknown ? '?' : paused, resume: command, handoff, task: unknown || paused === '?' ? '?' : paused !== 'delivery' ? null : task, of, doneTasks, events, progressFile }
-  return { phase: unknown ? '?' : phase, task: unknown ? '?' : task, of, doneTasks, events, progressFile }
+  if (paused !== null) return { phase: unknown ? '?' : 'paused', resumes: unknown ? '?' : paused, resume: command, handoff, task: unknown || paused === '?' ? '?' : paused !== 'delivery' ? null : task, of, doneTasks, events, progressFile, plan, status }
+  return { phase: unknown ? '?' : phase, task: unknown ? '?' : task, of, doneTasks, events, progressFile, plan, status }
 }
 
 const mine = slug === '?' ? null : facts(slug)
@@ -214,5 +220,80 @@ if (since !== null) {
 }
 if (out.waiting && out.waiting.task === '?' && !opt.waiting.includes(',')) out.waiting.task = null
 const hasUnknown = (v) => v === '?' || (typeof v === 'string' && v.endsWith(': ?')) || (v && typeof v === 'object' && Object.values(v).some(hasUnknown))
+
+// The state: the facts above for a program, every `?` a `null`, plus what the run view leaves to
+// the page: the plan's steps, the open card, the branch's place in a milestone and its story.
+const nul = (v) => (v === '?' ? null : Array.isArray(v) ? v.map(nul) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, nul(x)])) : v)
+const text = (s, n) => (typeof s === 'string' && label(s, n)) || null
+// A regular file of at most 1 MiB, or null: a link, a folder or a FIFO is never read.
+const small = (f) => { try { const st = lstatSync(f); return st.isFile() && st.size <= 1 << 20 ? readFileSync(f, 'utf8') : null } catch { return null } }
+// Steps: done (CLEAN, GATED), blocked (BLOCKED, OPEN), in delivery the first other one doing (a
+// running task has no progress line yet), the rest todo; a PAUSED task is todo while paused.
+function steps() {
+  if (!mine) return null
+  if (!mine.plan) return []
+  const heads = [...readFileSync(join(root, 'plans', mine.plan), 'utf8').matchAll(/^### Task (\d+)\b:?(.*)$/gm)]
+  if (!heads.length) return null
+  let started = phase !== 'delivery'
+  return heads.map(([, n, title]) => {
+    const w = mine.status[`t${+n}`]
+    let status = /^(CLEAN|GATED)$/.test(w) ? 'done' : /^(BLOCKED|OPEN)$/.test(w) ? 'blocked' : 'todo'
+    if (status === 'todo' && !started) { status = 'doing'; started = true }
+    return { n: +n, title: text(title.replace(/\s*\[P\]\s*$/, ''), LABEL), status }
+  })
+}
+// The card the writer put in reports/<slug>/waiting.json, read only for the --waiting kind; a
+// missing, malformed or other card keeps the kind and task alone.
+function card() {
+  const { kind, task } = out.waiting
+  const none = { kind: nul(kind), task: nul(task), question: null, options: null, costIfWrong: null }
+  let c = null
+  try { c = slug === '?' ? null : JSON.parse(small(join(root, 'reports', slug, 'waiting.json'))) } catch {}
+  const ok = c && typeof c === 'object' && c.kind === kind && typeof c.question === 'string' && Array.isArray(c.options) &&
+    c.options.length <= OPTIONS && c.options.every((o) => o && typeof o.label === 'string')
+  if (!ok) return none
+  return { ...none, question: text(c.question, LONG), options: c.options.map((o) => ({ label: text(o.label, LABEL), recommended: o.recommended === true })), costIfWrong: text(c.costIfWrong, LONG) }
+}
+// The latest approved milestone (by file name) with a `## <n>. `<branch>`: <title>` heading for
+// this branch: { n, of: its number of such headings, title }.
+function milestone() {
+  const dir = join(root, 'specs')
+  if (out.branch === '?' || !existsSync(dir)) return null
+  for (const f of readdirSync(dir).filter((x) => x.endsWith('-milestone.md')).sort().reverse()) {
+    const t = small(join(dir, f)) || ''
+    if (!/^>.*\bStatus: approved\b/m.test(t)) continue
+    const heads = [...t.matchAll(/^## (\d+)\. `([^`]+)`: (.+)$/gm)], h = heads.find((m) => m[2] === out.branch)
+    if (h) return { n: +h[1], of: heads.length, title: text(h[3], LABEL) }
+  }
+  return null
+}
+const state = () => ({
+  v: 1, updated: out.updated, slug: nul(out.slug), branch: nul(out.branch), epic: out.epic || null, phase: nul(out.phase), steps: steps(), task: nul(out.task),
+  eta: runs.length ? { clock: out.eta.clock, minutes: nul(out.eta.minutes), measured: runs.length } : { clock: null, minutes: null, measured: 0 },
+  running: nul(out.running), others: nul(out.others), waiting: out.waiting ? card() : null, milestone: milestone(), story: (story && story.label) || null,
+  mandate: null, defaults: 0, landing: null,
+})
+// Written only in the main checkout, never over a tracked file or one that is not a state; the old
+// file is replaced by a rename, so a reader sees one whole file, and no temporary file stays.
+const linked = (dir) => { const d = git(dir, ['rev-parse', '--path-format=absolute', '--git-dir']), c = git(dir, ['rev-parse', '--path-format=absolute', '--git-common-dir']); return d !== null && c !== null && d !== c }
+function write(file) {
+  const no = (why) => { console.error(`now-facts.mjs: state not written: ${why}`); return 3 }
+  if (linked(root) || linked(process.cwd())) return no('a linked worktree')
+  if (git(root, ['ls-files', '--error-unmatch', '--', 'state.json']) !== null) return no('tracked by git')
+  let there = true
+  try { lstatSync(file) } catch { there = false }
+  if (there) {
+    let old = null
+    try { old = JSON.parse(small(file)) } catch {}
+    if (!old || typeof old !== 'object' || Array.isArray(old) || !Number.isInteger(old.v)) return no('not a state file')
+  }
+  const tmp = `${file}.${process.pid}.tmp`
+  let made = false
+  try { writeFileSync(tmp, `${JSON.stringify(state(), null, 2)}\n`, { flag: 'wx' }); made = true; renameSync(tmp, file); return null } catch {
+    if (made) try { unlinkSync(tmp) } catch {}
+    return no('the write failed')
+  }
+}
+const code = (opt.state !== undefined && write(join(root, 'state.json'))) || (hasUnknown(out) ? 1 : 0)
 console.log(JSON.stringify(out, null, 2))
-process.exit(hasUnknown(out) ? 1 : 0)
+process.exit(code)

@@ -42,7 +42,7 @@ argument-hint: "[what you want done]"
   `/<rel>/NOW.md` absent from the file `git rev-parse --git-path info/exclude` names: add it on
   its own line (never `.gitignore`), create the folder if missing, and add a newline first when
   the file does not end with one. Say so in one Heads-up, only when you added the line. A `?` in
-  the facts or a failed write never holds up a dispatch.
+  the facts or a failed write never holds up a dispatch. State and card file: as `now.md` says.
 - **Limits:** when a phase starts (design, spec, plan, a task or wave, the final review, a fix
   wave), run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --read
   --ledger '<root>/ledger.md'` with `--tokens` and `--minutes` left (the plan's estimate, else the

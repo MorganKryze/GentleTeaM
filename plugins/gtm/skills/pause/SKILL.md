@@ -6,7 +6,8 @@ disable-model-invocation: true
 # Pause: stop a run cleanly
 
 Ground rules: as in the `gtm` skill §0. This skill stops dispatches and writes only under
-`<root>`: progress lines, `.partial` renames, the handoff, one ledger line and NOW.md. It runs
+`<root>`: progress lines, `.partial` renames, the handoff, one ledger line, NOW.md and its
+`state.json`. It runs
 no git command that writes; it pushes, commits and removes nothing.
 
 1. The slug is NOW.md line 1's; `?` or no NOW.md: ask one question naming the active slugs.

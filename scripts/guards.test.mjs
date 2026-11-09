@@ -5,6 +5,8 @@
 // raised only on risky work: the template's rule, its defaults, init's proposal, and deliver
 // pointing at the rule. The agents' shipped efforts are held too: none ships at xhigh. A limit
 // window the status line leaves out is named nowhere: no fixed `5h … 7d` pair in the limits lines.
+// The state follows the run view, only where it is written, and the card file holds the writer's
+// own words and goes before the next rewrite.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -33,6 +35,15 @@ const PINS = {
     '| final-reviewer | opus | high |',
   ],
   'plugins/gtm/skills/init/SKILL.md': ['security-reviewer on, effort high;'],
+  'plugins/gtm/skills/gtm/SKILL.md': ['dispatch. State and card file: as `now.md` says.'],
+  'plugins/gtm/templates/now.md': [
+    '- **State:** after each run view write, run the facts again with the same flags plus `--state',
+    "'<root>/state.json'`, stdout dropped:",
+    'No run view written: no state.',
+    'repository and the state untracked, `/<rel>/state.json` goes to the exclude file as the `gtm`',
+    'own words, never pasted text,',
+    "delete that file before the run view's rewrite.",
+  ],
   'plugins/gtm/skills/ship/SKILL.md': ['--base <git.base> --pr <root>/reports/<slug>/pr.md`'],
   'plugins/gtm/skills/plan/SKILL.md': [
     'so it reaches the brief; a missing one goes back to the architect:',

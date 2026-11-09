@@ -1,0 +1,13 @@
+{
+  "exit": 0,
+  "facts": {},
+  "state": {
+    "waiting": {
+      "kind": "decision",
+      "task": null,
+      "question": null,
+      "options": null,
+      "costIfWrong": null
+    }
+  }
+}

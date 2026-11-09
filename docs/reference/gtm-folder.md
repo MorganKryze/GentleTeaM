@@ -41,6 +41,8 @@ one learned.
 <li class="dir"><code>plans/</code><span class="why">tasks for the team</span><span class="badge">skip it</span></li>
 <li class="dir"><code>reports/</code><span class="why">full agent reports</span><span class="badge">skip it</span></li>
 <li><code>ledger.md</code><span class="why">the logbook</span><span class="badge">skip it</span></li>
+<li><code>state.json</code><span class="why">the run, for a program</span>
+<span class="badge">skip it</span></li>
 </ul>
 <figcaption>How to read it: the rows marked read it, on a tinted ground, are yours; the grey rows are written and read by the team.</figcaption>
 </figure>
@@ -57,12 +59,34 @@ one learned.
 | `mockups/` | the [mockups](/reference/glossary/#mockups), as HTML and PNG | designer |
 | `taste.md` | what you like and refuse in a design, kept from one run to the next | `/gtm:design`, or you by hand |
 | `NOW.md` | where the run is now: phase, task, what runs, when it should end | the orchestrator, `/gtm:status` |
+| `state.json` | the same run view as JSON, for a program that follows the run; kept out of commits like `NOW.md` | the orchestrator, `/gtm:status` |
 | `config.yml` | paths, check commands, git rules, languages | `/gtm:init` |
 | `conventions.md` | the project's rules, with one guideline file per area | `/gtm:init`, `/gtm:retro` |
 | `plans/` | one plan per Feature: tasks, files, test steps | architect |
 | `reports/` | each agent's full report, and the pull request text | every role |
+| `reports/<slug>/waiting.json` | the card waiting on your answer, in the writer's words; deleted once you answer | the orchestrator |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
 | `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
+
+## What does state.json hold?
+
+`state.json` is the run view for a program that follows the run for you, such as a status line:
+the facts of `NOW.md` as JSON, rewritten right after it, so it is never older. GTM writes it only
+in your main checkout and never reads it back. An unknown fact is `null`. A program reading it
+treats every text as untrusted, and keeps its own reading when `v` is a version it does not know.
+
+| Field | What it holds |
+| --- | --- |
+| `v` | the version of this shape, 1 |
+| `updated`, `slug`, `branch`, `epic`, `phase` | as in `NOW.md`; `phase` can be `paused` |
+| `steps` | one `{n, title, status}` per task of the plan, status `todo`, `doing`, `done` or `blocked` |
+| `task` | `{n, of}`, the task in progress |
+| `eta` | `{clock, minutes, measured}`, `measured` the number of measured runs behind the estimate |
+| `running`, `others` | what runs now, and the other branches in progress |
+| `waiting` | the card waiting on you: `{kind, task, question, options, costIfWrong}`, or `null` |
+| `milestone` | `{n, of, title}`, this branch's place in an approved milestone, or `null` |
+| `story` | the backlog story this branch delivers, or `null` |
+| `mandate`, `defaults`, `landing` | kept for later versions: `null`, 0 and `null` |
 
 ## What does a new project start with?
 
