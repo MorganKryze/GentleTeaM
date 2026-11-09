@@ -120,7 +120,7 @@ the rest kept. Each dispatch: its progress line, budget as §2 step 3, roles via
 
 ## 5. Record and report
 - Ledger: one `run` line as `${CLAUDE_PLUGIN_ROOT}/templates/ledger.md` says (the plugin's template,
-  never the project's copy), from every progress line; then each ruling taken.
+  never the project's copy), from every progress line; then each ruling taken not already there.
 - Report: TL;DR (ready or not; tasks clean, gate result, final verdict), one table (task, result,
   reviewers, cost) with a total row, a screen designed in code: ux-qa's capture paths at
   `design.widths`, for the human to approve with the go; deferred minors count, each budget Heads-up

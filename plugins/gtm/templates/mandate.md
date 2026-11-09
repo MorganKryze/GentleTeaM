@@ -38,8 +38,8 @@ At a moment, ask as the briefing's Decision card says under a mandate.
 ## Elsewhere: decide by default
 - A card outside the four moments, with a recommended option and a cost if wrong: take that
   option without a card, append `- <YYYY-MM-DD> · <slug> · ruling · default: <choice> (cost if
-  wrong: <one line>)` to the ledger when it is taken, and list it in the report's **Rulings I
-  made** with the basis it rests on.
+  wrong: <one line>)` to the ledger once, when it is taken (a re-run appends none twice), and list
+  it in the report's **Rulings I made** with the basis it rests on.
 - No recommendation or no cost: first build the basis from the spec, the guidelines, the ledger,
   the decision records and the tool's documentation, and write it next to the ruling (the
   researcher still runs on the human's command only); then decide as above. Ask (moment 1) only

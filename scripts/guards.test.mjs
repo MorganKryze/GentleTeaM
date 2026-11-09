@@ -26,6 +26,7 @@ const PINS = {
     'A mandate (the argument, the plan\'s section or',
     '`<root>/reports/<slug>/mandate.md`): the plugin\'s `templates/mandate.md` first.',
     'under a mandate, its summary first (`mandate.md`).',
+    'from every progress line; then each ruling taken not already there.',
   ],
   'plugins/gtm/templates/mandate.md': [
     'or `<root>/reports/<slug>/mandate.md` exists.',
@@ -41,7 +42,7 @@ const PINS = {
     'Reviews, correction rounds, specialists, tiers, gates, git actions, settings and dependencies stay',
     'review finding or a check.',
     'And on any case the mandate\'s `stops for` line names.',
-    'to the ledger when it is taken',
+    'to the ledger once, when it is taken (a re-run appends none twice)',
     'when no option can be recommended from them.',
     '| a `[CHECK]` command fails on the untouched base | default only when the corrected command keeps its tool and targets (a missing prefix, a wrong path), named in a Heads-up; any other correction, drop it or accept as pre-existing: ask (1) |',
     'drop it or accept as pre-existing: ask (1)',
