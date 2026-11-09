@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
 // scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
-// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, args }) and
+// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, fsize?, args }) and
 // expected.json ({ exit, facts, state? }, facts and state matched as subsets; rootName names the
 // root folder, root by default; rootIn puts the root in that worktree, cwd runs the script there,
 // track commits those root files, readonly locks the root folder, links ({ path: target }) and
-// fifos ([path]) make those root entries at run time, as git keeps no FIFO; `{root}` in args is
-// its path).
+// fifos ([path]) make those root entries at run time, as git keeps no FIFO, fsize caps the files
+// the script writes at that many 512-byte blocks (ulimit -f); `{root}` in args is its path).
 // The test builds a throwaway repository around the root (git keeps no repository inside a
 // fixture), with no global or system git config, and removes it after the run; runs the script at
 // a fixed time, and checks it changed no file but the state it was asked for, replaced by a rename,
@@ -88,7 +88,10 @@ for (const name of readdirSync(fixtures).sort()) {
     const status = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env })
     const args = (a.args || []).map((x) => x.replace(/\{ago:(\d+)\}/g, (_, m) => ago(+m).toISOString()).replaceAll('{root}', gtm))
     if (a.readonly) chmodSync(gtm, 0o555)
-    const r = spawnSync(process.execPath, [script, '--root', gtm, '--now', new Date(NOW).toISOString(), ...args], { cwd: a.cwd ? join(tmp, a.cwd) : repo, encoding: 'utf8', env: { ...env, TZ: 'UTC' }, timeout: 60000 })
+    const cmd = [process.execPath, script, '--root', gtm, '--now', new Date(NOW).toISOString(), ...args]
+    // Node ignores SIGXFSZ, so a write past the cap fails with EFBIG.
+    const run = a.fsize ? ['sh', ['-c', `ulimit -f ${+a.fsize}; exec "$0" "$@"`, ...cmd]] : [cmd[0], cmd.slice(1)]
+    const r = spawnSync(...run, { cwd: a.cwd ? join(tmp, a.cwd) : repo, encoding: 'utf8', env: { ...env, TZ: 'UTC' }, timeout: 60000 })
     if (a.readonly) chmodSync(gtm, 0o755)
     if (r.status !== want.exit) errors.push(`${name}: exit ${r.status}, want ${want.exit} ${r.stderr.trim()}`)
     if (want.exit === 2 && r.stdout !== '') errors.push(`${name}: a usage error printed facts`)

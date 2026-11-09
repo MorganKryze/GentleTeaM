@@ -12,7 +12,7 @@
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
 //        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]
 //        [--state <root>/state.json] No dependencies.
-import { readFileSync, readdirSync, statSync, lstatSync, existsSync, realpathSync, writeFileSync, renameSync, unlinkSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync, lstatSync, existsSync, realpathSync, writeFileSync, renameSync, unlinkSync, openSync, closeSync } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
 
@@ -288,8 +288,14 @@ function write(file) {
     if (!old || typeof old !== 'object' || Array.isArray(old) || !Number.isInteger(old.v)) return no('not a state file')
   }
   const tmp = `${file}.${process.pid}.tmp`
-  let made = false
-  try { writeFileSync(tmp, `${JSON.stringify(state(), null, 2)}\n`, { flag: 'wx' }); made = true; renameSync(tmp, file); return null } catch {
+  // Made from the exclusive open on, so a write that fails after it (a full disk) is removed too.
+  let fd = null, made = false
+  try {
+    fd = openSync(tmp, 'wx'); made = true
+    writeFileSync(fd, `${JSON.stringify(state(), null, 2)}\n`); closeSync(fd); fd = null
+    renameSync(tmp, file); return null
+  } catch {
+    if (fd !== null) try { closeSync(fd) } catch {}
     if (made) try { unlinkSync(tmp) } catch {}
     return no('the write failed')
   }
