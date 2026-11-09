@@ -79,7 +79,7 @@ const nowLine = (root) => {
 function progress(s, root) {
   const slug = typeof s.slug === 'string' ? clean(s.slug) : ''
   if (s.phase === 'shipped' || !slug) return null
-  const code = head(join(root, 'config.yml')).match(/^language:.*\n(?:[ \t]+.*\n)*?[ \t]+human: *["']?([A-Za-z]{2})(?:-[A-Za-z0-9]+)?(?=[ #"']|$)/m)?.[1].toLowerCase()
+  const code = head(join(root, 'config.yml')).match(/^language:.*\n(?:[ \t].*\n)*?[ \t]+human: *["']?([A-Za-z]{2})(?:-[A-Za-z0-9]+)?(?=[ #"']|$)/m)?.[1].toLowerCase()
   const w = Object.hasOwn(WORDS, code ?? '') ? WORDS[code] : WORDS.en
   let line = slug
   const steps = Array.isArray(s.steps) ? s.steps : [], done = steps.filter((x) => x?.status === 'done').length

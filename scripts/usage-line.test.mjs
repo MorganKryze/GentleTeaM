@@ -219,6 +219,11 @@ try {
     const o = line({}, config)
     check(`progress lang ${x}`, o === want, JSON.stringify(o))
   }
+  { // A `language:` block with no `human:` line under it, blank-indented lines: read fast.
+    const p = prog({ state: base, config: 'language:\n' + '        \n'.repeat(14) + 'x\n' })
+    const t = Date.now(), r = spawnSync(process.execPath, [script, '--breadcrumb', '--quiet'], { input: status(p.b, 'f1-status.json'), encoding: 'utf8', timeout: 5000, env: { ...process.env, CLAUDE_CONFIG_DIR: p.b.config } })
+    check('progress lang hostile', r.stdout === 'run-state ▰▰▱ 2/3 · M 1/3 · waits for your go\n' && Date.now() - t < 3000, `${Date.now() - t} ms ${JSON.stringify(r.stdout)}`)
+  }
   for (const kind of ['decision', null]) {
     const o = line({ waiting: { kind } })
     check(`progress answer ${kind}`, o === 'run-state ▰▰▱ 2/3 · M 1/3 · attend ta réponse\nOLD\n', JSON.stringify(o))
