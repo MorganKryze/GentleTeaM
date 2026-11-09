@@ -257,6 +257,10 @@ try {
     const o = prog({ state, config: FR, now: NOW }).out()
     check(`progress fallback ${x}`, o === 'Epic › feat/x › plan\nOLD\n', JSON.stringify(o))
   }
+  for (const wt of [[], ['go']]) {
+    const o = line({ waiting: wt })
+    check(`progress waiting ${JSON.stringify(wt)}`, o === 'run-state ▰▰▱ 2/3 · M 1/3\nOLD\n', JSON.stringify(o))
+  }
   { // A field of another type drops its segment; the usage line and the store still come.
     const p = prog({ state: { v: 1, slug: 'run-state', steps: {}, milestone: [], waiting: 0, eta: 'x', phase: 7, extra: { a: [1] }, others: 'y' }, config: FR })
     const r = p.b.run(['--breadcrumb'], status(p.b, 'f1-status.json'))
