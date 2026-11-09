@@ -11,6 +11,11 @@ versions follow [SemVer](https://semver.org/).
   current task, the open decision card with its options, and the branch's place in an approved
   milestone. It stays local: written only in the main checkout, never over a tracked file, and
   kept out of commits like `NOW.md`.
+- The line GTM's usage step prints above the status line now shows the run's progress, read
+  from `state.json`: the branch, its tasks done as a bar and a count, its place in an approved
+  milestone, and what waits for you or the expected end time, in the project's language (French
+  or English). Without a readable state it shows `NOW.md`'s first line as before. Rerun `/gtm:init`
+  or the install to refresh your copy of the step.
 
 ### Fixed
 - The run view reads progress lines written as `- task <n> · ` and `- wave <ids> merged · `, which

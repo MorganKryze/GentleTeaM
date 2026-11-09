@@ -36,7 +36,8 @@
 ## State and card file
 - **State:** after each run view write, run the facts again with the same flags plus `--state
   '<root>/state.json'`, stdout dropped: the same view as versioned JSON for a program that follows
-  the run, which GTM never reads back. No run view written: no state. When the root is inside the
+  the run; no skill or agent reads it back, the status line step only displays it.
+  No run view written: no state. When the root is inside the
   repository and the state untracked, `/<rel>/state.json` goes to the exclude file as the `gtm`
   skill §0 adds `/<rel>/NOW.md`, when `git check-ignore -q <rel>/state.json` fails. Exit 3 (a
   worktree, a tracked or foreign file) or 2: one Heads-up per session, never a hold-up.

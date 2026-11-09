@@ -21,9 +21,9 @@ code cannot tell: purpose and users, non-negotiables, whether the product has sc
 command not found, and the **communication style**: language, detail level, emoji (off / light /
 generous; default light). Write the answers into `config.yml` (`language`, `briefing`); remove every
 `[CHECK]` except on verify commands not run at init, which `/gtm:deliver` confirms on its first run.
-- Not on Windows: one card in this message, **the usage step**: A chain it to your status line with
-  the run breadcrumb (NOW.md's first `>` line, above your status line), B without it, C no; I
-  recommend A. On A or B run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --install
+- Not on Windows: one card in this message, **the usage step**: A chain it with the progress line
+  above your status line (tasks, milestone and what waits; else NOW.md's first line), B without it,
+  C no; I recommend A. On A or B run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --install
   "<config>/settings.json"` (`--breadcrumb` on A; `<config>` =
   `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`) and show its `undo:` line. It edits the user settings only,
   never the project's or local ones. Already chained (the command names `usage-line.mjs`): rerun it

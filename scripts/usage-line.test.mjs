@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/usage-line.mjs, cases F1-F9 of the usage-aware spec plus
-// the breadcrumb and the undo. Each case runs with CLAUDE_CONFIG_DIR in a temporary folder,
-// removed after the run; the composed status line runs in `sh`. Run by scripts/validate.mjs.
+// the progress line, its NOW.md fallback (the breadcrumb, NOW.md's first `>` line) and the undo.
+// Each case runs with CLAUDE_CONFIG_DIR in a temporary folder, removed after the run; the composed
+// status line runs in `sh`. Run by scripts/validate.mjs.
 // No dependencies.
 import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, existsSync, rmSync, readdirSync, utimesSync, chmodSync, statSync, lstatSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join } from 'node:path'
@@ -190,6 +191,140 @@ try {
     writeFileSync(join(b.project, '.gtm/NOW.md'), '> Epic › feat/z › spec\n' + 'x'.repeat(1 << 20) + '\n')
     check('breadcrumb large NOW.md', b.sh(cmd, status(b, 'f1-status.json')).stdout === 'Epic › feat/z › spec\nOLD\n')
   }
+  // The progress line: the installed --breadcrumb command over `echo OLD`, with <root>/state.json (an
+  // object is written as JSON, a string as is) and, when given, <root>/config.yml and <root>/NOW.md,
+  // NOW.md first, as GTM writes them.
+  const base = { v: 1, slug: 'run-state', phase: 'delivery', steps: [{ status: 'done' }, { status: 'done' }, { status: 'doing' }], milestone: { n: 1, of: 3 }, waiting: { kind: 'go' }, eta: { clock: null } }
+  const FR = 'language:\n  human: fr\n'
+  function prog({ state, config, now, project } = {}) {
+    const b = box(), gtm = join(b.project, 'gtmroot')
+    mkdirSync(gtm); writeFileSync(join(b.project, 'CLAUDE.md'), 'GTM root: gtmroot\n')
+    if (now !== undefined) writeFileSync(join(gtm, 'NOW.md'), now)
+    if (state !== undefined) writeFileSync(join(gtm, 'state.json'), typeof state === 'string' ? state : JSON.stringify(state))
+    if (config != null) writeFileSync(join(gtm, 'config.yml'), config)
+    writeFileSync(b.settings, JSON.stringify({ statusLine: { type: 'command', command: 'cat >/dev/null; echo OLD' } }))
+    b.run(['--install', b.settings, '--breadcrumb'])
+    const cmd = JSON.parse(readFileSync(b.settings, 'utf8')).statusLine.command
+    return { b, gtm, cmd, out: () => b.sh(cmd, status(b, 'f1-status.json')).stdout }
+  }
+  const line = (o, config = FR) => prog({ state: { ...base, ...o }, config }).out()
+  const NOW = '# run-state · 10:00\n\n> Epic › feat/x › plan\n'
+  {
+    const o = prog({ state: base, config: FR, now: NOW }).out()
+    check('progress fr', o === 'run-state ▰▰▱ 2/3 · M 1/3 · attend ton go\nOLD\n', JSON.stringify(o))
+  }
+  const EN = 'run-state ▰▰▱ 2/3 · M 1/3 · waits for your go\nOLD\n', FRL = 'run-state ▰▰▱ 2/3 · M 1/3 · attend ton go\nOLD\n'
+  check('progress en', line({}, null) === EN, JSON.stringify(line({}, null)))
+  for (const [x, config, want] of [['de', 'language:\n  human: de\n', EN], ['frx', 'language:\n  human: frx\n', EN], ['humans: fr', 'language:\n  humans: fr\n', EN], ['top-level human: fr', 'human: fr\n', EN],
+    ['fr-CA', 'language:\n  human: fr-CA\n', FRL], ['"fr"', 'language:\n  human: "fr"\n', FRL], ['fr # note', 'language:\n  code: en\n  human: fr # note\n', FRL]]) {
+    const o = line({}, config)
+    check(`progress lang ${x}`, o === want, JSON.stringify(o))
+  }
+  { // A `language:` block with no `human:` line under it, blank-indented lines: read fast.
+    const p = prog({ state: base, config: 'language:\n' + '        \n'.repeat(14) + 'x\n' })
+    const t = Date.now(), r = spawnSync(process.execPath, [script, '--breadcrumb', '--quiet'], { input: status(p.b, 'f1-status.json'), encoding: 'utf8', timeout: 5000, env: { ...process.env, CLAUDE_CONFIG_DIR: p.b.config } })
+    check('progress lang hostile', r.stdout === 'run-state ▰▰▱ 2/3 · M 1/3 · waits for your go\n' && Date.now() - t < 3000, `${Date.now() - t} ms ${JSON.stringify(r.stdout)}`)
+  }
+  for (const kind of ['decision', null]) {
+    const o = line({ waiting: { kind } })
+    check(`progress answer ${kind}`, o === 'run-state ▰▰▱ 2/3 · M 1/3 · attend ta réponse\nOLD\n', JSON.stringify(o))
+  }
+  for (const [p, word] of [['paused', 'en pause'], ['go', 'attend ton go'], ['mockups', 'maquettes'], ['spec', 'spec'], ['plan', 'plan'], ['final review', 'revue finale'], ['correction', 'correction'], ['delivery', ''], [null, ''], ['hack', ''], ['answer', '']]) {
+    const o = line({ phase: p, waiting: null, steps: [], milestone: null })
+    check(`progress phase ${p}`, o === `run-state${word ? ` · ${word}` : ''}\nOLD\n`, JSON.stringify(o))
+  }
+  for (const [c, tail] of [['16:40', ' · ~16:40'], ['6:40', ''], ['16:400', ''], ['16-40', ''], [' 16:40', ''], ['16:40\n', ''], [null, '']]) {
+    const o = line({ waiting: null, eta: { clock: c } })
+    check(`progress clock ${JSON.stringify(c)}`, o === `run-state ▰▰▱ 2/3 · M 1/3${tail}\nOLD\n`, JSON.stringify(o))
+  }
+  for (const m of [{ n: 4, of: 3 }, { n: 0, of: 3 }, { n: '1', of: 3 }, { n: 1, of: null }, []]) {
+    const o = line({ milestone: m })
+    check(`progress milestone ${JSON.stringify(m)}`, o === 'run-state ▰▰▱ 2/3 · attend ton go\nOLD\n', JSON.stringify(o))
+  }
+  const steps = (n, d) => Array.from({ length: n }, (_, i) => ({ status: i < d ? 'done' : 'todo' }))
+  for (const [x, st, bar] of [['7/12', steps(12, 7), ' ▰▰▰▰▰▱▱▱▱▱ 7/12'], ['10/10', steps(10, 10), ' ▰▰▰▰▰▰▰▰▰▰ 10/10'], ['malformed', [null, { status: 'done' }, 'x'], ' ▱▰▱ 1/3'], ['[]', [], ''], ['null', null, '']]) {
+    const o = line({ steps: st })
+    check(`progress bar ${x}`, o === `run-state${bar} · M 1/3 · attend ton go\nOLD\n`, JSON.stringify(o))
+  }
+  for (const [why, state] of [['no state', undefined], ['v 2', { ...base, v: 2 }], ['v "1"', { ...base, v: '1' }], ['v true', { ...base, v: true }], ['v missing', { ...base, v: undefined }],
+    ['not JSON', '{ broken'], ['an array', JSON.stringify([base])], ['past 64 KiB', JSON.stringify({ ...base, pad: 'x'.repeat(70000) })]]) {
+    const o = prog({ state, config: FR }).out()
+    check(`progress none ${why}`, o === 'OLD\n', JSON.stringify(o))
+  }
+  {
+    const o = prog({ state: { ...base, phase: 'shipped' }, config: FR, now: NOW }).out()
+    check('progress shipped', o === 'OLD\n', JSON.stringify(o))
+  }
+  for (const s of [null, '', '\x1b']) {
+    const o = line({ slug: s })
+    check(`progress slug ${JSON.stringify(s)}`, o === 'OLD\n', JSON.stringify(o))
+  }
+  for (const [x, state] of [['no state', undefined], ['v 2', { ...base, v: 2 }]]) {
+    const o = prog({ state, config: FR, now: NOW }).out()
+    check(`progress fallback ${x}`, o === 'Epic › feat/x › plan\nOLD\n', JSON.stringify(o))
+  }
+  for (const wt of [[], ['go']]) {
+    const o = line({ waiting: wt })
+    check(`progress waiting ${JSON.stringify(wt)}`, o === 'run-state ▰▰▱ 2/3 · M 1/3\nOLD\n', JSON.stringify(o))
+  }
+  // A state of another slug than NOW.md's line 1 is older than it: NOW.md's line shows instead.
+  for (const [x, o] of [['go', { waiting: { kind: 'go' } }], ['shipped', { phase: 'shipped' }]]) {
+    const o2 = prog({ state: { ...base, slug: 'old-branch', ...o }, config: FR, now: '# new-branch · 10:00 · rebuilt\n\n> Epic › feat/new-branch › plan\n' }).out()
+    check(`progress stale ${x}`, o2 === 'Epic › feat/new-branch › plan\nOLD\n', JSON.stringify(o2))
+  }
+  // A state of the same slug but older than NOW.md (its write failed or was skipped): NOW.md's line;
+  // a state as old as NOW.md (written in the same tick) still shows.
+  for (const [x, now, want] of [
+    ['same shipped', '# run-state · 11:00\n\n> Epic › feat/run-state › shipped\n', 'OLD\n'],
+    ['same delivery', '# run-state · 11:00\n\n> Epic › feat/run-state › delivery › task 2/2\n', 'Epic › feat/run-state › delivery › task 2/2\nOLD\n'],
+    ['same equal', '# run-state · 11:00\n\n> Epic › feat/run-state › shipped\n', FRL],
+  ]) {
+    const p = prog({ state: { ...base, phase: 'spec' }, config: FR, now }), t = new Date('2026-01-01T10:00:00Z')
+    utimesSync(join(p.gtm, 'NOW.md'), t, x === 'same equal' ? t : new Date('2026-01-01T11:00:00Z'))
+    utimesSync(join(p.gtm, 'state.json'), t, t)
+    const o = p.out()
+    check(`progress stale ${x}`, o === want, JSON.stringify(o))
+  }
+  { // A field of another type drops its segment; the usage line and the store still come.
+    const p = prog({ state: { v: 1, slug: 'run-state', steps: {}, milestone: [], waiting: 0, eta: 'x', phase: 7, extra: { a: [1] }, others: 'y' }, config: FR })
+    const r = p.b.run(['--breadcrumb'], status(p.b, 'f1-status.json'))
+    check('progress hostile', r.status === 0 && r.stdout === 'run-state\n5h 82% · 7d 41%\n' && r.stderr === '' && existsSync(p.b.store), JSON.stringify(r.stdout + r.stderr))
+  }
+  {
+    const o = line({ slug: 'a\x1b[2Jb‮c d' })
+    check('progress text strip', o === 'a[2Jbcd ▰▰▱ 2/3 · M 1/3 · attend ton go\nOLD\n', JSON.stringify(o))
+    const leak = line({ story: 'LEAK', epic: 'LEAK', branch: 'LEAK', steps: [{ status: 'done', title: 'LEAK' }], waiting: { kind: 'LEAK', question: 'LEAK', options: ['LEAK', { label: 'LEAK' }], costIfWrong: 'LEAK' } })
+    check('progress text LEAK', !leak.includes('LEAK') && leak === 'run-state ▰ 1/1 · M 1/3 · attend ta réponse\nOLD\n', JSON.stringify(leak))
+    const long = line({ slug: 's'.repeat(100) }).split('\n')[0]
+    check('progress text 80', [...long].length === 80 && long === 's'.repeat(80), String([...long].length))
+  }
+  { // The root from CLAUDE.local.md, absolute.
+    const b = box(), abs = join(b.dir, 'outside')
+    mkdirSync(abs)
+    writeFileSync(join(b.project, 'CLAUDE.local.md'), `GTM root: ${abs}\n`)
+    writeFileSync(join(abs, 'state.json'), JSON.stringify(base)); writeFileSync(join(abs, 'config.yml'), FR)
+    const r = b.run(['--breadcrumb', '--quiet'], status(b, 'f1-status.json'))
+    check('progress absolute root', r.stdout === 'run-state ▰▰▱ 2/3 · M 1/3 · attend ton go\n', JSON.stringify(r.stdout))
+  }
+  { // CLAUDE.local.md's root wins over CLAUDE.md's.
+    const b = box()
+    for (const [f, r, slug] of [['CLAUDE.local.md', 'a', 'local-root'], ['CLAUDE.md', 'b', 'shared-root']]) {
+      mkdirSync(join(b.project, r)); writeFileSync(join(b.project, f), `GTM root: ${r}\n`)
+      writeFileSync(join(b.project, r, 'state.json'), JSON.stringify({ v: 1, slug }))
+    }
+    const r = b.run(['--breadcrumb', '--quiet'], status(b, 'f1-status.json'))
+    check('progress root order', r.stdout === 'local-root\n', JSON.stringify(r.stdout))
+  }
+  { // A state linked to /dev/zero, then CLAUDE.local.md too: skipped fast.
+    const p = prog({ config: FR })
+    symlinkSync('/dev/zero', join(p.gtm, 'state.json'))
+    const go = () => { const t = Date.now(), r = spawnSync('sh', ['-c', p.cmd], { input: status(p.b, 'f1-status.json'), encoding: 'utf8', timeout: 5000, env: { ...process.env, CLAUDE_CONFIG_DIR: p.b.config } }); return [r.stdout, Date.now() - t] }
+    const [o1, t1] = go()
+    check('progress /dev/zero state', o1 === 'OLD\n' && t1 < 3000, `${t1} ms ${JSON.stringify(o1)}`)
+    symlinkSync('/dev/zero', join(p.b.project, 'CLAUDE.local.md'))
+    const [o2, t2] = go()
+    check('progress /dev/zero CLAUDE.local.md', o2 === 'OLD\n' && t2 < 3000, `${t2} ms ${JSON.stringify(o2)}`)
+  }
   { // F8: the reader.
     const b = box(), at = '2026-10-15T10:00:00Z', w = (o) => { mkdirSync(join(b.config, 'gtm'), { recursive: true }); writeFileSync(b.store, JSON.stringify(o)) }
     check('F8 none', b.run(['--read', '--now', at]).stdout === 'none\n')
@@ -239,4 +374,4 @@ try {
 } finally { rmSync(tmp, { recursive: true, force: true }) }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log('usage-line: F1-F9, one window, breadcrumb and undo OK')
+console.log('usage-line: F1-F9, one window, progress line and undo OK')

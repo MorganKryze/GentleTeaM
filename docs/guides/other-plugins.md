@@ -108,8 +108,12 @@ and auto-memory. A memory plugin with its own hooks duplicates both and costs co
 
 Claude Code shows your plan's limits only to the status line. To read them, `/gtm:init` offers a
 usage step that runs before your status line, whether it is claude-hud's or your own. Your
-command is kept byte for byte and still prints what it printed. With the breadcrumb option, the
-status line also shows the first line of `NOW.md`, until the branch ships.
+command is kept byte for byte and still prints what it printed. With the progress option, the
+status line also shows the run's progress line above it, such as `run-state ▰▰▱ 2/3 · M 1/3 ·
+waits for your go`: the branch, its tasks done, its place in the milestone and what waits on you,
+in the project's language, until the branch ships. A run without a version 1 `state.json` shows
+the first line of `NOW.md` instead. After a GTM update, rerun `/gtm:init` to refresh the step's
+copy.
 
 The step writes one file, `<config>/gtm/usage.json`, where `<config>` is your Claude Code
 folder (`~/.claude` by default). It holds one to three percentages and their reset times: the
