@@ -192,15 +192,16 @@ try {
     check('breadcrumb large NOW.md', b.sh(cmd, status(b, 'f1-status.json')).stdout === 'Epic › feat/z › spec\nOLD\n')
   }
   // The progress line: the installed --breadcrumb command over `echo OLD`, with <root>/state.json (an
-  // object is written as JSON, a string as is) and, when given, <root>/config.yml and <root>/NOW.md.
+  // object is written as JSON, a string as is) and, when given, <root>/config.yml and <root>/NOW.md,
+  // NOW.md first, as GTM writes them.
   const base = { v: 1, slug: 'run-state', phase: 'delivery', steps: [{ status: 'done' }, { status: 'done' }, { status: 'doing' }], milestone: { n: 1, of: 3 }, waiting: { kind: 'go' }, eta: { clock: null } }
   const FR = 'language:\n  human: fr\n'
   function prog({ state, config, now, project } = {}) {
     const b = box(), gtm = join(b.project, 'gtmroot')
     mkdirSync(gtm); writeFileSync(join(b.project, 'CLAUDE.md'), 'GTM root: gtmroot\n')
+    if (now !== undefined) writeFileSync(join(gtm, 'NOW.md'), now)
     if (state !== undefined) writeFileSync(join(gtm, 'state.json'), typeof state === 'string' ? state : JSON.stringify(state))
     if (config != null) writeFileSync(join(gtm, 'config.yml'), config)
-    if (now !== undefined) writeFileSync(join(gtm, 'NOW.md'), now)
     writeFileSync(b.settings, JSON.stringify({ statusLine: { type: 'command', command: 'cat >/dev/null; echo OLD' } }))
     b.run(['--install', b.settings, '--breadcrumb'])
     const cmd = JSON.parse(readFileSync(b.settings, 'utf8')).statusLine.command
@@ -270,6 +271,19 @@ try {
   for (const [x, o] of [['go', { waiting: { kind: 'go' } }], ['shipped', { phase: 'shipped' }]]) {
     const o2 = prog({ state: { ...base, slug: 'old-branch', ...o }, config: FR, now: '# new-branch · 10:00 · rebuilt\n\n> Epic › feat/new-branch › plan\n' }).out()
     check(`progress stale ${x}`, o2 === 'Epic › feat/new-branch › plan\nOLD\n', JSON.stringify(o2))
+  }
+  // A state of the same slug but older than NOW.md (its write failed or was skipped): NOW.md's line;
+  // a state as old as NOW.md (written in the same tick) still shows.
+  for (const [x, now, want] of [
+    ['same shipped', '# run-state · 11:00\n\n> Epic › feat/run-state › shipped\n', 'OLD\n'],
+    ['same delivery', '# run-state · 11:00\n\n> Epic › feat/run-state › delivery › task 2/2\n', 'Epic › feat/run-state › delivery › task 2/2\nOLD\n'],
+    ['same equal', '# run-state · 11:00\n\n> Epic › feat/run-state › shipped\n', FRL],
+  ]) {
+    const p = prog({ state: { ...base, phase: 'spec' }, config: FR, now }), t = new Date('2026-01-01T10:00:00Z')
+    utimesSync(join(p.gtm, 'NOW.md'), t, x === 'same equal' ? t : new Date('2026-01-01T11:00:00Z'))
+    utimesSync(join(p.gtm, 'state.json'), t, t)
+    const o = p.out()
+    check(`progress stale ${x}`, o === want, JSON.stringify(o))
   }
   { // A field of another type drops its segment; the usage line and the store still come.
     const p = prog({ state: { v: 1, slug: 'run-state', steps: {}, milestone: [], waiting: 0, eta: 'x', phase: 7, extra: { a: [1] }, others: 'y' }, config: FR })

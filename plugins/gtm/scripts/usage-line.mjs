@@ -5,7 +5,8 @@
 //            a window the status line leaves out left out here too, never as 0% or `?`.
 //            --breadcrumb also prints, first, the run's progress line from <root>/state.json v 1 in
 //            the config's language.human (slug, tasks done, milestone, what waits, ~HH:MM), or
-//            without a readable v 1 state of NOW.md's slug, NOW.md's first `>` line as before;
+//            without a readable v 1 state of NOW.md's slug and no older than NOW.md, NOW.md's
+//            first `>` line as before;
 //            --quiet drops the usage line.
 //            Always exits 0: a status line must never break.
 //   --install <settings.json> [--breadcrumb]   copy this file to <config>/gtm/ and chain it before
@@ -62,12 +63,13 @@ const rootOf = (dir) => {
   return resolve(dir, root)
 }
 // The run state when it is a v 1 object, else null (missing, refused, not JSON, another version),
-// and null when NOW.md's line 1, `# <slug> · `, names another slug: the state's write failed or was
-// skipped after NOW.md's, so the state is the older of the two.
+// and null when it is older than NOW.md, or NOW.md's line 1, `# <slug> · `, names another slug:
+// the state is written right after NOW.md, so either means its write failed or was skipped.
+const age = (f) => { try { return statSync(f).mtimeMs } catch { return -Infinity } }
 const state = (root) => {
   try {
-    const s = JSON.parse(head(join(root, 'state.json'))), now = head(join(root, 'NOW.md')).match(/^# (\S+) · /)?.[1]
-    return s !== null && typeof s === 'object' && !Array.isArray(s) && s.v === 1 && (now === undefined || now === s.slug) ? s : null
+    const f = join(root, 'state.json'), s = JSON.parse(head(f)), now = head(join(root, 'NOW.md')).match(/^# (\S+) · /)?.[1]
+    return s !== null && typeof s === 'object' && !Array.isArray(s) && s.v === 1 && (now === undefined || now === s.slug) && age(f) >= age(join(root, 'NOW.md')) ? s : null
   } catch { return null }
 }
 // NOW.md's first `>` line, cleaned; none once the branch has shipped.

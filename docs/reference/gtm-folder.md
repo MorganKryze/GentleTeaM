@@ -73,9 +73,9 @@ one learned.
 `state.json` is the run view for a program that follows the run for you, such as a status line:
 the facts of `NOW.md` as JSON, rewritten right after it. GTM writes it only in your main checkout.
 No skill or agent reads it back; GTM's status line step only displays it, and shows `NOW.md`'s line
-instead when the state names another slug than `NOW.md`'s line 1, as after a failed write. An
-unknown fact is `null`. A program reading it treats every text as untrusted, and keeps its own
-reading when `v` is a version it does not know.
+instead when the state is older than `NOW.md` or names another slug than its line 1, as after a
+failed write. An unknown fact is `null`. A program reading it treats every text as untrusted, and
+keeps its own reading when `v` is a version it does not know.
 
 | Field | What it holds |
 | --- | --- |
