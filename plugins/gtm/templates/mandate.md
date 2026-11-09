@@ -52,7 +52,7 @@ At a moment, ask as the briefing's Decision card says under a mandate.
 | --- | --- |
 | a `[CHECK]` command fails on the untouched base | default only when the corrected command keeps its tool and targets (a missing prefix, a wrong path), named in a Heads-up; any other correction, drop it or accept as pre-existing: ask (1) |
 | a resume finds a worktree not clean | ask (1: deletion) |
-| a task or wave ends `OPEN` or `BLOCKED` | default for "re-run the missing review" or "revise the plan"; "accept with the open findings" or "take over by hand": ask (1) |
+| a task or wave ends `OPEN` or `BLOCKED` | default for "re-run the missing review" or "revise the plan", once per task; its second card on the same task: ask (1: usage); "accept with the open findings" or "take over by hand": ask (1) |
 | the final review still not ready after its fix wave | ask (1: a review not passed) |
 | the limits card (`gtm` §0) | ask (1: usage) |
 | the mandate's budget passed | ask once (1: usage): go on or pause |
