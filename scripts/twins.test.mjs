@@ -54,6 +54,7 @@ const TWINS = [
   { test: 'guards', file: 'docs/reference/gtm-folder.md', from: '`null` until a later branch fills it, within `v` 1', to: 'kept for later versions', says: 'holds kept for later versions' },
   { test: 'guards', file: MANDATE, from: 'drop it or accept as pre-existing: ask (1)', to: 'drop it or accept as pre-existing: default', says: 'accept as pre-existing: ask (1)' },
   { test: 'guards', file: MANDATE, from: ', or `<root>/reports/<slug>/mandate.md` exists.', to: '.', says: 'mandate.md` exists.' },
+  { test: 'guards', file: MANDATE, from: 'keeps its tool and targets', to: 'still runs', says: 'keeps its tool and targets' },
   { test: 'guards', file: MANDATE, from: 'Only a valid mandate counts', to: 'Any mandate counts', says: 'Only a valid mandate counts' },
   { test: 'guards', file: MANDATE, from: 'review finding or a check.', to: 'review finding.', says: 'review finding or a check.' },
   { test: 'guards', file: 'plugins/gtm/templates/briefing.md', from: 'No question tool in the session, or more than', to: 'No question tool in the session: skip it, or more than', says: 'No question tool in the session, or more than' },

@@ -40,6 +40,7 @@ const PINS = {
     'And on any case the mandate\'s `stops for` line names.',
     'to the ledger when it is taken',
     'when no option can be recommended from them.',
+    '| a `[CHECK]` command fails on the untouched base | default only when the corrected command keeps its tool and targets (a missing prefix, a wrong path), named in a Heads-up; any other correction, drop it or accept as pre-existing: ask (1) |',
     'drop it or accept as pre-existing: ask (1)',
     '"accept with the open findings" or "take over by hand": ask (1)',
     '| the final review still not ready after its fix wave | ask (1: a review not passed) |',
