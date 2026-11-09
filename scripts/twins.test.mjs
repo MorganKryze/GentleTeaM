@@ -55,6 +55,7 @@ const TWINS = [
   { test: 'guards', file: MANDATE, from: 'drop it or accept as pre-existing: ask (1)', to: 'drop it or accept as pre-existing: default', says: 'accept as pre-existing: ask (1)' },
   { test: 'guards', file: MANDATE, from: ', or `<root>/reports/<slug>/mandate.md` exists.', to: '.', says: 'mandate.md` exists.' },
   { test: 'guards', file: MANDATE, from: 'keeps its tool and targets', to: 'still runs', says: 'keeps its tool and targets' },
+  { test: 'guards', file: MANDATE, from: ' and adds nothing to them (no flag, no `\\|\\|`, no ignore)', to: '', says: 'adds nothing to them' },
   { test: 'guards', file: MANDATE, from: 'one Heads-up when the run starts', to: 'one line in the report', says: 'one Heads-up when the run starts' },
   { test: 'guards', file: MANDATE, from: 'an unreadable file: write nothing', to: 'an unreadable file: write that file empty', says: 'an unreadable file: write nothing' },
   { test: 'guards', file: MANDATE, from: 'its second card on the same task: ask (1: usage)', to: 'its second card on the same task: default', says: 'its second card on the same task: ask (1: usage)' },
