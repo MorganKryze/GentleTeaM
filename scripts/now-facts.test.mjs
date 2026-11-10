@@ -5,7 +5,7 @@
 // expected.json ({ exit, facts, state?, files? }, facts and state matched as subsets, files ({ path:
 // text | null }) the exact text of those root files after the run, null for absent; rootName names the
 // root folder, root by default; rootIn puts the root in that worktree, cwd runs the script there,
-// track commits those root files, readonly locks the root folder, links ({ path: target }) and
+// track commits those root files, readonly locks the root folder, links ({ path: target }, folders made) and
 // fifos ([path]) make those root entries at run time, as git keeps no FIFO, fsize caps the files
 // the script writes at that many 512-byte blocks (ulimit -f); `{root}` in args is its path).
 // The test builds a throwaway repository around the root (git keeps no repository inside a
@@ -83,7 +83,7 @@ for (const name of readdirSync(fixtures).sort()) {
     if (a.broken) writeFileSync(join(tmp, a.broken, '.git'), 'gitdir: /nonexistent\n')
     for (const p of [repo, ...(a.worktrees || []).map((w) => join(tmp, w.name))]) utimesSync(join(p, 'README.md'), ago(30), ago(30))
     for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(gtm, f), ago(min), ago(min))
-    for (const [f, to] of Object.entries(a.links || {})) symlinkSync(to, join(gtm, f))
+    for (const [f, to] of Object.entries(a.links || {})) { mkdirSync(dirname(join(gtm, f)), { recursive: true }); symlinkSync(to, join(gtm, f)) }
     for (const f of a.fifos || []) execFileSync('mkfifo', [join(gtm, f)])
     const stateFile = join(gtm, 'state.json'), skip = [...(want.state ? ['state.json'] : []), ...Object.keys(want.files || {})]
     const before = snapshot(gtm, skip), index = indexes(repo), ino = existsSync(stateFile) ? statSync(stateFile).ino : null
