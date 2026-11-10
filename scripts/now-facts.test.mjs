@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
 // scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
-// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, fsize?, args }) and
+// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, sizes?, fsize?, args }) and
 // expected.json ({ exit, facts, state?, files? }, facts and state matched as subsets, files ({ path:
-// text | null }) the exact text of those root files after the run, null for absent; rootName names the
+// text | null | { sha256 } }) the exact text (or sha256) of those root files after the run, null for absent; rootName names the
 // root folder, root by default; rootIn puts the root in that worktree, cwd runs the script there,
 // track commits those root files, readonly locks the root folder, links ({ path: target }, folders made) and
-// fifos ([path]) make those root entries at run time, as git keeps no FIFO, fsize caps the files
+// fifos ([path]) make those root entries at run time, as git keeps no FIFO, sizes ({ path: bytes }) pad
+// those root files with newlines to that size, fsize caps the files
 // the script writes at that many 512-byte blocks (ulimit -f); `{root}` in args is its path).
 // The test builds a throwaway repository around the root (git keeps no repository inside a
 // fixture), with no global or system git config, and removes it after the run; runs the script at
@@ -82,6 +83,7 @@ for (const name of readdirSync(fixtures).sort()) {
     if (a.dirty) { const d = join(a.dirty.worktree ? join(tmp, a.dirty.worktree) : repo, a.dirty.file); mkdirSync(dirname(d), { recursive: true }); writeFileSync(d, 'changed\n'); utimesSync(d, ago(a.dirty.min), ago(a.dirty.min)) }
     if (a.broken) writeFileSync(join(tmp, a.broken, '.git'), 'gitdir: /nonexistent\n')
     for (const p of [repo, ...(a.worktrees || []).map((w) => join(tmp, w.name))]) utimesSync(join(p, 'README.md'), ago(30), ago(30))
+    for (const [f, n] of Object.entries(a.sizes || {})) appendFileSync(join(gtm, f), '\n'.repeat(n - statSync(join(gtm, f)).size))
     for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(gtm, f), ago(min), ago(min))
     for (const [f, to] of Object.entries(a.links || {})) { mkdirSync(dirname(join(gtm, f)), { recursive: true }); symlinkSync(to, join(gtm, f)) }
     for (const f of a.fifos || []) execFileSync('mkfifo', [join(gtm, f)])
@@ -102,8 +104,9 @@ for (const name of readdirSync(fixtures).sort()) {
     if (execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env }) !== status) errors.push(`${name}: the script changed git status`)
     for (const [f, t] of Object.entries(want.files || {})) {
       let got = null
-      try { lstatSync(join(gtm, f)); got = readFileSync(join(gtm, f), 'utf8') } catch {}
-      if (got !== t) errors.push(`${name}: files ${f} differs${t === null ? ', want absent' : ''}`)
+      try { lstatSync(join(gtm, f)); got = readFileSync(join(gtm, f)) } catch {}
+      if (got !== null) got = t && t.sha256 ? createHash('sha256').update(got).digest('hex') : got.toString('utf8')
+      if (got !== (t && t.sha256 ? t.sha256 : t)) errors.push(`${name}: files ${f} differs${t === null ? ', want absent' : ''}`)
     }
     if (want.state) {
       let st
