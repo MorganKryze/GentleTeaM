@@ -45,8 +45,9 @@ const safe = (s) => (typeof s === 'string' && SAFE.test(s) ? s : '?')
 const label = (s, n = LABEL) => [...s.replace(/[\x00-\x1f\x7f-\x9f\p{Cf}\u2028\u2029]/gu, '').trim()].slice(0, n).join('')
 const read = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : null)
 const mtime = (f) => (existsSync(f) ? statSync(f).mtimeMs : null)
-// Optional locks off: git status then never takes index.lock nor rewrites a tree's index.
-const git = (cwd, args) => { try { return execFileSync('git', ['--no-optional-locks', ...args], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) } catch { return null } }
+// Optional locks off: git status then never takes index.lock nor rewrites a tree's index. Replace
+// refs off: every object is read as it is stored.
+const git = (cwd, args) => { try { return execFileSync('git', ['--no-optional-locks', '--no-replace-objects', ...args], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) } catch { return null } }
 const round = (x) => Math.round(x * 10) / 10
 const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2 }
 
@@ -487,7 +488,8 @@ function check(given) {
   const fork = at && branch && BRANCH.test(cfg.base || '') && branch !== cfg.base && git(repo, ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]) !== null ? (git(repo, ['merge-base', ref, at]) || '').trim() : ''
   if (!fork) return { why: 'base' }
   if (git(repo, ['status', '--porcelain', '-z', '--untracked-files=all']) !== '') return { why: 'dirty' }
-  const raw = git(repo, ['diff', '--raw', '-z', '--no-renames', '--no-ext-diff', fork, at])
+  // Every submodule change listed, whatever .gitmodules or the git config says to ignore.
+  const raw = git(repo, ['diff', '--raw', '-z', '--no-renames', '--no-ext-diff', '--ignore-submodules=none', fork, at])
   if (raw === null) return { why: 'base' }
   if (head() !== at) return { why: 'moved' }
   const parts = raw.split('\0'), files = []

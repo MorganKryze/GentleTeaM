@@ -142,6 +142,85 @@
           }
         }
       ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            ".gitmodules": "[submodule \"vendor/sub\"]\n\tpath = vendor/sub\n\turl = ./sub\n\tignore = all\n"
+          },
+          "gitlink": [
+            "vendor/sub"
+          ]
+        },
+        {
+          "write": {
+            "docs/b.md": "b\n"
+          },
+          "gitlink": [
+            "vendor/sub"
+          ]
+        }
+      ],
+      "want": {
+        "facts": {
+          "landing": false,
+          "class": null,
+          "head": null,
+          "why": "class",
+          "file": "vendor/sub"
+        }
+      }
+    },
+    {
+      "gitconfig": {
+        "diff.ignoreSubmodules": "all"
+      },
+      "commits": [
+        {
+          "write": {
+            "docs/b.md": "b\n"
+          },
+          "gitlink": [
+            "vendor/sub"
+          ]
+        }
+      ],
+      "want": {
+        "facts": {
+          "landing": false,
+          "class": null,
+          "head": null,
+          "why": "class",
+          "file": "vendor/sub"
+        }
+      }
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "write": {
+            "src/app.js": "x\n"
+          }
+        }
+      ],
+      "replace": {
+        "HEAD": "HEAD~1"
+      },
+      "want": {
+        "facts": {
+          "landing": false,
+          "class": null,
+          "head": null,
+          "why": "dirty"
+        }
+      }
     }
   ]
 }

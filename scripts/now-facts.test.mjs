@@ -13,7 +13,8 @@
 // path: target }, gitlink?: [path] }], each applied in that order) are made in order in the
 // repository with fixed dates, those with base on main before the scenario's branch is made, the
 // others on their `on` branch (the scenario's by default); edit ({ path: [from, to] }) changes one root file
-// once; gitconfig ({ key: value }, `{root}` its path) sets the repository's config; `{rev:<rev>}`
+// once; gitconfig ({ key: value }, `{root}` its path) sets the repository's config; replace ({ rev:
+// rev }) replaces the first commit with the second and resets the checkout to it; `{rev:<rev>}`
 // in the root files revs names and in expected.json is that commit's full sha;
 // variants ([{ ..., want? }]) run the scenario once each, merged over args.json, `want` over
 // expected.json.
@@ -112,6 +113,7 @@ function scenario(name, dir, a, want) {
       writeFileSync(join(gtm, f), t.replace(from, to))
     }
     for (const [k, v] of Object.entries(a.gitconfig || {})) git(repo, ['config', k, v.replaceAll('{root}', gtm)])
+    for (const [from, to] of Object.entries(a.replace || {})) { const sha = (r) => execFileSync('git', ['rev-parse', r], { cwd: repo, encoding: 'utf8', env }).trim(); git(repo, ['replace', sha(from), sha(to)]); git(repo, ['reset', '-q', '--hard']) }
     const rev = (s) => s.replace(/\{rev:([^}]+)\}/g, (_, r) => execFileSync('git', ['rev-parse', r], { cwd: repo, encoding: 'utf8', env }).trim())
     for (const f of a.revs || []) writeFileSync(join(gtm, f), rev(readFileSync(join(gtm, f), 'utf8')))
     want = JSON.parse(rev(JSON.stringify(want)))
