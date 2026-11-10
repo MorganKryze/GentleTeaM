@@ -1,0 +1,145 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "# B\n"
+      }
+    }
+  ],
+  "args": [
+    "--slug",
+    "fix-typo",
+    "--state",
+    "{root}/state.json"
+  ],
+  "revs": [
+    "reports/fix-typo/landing.json"
+  ],
+  "variants": [
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "{rev:HEAD}",
+          "{rev:HEAD~1}"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- standing go: docs · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10\n",
+          ""
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          "  push: ask"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "stealth: off",
+          "stealth: on"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "\"class\":\"docs\"",
+          "\"class\":\"deps-patch\""
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "\"name\":\"ci\"",
+          "\"name\":\"e2e\""
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "\"result\":\"due\"",
+          "\"result\":\"pass\""
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "{\"name\":\"gate\",\"result\":\"pass\"},",
+          ""
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "{\"name\":\"gate\",\"result\":\"pass\"},{\"name\":\"ci\",\"result\":\"due\"}",
+          "{\"name\":\"ci\",\"result\":\"due\"},{\"name\":\"gate\",\"result\":\"pass\"}"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "]}",
+          "],\"by\":\"x\"}"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "{\"class\":\"docs\",\"head\":\"{rev:HEAD}\",",
+          "{\"head\":\"{rev:HEAD}\",\"class\":\"docs\","
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "\"head\":\"",
+          "\"head\":\" "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "{\"class\"",
+          "[{\"class\""
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/fix-typo/landing.json": [
+          "\n",
+          ","
+        ]
+      }
+    }
+  ]
+}

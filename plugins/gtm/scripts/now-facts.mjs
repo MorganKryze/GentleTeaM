@@ -18,9 +18,19 @@
 // The file counts only with its fingerprint: the slug's last `ruling · mandate: sha256 <hex>`
 // ledger line holds the sha256 of its raw bytes, else `fingerprint`. --copy writes both: the given
 // file byte for byte by a rename, then that record appended; exit 3 when it cannot write them.
+// With --landing <slug> [--proofs <names>] it is the standing go check of /gtm:ship: with
+// `git.push: standing` in config.yml and a valid `- standing go:` line in team.md's Gates, a clean
+// tree whose changes since the merge base of `git.base` are all in that line's class, and every
+// proof the class requires held (`--proofs`: those ship ran green, `gate` and `footprint`), it
+// writes reports/<slug>/landing.json {class, head, proofs} by a rename; else it deletes that file.
+// It prints {landing, class, head, why, file, proof}, a path only when SAFE; any error in the check
+// refuses and deletes; exit 3 in a linked worktree or over a tracked file, a link or a non-file.
+// `git.base` counts only as a branch, refs/heads/<base>. The state's `landing` is that file while
+// its shape is exact and the same check, run again, gives the same landing.
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
 //        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]
-//        [--state <root>/state.json] [--mandate <slug> [--copy <file>]] No dependencies.
+//        [--state <root>/state.json] [--mandate <slug> [--copy <file>]]
+//        [--landing <slug> [--proofs <names>]] No dependencies.
 import { readFileSync, readdirSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -42,8 +52,8 @@ const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >
 
 // Usage errors exit 2: an unknown flag, a flag without its value, no --root, a --now or --since
 // that is not a date-time.
-const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate', 'copy']
-const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug> [--copy <file>]]'); process.exit(2) }
+const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate', 'copy', 'landing', 'proofs']
+const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug> [--copy <file>]] [--landing <slug> [--proofs <names>]]'); process.exit(2) }
 const argv = process.argv.slice(2), opt = { running: [] }
 for (let i = 0; i < argv.length; i += 2) {
   const k = argv[i].slice(2), v = argv[i + 1]
@@ -54,6 +64,16 @@ if (!opt.root) usage()
 if (opt.copy !== undefined && (opt.mandate === undefined || opt.state !== undefined)) { console.error('now-facts.mjs: --copy takes --mandate and no --state'); process.exit(2) }
 if (opt.slug !== undefined && !/^[a-z0-9-]+$/.test(opt.slug)) { console.error('now-facts.mjs: --slug takes [a-z0-9-] only'); process.exit(2) }
 if (opt.mandate !== undefined && !/^[a-z0-9-]+$/.test(opt.mandate)) { console.error('now-facts.mjs: --mandate takes [a-z0-9-] only'); process.exit(2) }
+// Who holds each proof (A10): the check, ship (passed in by name) or the merging program, for
+// which a landing says `due`. Each class: the proofs it requires, in order, and the files it takes.
+const HOLDS = { paths: 'check', clean: 'check', gate: 'ship', footprint: 'ship', ci: 'merger' }
+// The docs class is an allowlist (A7): a regular file added or modified under the top-level
+// `docs/`, ending in `.md`, every segment ASCII `[A-Za-z0-9._-]` and none starting with `.`.
+const DOCS = /^docs\/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*\/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\.md$/
+const CLASSES = { docs: { proofs: ['gate', 'ci'], takes: (f) => /^[AM]$/.test(f.status) && f.mode === '100644' && f.tree === '100644' && DOCS.test(f.path) } }
+const passed = opt.proofs === undefined ? [] : opt.proofs.split(',')
+if (opt.landing !== undefined && (!/^[a-z0-9-]+$/.test(opt.landing) || opt.state !== undefined || opt.mandate !== undefined)) { console.error('now-facts.mjs: --landing takes [a-z0-9-] only, and no --state or --mandate'); process.exit(2) }
+if (opt.proofs !== undefined && (opt.landing === undefined || passed.some((p, i) => HOLDS[p] !== 'ship' || passed.indexOf(p) !== i))) { console.error('now-facts.mjs: --proofs takes --landing and the proofs ship holds, each once'); process.exit(2) }
 const root = resolve(opt.root)
 if (opt.state !== undefined && resolve(opt.state) !== join(root, 'state.json')) { console.error('now-facts.mjs: --state takes <root>/state.json only'); process.exit(2) }
 const now = opt.now === undefined ? Date.now() : Date.parse(opt.now)
@@ -338,7 +358,7 @@ const state = () => ({
   v: 1, updated: out.updated, slug: nul(out.slug), branch: nul(out.branch), epic: out.epic || null, phase: nul(out.phase), steps: steps(), task: nul(out.task),
   eta: runs.length ? { clock: out.eta.clock, minutes: nul(out.eta.minutes), measured: runs.length } : { clock: null, minutes: null, measured: 0 },
   running: nul(out.running), others: nul(out.others), waiting: out.waiting ? card() : null, milestone: milestone(), story: (story && story.label) || null,
-  mandate: mine ? (({ valid, done, stops }) => (valid ? { done, stops } : null))(mandate(slug)) : null, defaults: mine ? defaults(slug) : 0, landing: null,
+  mandate: mine ? (({ valid, done, stops }) => (valid ? { done, stops } : null))(mandate(slug)) : null, defaults: mine ? defaults(slug) : 0, landing: mine ? landed(slug) : null,
 })
 // Written only in the main checkout, never over a tracked file or one that is not a state; the old
 // file is replaced by a rename, so a reader sees one whole file, and no temporary file stays.
@@ -410,6 +430,124 @@ function copy(s, from) {
   console.log(JSON.stringify({ valid, source, why, budget }))
   return 0
 }
+// config.yml read line by line: the top-level `stealth` and the `git` block's keys, each a bare
+// word after `<key>: `, a comment after a space allowed; any other spelling is no value.
+function config() {
+  const top = {}, gitKeys = {}
+  let inGit = false
+  for (const l of (small(join(root, 'config.yml')) || '').split('\n')) {
+    if (/^\S/.test(l)) inGit = /^git:(?: +#.*)? *$/.test(l)
+    const m = l.match(/^( {2})?([a-z_]+): +([^\s#]+)(?: +#.*)? *$/)
+    if (m && m[1]) { if (inGit) gitKeys[m[2]] = m[3] } else if (m) top[m[2]] = m[3]
+  }
+  return { push: gitKeys.push, base: gitKeys.base, stealth: top.stealth === 'on' }
+}
+// team.md's `## Gates` lines, fences blanked; a link or an unreadable file has none.
+const gates = () => ((unfenced(small(join(root, 'team.md'))) || '').match(/^## Gates[ \t]*\n([\s\S]*?)(?=^#{1,2} |(?![\s\S]))/m) || [, ''])[1].split('\n')
+// A standing go line (A1): its class, its paths regex, its proofs, why and when, exactly.
+const LINE = /^- standing go: ([a-z][a-z0-9-]*) · paths `([^`]+)` · proofs ([a-z][a-z0-9-]*(?:, [a-z][a-z0-9-]*)*) · why: ([^ ·\n](?:(?! · )[^\n])*(?<! )) · (\d{4}-\d\d-\d\d)$/
+// The valid lines, a map with no prototype from class to regex: a line that misses the shape voids
+// them all; a class the check does not hold, a proof list other than the class's, a regex that
+// fails or a class named twice voids that class (A2, A25).
+function standing() {
+  const got = Object.create(null), bad = new Set()
+  for (const l of gates().filter((x) => x.startsWith('- standing go:'))) {
+    const m = l.match(LINE)
+    if (!m) return Object.create(null)
+    let re = null
+    try { re = new RegExp(m[2]) } catch {}
+    if (!Object.hasOwn(CLASSES, m[1]) || m[3] !== CLASSES[m[1]].proofs.join(', ') || !re || m[1] in got) bad.add(m[1])
+    got[m[1]] = re
+  }
+  for (const c of bad) delete got[c]
+  return got
+}
+// The proofs a landing of class c lists (A10): the check's, the class's, then `footprint` in stealth.
+const proofsOf = (c, stealth) => [...new Set(['paths', 'clean', ...CLASSES[c].proofs, ...(stealth ? ['footprint'] : [])])].map((name) => ({ name, result: HOLDS[name] === 'merger' ? 'due' : 'pass' }))
+// The Gates risky paths: a regex that fails makes every path risky.
+function riskyPaths() {
+  const r = gates().find((l) => l.startsWith('- replay risky tasks:'))
+  const res = [...((r || '').match(/ · risky paths (.*?) · why/)?.[1] || '').matchAll(/`([^`]+)`/g)].map((m) => m[1])
+  try { const rx = res.map((x) => new RegExp(x)); return (p) => rx.some((x) => x.test(p)) } catch { return () => true }
+}
+// The main checkout's head, the full sha, or null.
+const head = () => { const h = (repo && git(repo, ['rev-parse', '--verify', '--quiet', 'HEAD']) || '').trim(); return /^[0-9a-f]{40}$/.test(h) ? h : null }
+// `git.base` is a branch name, read as refs/heads/<base> only: no `~ ^ : @`, space, `..` or
+// leading `-`, so no revision expression can move the merge base.
+const BRANCH = /^(?!-)(?!.*\.\.)[A-Za-z0-9._/-]+$/
+// The check (A7 to A10) on the main checkout as it is, with the proofs ship held: a refusal
+// { why, file?, proof? }, else { class, head, proofs }. It writes nothing.
+function check(given) {
+  const cfg = config(), lines = standing()
+  if (cfg.push !== 'standing') return { why: 'setting' }
+  if (!Object.keys(CLASSES).some((k) => lines[k])) return { why: 'line' }
+  const branch = repo && (git(repo, ['symbolic-ref', '--quiet', '--short', 'HEAD']) || '').trim()
+  // HEAD read once: every later git call takes this sha, and HEAD must still be it after them.
+  const ref = `refs/heads/${cfg.base}`, at = head()
+  const fork = at && branch && BRANCH.test(cfg.base || '') && branch !== cfg.base && git(repo, ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]) !== null ? (git(repo, ['merge-base', ref, at]) || '').trim() : ''
+  if (!fork) return { why: 'base' }
+  if (git(repo, ['status', '--porcelain', '-z', '--untracked-files=all']) !== '') return { why: 'dirty' }
+  const raw = git(repo, ['diff', '--raw', '-z', '--no-renames', '--no-ext-diff', fork, at])
+  if (raw === null) return { why: 'base' }
+  if (head() !== at) return { why: 'moved' }
+  const parts = raw.split('\0'), files = []
+  // Each path's mode in the tree at the head, from ls-tree: a link, a submodule or an executable
+  // is never 100644.
+  const tree = new Map((git(repo, ['ls-tree', '-r', '-z', at, '--', 'docs']) || '').split('\0').filter(Boolean).map((e) => [e.slice(e.indexOf('\t') + 1), e.split(' ')[0]]))
+  for (let i = 0; i + 1 < parts.length; i += 2) { const [, mode, , , status] = parts[i].split(' '); files.push({ mode, status, path: parts[i + 1], tree: tree.get(parts[i + 1]) }) }
+  if (!files.length) return { why: 'empty' }
+  const risky = riskyPaths(), signed = Object.keys(CLASSES).filter((k) => lines[k])
+  const out = (c) => files.find((f) => !CLASSES[c].takes(f) || !lines[c].test(f.path) || risky(f.path))
+  const c = signed.find((k) => !out(k))
+  if (!c) return { why: 'class', file: safe(out(signed[0]).path) }
+  const proofs = proofsOf(c, cfg.stealth), missing = proofs.find((p) => HOLDS[p.name] === 'ship' && !given.includes(p.name))
+  if (missing) return { why: 'proof', proof: missing.name }
+  return { class: c, head: at, proofs }
+}
+// The state's landing (A12): the file while its shape is exact and the check, run again now with
+// the ship proofs it records, gives the same class, head and proofs; a forged or stale file is null.
+function landed(s) {
+  let l = null
+  try { l = JSON.parse(small(join(root, 'reports', s, 'landing.json'))) } catch { return null }
+  if (!l || typeof l !== 'object' || Array.isArray(l) || Object.keys(l).join() !== 'class,head,proofs' || !Array.isArray(l.proofs)) return null
+  let v = null
+  try { v = check(l.proofs.filter((p) => p && HOLDS[p.name] === 'ship' && p.result === 'pass').map((p) => p.name)) } catch { return null }
+  return !v.why && v.class === l.class && v.head === l.head && JSON.stringify(v.proofs) === JSON.stringify(l.proofs) ? { class: l.class, head: l.head, proofs: l.proofs } : null
+}
+// --landing: exit 3 before anything when it could not write or delete safely; otherwise one line,
+// the landing written or the slug's old one deleted, an error in the check included (fail closed).
+function land(s) {
+  const no3 = (why) => { console.error(`now-facts.mjs: landing not written: ${why}`); return 3 }
+  const kind = (f) => { try { const st = lstatSync(f); return st.isFile() ? 'file' : st.isDirectory() ? 'dir' : 'other' } catch { return null } }
+  const dir = join(root, 'reports', s), file = join(dir, 'landing.json')
+  if (linked(root) || linked(process.cwd())) return no3('a linked worktree')
+  for (const [d, k] of [[join(root, 'reports'), 'dir'], [dir, 'dir'], [file, 'file']]) if (![null, k].includes(kind(d))) return no3(`${relative(root, d)} is not a ${k === 'dir' ? 'folder' : 'file'}`)
+  if (git(root, ['ls-files', '--error-unmatch', '--', relative(root, file)]) !== null) return no3('tracked by git')
+  const drop = () => { if (kind(file) === 'file') unlinkSync(file) }
+  let v
+  try { v = check(passed) } catch { v = { why: 'error' } }
+  if (v.why) {
+    try { drop() } catch { return no3('the old landing could not be deleted') }
+    console.log(JSON.stringify({ landing: false, class: null, head: null, why: v.why, file: v.file ?? null, proof: v.proof ?? null }))
+    return 0
+  }
+  const tmp = `${file}.${process.pid}.tmp`
+  let fd = null, made = false
+  try {
+    mkdirSync(dir, { recursive: true })
+    fd = openSync(tmp, 'wx'); made = true
+    writeFileSync(fd, `${JSON.stringify(v)}\n`); closeSync(fd); fd = null
+    renameSync(tmp, file)
+  } catch {
+    if (fd !== null) try { closeSync(fd) } catch {}
+    if (made) try { unlinkSync(tmp) } catch {}
+    try { drop() } catch {}
+    return no3('the write failed, the old landing deleted')
+  }
+  console.log(JSON.stringify({ landing: true, class: v.class, head: v.head, why: null, file: null, proof: null }))
+  return 0
+}
+if (opt.landing !== undefined) process.exit(land(opt.landing))
 if (opt.copy !== undefined) process.exit(copy(opt.mandate, resolve(opt.copy)))
 if (opt.mandate !== undefined) { const { valid, source, why, budget } = mandate(opt.mandate); console.log(JSON.stringify({ valid, source, why, budget })); process.exit(0) }
 const code = (opt.state !== undefined && write(join(root, 'state.json'))) || (hasUnknown(out) ? 1 : 0)

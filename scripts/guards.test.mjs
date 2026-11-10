@@ -6,7 +6,8 @@
 // pointing at the rule. The agents' shipped efforts are held too: none ships at xhigh. A limit
 // window the status line leaves out is named nowhere: no fixed `5h … 7d` pair in the limits lines.
 // The state follows the run view, only where it is written, and the card file holds the writer's
-// own words and goes before the next rewrite.
+// own words and goes before the next rewrite. A standing go: the line's shape, its proofs, the
+// never list and what a program must refuse, as the settings reference states them.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -114,7 +115,24 @@ const PINS = {
     'Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a',
     'reader ignores the fields it does not know.',
     'its fingerprint in the logbook; any other file there counts as no mandate',
+    '`pass` when GTM or `/gtm:ship` held it, `due` when your program must check it; `null` without one, and after the next commit |',
     '`clock` the writer\'s local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`',
+  ],
+  'docs/reference/settings.md': [
+    'otherwise it shows its go card, with the reason. A tag or a release always asks you.',
+    '- standing go: <class> · paths `<regex>` · proofs <list> · why: <reason> · <YYYY-MM-DD>',
+    '`<list>` is exactly the proofs the class requires, in this order, separated by `, `. The',
+    'fails, an unknown class or proof, or two lines for one class: no standing go for that class.',
+    '| `docs` | added or modified regular files (mode 100644) under the top-level `docs/`, ending in `.md`, each folder and file name of ASCII letters, digits, `.`, `_` and `-`, none starting with `.`, matching the line\'s regex | `gate, ci` |',
+    'Whatever the line says, no class takes a file on a risky path, and a deleted or renamed file, a',
+    'link, a submodule or an executable file is never in a class. A class lists what may land, not what',
+    'file inside `docs/` (a nested `CLAUDE.md` or `AGENTS.md`), or a page an agent file imports, can',
+    '| `ci` | your program, once the branch is pushed | `due` |',
+    'you sign, outside the repository: the line\'s bytes from `- ` to its last character, line end',
+    'excluded. Any change to it, its proofs, reason and date included, is a new line to sign. Your',
+    'program refuses a landing whose line differs, that names a class or a proof it does not know, or',
+    '`state.json` shows it only while the same check, run again, still gives it: a new commit, an',
+    'counts only as a local branch name.',
   ],
   'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
   'plugins/gtm/skills/plan/SKILL.md': [

@@ -1,0 +1,121 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "variants": [
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: docs/fix-typo"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: trunk"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main\n",
+          ""
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: HEAD~1"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: main~0"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: main^"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: -main"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: @"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: HEAD"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: main:x"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: refs/heads/main"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: ma..in"
+        ]
+      }
+    }
+  ]
+}

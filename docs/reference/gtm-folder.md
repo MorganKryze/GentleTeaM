@@ -66,6 +66,7 @@ one learned.
 | `reports/` | each agent's full report, and the pull request text | every role |
 | `reports/<slug>/waiting.json` | the card waiting on your answer, in the writer's words; deleted once you answer | the orchestrator |
 | `reports/<slug>/mandate.md` | the file given with `mandate=<file>`, copied byte for byte, its fingerprint in the logbook; any other file there counts as no mandate; it holds for the branch, resumes included, until you delete it | `/gtm:deliver` |
+| `reports/<slug>/landing.json` | the landing `/gtm:ship` records under a standing go: class, head, proofs; deleted when the check refuses | `/gtm:ship` |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
 | `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
 
@@ -95,7 +96,7 @@ reader ignores the fields it does not know.
 | `story` | the backlog story this branch delivers, or `null` |
 | `mandate` | `{done, stops}` from a valid mandate, `stops` `null` when it has none; `null` with no valid mandate |
 | `defaults` | the number of default rulings for this branch in `ledger.md`, 0 with none |
-| `landing` | `null` until a later branch fills it, within `v` 1 |
+| `landing` | `{class, head, proofs}` while a landing holds for this branch: the class you signed, the full sha of its head, one `{name, result}` per proof, `pass` when GTM or `/gtm:ship` held it, `due` when your program must check it; `null` without one, and after the next commit |
 
 ## What does a new project start with?
 

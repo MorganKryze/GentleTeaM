@@ -1,0 +1,54 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "args": [
+        "--landing",
+        "fix-typo"
+      ]
+    },
+    {
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--proofs",
+        "footprint"
+      ]
+    },
+    {
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--proofs",
+        "gate"
+      ],
+      "edit": {
+        "config.yml": [
+          "stealth: off",
+          "stealth: on"
+        ]
+      },
+      "want": {
+        "facts": {
+          "landing": false,
+          "why": "proof",
+          "proof": "footprint"
+        }
+      }
+    }
+  ]
+}

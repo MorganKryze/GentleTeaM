@@ -1,0 +1,49 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "variants": [
+    {
+      "edit": {
+        "team.md": [
+          "- replay risky tasks: yes · risky paths `^src/db/`, `migrations?/` · why: x · 2026-10-12",
+          "- replay risky tasks: yes · risky paths `^docs/`, `migrations?/` · why: x · 2026-10-12"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- replay risky tasks: yes · risky paths `^src/db/`, `migrations?/` · why: x · 2026-10-12",
+          "- replay risky tasks: yes · risky paths `(`, `migrations?/` · why: x · 2026-10-12"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- replay risky tasks: yes · risky paths `^src/db/`, `migrations?/` · why: x · 2026-10-12",
+          "- replay risky tasks: yes · risky paths `^docs/b`, `migrations?/` · why: x · 2026-10-12"
+        ]
+      }
+    }
+  ]
+}

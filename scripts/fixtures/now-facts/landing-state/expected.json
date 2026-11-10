@@ -1,0 +1,28 @@
+{
+  "exit": 0,
+  "state": {
+    "slug": "fix-typo",
+    "landing": {
+      "class": "docs",
+      "head": "{rev:HEAD}",
+      "proofs": [
+        {
+          "name": "paths",
+          "result": "pass"
+        },
+        {
+          "name": "clean",
+          "result": "pass"
+        },
+        {
+          "name": "gate",
+          "result": "pass"
+        },
+        {
+          "name": "ci",
+          "result": "due"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "branch": "docs/fix-typo",
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "variants": [
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/skills/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/my_page-1.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a/b/c.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/A.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/-x.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.b.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/x.cursor/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/v1.2/a.md": "x\n"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "worktrees": [
+    {
+      "name": "wt1",
+      "branch": "docs/fix-typo-t1"
+    }
+  ],
+  "variants": [
+    {
+      "cwd": "wt1"
+    },
+    {
+      "rootIn": "wt1"
+    }
+  ]
+}

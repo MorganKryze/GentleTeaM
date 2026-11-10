@@ -1,0 +1,29 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--slug",
+    "fix-typo",
+    "--state",
+    "{root}/state.json"
+  ],
+  "revs": [
+    "kept.json"
+  ],
+  "links": {
+    "reports/fix-typo/landing.json": "../../kept.json"
+  }
+}

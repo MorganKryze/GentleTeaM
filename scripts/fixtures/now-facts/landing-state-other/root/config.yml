@@ -1,0 +1,6 @@
+root: .gtm
+stealth: off
+
+git:
+  base: main
+  push: standing                  # the owner's standing go

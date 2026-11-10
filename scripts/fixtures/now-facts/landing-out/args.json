@@ -1,0 +1,147 @@
+{
+  "branch": "docs/fix-typo",
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "variants": [
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/notes.txt": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.MD": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.md.txt": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.md": "x\n",
+            "README.md": "y\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "delete": [
+            "docs/b.md"
+          ]
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "delete": [
+            "docs/b.md"
+          ],
+          "write": {
+            "docs/c.md": "b\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.md": "x\n"
+          },
+          "mode": {
+            "docs/a.md": "755"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "link": {
+            "docs/l.md": "../README.md"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "gitlink": [
+            "docs/sub.md"
+          ]
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "delete": [
+            "docs/b.md"
+          ],
+          "link": {
+            "docs/b.md": "../README.md"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "link": {
+            "docs/l.md": "../README.md"
+          }
+        },
+        {
+          "delete": [
+            "docs/l.md"
+          ],
+          "write": {
+            "docs/l.md": "x\n"
+          }
+        }
+      ]
+    }
+  ]
+}
