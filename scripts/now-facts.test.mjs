@@ -15,8 +15,9 @@
 // others on their `on` branch (the scenario's by default); edit ({ path: [from, to] }) changes one root file
 // once; gitconfig ({ key: value }, `{root}` its path) sets the repository's config; replace ({ rev:
 // rev }) replaces the first commit with the second and resets the checkout to it; grafts ([line])
-// writes .git/info/grafts, revs read first; `{rev:<rev>}` in grafts, in the root files revs names
-// and in expected.json is that commit's full sha;
+// writes .git/info/grafts, revs read first; graph ({ rev: rev }) writes a commit-graph in which the
+// first commit has the second as its second parent, the file a session could forge; `{rev:<rev>}`
+// in grafts, in the root files revs names and in expected.json is that commit's full sha;
 // variants ([{ ..., want? }]) run the scenario once each, merged over args.json, `want` over
 // expected.json.
 // The test builds a throwaway repository around the root (git keeps no repository inside a
@@ -69,6 +70,19 @@ function subset(name, got, want, path = 'facts') {
   if (Array.isArray(want) && got.length !== want.length) errors.push(`${name}: ${path} has ${got.length} items, want ${want.length}`)
   for (const k of Object.keys(want)) subset(name, got[k], want[k], `${path}.${k}`)
 }
+// A version-1 commit-graph (generation as topological level, no GDAT chunk), then commit c's CDAT
+// record given p as its second parent: header 8 bytes, chunk table of 12-byte entries, OIDF's last
+// entry the commit count, a CDAT record the tree (20), parents (4 and 4), generation and time (8).
+function forge(repo, c, p) {
+  git(repo, ['-c', 'commitGraph.generationVersion=1', 'commit-graph', 'write', '--reachable'])
+  const f = join(repo, '.git/objects/info/commit-graph'), b = readFileSync(f)
+  const chunk = (id) => { for (let i = 0; i < b[6]; i++) if (b.toString('latin1', 8 + 12 * i, 12 + 12 * i) === id) return Number(b.readBigUInt64BE(12 + 12 * i)) }
+  const oidl = chunk('OIDL'), n = b.readUInt32BE(chunk('OIDF') + 255 * 4)
+  const at = (sha) => { for (let i = 0; i < n; i++) if (b.toString('hex', oidl + 20 * i, oidl + 20 * i + 20) === sha) return i }
+  b.writeUInt32BE(at(p), chunk('CDAT') + 36 * at(c) + 24)
+  chmodSync(f, 0o644)
+  writeFileSync(f, b)
+}
 const strings = (v) => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(strings) : [])
 
 const who = ['-c', 'user.name=t', '-c', 'user.email=t@t']
@@ -117,6 +131,7 @@ function scenario(name, dir, a, want) {
     for (const [from, to] of Object.entries(a.replace || {})) { const sha = (r) => execFileSync('git', ['rev-parse', r], { cwd: repo, encoding: 'utf8', env }).trim(); git(repo, ['replace', sha(from), sha(to)]); git(repo, ['reset', '-q', '--hard']) }
     const rev = (s) => s.replace(/\{rev:([^}]+)\}/g, (_, r) => execFileSync('git', ['rev-parse', r], { cwd: repo, encoding: 'utf8', env }).trim())
     if (a.grafts) writeFileSync(join(repo, '.git/info/grafts'), a.grafts.map((l) => `${rev(l)}\n`).join(''))
+    for (const [c, p] of Object.entries(a.graph || {})) forge(repo, rev(`{rev:${c}}`), rev(`{rev:${p}}`))
     for (const f of a.revs || []) writeFileSync(join(gtm, f), rev(readFileSync(join(gtm, f), 'utf8')))
     want = JSON.parse(rev(JSON.stringify(want)))
     if (a.track) { git(repo, ['add', '-f', ...a.track.map((f) => relative(repo, join(gtm, f)))]); git(repo, [...who, 'commit', '-q', '-m', 'track'], date) }
