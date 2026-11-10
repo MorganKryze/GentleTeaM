@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-11-10
+
 ### Added
 - Each run view rewrite also leaves `state.json` in the GTM root: the same facts as `NOW.md`, as
   versioned JSON (v 1) for a program to read, such as a status line. It holds the steps, the
