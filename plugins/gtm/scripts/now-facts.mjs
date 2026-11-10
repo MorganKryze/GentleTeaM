@@ -368,8 +368,9 @@ function write(file) {
   }
 }
 // --copy: the given file read once (a regular file of at most 1 MiB, else `unreadable`, nothing
-// written); the mandate file replaced by a rename, never through a link or over a non-file; then
-// the record appended to the ledger, which must exist; then the check against the ledger as written.
+// written); the ledger, which must exist, opened for append first, so a ledger that cannot take the
+// record leaves the old file in place; the mandate file replaced by a rename, never through a link or
+// over a non-file; then the record appended; then the check against the ledger as written.
 function copy(s, from) {
   const no = (why) => { console.error(`now-facts.mjs: mandate not copied: ${why}`); return 3 }
   let buf = null, fd = null
@@ -383,6 +384,11 @@ function copy(s, from) {
   const led = join(root, 'ledger.md'), dir = join(root, 'reports', s), file = join(dir, 'mandate.md')
   if (kind(led) !== 'file') return no('no ledger.md')
   for (const [d, k] of [[join(root, 'reports'), 'dir'], [dir, 'dir'], [file, 'file']]) if (![null, k].includes(kind(d))) return no(`${relative(root, d)} is not a ${k === 'dir' ? 'folder' : 'file'}`)
+  let lfd = null, end = null
+  try { lfd = openSync(led, constants.O_WRONLY | constants.O_APPEND | constants.O_NOFOLLOW); end = readFileSync(led) } catch {
+    if (lfd !== null) try { closeSync(lfd) } catch {}
+    return no('the ledger write failed')
+  }
   const tmp = `${file}.${process.pid}.tmp`
   let out = null, made = false
   try {
@@ -393,11 +399,13 @@ function copy(s, from) {
   } catch {
     if (out !== null) try { closeSync(out) } catch {}
     if (made) try { unlinkSync(tmp) } catch {}
+    try { closeSync(lfd) } catch {}
     return no('the write failed')
   }
   const d = new Date(now), day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-  const end = readFileSync(led)
-  try { appendFileSync(led, `${end.length && end[end.length - 1] !== 0x0a ? '\n' : ''}- ${day} · ${s} · ruling · mandate: sha256 ${sha(buf)}\n`) } catch { return no('the ledger write failed') }
+  try { appendFileSync(lfd, `${end.length && end[end.length - 1] !== 0x0a ? '\n' : ''}- ${day} · ${s} · ruling · mandate: sha256 ${sha(buf)}\n`) } catch {
+    console.error('now-facts.mjs: mandate copied without its record: the ledger write failed'); return 3
+  } finally { try { closeSync(lfd) } catch {} }
   const { valid, source, why, budget } = mandate(s, readFileSync(led, 'utf8'))
   console.log(JSON.stringify({ valid, source, why, budget }))
   return 0

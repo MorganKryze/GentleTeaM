@@ -1,0 +1,2 @@
+- done when: an older file an agent wrote
+- decides alone: reversible
