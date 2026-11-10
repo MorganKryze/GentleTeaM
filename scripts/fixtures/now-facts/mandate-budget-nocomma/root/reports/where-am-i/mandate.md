@@ -1,0 +1,3 @@
+- done when: x
+- decides alone: reversible
+- budget: 90 min 300k tokens

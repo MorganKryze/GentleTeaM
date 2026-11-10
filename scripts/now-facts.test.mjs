@@ -1,18 +1,21 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
 // scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
-// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, fsize?, args }) and
-// expected.json ({ exit, facts, state? }, facts and state matched as subsets; rootName names the
+// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, sizes?, modes?, fsize?, args }) and
+// expected.json ({ exit, facts, state?, files? }, facts and state matched as subsets, files ({ path:
+// text | null | { sha256 } }) the exact text (or sha256) of those root files after the run, null for absent; rootName names the
 // root folder, root by default; rootIn puts the root in that worktree, cwd runs the script there,
-// track commits those root files, readonly locks the root folder, links ({ path: target }) and
-// fifos ([path]) make those root entries at run time, as git keeps no FIFO, fsize caps the files
+// track commits those root files, readonly locks the root folder, links ({ path: target }, folders made) and
+// fifos ([path]) make those root entries at run time, as git keeps no FIFO, sizes ({ path: bytes }) pad
+// those root files with newlines to that size, modes ({ path: octal }) set their mode for the run, fsize caps the files
 // the script writes at that many 512-byte blocks (ulimit -f); `{root}` in args is its path).
 // The test builds a throwaway repository around the root (git keeps no repository inside a
 // fixture), with no global or system git config, and removes it after the run; runs the script at
 // a fixed time, and checks it changed no file but the state it was asked for, replaced by a rename,
-// no git index and no git status; that a usage error prints nothing; that the state holds no `?`
-// and none of its card or step text reached stdout. Run by scripts/validate.mjs. No dependencies.
-import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
+// and the files expected.json names, no git index and no git status; that a usage error prints nothing; that the state holds no `?`
+// and none of its card, step or mandate text reached stdout. Run by scripts/validate.mjs. No
+// dependencies.
+import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, lstatSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync, spawnSync } from 'node:child_process'
@@ -29,11 +32,11 @@ const env = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTE
 function git(cwd, args, extra = {}) {
   execFileSync('git', ['-c', 'commit.gpgsign=false', ...args], { cwd, stdio: 'pipe', env: { ...env, ...extra } })
 }
-function snapshot(dir, skip) {
+function snapshot(dir, skip = []) {
   const h = createHash('sha256')
   const walk = (d) => readdirSync(d, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).forEach((e) => {
     const p = join(d, e.name)
-    if (relative(dir, p) === skip) return
+    if (skip.includes(relative(dir, p))) return
     // A link is hashed by its target, a FIFO by its name: reading one would follow or block.
     if (e.isDirectory()) walk(p); else h.update(relative(dir, p)).update(e.isSymbolicLink() ? `-> ${readlinkSync(p)}` : e.isFIFO() ? 'fifo' : readFileSync(p))
   })
@@ -80,32 +83,41 @@ for (const name of readdirSync(fixtures).sort()) {
     if (a.dirty) { const d = join(a.dirty.worktree ? join(tmp, a.dirty.worktree) : repo, a.dirty.file); mkdirSync(dirname(d), { recursive: true }); writeFileSync(d, 'changed\n'); utimesSync(d, ago(a.dirty.min), ago(a.dirty.min)) }
     if (a.broken) writeFileSync(join(tmp, a.broken, '.git'), 'gitdir: /nonexistent\n')
     for (const p of [repo, ...(a.worktrees || []).map((w) => join(tmp, w.name))]) utimesSync(join(p, 'README.md'), ago(30), ago(30))
+    for (const [f, n] of Object.entries(a.sizes || {})) appendFileSync(join(gtm, f), '\n'.repeat(n - statSync(join(gtm, f)).size))
     for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(gtm, f), ago(min), ago(min))
-    for (const [f, to] of Object.entries(a.links || {})) symlinkSync(to, join(gtm, f))
+    for (const [f, to] of Object.entries(a.links || {})) { mkdirSync(dirname(join(gtm, f)), { recursive: true }); symlinkSync(to, join(gtm, f)) }
     for (const f of a.fifos || []) execFileSync('mkfifo', [join(gtm, f)])
-    const stateFile = join(gtm, 'state.json'), skip = want.state ? 'state.json' : undefined
+    const stateFile = join(gtm, 'state.json'), skip = [...(want.state ? ['state.json'] : []), ...Object.keys(want.files || {})]
     const before = snapshot(gtm, skip), index = indexes(repo), ino = existsSync(stateFile) ? statSync(stateFile).ino : null
     const status = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env })
     const args = (a.args || []).map((x) => x.replace(/\{ago:(\d+)\}/g, (_, m) => ago(+m).toISOString()).replaceAll('{root}', gtm))
     if (a.readonly) chmodSync(gtm, 0o555)
+    for (const [f, m] of Object.entries(a.modes || {})) chmodSync(join(gtm, f), parseInt(m, 8))
     const cmd = [process.execPath, script, '--root', gtm, '--now', new Date(NOW).toISOString(), ...args]
     // Node ignores SIGXFSZ, so a write past the cap fails with EFBIG.
     const run = a.fsize ? ['sh', ['-c', `ulimit -f ${+a.fsize}; exec "$0" "$@"`, ...cmd]] : [cmd[0], cmd.slice(1)]
     const r = spawnSync(...run, { cwd: a.cwd ? join(tmp, a.cwd) : repo, encoding: 'utf8', env: { ...env, TZ: 'UTC' }, timeout: 60000 })
     if (a.readonly) chmodSync(gtm, 0o755)
+    for (const f of Object.keys(a.modes || {})) chmodSync(join(gtm, f), 0o755)
     if (r.status !== want.exit) errors.push(`${name}: exit ${r.status}, want ${want.exit} ${r.stderr.trim()}`)
     if (want.exit === 2 && r.stdout !== '') errors.push(`${name}: a usage error printed facts`)
     if (snapshot(gtm, skip) !== before) errors.push(`${name}: the script changed a file in the root`)
     if (indexes(repo) !== index) errors.push(`${name}: the script wrote a git index`)
     if (execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env }) !== status) errors.push(`${name}: the script changed git status`)
+    for (const [f, t] of Object.entries(want.files || {})) {
+      let got = null
+      try { lstatSync(join(gtm, f)); got = readFileSync(join(gtm, f)) } catch {}
+      if (got !== null) got = t && t.sha256 ? createHash('sha256').update(got).digest('hex') : got.toString('utf8')
+      if (got !== (t && t.sha256 ? t.sha256 : t)) errors.push(`${name}: files ${f} differs${t === null ? ', want absent' : ''}`)
+    }
     if (want.state) {
       let st
       try { st = JSON.parse(readFileSync(stateFile, 'utf8')) } catch { errors.push(`${name}: no state written`); continue }
       subset(name, st, want.state, 'state')
       if (JSON.stringify(st).includes('"?"')) errors.push(`${name}: the state holds ?`)
       if (ino !== null && statSync(stateFile).ino === ino) errors.push(`${name}: the state was rewritten in place, not replaced`)
-      const own = strings([st.waiting?.question, st.waiting?.costIfWrong, st.waiting?.options, (st.steps || []).map((s) => s.title)]).filter((s) => s.length >= 8)
-      if (own.some((s) => r.stdout.includes(s))) errors.push(`${name}: card or step text reached the output`)
+      const own = strings([st.waiting?.question, st.waiting?.costIfWrong, st.waiting?.options, (st.steps || []).map((s) => s.title), st.mandate]).filter((s) => s.length >= 8)
+      if (own.some((s) => r.stdout.includes(s))) errors.push(`${name}: card, step or mandate text reached the output`)
     }
     if (want.facts === undefined) continue
     let got

@@ -1,0 +1,17 @@
+# Ledger
+- 2026-11-09 · where-am-i · ruling · default: re-run the missing review (cost if wrong: one review)
+- 2026-11-10 · where-am-i · ruling · default: revise the plan (cost if wrong: one round)
+- 2026-11-9 · where-am-i · ruling · default: short date
+-  2026-11-09 · where-am-i · ruling · default: two spaces
+ - 2026-11-09 · where-am-i · ruling · default: leading space
+- 2026-11-09 · where-am-i · ruling · default:no space
+- 2026-11-09 · where-am-i · ruling · defaults: plural
+- 2026-11-09 · where-am-i · rulings · default: plural kind
+- 2026-11-09 · where-am-i · ruling· default: no space before
+- 2026-11-09 · where-am-i · ruling · Default: capital
+- 2026-11-09 · where-am-i · ruling · default : space before colon
+- 2026-11-09 · where-am-i-2 · ruling · default: a longer slug
+- 2026-11-09 · where-am · ruling · default: a shorter slug
+- ~~2026-11-09 · where-am-i · ruling · default: struck~~
+- 2026-11-09 · where-am-i · ruling · the human's answer, default: not a default
+- 2026-10-14 · where-am-i · ruling · mandate: sha256 85ec2f760304310bfe560a7b1ce738153f91ce0e31acfe73fa4852d15b5b8e4f

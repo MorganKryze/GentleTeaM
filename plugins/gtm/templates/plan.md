@@ -9,6 +9,11 @@ Usually nothing to decide here: the spec settled it. Last line, the estimate, as
 `<n> tasks × <m> min + <phase> <m> min, ... ≈ <W> min, <T>k tokens (medians of the last <k>
 measured runs)`, or `no measured run yet`.>
 
+## Mandate
+<Only when the human's request or answer gives a mandate; otherwise no such section. Its lines
+verbatim, nothing added, under `> Source: <where and when the human gave it>`: `- done when: …`,
+`- decides alone: reversible`, and when given `- stops for: …`, `- budget: …`.>
+
 ## Global constraints
 Each one numbered, so a task names the ones it touches.
 - C1 Gate before every commit: <commands from config, with prefix>.

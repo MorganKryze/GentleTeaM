@@ -1,0 +1,2 @@
+- done when:    
+- decides alone: reversible

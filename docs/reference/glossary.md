@@ -47,12 +47,12 @@ What a studio knows about a kind of job, one file per job (brand, website, mobil
 plugin's `templates/crafts/`, read only when a prompt names it.
 
 ### Decision card {#decision-card}
-A question, its options, a firm recommendation and the cost if wrong; in a spec, also its criteria
-and at most one objection. Shown by `/gtm:spec` and `/gtm:deliver`.
+A question, its options, a firm recommendation and the cost if wrong; in a spec, its criteria,
+at most one objection. Under a [mandate](#mandate): only at four moments, via `AskUserQuestion`.
 
 ### Decisions made for you {#decisions-made-for-you}
-What the team decided without asking, each with its cost if wrong, kept in `ledger.md` as
-`ruling` lines.
+What the team decided unasked, with its cost if wrong: in `ledger.md` as `ruling` lines; under
+a [mandate](#mandate), `ruling · default: …` for those taken by default, counted in `state.json`.
 
 ### Dry run {#dry-run}
 The architect runs a risky task's code in a scratch copy while planning, to prove the plan; risky
@@ -84,6 +84,10 @@ The method behind an item, named at its end as `(lens: <method name>)`.
 
 ### Logbook {#logbook}
 `ledger.md`, in `.gtm/`: one line per lesson, decision or deferred finding, kept across changes.
+
+### Mandate {#mandate}
+Four lines letting `/gtm:deliver` settle reversible decisions alone; it asks you only at four
+moments: a costly or irreversible choice, a very visible one, the end of the run, a release.
 
 ### Milestone {#milestone}
 Work across several branches, each run as a Feature, tracked as an epic in `backlog.md`.

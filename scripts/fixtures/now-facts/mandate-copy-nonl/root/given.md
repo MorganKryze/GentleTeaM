@@ -1,0 +1,5 @@
+- done when: the given file is copied whole  
+- decides alone: reversible  
+- stops for: a rename
+- budget: 60 min, 200k tokens  
+- push: git push now

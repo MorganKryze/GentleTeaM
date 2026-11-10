@@ -1,0 +1,12 @@
+{
+  "exit": 0,
+  "facts": {
+    "valid": false,
+    "why": "unreadable",
+    "budget": null
+  },
+  "files": {
+    "reports/where-am-i/mandate.md": null,
+    "ledger.md": "# Ledger\n"
+  }
+}

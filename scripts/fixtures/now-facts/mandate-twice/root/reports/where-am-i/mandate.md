@@ -1,0 +1,3 @@
+- done when: x
+- decides alone: reversible
+- decides alone: reversible

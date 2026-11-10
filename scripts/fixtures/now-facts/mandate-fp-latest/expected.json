@@ -1,0 +1,9 @@
+{
+  "exit": 0,
+  "facts": {
+    "valid": false,
+    "source": "file",
+    "why": "fingerprint",
+    "budget": null
+  }
+}

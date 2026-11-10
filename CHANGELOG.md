@@ -16,6 +16,18 @@ versions follow [SemVer](https://semver.org/).
   milestone, and what waits for you or the expected end time, in the project's language (French
   or English). Without a readable state it shows `NOW.md`'s first line as before. Rerun `/gtm:init`
   or the install to refresh your copy of the step.
+- A mandate lets `/gtm:deliver` run to its report and ask you only at four moments: a decision
+  that is costly or hard to undo, a very visible choice, the end of the run, and a release. Give
+  it as a `## Mandate` section in the plan, or as `/gtm:deliver <plan> mandate=<file>`; it says
+  when the work is done, what stops the run and its budget. Elsewhere the recommended option is
+  taken and logged as a default ruling, listed in the report. Accepting an open finding, taking
+  over by hand, dropping a check, deleting, a new dependency and the limits always ask. Questions
+  at the four moments use Claude Code's question tool when it is there. The mandate file is copied
+  as is and its fingerprint recorded, so a file nobody gave is not a mandate. Without a mandate,
+  nothing changes.
+- `state.json` carries the mandate and the count of default rulings, and its contract page now
+  states every item field, the difference between an empty and a missing list, and the version
+  rule: fields are only added under v 1, and a reader ignores fields it does not know.
 
 ### Fixed
 - The run view reads progress lines written as `- task <n> · ` and `- wave <ids> merged · `, which

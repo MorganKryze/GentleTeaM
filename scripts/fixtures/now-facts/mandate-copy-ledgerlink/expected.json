@@ -1,0 +1,7 @@
+{
+  "exit": 3,
+  "files": {
+    "backlog.md": "# Backlog\n",
+    "reports/where-am-i/mandate.md": "- done when: an older file an agent wrote\n- decides alone: reversible\n"
+  }
+}

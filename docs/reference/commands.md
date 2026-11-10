@@ -23,7 +23,7 @@ Each command dispatches the roles it needs and comes back to you only at a
 | `/gtm:design` | runs the design loop: for a new look, the art director proposes three directions; the designer draws [mockups](/reference/glossary/#mockups), the design critic scores them, conformity and taste, until they meet the bar | for a change of screens, before the spec | your pick of a direction, when there is one to pick, and your approval of the scored mockups |
 | `/gtm:spec` | writes the spec with the architect: what and why, acceptance lines, [decision cards](/reference/glossary/#decision-card) | after the mockups are approved, or first when no screen changes | your approval of the spec's summary |
 | `/gtm:plan` | writes the task plan from the approved spec: files, interfaces, test-first steps, the check of each task; runs a [dry run](/reference/glossary/#dry-run) of risky tasks only | after `/gtm:spec` | nothing, unless something deviates |
-| `/gtm:deliver` | runs each task in order (implementer, reviewer, the specialists it calls in, [correction rounds](/reference/glossary/#correction-round)), keeps the [logbook](/reference/glossary/#logbook), runs the final review | after `/gtm:plan` | nothing until the report, which lists the [decisions made for you](/reference/glossary/#decisions-made-for-you) |
+| `/gtm:deliver` | runs each task in order (implementer, reviewer, the specialists it calls in, [correction rounds](/reference/glossary/#correction-round)), keeps the [logbook](/reference/glossary/#logbook), runs the final review | after `/gtm:plan` | nothing until the report, which lists the [decisions made for you](/reference/glossary/#decisions-made-for-you); with a [mandate](/reference/glossary/#mandate), only at four moments |
 | `/gtm:ship` | checks the branch, writes the pull request text, runs the footprint check when stealth is on; release notes and the live check after you deploy | when `/gtm:deliver` reports the branch ready | your explicit go for each push, merge, tag or release |
 | `/gtm:retro` | turns a delivered branch's reports into one-line lessons, proposes guideline changes for recurring ones, closes resolved findings, counts what each [speciality sheet](/reference/glossary/#speciality-sheet) found | after shipping, or when the logbook grows noisy | your yes or no on each guideline change or sheet removal |
 | `/gtm:tune` | re-evaluates the team settings and conventions from the logbook and the reports; switches stealth on or off | when `/gtm:retro` suggests it, or the team feels too slow, too costly or misses things | your yes or no on each proposed change, as a decision card |
@@ -66,6 +66,34 @@ worktrees hold work, and the command that resumes. `NOW.md` shows the phase as p
 To resume, start `/gtm:gtm`: it names the paused branch and its command, and runs it when you say
 yes. `/gtm:status` shows the same command for you to type. A task that was stopped reruns whole,
 from where it started, so nothing half done passes as reviewed.
+
+## How do I let a delivery decide for me?
+
+Give it a [mandate](/reference/glossary/#mandate): run `/gtm:deliver <plan> mandate=<file>`, or
+ask for one when you request the work, so the plan carries a `## Mandate` section. A mandate holds
+four lines:
+
+- `- done when: <text>`: what must hold at the end (required).
+- `- decides alone: reversible` (required).
+- `- stops for: <text>`: cases you still want to be asked about (optional).
+- `- budget: <minutes> min, <tokens>k tokens` (optional).
+
+With `mandate=<file>`, the file is copied byte for byte to `reports/<slug>/mandate.md`. It wins over
+the plan's section and holds for that branch, resumes included, until you delete it.
+Its fingerprint is kept in the logbook: a file there that anyone writes or edits by hand
+counts as no mandate, with a Heads-up; give the file again.
+
+Delivery then asks you only at four moments: a decision that is costly or irreversible if wrong
+(data, security, money, secrets, deletion, a new dependency, skipping a review finding or a check),
+a very visible choice (a name, the tone, the main screen), the end of the run, and before a
+release. Every other card takes its recommended option.
+
+Reviews, checks, git actions and your go for each push, merge, tag or release never change.
+Each decision taken by default goes to the logbook as a `ruling · default:` line, to the report
+under **Rulings I made**, and to the count `defaults` in `state.json`.
+
+A mandate that does not read as these lines counts as none: delivery runs as usual and says why
+in a Heads-up.
 
 ## What do the commands run underneath?
 

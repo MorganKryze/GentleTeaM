@@ -1,12 +1,12 @@
 ---
 name: deliver
 description: "Deliver an approved GTM plan: tasks with reviews and correction rounds, then the final review. Use when /gtm:plan is done."
-argument-hint: "[plan path or slug]"
+argument-hint: "[plan path or slug] [mandate=<file>]"
 ---
 # Deliver (ends at checkpoint 3: the go)
 
-Ground rules: as in the `gtm` skill §0.
-
+Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's section or
+`<root>/reports/<slug>/mandate.md`): the plugin's `templates/mandate.md` first.
 ## 1. Prepare
 - Branch: from `git.base` as `git.branch` says (the orchestrator does this once; agents never switch
   branches); note the base commit. A range's files: `git -c core.quotePath=false diff --name-only
@@ -120,9 +120,9 @@ the rest kept. Each dispatch: its progress line, budget as §2 step 3, roles via
 
 ## 5. Record and report
 - Ledger: one `run` line as `${CLAUDE_PLUGIN_ROOT}/templates/ledger.md` says (the plugin's template,
-  never the project's copy), from every progress line; then each ruling taken.
+  never the project's copy), from every progress line; then each ruling taken not already there.
 - Report: TL;DR (ready or not; tasks clean, gate result, final verdict), one table (task, result,
   reviewers, cost) with a total row, a screen designed in code: ux-qa's capture paths at
   `design.widths`, for the human to approve with the go; deferred minors count, each budget Heads-up
   again, a Heads-up if anything deviated, **Rulings I made** (each with its cost if wrong), Next
-  steps with `you` · give the go (`/gtm:ship`).
+  steps with `you` · give the go (`/gtm:ship`); under a mandate, its summary first (`mandate.md`).
