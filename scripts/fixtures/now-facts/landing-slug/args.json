@@ -30,6 +30,26 @@
     },
     {
       "branch": "other"
+    },
+    {
+      "branch": "docs+x/fix-typo",
+      "worktrees": [
+        {
+          "name": "wt",
+          "branch": "feat/fix-typo"
+        }
+      ],
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--proofs",
+        "gate"
+      ],
+      "want": {
+        "files": {
+          "reports/fix-typo/landing.json": null
+        }
+      }
     }
   ]
 }

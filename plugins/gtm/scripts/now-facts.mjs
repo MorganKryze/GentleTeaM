@@ -478,8 +478,9 @@ const head = () => { const h = (repo && git(repo, ['rev-parse', '--verify', '--q
 // leading `-`, so no revision expression can move the merge base.
 const BRANCH = /^(?!-)(?!.*\.\.)[A-Za-z0-9._/-]+$/
 // The check (A7 to A10) of slug s on the main checkout as it is, with the proofs ship held: a
-// refusal { why, file?, proof? }, else { class, head, proofs }. It writes nothing. A branch that is
-// not the slug's (`<type>/<slug>`) is refused as `base`, so a landing never names another's head.
+// refusal { why, file?, proof? }, else { class, head, proofs }. It writes nothing. A branch other
+// than the one the state names for the slug is refused as `base`, so a landing never names
+// another's head.
 function check(given, s) {
   const cfg = config(), lines = standing()
   if (cfg.push !== 'standing') return { why: 'setting' }
@@ -487,7 +488,7 @@ function check(given, s) {
   const branch = repo && (git(repo, ['symbolic-ref', '--quiet', '--short', 'HEAD']) || '').trim()
   // HEAD read once: every later git call takes this sha, and HEAD must still be it after them.
   const ref = `refs/heads/${cfg.base}`, at = head()
-  const fork = at && branch && branch.endsWith(`/${s}`) && BRANCH.test(cfg.base || '') && branch !== cfg.base && git(repo, ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]) !== null ? (git(repo, ['merge-base', ref, at]) || '').trim() : ''
+  const fork = at && branch && branch === branchOf(s) && BRANCH.test(cfg.base || '') && branch !== cfg.base && git(repo, ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]) !== null ? (git(repo, ['merge-base', ref, at]) || '').trim() : ''
   if (!fork) return { why: 'base' }
   if (git(repo, ['status', '--porcelain', '-z', '--untracked-files=all']) !== '') return { why: 'dirty' }
   // Every submodule change listed, whatever .gitmodules or the git config says to ignore.

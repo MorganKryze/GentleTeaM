@@ -158,8 +158,8 @@ The landing is `.gtm/reports/<slug>/landing.json`, also shown as `landing` in `s
 `state.json` shows it only while the same check, run again, still gives it: a new commit, an
 uncommitted change or a changed line ends it, and the next check deletes a refused one. `git.base`
 counts only as a local branch name. `paths` holds against that local branch only, which any
-session can move or merge into. GTM records a landing only on the branch named for its slug,
-`<type>/<slug>`, and refuses any other.
+session can move or merge into. GTM records a landing only on the branch `state.json` names for
+its slug, `<type>/<slug>` in letters, digits and `._/-`, and refuses any other.
 
 GTM cannot prove that you wrote the line, nor the CI. Your program keeps a fingerprint of each line
 you sign, outside the repository: the line's bytes from `- ` to its last character, line end
