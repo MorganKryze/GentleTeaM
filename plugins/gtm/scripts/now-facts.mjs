@@ -47,8 +47,8 @@ const label = (s, n = LABEL) => [...s.replace(/[\x00-\x1f\x7f-\x9f\p{Cf}\u2028\u
 const read = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : null)
 const mtime = (f) => (existsSync(f) ? statSync(f).mtimeMs : null)
 // Optional locks off: git status then never takes index.lock nor rewrites a tree's index. Replace
-// refs off: every object is read as it is stored.
-const git = (cwd, args) => { try { return execFileSync('git', ['--no-optional-locks', '--no-replace-objects', ...args], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }) } catch { return null } }
+// refs and grafts off, so neither rewrites a commit or its parents.
+const git = (cwd, args) => { try { return execFileSync('git', ['--no-optional-locks', '--no-replace-objects', ...args], { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], env: { ...process.env, GIT_GRAFT_FILE: '/dev/null' } }) } catch { return null } }
 const round = (x) => Math.round(x * 10) / 10
 const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2 }
 

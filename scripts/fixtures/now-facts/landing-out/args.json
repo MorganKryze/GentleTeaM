@@ -221,6 +221,44 @@
           "why": "dirty"
         }
       }
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "write": {
+            "src/app.js": "x\n"
+          }
+        },
+        {
+          "write": {
+            "docs/b.md": "b2\n"
+          }
+        },
+        {
+          "on": "main",
+          "write": {
+            "docs/c.md": "c\n"
+          }
+        }
+      ],
+      "grafts": [
+        "{rev:main} {rev:main~1} {rev:HEAD~1}"
+      ],
+      "want": {
+        "facts": {
+          "landing": false,
+          "class": null,
+          "head": null,
+          "why": "class",
+          "file": "src/app.js"
+        }
+      }
     }
   ]
 }
