@@ -1,6 +1,6 @@
 // Fixes docmd's markup for keyboard and screen-reader users, now and after each SPA navigation:
 // one h1 per page (the site name in the sidebar becomes a paragraph with the same look), a named
-// menu control that Enter and Space open, and scrolling tables reachable with Tab.
+// menu control that Enter and Space open, and scrolling tables and code blocks reachable with Tab.
 (function () {
   function demote() {
     document.querySelectorAll('.sidebar-header h1').forEach(function (h) {
@@ -33,12 +33,20 @@
       set(t, 'aria-label', scrolls ? 'Table: ' + heads.join(', ') : null);
     });
   }
-  function apply() { demote(); menu(); tables(); }
+  function code() {
+    document.querySelectorAll('.main-content pre').forEach(function (p) {
+      var scrolls = p.scrollWidth > p.clientWidth + 1;
+      set(p, 'tabindex', scrolls ? '0' : null);
+      set(p, 'role', scrolls ? 'region' : null);
+      set(p, 'aria-label', scrolls ? 'Code block' : null);
+    });
+  }
+  function apply() { demote(); menu(); tables(); code(); }
   apply();
   new MutationObserver(apply).observe(document.documentElement, {
     childList: true, subtree: true, attributes: true, attributeFilter: ['class']
   });
-  window.addEventListener('resize', tables);
+  window.addEventListener('resize', function () { tables(); code(); });
   document.addEventListener('keydown', function (e) {
     var b = e.target.closest && e.target.closest('.sidebar-menu-button');
     if (!b || (e.key !== 'Enter' && e.key !== ' ')) return;
