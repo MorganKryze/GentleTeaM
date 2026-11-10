@@ -157,12 +157,13 @@ The landing is `.gtm/reports/<slug>/landing.json`, also shown as `landing` in `s
 `{name, result}` per proof: `paths`, `clean`, the class's list, then `footprint` in stealth.
 `state.json` shows it only while the same check, run again, still gives it: a new commit, an
 uncommitted change or a changed line ends it, and the next check deletes a refused one. `git.base`
-counts only as a local branch name. GTM records a landing only on the branch named for its slug,
+counts only as a local branch name. `paths` holds against that local branch only, which any
+session can move or merge into. GTM records a landing only on the branch named for its slug,
 `<type>/<slug>`, and refuses any other.
 
 GTM cannot prove that you wrote the line, nor the CI. Your program keeps a fingerprint of each line
 you sign, outside the repository: the line's bytes from `- ` to its last character, line end
 excluded. Any change to it, its proofs, reason and date included, is a new line to sign. Your
 program refuses a landing whose line differs, that names a class or a proof it does not know, or
-whose `due` proofs it cannot check, and checks the head, the diff and the CI again before merging
-exactly `head`.
+whose `due` proofs it cannot check. Before it merges exactly `head`, it checks the head and the CI
+again, and diffs `head` against the branch it merges into, not against the base GTM read.
