@@ -56,6 +56,8 @@ const TWINS = [
   { test: 'guards', file: 'docs/reference/settings.md', from: 'in this order, separated by', to: 'in any order, separated by', says: 'in this order, separated by' },
   { test: 'guards', file: 'docs/reference/settings.md', from: '| `ci` | your program, once the branch is pushed | `due` |', to: '| `ci` | your program, once the branch is pushed | `pass` |', says: 'once the branch is pushed | `due` |' },
   { test: 'guards', file: 'docs/reference/settings.md', from: 'A tag or a release always asks you.', to: 'A tag or a release asks you.', says: 'A tag or a release always asks you.' },
+  { test: 'guards', file: 'docs/reference/settings.md', from: 'fetched the branch over a transport', to: 'cloned the branch', says: 'fetched the branch over a transport' },
+  { test: 'guards', file: 'docs/reference/settings.md', from: 'or a plain local clone, which', to: ', which', says: 'or a plain local clone, which' },
   { test: 'guards', file: MANDATE, from: 'drop it or accept as pre-existing: ask (1)', to: 'drop it or accept as pre-existing: default', says: 'accept as pre-existing: ask (1)' },
   { test: 'guards', file: MANDATE, from: ', or `<root>/reports/<slug>/mandate.md` exists.', to: '.', says: 'mandate.md` exists.' },
   { test: 'guards', file: MANDATE, from: 'keeps its tool and targets', to: 'still runs', says: 'keeps its tool and targets' },

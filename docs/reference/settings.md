@@ -166,6 +166,7 @@ you sign, outside the repository: the line's bytes from `- ` to its last charact
 excluded. Any change to it, its proofs, reason and date included, is a new line to sign. Your
 program refuses a landing whose line differs, that names a class or a proof it does not know, or
 whose `due` proofs it cannot check. Before it merges exactly `head`, it checks the head and the CI
-again, and diffs `head` against the branch it merges into, not against the base GTM read, in its
-own clone or with grafts and replace refs off: either one, left in this repository, can hide a
-change from the diff.
+again, and diffs `head` against the branch it merges into, not against the base GTM read, in a
+clone that fetched the branch over a transport (`git clone --no-local`, or a fetch from your
+remote). It never diffs in this repository or a plain local clone, which shares its objects and
+commit-graph: a session can rewrite either to hide a change from the diff.

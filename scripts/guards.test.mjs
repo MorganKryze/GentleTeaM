@@ -133,6 +133,8 @@ const PINS = {
     'program refuses a landing whose line differs, that names a class or a proof it does not know, or',
     '`state.json` shows it only while the same check, run again, still gives it: a new commit, an',
     'counts only as a local branch name.',
+    'clone that fetched the branch over a transport (`git clone --no-local`, or a fetch from your',
+    'remote). It never diffs in this repository or a plain local clone, which shares its objects and',
   ],
   'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
   'plugins/gtm/skills/plan/SKILL.md': [
