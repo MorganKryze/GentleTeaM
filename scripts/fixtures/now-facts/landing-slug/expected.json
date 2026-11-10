@@ -1,0 +1,12 @@
+{
+  "exit": 0,
+  "facts": {
+    "landing": false,
+    "class": null,
+    "head": null,
+    "why": "base"
+  },
+  "files": {
+    "reports/other/landing.json": null
+  }
+}

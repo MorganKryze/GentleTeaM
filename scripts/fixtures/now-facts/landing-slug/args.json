@@ -1,0 +1,35 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--landing",
+    "other",
+    "--proofs",
+    "gate"
+  ],
+  "revs": [
+    "reports/other/landing.json"
+  ],
+  "variants": [
+    {},
+    {
+      "branch": "docs/xother"
+    },
+    {
+      "branch": "other"
+    }
+  ]
+}

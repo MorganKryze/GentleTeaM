@@ -25,8 +25,9 @@
 // writes reports/<slug>/landing.json {class, head, proofs} by a rename; else it deletes that file.
 // It prints {landing, class, head, why, file, proof}, a path only when SAFE; any error in the check
 // refuses and deletes; exit 3 in a linked worktree or over a tracked file, a link or a non-file.
-// `git.base` counts only as a branch, refs/heads/<base>. The state's `landing` is that file while
-// its shape is exact and the same check, run again, gives the same landing.
+// `git.base` counts only as a branch, refs/heads/<base>, and the checkout's branch only when it
+// ends in /<slug>. The state's `landing` is that file while its shape is exact and the same check,
+// run again, gives the same landing.
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
 //        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]
 //        [--state <root>/state.json] [--mandate <slug> [--copy <file>]]
@@ -476,16 +477,17 @@ const head = () => { const h = (repo && git(repo, ['rev-parse', '--verify', '--q
 // `git.base` is a branch name, read as refs/heads/<base> only: no `~ ^ : @`, space, `..` or
 // leading `-`, so no revision expression can move the merge base.
 const BRANCH = /^(?!-)(?!.*\.\.)[A-Za-z0-9._/-]+$/
-// The check (A7 to A10) on the main checkout as it is, with the proofs ship held: a refusal
-// { why, file?, proof? }, else { class, head, proofs }. It writes nothing.
-function check(given) {
+// The check (A7 to A10) of slug s on the main checkout as it is, with the proofs ship held: a
+// refusal { why, file?, proof? }, else { class, head, proofs }. It writes nothing. A branch that is
+// not the slug's (`<type>/<slug>`) is refused as `base`, so a landing never names another's head.
+function check(given, s) {
   const cfg = config(), lines = standing()
   if (cfg.push !== 'standing') return { why: 'setting' }
   if (!Object.keys(CLASSES).some((k) => lines[k])) return { why: 'line' }
   const branch = repo && (git(repo, ['symbolic-ref', '--quiet', '--short', 'HEAD']) || '').trim()
   // HEAD read once: every later git call takes this sha, and HEAD must still be it after them.
   const ref = `refs/heads/${cfg.base}`, at = head()
-  const fork = at && branch && BRANCH.test(cfg.base || '') && branch !== cfg.base && git(repo, ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]) !== null ? (git(repo, ['merge-base', ref, at]) || '').trim() : ''
+  const fork = at && branch && branch.endsWith(`/${s}`) && BRANCH.test(cfg.base || '') && branch !== cfg.base && git(repo, ['rev-parse', '--verify', '--quiet', `${ref}^{commit}`]) !== null ? (git(repo, ['merge-base', ref, at]) || '').trim() : ''
   if (!fork) return { why: 'base' }
   if (git(repo, ['status', '--porcelain', '-z', '--untracked-files=all']) !== '') return { why: 'dirty' }
   // Every submodule change listed, whatever .gitmodules or the git config says to ignore.
@@ -513,7 +515,7 @@ function landed(s) {
   try { l = JSON.parse(small(join(root, 'reports', s, 'landing.json'))) } catch { return null }
   if (!l || typeof l !== 'object' || Array.isArray(l) || Object.keys(l).join() !== 'class,head,proofs' || !Array.isArray(l.proofs)) return null
   let v = null
-  try { v = check(l.proofs.filter((p) => p && HOLDS[p.name] === 'ship' && p.result === 'pass').map((p) => p.name)) } catch { return null }
+  try { v = check(l.proofs.filter((p) => p && HOLDS[p.name] === 'ship' && p.result === 'pass').map((p) => p.name), s) } catch { return null }
   return !v.why && v.class === l.class && v.head === l.head && JSON.stringify(v.proofs) === JSON.stringify(l.proofs) ? { class: l.class, head: l.head, proofs: l.proofs } : null
 }
 // --landing: exit 3 before anything when it could not write or delete safely; otherwise one line,
@@ -527,7 +529,7 @@ function land(s) {
   if (git(root, ['ls-files', '--error-unmatch', '--', relative(root, file)]) !== null) return no3('tracked by git')
   const drop = () => { if (kind(file) === 'file') unlinkSync(file) }
   let v
-  try { v = check(passed) } catch { v = { why: 'error' } }
+  try { v = check(passed, s) } catch { v = { why: 'error' } }
   if (v.why) {
     try { drop() } catch { return no3('the old landing could not be deleted') }
     console.log(JSON.stringify({ landing: false, class: null, head: null, why: v.why, file: v.file ?? null, proof: v.proof ?? null }))
