@@ -1,0 +1,50 @@
+{
+  "branch": "feat/where-am-i",
+  "stdin": "in.json",
+  "variants": [
+    {
+      "args": [
+        "--card",
+        "../where-am-i"
+      ]
+    },
+    {
+      "args": [
+        "--card",
+        "Where"
+      ]
+    },
+    {
+      "args": [
+        "--card",
+        "a",
+        "--answer",
+        "a"
+      ]
+    },
+    {
+      "args": [
+        "--card",
+        "x",
+        "--state",
+        "{root}/state.json"
+      ]
+    },
+    {
+      "args": [
+        "--answer",
+        "x",
+        "--mandate",
+        "x"
+      ]
+    },
+    {
+      "args": [
+        "--card",
+        "x",
+        "--landing",
+        "x"
+      ]
+    }
+  ]
+}

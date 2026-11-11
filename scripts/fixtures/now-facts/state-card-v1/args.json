@@ -1,0 +1,129 @@
+{
+  "branch": "feat/where-am-i",
+  "mtimes": {
+    "NOW.md": 1,
+    "ledger.md": 5,
+    "backlog.md": 5,
+    "reports/where-am-i/progress.md": 5
+  },
+  "args": [
+    "--waiting",
+    "decision,2",
+    "--state",
+    "{root}/state.json"
+  ],
+  "variants": [
+    {},
+    {
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"answer\": null",
+          "\"answer\": {\"option\": \"A\", \"other\": null, \"by\": \"owner\", \"at\": \"2026-10-15T09:30:00.000Z\"}"
+        ]
+      },
+      "want": {
+        "state": {
+          "waiting": {
+            "kind": "decision",
+            "task": "2",
+            "question": null,
+            "options": null,
+            "costIfWrong": null,
+            "card": null
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        "--waiting",
+        "go,2",
+        "--state",
+        "{root}/state.json"
+      ],
+      "want": {
+        "state": {
+          "waiting": {
+            "kind": "go",
+            "task": "2",
+            "question": null,
+            "options": null,
+            "costIfWrong": null,
+            "card": null
+          }
+        }
+      }
+    },
+    {
+      "args": [
+        "--state",
+        "{root}/state.json"
+      ],
+      "want": {
+        "state": {
+          "waiting": null
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"v\": 1",
+          "\"v\": 2"
+        ]
+      },
+      "want": {
+        "state": {
+          "waiting": {
+            "kind": "decision",
+            "task": "2",
+            "question": null,
+            "options": null,
+            "costIfWrong": null,
+            "card": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"Which proof do we pay for?\"",
+          "\"Which proof \\u202e do we pay for?\""
+        ]
+      },
+      "want": {
+        "state": {
+          "waiting": {
+            "kind": "decision",
+            "task": "2",
+            "question": null,
+            "options": null,
+            "costIfWrong": null,
+            "card": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"recommendation\": {",
+          "\"recommendation\": null, \"x\": {"
+        ]
+      },
+      "want": {
+        "state": {
+          "waiting": {
+            "kind": "decision",
+            "task": "2",
+            "question": null,
+            "options": null,
+            "costIfWrong": null,
+            "card": null
+          }
+        }
+      }
+    }
+  ]
+}

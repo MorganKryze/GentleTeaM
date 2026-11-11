@@ -1,0 +1,35 @@
+{
+  "v": 1,
+  "id": "where-am-i-D0",
+  "kind": "go",
+  "moment": null,
+  "slug": "where-am-i",
+  "asked": "2026-10-15T09:00:00.000Z",
+  "question": "Push it?",
+  "summary": null,
+  "why": null,
+  "criteria": null,
+  "options": [
+    {
+      "key": "A",
+      "label": "an option",
+      "proves": null,
+      "cost": null,
+      "reversible": null,
+      "recommendedBy": []
+    }
+  ],
+  "recommendation": null,
+  "objection": null,
+  "modules": [],
+  "other": {
+    "allowed": true,
+    "placeholder": null
+  },
+  "answer": {
+    "option": "A",
+    "other": null,
+    "by": "owner",
+    "at": "2026-10-15T09:30:00.000Z"
+  }
+}

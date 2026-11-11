@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
 // scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
-// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, sizes?, modes?, fsize?, args }) and
+// dirty: { file, min, worktree? }, rootName?, rootIn?, absent?, cwd?, track?, readonly?, links?, fifos?, sizes?, modes?, fsize?, args }) and
 // expected.json ({ exit, facts, state?, files? }, facts and state matched as subsets, files ({ path:
 // text | null | { sha256 } }) the exact text (or sha256) of those root files after the run, null for absent; rootName names the
-// root folder, root by default; rootIn puts the root in that worktree, cwd runs the script there,
+// root folder, root by default; rootIn puts the root in that worktree, absent removes the root folder
+// before the run, cwd runs the script there,
 // track commits those root files, readonly locks the root folder, links ({ path: target }, folders made) and
 // fifos ([path]) make those root entries at run time, as git keeps no FIFO, sizes ({ path: bytes }) pad
 // those root files with newlines to that size, modes ({ path: octal }) set their mode for the run, fsize caps the files
@@ -17,7 +18,11 @@
 // rev }) replaces the first commit with the second and resets the checkout to it; grafts ([line])
 // writes .git/info/grafts, revs read first; graph ({ rev: rev }) writes a commit-graph in which the
 // first commit has the second as its second parent, the file a session could forge; `{rev:<rev>}`
-// in grafts, in the root files revs names and in expected.json is that commit's full sha;
+// in grafts, in the root files revs names and in expected.json is that commit's full sha; stdin
+// (a file of the scenario's folder, beside root/) is the script's input, patch ([[path, value]],
+// the path dotted, `$drop` deleting the key, { "$x": n } a text of n `x`) edited into it first and
+// pad (n) spaces added after it; a files value true asks only that the file exists; no text of the
+// input of 8 characters or more may reach stdout or stderr;
 // variants ([{ ..., want? }]) run the scenario once each, merged over args.json, `want` over
 // expected.json.
 // The test builds a throwaway repository around the root (git keeps no repository inside a
@@ -51,7 +56,7 @@ function snapshot(dir, skip = []) {
     // A link is hashed by its target, a FIFO by its name: reading one would follow or block.
     if (e.isDirectory()) walk(p); else h.update(relative(dir, p)).update(e.isSymbolicLink() ? `-> ${readlinkSync(p)}` : e.isFIFO() ? 'fifo' : readFileSync(p))
   })
-  walk(dir)
+  if (existsSync(dir)) walk(dir)
   return h.digest('hex')
 }
 // The git index of the checkout and of every worktree: git status rewrites it when stat data is
@@ -82,6 +87,19 @@ function forge(repo, c, p) {
   b.writeUInt32BE(at(p), chunk('CDAT') + 36 * at(c) + 24)
   chmodSync(f, 0o644)
   writeFileSync(f, b)
+}
+// The scenario's input, its patch applied: the parent of each path is walked, then the key set or
+// deleted.
+function input(dir, a) {
+  if (!a.stdin) return undefined
+  const raw = readFileSync(join(dir, a.stdin))
+  if (!a.patch && !a.pad) return raw
+  const v = JSON.parse(raw.toString('utf8'))
+  for (const [path, val] of a.patch || []) {
+    const keys = path.split('.'), last = keys.pop(), o = keys.reduce((x, k) => x[k], v)
+    if (val === '$drop') delete o[last]; else o[last] = val && typeof val === 'object' && '$x' in val ? 'x'.repeat(val.$x) : val
+  }
+  return `${JSON.stringify(v)}${' '.repeat(a.pad || 0)}`
 }
 const strings = (v) => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(strings) : [])
 
@@ -142,6 +160,7 @@ function scenario(name, dir, a, want) {
     for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(gtm, f), ago(min), ago(min))
     for (const [f, to] of Object.entries(a.links || {})) { mkdirSync(dirname(join(gtm, f)), { recursive: true }); symlinkSync(to, join(gtm, f)) }
     for (const f of a.fifos || []) execFileSync('mkfifo', [join(gtm, f)])
+    if (a.absent) rmSync(gtm, { recursive: true })
     const stateFile = join(gtm, 'state.json'), skip = [...(want.state ? ['state.json'] : []), ...Object.keys(want.files || {})]
     const before = snapshot(gtm, skip), index = indexes(repo), ino = existsSync(stateFile) ? statSync(stateFile).ino : null
     const status = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env })
@@ -151,7 +170,13 @@ function scenario(name, dir, a, want) {
     const cmd = [process.execPath, script, '--root', gtm, '--now', new Date(NOW).toISOString(), ...args]
     // Node ignores SIGXFSZ, so a write past the cap fails with EFBIG.
     const run = a.fsize ? ['sh', ['-c', `ulimit -f ${+a.fsize}; exec "$0" "$@"`, ...cmd]] : [cmd[0], cmd.slice(1)]
-    const r = spawnSync(...run, { cwd: a.cwd ? join(tmp, a.cwd) : repo, encoding: 'utf8', env: { ...env, TZ: 'UTC' }, timeout: 60000 })
+    const stdin = input(dir, a)
+    const r = spawnSync(...run, { cwd: a.cwd ? join(tmp, a.cwd) : repo, encoding: 'utf8', env: { ...env, TZ: 'UTC' }, timeout: 60000, ...(stdin === undefined ? {} : { input: stdin }) })
+    if (stdin !== undefined) {
+      let given = []
+      try { given = strings(JSON.parse(stdin.toString('utf8'))).filter((s) => s.trim().length >= 8) } catch {}
+      if (given.some((s) => r.stdout.includes(s) || r.stderr.includes(s))) errors.push(`${name}: card text reached the output`)
+    }
     if (a.readonly) chmodSync(gtm, 0o755)
     for (const f of Object.keys(a.modes || {})) chmodSync(join(gtm, f), 0o755)
     if (r.status !== want.exit) errors.push(`${name}: exit ${r.status}, want ${want.exit} ${r.stderr.trim()}`)
@@ -162,6 +187,7 @@ function scenario(name, dir, a, want) {
     for (const [f, t] of Object.entries(want.files || {})) {
       let got = null
       try { lstatSync(join(gtm, f)); got = readFileSync(join(gtm, f)) } catch {}
+      if (t === true) { if (got === null) errors.push(`${name}: files ${f} absent`); continue }
       if (got !== null) got = t && t.sha256 ? createHash('sha256').update(got).digest('hex') : got.toString('utf8')
       if (got !== (t && t.sha256 ? t.sha256 : t)) errors.push(`${name}: files ${f} differs${t === null ? ', want absent' : ''}`)
     }
@@ -185,5 +211,8 @@ function scenario(name, dir, a, want) {
   }
 }
 
+// A18: the answer step's scenario starts from the card the writer gave for the request's example.
+const d1 = (f) => readFileSync(join(fixtures, f), 'utf8')
+if (d1('card-d1-answer/root/reports/mandate/waiting.json') !== JSON.parse(d1('card-d1/expected.json')).files['reports/mandate/waiting.json']) errors.push('card-d1-answer: its card is not the one card-d1 writes')
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`now-facts: ${readdirSync(fixtures).length} scenarios OK`)
