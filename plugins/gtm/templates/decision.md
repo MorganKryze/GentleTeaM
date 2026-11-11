@@ -5,7 +5,8 @@
 > card on any miss, and adds `v`, `slug`, `asked`, `answer` and `other.allowed` itself.
 
 ## The object you hand over
-Every key present, nothing else; `null` only where a key allows it, and for what you do not know.
+Every key present, nothing else; `null` only where a key allows it, there for what you do not
+know, and never an empty text.
 Texts in `language.human`, each on one line, in your own words but an excerpt's; no control or
 format character; the number after a text is its most characters.
 
@@ -36,9 +37,9 @@ format character; the number after a text is its most characters.
 - `kind`: `decision`, `verification`, `go`, `summary` or `review`. `moment`: 1 to 4 only under a
   valid mandate (`templates/mandate.md`), else `null`.
 - `options`: the card's options exactly, 1 to 9, keyed `A`, `B`, `C`… in order. `cost`: `null`,
-  or all three keys, `tokens` and `minutes` whole numbers or `null`. `reversible`: `true`, `false`
-  or `null`. `recommendedBy`: 0 to 3 names, each `gtm`, `second-reader` or a role of the team
-  settings' Roles table.
+  or all three keys, `tokens` (0 to 10^9) and `minutes` (0 to 10^5) whole numbers or `null`.
+  `reversible`: `true`, `false` or `null`. `recommendedBy`: 0 to 3 distinct names, each `gtm`,
+  `second-reader` or a role of the team settings' Roles table.
 - `recommendation`: `null` when the card recommends nothing, and then no option's `recommendedBy`
   holds `gtm`; else `option` names one option whose `recommendedBy` holds `by`.
 - `objection`: the second reader's, or `null`; `prefers` an option's key or `null`.
@@ -47,7 +48,8 @@ format character; the number after a text is its most characters.
   - `text`: `text` (600).
   - `metrics`: `items`, 1 to 6 `{label (40), value (20), note (120 or null), gauge (0 to 1 or
     null), tone (null)}`.
-  - `excerpt`: `file`, a path under the GTM root with no segment starting with `.` and no link;
+  - `excerpt`: `file`, a regular file under the GTM root, at most 200 characters, each segment
+    `[A-Za-z0-9._-]` and none starting with `.`;
     `where` (80); `head` (80 or null); `lines` (1 to 8, each 200) and `highlight` (200 or null),
     each copied verbatim from that file.
   - `list`: `items`, 1 to 8 `{k (40), v (120 or null)}`.

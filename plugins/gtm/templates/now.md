@@ -45,7 +45,7 @@
   hand its content to the script, `node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root>
   --card <slug> <<'GTM_CARD'`, then one JSON object shaped as `templates/decision.md` says, then
   `GTM_CARD` alone on its line; then pass `--waiting '<kind>,<task>'`. Exit 1 names the refused
-  field and why: fix that field and hand the card once more; refused again, or exit 3, show the
+  field and why: fix that field and hand the card once more; refused again, or exit 2 or 3, show the
   card as is with one Heads-up per session, never a hold-up. The file holds one card: with two
   cards in one message, hand only the first, and the second once the first is answered. When the
   card is answered, and the file still holds that card's `id`, record the

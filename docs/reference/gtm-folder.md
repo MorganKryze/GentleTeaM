@@ -64,7 +64,7 @@ one learned.
 | `conventions.md` | the project's rules, with one guideline file per area | `/gtm:init`, `/gtm:retro` |
 | `plans/` | one plan per Feature: tasks, files, test steps | architect |
 | `reports/` | each agent's full report, and the pull request text | every role |
-| `reports/<slug>/waiting.json` | the last card shown on this branch, in the [card file](#card-file) shape: written by GTM's facts script, kept with your answer once you answer, replaced by the next card | the orchestrator, through the facts script |
+| `reports/<slug>/waiting.json` | the card waiting or last answered on this branch, one at a time, in the [card file](#card-file) shape: written by GTM's facts script, kept with your answer once you answer, replaced by the next card, or deleted when the script refuses it | the orchestrator, through the facts script |
 | `reports/<slug>/mandate.md` | the file given with `mandate=<file>`, copied byte for byte, its fingerprint in the logbook; any other file there counts as no mandate; it holds for the branch, resumes included, until you delete it | `/gtm:deliver` |
 | `reports/<slug>/landing.json` | the landing `/gtm:ship` records under a standing go: class, head, proofs; deleted when the check refuses | `/gtm:ship` |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
@@ -104,7 +104,8 @@ Each card GTM shows you, a decision, a check, a go, a summary or a review, also 
 `reports/<slug>/waiting.json` for a program of yours: the same card as data, shape `decision.v1`.
 GTM's facts script writes it from the card's content after checking every key below, and writes
 nothing when one is off, so a card it shows in the conversation may have no file. The file stays
-once you answer, with `answer` filled, until the branch's next card replaces it.
+once you answer, with `answer` filled, until the branch's next card replaces it, or deletes it
+when the script refuses that card.
 
 A program reading it:
 - counts the card as waiting only while `state.json`'s `waiting.card` names it: an answered card,
