@@ -5,6 +5,19 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- A standing go: sign your go ahead for one class of change, `docs`, and `/gtm:ship` stops asking
+  for it when a branch holds only that class. `/gtm:tune` writes the line on your answer and sets
+  `git.push: standing`; `/gtm:tune standing go off` removes it. Under it GTM still pushes nothing:
+  it checks every changed file against the class (Markdown under `docs/`, plain names, regular
+  files, added or modified), the proofs and a clean tree, then records a landing in `state.json`
+  that a program of yours checks again and merges. Tags, releases and publishing always ask, and
+  a mandate never grants a standing go.
+
+### Changed
+- `scripts/validate.mjs` gives each test 300 seconds instead of 120.
+- Scrolling code blocks on the docs site can be reached with Tab.
+
 ## [0.16.0] - 2026-11-10
 
 ### Added
