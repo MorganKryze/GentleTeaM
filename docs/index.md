@@ -76,7 +76,8 @@ then give the go.
 
 ### Nothing leaves without your go
 
-No push, merge or release happens until you say so, and the history is kept as it was written.
+No push, merge or release happens until you say so, now or ahead for one class of change with a
+[standing go](/reference/glossary/#standing-go), and the history is kept as it was written.
 You are shown every decision the team made for you, with its cost if wrong.
 
 :::

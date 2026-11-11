@@ -79,6 +79,10 @@ A change of at most 3 files with no schema or sign-in change, run by `/gtm:gtm`.
 `handoff.md`, written by `/gtm:pause`: what was stopped, what waited, the worktrees kept and the
 command that resumes.
 
+### Landing {#landing}
+What `/gtm:ship` records under a standing go instead of pushing: the class, the commit and its
+proofs, in `.gtm/reports/<slug>/landing.json`, for a program of yours to check and merge.
+
 ### Lens {#lens}
 The method behind an item, named at its end as `(lens: <method name>)`.
 
@@ -123,6 +127,10 @@ everything it writes into the project.
 ### Stance {#stance}
 Who brings the ideas in a brainstorm: facilitator (only you), partner (you and the team) or
 ideate for me (the team, and you keep or drop).
+
+### Standing go {#standing-go}
+Your go given ahead for one class of change, `docs`, until you take it back: `git.push: standing`
+and a line `/gtm:tune` writes on your answer. GTM still pushes nothing; tags and releases ask.
 
 ### State of the art {#state-of-the-art}
 What `/gtm:research` reports on a domain from public sources: its practices, its tools and what

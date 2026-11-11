@@ -24,9 +24,9 @@ Each command dispatches the roles it needs and comes back to you only at a
 | `/gtm:spec` | writes the spec with the architect: what and why, acceptance lines, [decision cards](/reference/glossary/#decision-card) | after the mockups are approved, or first when no screen changes | your approval of the spec's summary |
 | `/gtm:plan` | writes the task plan from the approved spec: files, interfaces, test-first steps, the check of each task; runs a [dry run](/reference/glossary/#dry-run) of risky tasks only | after `/gtm:spec` | nothing, unless something deviates |
 | `/gtm:deliver` | runs each task in order (implementer, reviewer, the specialists it calls in, [correction rounds](/reference/glossary/#correction-round)), keeps the [logbook](/reference/glossary/#logbook), runs the final review | after `/gtm:plan` | nothing until the report, which lists the [decisions made for you](/reference/glossary/#decisions-made-for-you); with a [mandate](/reference/glossary/#mandate), only at four moments |
-| `/gtm:ship` | checks the branch, writes the pull request text, runs the footprint check when stealth is on; release notes and the live check after you deploy | when `/gtm:deliver` reports the branch ready | your explicit go for each push, merge, tag or release |
+| `/gtm:ship` | checks the branch, writes the pull request text, runs the footprint check when stealth is on; release notes and the live check after you deploy | when `/gtm:deliver` reports the branch ready | your explicit go for each push, merge, tag or release; under a [standing go](/reference/glossary/#standing-go), none for a [landing](/reference/glossary/#landing), which pushes nothing |
 | `/gtm:retro` | turns a delivered branch's reports into one-line lessons, proposes guideline changes for recurring ones, closes resolved findings, counts what each [speciality sheet](/reference/glossary/#speciality-sheet) found | after shipping, or when the logbook grows noisy | your yes or no on each guideline change or sheet removal |
-| `/gtm:tune` | re-evaluates the team settings and conventions from the logbook and the reports; switches stealth on or off | when `/gtm:retro` suggests it, or the team feels too slow, too costly or misses things | your yes or no on each proposed change, as a decision card |
+| `/gtm:tune` | re-evaluates the team settings and conventions from the logbook and the reports; switches stealth on or off; signs or removes a standing go | when `/gtm:retro` suggests it, or the team feels too slow, too costly or misses things | your yes or no on each proposed change, as a decision card |
 | `/gtm:brief-me` | re-presents any GTM file (spec, plan, mockups, review, report, logbook, team settings) at the detail you choose, or digs into it with a thinking method and returns at most five findings, largest risk first; a dig changes no file | whenever you want to understand a file without reading it, or to challenge a spec before you approve it | the file, and brief, standard or deep; for a dig, the method or your pick of three, then each finding's option, "leave it" included |
 | `/gtm:status` | shows where a run is; rebuilds that view after a crash | any time during a run | nothing |
 | `/gtm:pause` | stops what runs, keeps every commit, worktree and file, writes the [handoff](/reference/glossary/#handoff) | when you need to stop a run before it ends | nothing; resume later with the command it prints |
@@ -111,3 +111,17 @@ Two workflows do the repetitive work. You never call them: the commands do.
 The words used above are in the [glossary](/reference/glossary/); the roles behind each command
 are in [Roles](/reference/roles/). To see the commands in order on a real change, follow
 [Your first Feature](/tutorial/first-feature/).
+
+## How do I let docs changes land without my go?
+
+Sign a [standing go](/reference/glossary/#standing-go): `/gtm:tune standing go docs <regex>`, then
+answer its card, which also sets `git.push: standing`. From then on `/gtm:ship` checks each branch
+against the `docs` class. When every changed file is in it and the gate passed, it records a
+[landing](/reference/glossary/#landing) and pushes nothing; a program of yours checks the diff and
+the CI again and merges. Otherwise you get the usual go card, with the reason.
+
+GTM never writes or offers a revert after a landing. The return window is your program's: 24 hours,
+in which it offers a revert and never applies one alone; a revert you ask for takes the usual
+track, with your go. Tags and releases always ask. `/gtm:tune standing go off` takes the go
+back. The line's shape, the class and its proofs are in
+[Settings](/reference/settings/#how-do-i-sign-a-standing-go).

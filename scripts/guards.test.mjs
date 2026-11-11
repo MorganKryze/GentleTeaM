@@ -77,6 +77,7 @@ const PINS = {
     'next dispatch (moment 1): go on or pause.',
     '> Read by `/gtm:deliver` only, before its §1, when it gets `mandate=<file>`, the plan holds a',
     'The plan\'s own cards (task cap, estimate, a deviation) come before delivery, unchanged.',
+    'A mandate never writes, changes or stands for a standing go line, and never sets `git.push`.',
     'At a moment, ask as the briefing\'s Decision card says under a mandate.',
   ],
   'plugins/gtm/templates/briefing.md': [
@@ -125,7 +126,19 @@ const PINS = {
     'own words, never pasted text,',
     "delete that file before the run view's rewrite.",
   ],
-  'plugins/gtm/skills/ship/SKILL.md': ['--base <git.base> --pr <root>/reports/<slug>/pr.md`'],
+  'plugins/gtm/skills/ship/SKILL.md': [
+    '--base <git.base> --pr <root>/reports/<slug>/pr.md`',
+    'Under a standing go (`git.push: standing`), first run and quote',
+    '`node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root> --landing <slug> --proofs gate`',
+    '(`gate,footprint` with stealth on), naming only the proofs §1 and §2b ran green.',
+    '- `landing` true: push, merge, tag and release nothing. Rewrite `NOW.md` and the state',
+    'nothing pushed` to the ledger, and say in one line that the landing holds until the next commit,',
+    '- `landing` false, or an exit other than 0: the card below as always, with one Heads-up naming',
+    'A tag, a release or a publication always waits for the go below, under a standing go or a',
+    'mandate. After a landing, write and offer no revert: the return window is the human\'s program\'s;',
+    'a revert the human asks for takes the usual track and this go.',
+  ],
+  'docs/why/positions.md': ['`/gtm:tune` writes on your answer: `/gtm:ship` then pushes nothing and records a landing, which a', 'program of yours checks and merges. A tag or a release always asks.'],
   'docs/reference/gtm-folder.md': [
     'Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a',
     'reader ignores the fields it does not know.',
@@ -167,6 +180,8 @@ const PINS = {
   'docs/reference/commands.md': [
     'the plan\'s section and holds for that branch, resumes included, until you delete it.',
     'counts as no mandate, with a Heads-up; give the file again.',
+    'GTM never writes or offers a revert after a landing. The return window is your program\'s: 24 hours,',
+    'in which it offers a revert and never applies one alone; a revert you ask for takes the usual',
   ],
 }
 // And what these files must never hold: no role ships at xhigh, which only risky work reaches.
