@@ -156,6 +156,7 @@ const PINS = {
   'docs/reference/gtm-folder.md': [
     'Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a',
     'reader ignores the fields it does not know.',
+    "GTM's facts script sets `v`, `slug`, `asked` and `other.allowed`, and `answer` when it records",
     'its fingerprint in the logbook; any other file there counts as no mandate',
     '`pass` when GTM or `/gtm:ship` held it, `due` when your program must check it; `null` without one, and after the next commit |',
     '`clock` the writer\'s local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`',

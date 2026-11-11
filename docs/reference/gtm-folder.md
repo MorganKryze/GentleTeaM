@@ -115,6 +115,8 @@ A program reading it:
 
 Every key is present; "or null" marks those that may be `null`, as an unknown is. A text is one
 line, in your `language.human`, at most the characters given.
+GTM's facts script sets `v`, `slug`, `asked` and `other.allowed`, and `answer` when it records
+yours; every other key comes from the card GTM showed you.
 
 | Key | What it holds |
 | --- | --- |

@@ -56,6 +56,7 @@ const TWINS = [
   { test: 'guards', file: LEDGER, from: '· limits <window> +<a>% ...', to: '· limits 5h +<a>% 7d +<b>%', says: 'holds limits 5h' },
   { test: 'guards', file: LEDGER, from: '· <slug> · ruling · default:', to: '· <slug> · ruling · auto:', says: 'ruling · default:' },
   { test: 'guards', file: 'docs/reference/gtm-folder.md', from: 'reader ignores the fields it does not know.', to: 'reader rejects the fields it does not know.', says: 'reader ignores the fields' },
+  { test: 'guards', file: 'docs/reference/gtm-folder.md', from: '`asked` and `other.allowed`, and `answer`', to: '`asked`, and `answer`', says: "GTM's facts script sets" },
   { test: 'guards', file: 'docs/reference/gtm-folder.md', from: 'for display, `null` while a card waits', to: 'for display', says: 'the writer\'s local `HH:MM`' },
   { test: 'guards', file: 'docs/reference/gtm-folder.md', from: '`null` without one, and after the next commit', to: 'kept for later versions', says: 'holds kept for later versions' },
   { test: 'guards', file: 'docs/reference/gtm-folder.md', from: '`due` when your program must check it', to: '`pass` when your program checks it', says: '`due` when your program must check it' },
