@@ -6,7 +6,8 @@
 // pointing at the rule. The agents' shipped efforts are held too: none ships at xhigh. A limit
 // window the status line leaves out is named nowhere: no fixed `5h … 7d` pair in the limits lines.
 // The state follows the run view, only where it is written, and the card file goes through the
-// facts script, never by hand, its answer recorded before the next rewrite. A standing go: the line's shape, its proofs, the
+// facts script, never by hand, one card at a time, its answer recorded before the next rewrite,
+// on its own card only. A standing go: the line's shape, its proofs, the
 // never list and what a program must refuse, as the settings reference states them.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
@@ -128,6 +129,8 @@ const PINS = {
     'card as is with one Heads-up per session, never a hold-up.',
     "answer before the run view's rewrite:",
     '`--answer <slug>`',
+    'cards in one message, hand only the first, and the second once the first is answered.',
+    "and the file still holds that card's `id`,",
     'The file stays, answered, until the slug\'s next card.',
   ],
   'plugins/gtm/templates/decision.md': [

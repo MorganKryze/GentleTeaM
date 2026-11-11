@@ -46,7 +46,9 @@
   --card <slug> <<'GTM_CARD'`, then one JSON object shaped as `templates/decision.md` says, then
   `GTM_CARD` alone on its line; then pass `--waiting '<kind>,<task>'`. Exit 1 names the refused
   field and why: fix that field and hand the card once more; refused again, or exit 3, show the
-  card as is with one Heads-up per session, never a hold-up. When the card is answered, record the
+  card as is with one Heads-up per session, never a hold-up. The file holds one card: with two
+  cards in one message, hand only the first, and the second once the first is answered. When the
+  card is answered, and the file still holds that card's `id`, record the
   answer before the run view's rewrite: the same command with `--answer <slug>` and the answer
   `templates/decision.md` describes. The file stays, answered, until the slug's next card.
 
