@@ -5,8 +5,9 @@
 // raised only on risky work: the template's rule, its defaults, init's proposal, and deliver
 // pointing at the rule. The agents' shipped efforts are held too: none ships at xhigh. A limit
 // window the status line leaves out is named nowhere: no fixed `5h … 7d` pair in the limits lines.
-// The state follows the run view, only where it is written, and the card file holds the writer's
-// own words and goes before the next rewrite. A standing go: the line's shape, its proofs, the
+// The state follows the run view, only where it is written, and the card file goes through the
+// facts script, never by hand, one card at a time, its answer recorded before the next rewrite,
+// on its own card only, a refused answer never reworded. A standing go: the line's shape, its proofs, the
 // never list and what a program must refuse, as the settings reference states them.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
@@ -87,7 +88,7 @@ const PINS = {
     '`language.human` (fr: `Humain`), the card\'s question, its options (at most four), the recommended',
     'wrong in the recommended option\'s description.',
     'No question tool in the session, or more than',
-    'The card file is written and deleted as for any card.',
+    'The card file is handed over and answered as for any card.',
   ],
   'plugins/gtm/templates/plan.md': ['<Only when the human\'s request or answer gives a mandate; otherwise no such section.'],
   'plugins/gtm/templates/team.md': [
@@ -123,8 +124,24 @@ const PINS = {
     "'<root>/state.json'`, stdout dropped:",
     'No run view written: no state.',
     'repository and the state untracked, `/<rel>/state.json` goes to the exclude file as the `gtm`',
-    'own words, never pasted text,',
-    "delete that file before the run view's rewrite.",
+    'when a card is shown, never write `<root>/reports/<slug>/waiting.json` yourself:',
+    '--card <slug> <<\'GTM_CARD\'`, then one JSON object shaped as `templates/decision.md` says, then',
+    'card as is with one Heads-up per session, never a hold-up.',
+    "answer before the run view's rewrite:",
+    '`--answer <slug>`',
+    'cards in one message, hand only the first, and the second once the first is answered.',
+    "and the file still holds that card's `id`,",
+    'An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one',
+    "Heads-up; never shorten or reword the owner's words to fit.",
+    'The file stays, answered, until the slug\'s next card.',
+  ],
+  'plugins/gtm/templates/decision.md': [
+    'You never write the card',
+    'card on any miss, and adds `v`, `slug`, `asked`, `answer` and `other.allowed` itself.',
+    'each copied verbatim from that file.',
+    'holds `gtm`; else `option` names one option whose `recommendedBy` holds `by`.',
+    'characters. The script adds `by` and `at`; an answered card is never answered again.',
+    "Longer, or on several lines, the script refuses it: never shorten or reword the owner's words to",
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
     '--base <git.base> --pr <root>/reports/<slug>/pr.md`',
@@ -145,6 +162,7 @@ const PINS = {
   'docs/reference/gtm-folder.md': [
     'Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a',
     'reader ignores the fields it does not know.',
+    "GTM's facts script sets `v`, `slug`, `asked` and `other.allowed`, and `answer` when it records",
     'its fingerprint in the logbook; any other file there counts as no mandate',
     '`pass` when GTM or `/gtm:ship` held it, `due` when your program must check it; `null` without one, and after the next commit |',
     '`clock` the writer\'s local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`',
