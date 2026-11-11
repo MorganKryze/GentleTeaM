@@ -1,0 +1,12 @@
+{
+  "exit": 0,
+  "facts": {
+    "landing": false,
+    "class": null,
+    "head": null,
+    "why": "empty"
+  },
+  "files": {
+    "reports/fix-typo/landing.json": null
+  }
+}

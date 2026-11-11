@@ -1,0 +1,89 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "variants": [
+    {
+      "edit": {
+        "team.md": [
+          "- standing go: docs · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10",
+          "- standing go: deps-patch · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- standing go: docs · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10",
+          "- standing go: docs · paths `^docs/` · proofs gate, ci, e2e · why: docs fixes land on their own · 2026-11-10"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- standing go: docs · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10",
+          "- standing go: docs · paths `^docs/` · proofs gate, e2e · why: docs fixes land on their own · 2026-11-10"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- standing go: docs · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10",
+          "- standing go: docs · paths `^docs/` · proofs paths, clean, gate, ci · why: docs fixes land on their own · 2026-11-10"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- standing go: docs · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10",
+          "- standing go: constructor · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- standing go: docs · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10",
+          "- standing go: toString · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- standing go: docs · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10",
+          "- standing go: hasOwnProperty · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- standing go: docs · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10",
+          "- standing go: valueOf · paths `^docs/` · proofs gate, ci · why: docs fixes land on their own · 2026-11-10"
+        ]
+      }
+    }
+  ]
+}

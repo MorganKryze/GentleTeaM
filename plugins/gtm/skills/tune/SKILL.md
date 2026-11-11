@@ -8,6 +8,7 @@ Ground rules: as in the `gtm` skill §0. Nothing in `team.md` changes without th
 Asked to switch stealth mode (`/gtm:tune stealth on|off`)? Go to §5 instead.
 Asked to turn a companion on or off (`/gtm:tune <name> on|off`)? One card, then §4.
 Asked to turn the mutation step back on (`/gtm:tune review mutations on`)? One card, then §4.
+Asked for a standing go (`/gtm:tune standing go docs <regex>` or `/gtm:tune standing go off`)? §6.
 
 - Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Occam's Razor Application
   [elicitation], Constraint Mapping [brain].
@@ -37,7 +38,8 @@ Asked to turn the mutation step back on (`/gtm:tune review mutations on`)? One c
 | the last 3 measured runs that planted at least one mutation show 0 survived | drop the review's mutation step (one keep-or-drop card); skipped while team.md holds a `review mutations: off` line; a `run` line without a `mutations` segment is not measured for mutations, the rest as before |
 | a convention keeps producing the same finding or the same `lesson` | edit that row of `conventions.md` and its guideline file |
 
-No signal: say so in one line and stop.
+No signal: say so in one line and stop. No signal ever proposes a standing go or
+`git.push: standing`: only the human's request does (§6).
 
 ## 3. Propose
 One decision card per change, at most five, most valuable first, in the briefing format (plain
@@ -81,3 +83,15 @@ One decision card: the switch, what it changes, the cost if wrong. On the human'
   `.claude/settings.json` entry) and offer to remove it in one commit, in the project's voice.
   Pushed history is never rewritten: say so plainly.
 - **Off:** set it, then the init card on where `.gtm/` lives; nothing else changes.
+
+## 6. Standing go
+On the human's request only; never from a signal, and a mandate never stands for it. A `<regex>`
+holding a backtick or that does not compile goes back to the human. One decision card, options
+"sign" and "keep": the exact line, `- standing go: docs · paths `<regex>` · proofs gate, ci · why:
+<reason> · <today>`, the proofs being the class's list in the settings reference, and
+`git.push: standing` in `config.yml`, both set by the same answer; what changes (`/gtm:ship`
+records a landing and pushes nothing; tags and releases still ask) and the cost if wrong. On the
+answer: replace every standing go line of that class in the Gates with it, set `git.push`, add a
+History line and a ledger `ruling` line quoting the answer. `off`: one card; on the answer, remove
+every standing go line and set `git.push: ask`, with the same two lines. Any change to a line,
+its reason or date included, is a new line, signed through a new card.

@@ -1,0 +1,105 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "variants": [
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          "  push: ask"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          "  push: Standing"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          "  push: \"standing\""
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          "  push: standings"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          "  push:standing"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          "  push: standing#x"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          "    push: standing"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          ""
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  push: standing",
+          "#  push: standing"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "git:\n",
+          "gitx:\n"
+        ]
+      }
+    }
+  ]
+}

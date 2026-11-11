@@ -1,0 +1,302 @@
+{
+  "branch": "docs/fix-typo",
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "variants": [
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/notes.txt": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.MD": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.md.txt": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.md": "x\n",
+            "README.md": "y\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "delete": [
+            "docs/b.md"
+          ]
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "delete": [
+            "docs/b.md"
+          ],
+          "write": {
+            "docs/c.md": "b\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.md": "x\n"
+          },
+          "mode": {
+            "docs/a.md": "755"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "link": {
+            "docs/l.md": "../README.md"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "gitlink": [
+            "docs/sub.md"
+          ]
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "delete": [
+            "docs/b.md"
+          ],
+          "link": {
+            "docs/b.md": "../README.md"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "link": {
+            "docs/l.md": "../README.md"
+          }
+        },
+        {
+          "delete": [
+            "docs/l.md"
+          ],
+          "write": {
+            "docs/l.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            ".gitmodules": "[submodule \"vendor/sub\"]\n\tpath = vendor/sub\n\turl = ./sub\n\tignore = all\n"
+          },
+          "gitlink": [
+            "vendor/sub"
+          ]
+        },
+        {
+          "write": {
+            "docs/b.md": "b\n"
+          },
+          "gitlink": [
+            "vendor/sub"
+          ]
+        }
+      ],
+      "want": {
+        "facts": {
+          "landing": false,
+          "class": null,
+          "head": null,
+          "why": "class",
+          "file": "vendor/sub"
+        }
+      }
+    },
+    {
+      "gitconfig": {
+        "diff.ignoreSubmodules": "all"
+      },
+      "commits": [
+        {
+          "write": {
+            "docs/b.md": "b\n"
+          },
+          "gitlink": [
+            "vendor/sub"
+          ]
+        }
+      ],
+      "want": {
+        "facts": {
+          "landing": false,
+          "class": null,
+          "head": null,
+          "why": "class",
+          "file": "vendor/sub"
+        }
+      }
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "write": {
+            "src/app.js": "x\n"
+          }
+        }
+      ],
+      "replace": {
+        "HEAD": "HEAD~1"
+      },
+      "want": {
+        "facts": {
+          "landing": false,
+          "class": null,
+          "head": null,
+          "why": "dirty"
+        }
+      }
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "write": {
+            "src/app.js": "x\n"
+          }
+        },
+        {
+          "write": {
+            "docs/b.md": "b2\n"
+          }
+        },
+        {
+          "on": "main",
+          "write": {
+            "docs/c.md": "c\n"
+          }
+        }
+      ],
+      "grafts": [
+        "{rev:main} {rev:main~1} {rev:HEAD~1}"
+      ],
+      "want": {
+        "facts": {
+          "landing": false,
+          "class": null,
+          "head": null,
+          "why": "class",
+          "file": "src/app.js"
+        }
+      }
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "write": {
+            "src/app.js": "x\n"
+          }
+        },
+        {
+          "write": {
+            "docs/b.md": "b2\n"
+          }
+        },
+        {
+          "on": "main",
+          "write": {
+            "docs/c.md": "c\n"
+          }
+        }
+      ],
+      "want": {
+        "facts": {
+          "landing": false,
+          "class": null,
+          "head": null,
+          "why": "class",
+          "file": "src/app.js"
+        }
+      },
+      "graph": {
+        "main": "HEAD~1"
+      }
+    }
+  ]
+}

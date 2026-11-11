@@ -26,6 +26,7 @@
 ## What it never changes
 Reviews, correction rounds, specialists, tiers, gates, git actions, settings and dependencies stay
 exactly as without a mandate. Every push, merge, tag or release still waits for the human's go.
+A mandate never writes, changes or stands for a standing go line, and never sets `git.push`.
 The plan's own cards (task cap, estimate, a deviation) come before delivery, unchanged.
 
 ## When to ask: four moments only

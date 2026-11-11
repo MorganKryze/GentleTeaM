@@ -44,7 +44,9 @@ git:
   never_name: []                  # paths or words never written in tracked files (e.g. .gtm/)
   merge: merge-commit             # merge-commit (GTM default) | rebase | squash; another value only
                                   # when the history shows it established (see guidelines/git.md)
-  push: ask                       # ask = nothing pushed, merged, tagged or released without the go
+  push: ask                       # ask = nothing pushed, merged, tagged or released without the go;
+                                  # standing = still nothing pushed: /gtm:ship records a landing for
+                                  # the class a Gates `standing go` line signs; set by /gtm:tune only
 
 # The footprint check (scripts/footprint-check.mjs), run by /gtm:ship when stealth is on. It already
 # flags GTM's vocabulary, the root, design.mockups, git.never_name, .git/info/exclude entries and

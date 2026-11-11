@@ -99,11 +99,12 @@ rmSync(tmp, { recursive: true, force: true })
 
 // One loop for every test. The site checks read sources only (the built-site lines run in the
 // Pages workflow); the site measure needs a build and a browser, so CI runs it there.
-// A test is bounded and runs once: a hang fails, and no rerun turns a red test green.
+// A test is bounded and runs once: a hang fails, and no rerun turns a red test green. The bound
+// is 300 s: twins replays every planted defect and takes about 110 s alone on a loaded machine.
 const ARGS = { 'site-checks.test.mjs': [root, '--source', '--lasting'] }
 for (const test of readdirSync(join(root, 'scripts')).filter((f) => f.endsWith('.test.mjs') && f !== 'site-measure.test.mjs').sort()) {
   const file = join(root, 'scripts', test)
-  try { execFileSync(process.execPath, [file, ...(ARGS[test] || [])], { stdio: 'pipe', timeout: 120_000 }) }
+  try { execFileSync(process.execPath, [file, ...(ARGS[test] || [])], { stdio: 'pipe', timeout: 300_000 }) }
   catch (e) { fail(file, '\n' + (((e.stdout || '') + (e.stderr || '')).toString().trim() || e.message)) }
 }
 

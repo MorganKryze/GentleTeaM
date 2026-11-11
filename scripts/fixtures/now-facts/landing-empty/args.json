@@ -1,0 +1,26 @@
+{
+  "branch": "docs/fix-typo",
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "variants": [
+    {},
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.md": "x\n"
+          }
+        },
+        {
+          "delete": [
+            "docs/a.md"
+          ]
+        }
+      ]
+    }
+  ]
+}

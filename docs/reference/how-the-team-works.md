@@ -26,7 +26,7 @@ A gate is a check that must pass before work moves on. There are six, one per st
 | Plan | every task has files, test steps and a verify command; every acceptance line maps to a test; risky tasks get a [dry run](/reference/glossary/#dry-run) | one [correction round](/reference/glossary/#correction-round) with the architect |
 | Task | every triggered reviewer approves (no critical or important finding) within the correction-round limit | you choose: revise the plan, accept with findings logged, or take over |
 | Branch | the final review says ready, after at most one fix wave, or is skipped | a decision card to you |
-| Ship | your explicit go for that exact action | nothing leaves the machine |
+| Ship | your explicit go for that exact action, or a [standing go](/reference/glossary/#standing-go) you signed for its class, under which GTM records a landing and pushes nothing | nothing leaves the machine |
 
 `NEEDS CLARIFICATION` marks something the spec must not guess. EARS (Easy Approach to
 Requirements Syntax) is the form of the spec's acceptance lines: WHEN, WHILE, WHERE or IF, then

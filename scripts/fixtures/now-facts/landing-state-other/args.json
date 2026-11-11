@@ -1,0 +1,44 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--slug",
+    "fix-typo",
+    "--state",
+    "{root}/state.json"
+  ],
+  "revs": [
+    "reports/other/landing.json"
+  ],
+  "variants": [
+    {},
+    {
+      "args": [
+        "--slug",
+        "other",
+        "--state",
+        "{root}/state.json"
+      ],
+      "want": {
+        "state": {
+          "slug": "other",
+          "landing": null
+        },
+        "exit": 1
+      }
+    }
+  ]
+}

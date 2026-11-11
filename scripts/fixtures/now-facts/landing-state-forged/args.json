@@ -1,0 +1,108 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--slug",
+    "fix-typo",
+    "--state",
+    "{root}/state.json"
+  ],
+  "revs": [
+    "reports/fix-typo/landing.json"
+  ],
+  "variants": [
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "write": {
+            "docs/b.md": "b2\n",
+            "docs/a.md": "# A\n"
+          }
+        },
+        {
+          "write": {
+            "notes.txt": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "base": true,
+          "write": {
+            "docs/b.md": "b\n"
+          }
+        },
+        {
+          "write": {
+            "docs/b.md": "b2\n",
+            "docs/a.md": "# A\n"
+          }
+        },
+        {
+          "write": {
+            "docs/.x/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "dirty": {
+        "file": "docs/new.md",
+        "min": 1
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "`^docs/`",
+          "`^nothing/`"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "team.md": [
+          "- replay risky tasks: yes · risky paths `^src/db/`, `migrations?/` · why: x · 2026-10-12",
+          "- replay risky tasks: yes · risky paths `^docs/`, `migrations?/` · why: x · 2026-10-12"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: main~0"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  base: main",
+          "  base: docs/fix-typo"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "branch": "docs/fix-typo",
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "edit": {
+    "team.md": [
+      "`^docs/`",
+      "`.`"
+    ]
+  },
+  "variants": [
+    {
+      "commits": [
+        {
+          "write": {
+            "Docs/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "DOCS/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs2/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "doc/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "x/docs/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/.x/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/.a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/.github/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/régles.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/é/a.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a b.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a+b.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a~.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a@b.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a:b.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/.md": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.MD": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.mdx": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "docs/a.md.bak": "x\n"
+          }
+        }
+      ]
+    },
+    {
+      "commits": [
+        {
+          "write": {
+            "README.md": "x\n"
+          }
+        }
+      ]
+    }
+  ]
+}

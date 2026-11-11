@@ -6,14 +6,14 @@
 // pointing at the rule. The agents' shipped efforts are held too: none ships at xhigh. A limit
 // window the status line leaves out is named nowhere: no fixed `5h … 7d` pair in the limits lines.
 // The state follows the run view, only where it is written, and the card file holds the writer's
-// own words and goes before the next rewrite.
+// own words and goes before the next rewrite. A standing go: the line's shape, its proofs, the
+// never list and what a program must refuse, as the settings reference states them.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
 const root = new URL('..', import.meta.url).pathname
 const PINS = {
-  'plugins/gtm/templates/config.yml': [/^ {2}push: ask\b/m],
   'plugins/gtm/templates/ui-gate.spec.mjs': [
     'r.width >= 44 && r.height >= 44',
     'document.documentElement.scrollWidth > width',
@@ -77,6 +77,7 @@ const PINS = {
     'next dispatch (moment 1): go on or pause.',
     '> Read by `/gtm:deliver` only, before its §1, when it gets `mandate=<file>`, the plan holds a',
     'The plan\'s own cards (task cap, estimate, a deviation) come before delivery, unchanged.',
+    'A mandate never writes, changes or stands for a standing go line, and never sets `git.push`.',
     'At a moment, ask as the briefing\'s Decision card says under a mandate.',
   ],
   'plugins/gtm/templates/briefing.md': [
@@ -98,8 +99,24 @@ const PINS = {
     'An effort off that ladder, such as `max`, is never changed.',
     '| security-reviewer | opus | high |',
     '| final-reviewer | opus | high |',
+    'No standing go line ships here: only `/gtm:tune standing go <class> <regex>` writes one in the',
+    'this shape: `- standing go: <class> · paths `<regex>` · proofs <list> · why: <reason> · <date>`.',
+    'one character off counts as none; the class\'s bounds live in the check, never in the line.',
   ],
   'plugins/gtm/skills/init/SKILL.md': ['security-reviewer on, effort high;'],
+  'plugins/gtm/templates/config.yml': [/^ {2}push: ask\b/m, '# standing = still nothing pushed: /gtm:ship records a landing for', 'set by /gtm:tune only'],
+  'plugins/gtm/skills/tune/SKILL.md': [
+    'Asked for a standing go (`/gtm:tune standing go docs <regex>` or `/gtm:tune standing go off`)? §6.',
+    'No signal ever proposes a standing go or',
+    '`git.push: standing`: only the human\'s request does (§6).',
+    'On the human\'s request only; never from a signal, and a mandate never stands for it. A `<regex>`',
+    'holding a backtick or that does not compile goes back to the human.',
+    '`git.push: standing` in `config.yml`, both set by the same answer;',
+    'records a landing and pushes nothing; tags and releases still ask',
+    'History line and a ledger `ruling` line quoting the answer. `off`: one card; on the answer, remove',
+    'every standing go line and set `git.push: ask`, with the same two lines.',
+    'its reason or date included, is a new line, signed through a new card.',
+  ],
   'plugins/gtm/skills/gtm/SKILL.md': ['dispatch. State and card file: as `now.md` says.'],
   'plugins/gtm/templates/now.md': [
     '- **State:** after each run view write, run the facts again with the same flags plus `--state',
@@ -109,12 +126,46 @@ const PINS = {
     'own words, never pasted text,',
     "delete that file before the run view's rewrite.",
   ],
-  'plugins/gtm/skills/ship/SKILL.md': ['--base <git.base> --pr <root>/reports/<slug>/pr.md`'],
+  'plugins/gtm/skills/ship/SKILL.md': [
+    '--base <git.base> --pr <root>/reports/<slug>/pr.md`',
+    'Under a standing go (`git.push: standing`), first run and quote',
+    '`node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root> --landing <slug> --proofs gate`',
+    '(`gate,footprint` with stealth on), naming only the proofs §1 and §2b ran green.',
+    '- `landing` true: push, merge, tag and release nothing. Rewrite `NOW.md` and the state',
+    '(`templates/now.md`), append `- <YYYY-MM-DD> · <slug> · run · landing: <class> at <short head>,',
+    'nothing pushed` to the ledger, and say in one line that the landing holds until the next commit,',
+    'for the human\'s own program to check and merge. No card.',
+    '- `landing` false, or an exit other than 0: the card below as always, with one Heads-up naming',
+    'why (`why`, `file`, `proof`).',
+    'A tag, a release or a publication always waits for the go below, under a standing go or a',
+    'mandate. After a landing, write and offer no revert: the return window is the human\'s program\'s;',
+    'a revert the human asks for takes the usual track and this go.',
+  ],
+  'docs/why/positions.md': ['`/gtm:tune` writes on your answer: `/gtm:ship` then pushes nothing and records a landing, which a', 'program of yours checks and merges. A tag or a release always asks.'],
   'docs/reference/gtm-folder.md': [
     'Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a',
     'reader ignores the fields it does not know.',
     'its fingerprint in the logbook; any other file there counts as no mandate',
+    '`pass` when GTM or `/gtm:ship` held it, `due` when your program must check it; `null` without one, and after the next commit |',
     '`clock` the writer\'s local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`',
+  ],
+  'docs/reference/settings.md': [
+    'otherwise it shows its go card, with the reason. A tag or a release always asks you.',
+    '- standing go: <class> · paths `<regex>` · proofs <list> · why: <reason> · <YYYY-MM-DD>',
+    '`<list>` is exactly the proofs the class requires, in this order, separated by `, `. The',
+    'fails, an unknown class or proof, or two lines for one class: no standing go for that class.',
+    '| `docs` | added or modified regular files (mode 100644) under the top-level `docs/`, ending in `.md`, each folder and file name of ASCII letters, digits, `.`, `_` and `-`, none starting with `.`, matching the line\'s regex | `gate, ci` |',
+    'Whatever the line says, no class takes a file on a risky path, and a deleted or renamed file, a',
+    'link, a submodule or an executable file is never in a class. A class lists what may land, not what',
+    'file inside `docs/` (a nested `CLAUDE.md` or `AGENTS.md`), or a page an agent file imports, can',
+    '| `ci` | your program, once the branch is pushed | `due` |',
+    'you sign, outside the repository: the line\'s bytes from `- ` to its last character, line end',
+    'excluded. Any change to it, its proofs, reason and date included, is a new line to sign. Your',
+    'program refuses a landing whose line differs, that names a class or a proof it does not know, or',
+    '`state.json` shows it only while the same check, run again, still gives it: a new commit, an',
+    'counts only as a local branch name.',
+    'clone that fetched the branch over a transport (`git clone --no-local`, or a fetch from your',
+    'remote). It never diffs in this repository or a plain local clone, which shares its objects and',
   ],
   'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
   'plugins/gtm/skills/plan/SKILL.md': [
@@ -132,11 +183,13 @@ const PINS = {
   'docs/reference/commands.md': [
     'the plan\'s section and holds for that branch, resumes included, until you delete it.',
     'counts as no mandate, with a Heads-up; give the file again.',
+    'GTM never writes or offers a revert after a landing. The return window is your program\'s: 24 hours,',
+    'in which it offers a revert and never applies one alone; a revert you ask for takes the usual',
   ],
 }
 // And what these files must never hold: no role ships at xhigh, which only risky work reaches.
 const ABSENT = {
-  'plugins/gtm/templates/team.md': ['| xhigh |'],
+  'plugins/gtm/templates/team.md': ['| xhigh |', '\n- standing go:'],
   'plugins/gtm/skills/init/SKILL.md': ['effort xhigh'],
   'plugins/gtm/skills/gtm/SKILL.md': ['limits at start: 5h'],
   'plugins/gtm/templates/ledger.md': ['limits 5h +<a>% 7d +<b>%'],

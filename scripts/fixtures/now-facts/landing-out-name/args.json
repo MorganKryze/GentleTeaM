@@ -1,0 +1,35 @@
+{
+  "branch": "docs/fix-typo",
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "commits": [
+    {
+      "write": {
+        "docs/ünï.txt": "x\n"
+      }
+    }
+  ],
+  "variants": [
+    {},
+    {
+      "commits": [
+        {
+          "write": {
+            "guide/a.md": "x\n"
+          }
+        }
+      ],
+      "want": {
+        "facts": {
+          "landing": false,
+          "why": "class",
+          "file": "guide/a.md"
+        }
+      }
+    }
+  ]
+}

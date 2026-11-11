@@ -1,0 +1,14 @@
+{
+  "exit": 0,
+  "facts": {
+    "landing": true,
+    "class": "docs",
+    "head": "{rev:HEAD}",
+    "why": null,
+    "file": null,
+    "proof": null
+  },
+  "files": {
+    "reports/fix-typo/landing.json": "{\"class\":\"docs\",\"head\":\"{rev:HEAD}\",\"proofs\":[{\"name\":\"paths\",\"result\":\"pass\"},{\"name\":\"clean\",\"result\":\"pass\"},{\"name\":\"gate\",\"result\":\"pass\"},{\"name\":\"ci\",\"result\":\"due\"}]}\n"
+  }
+}

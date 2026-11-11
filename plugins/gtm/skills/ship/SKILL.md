@@ -35,6 +35,19 @@ until it reports no hit. Notes (lists of three, short bullet runs) do not stop i
 lines against `guidelines/voice.md`.
 
 ## 3. Ask the go (one decision card)
+Under a standing go (`git.push: standing`), first run and quote
+`node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root> --landing <slug> --proofs gate`
+(`gate,footprint` with stealth on), naming only the proofs §1 and §2b ran green.
+- `landing` true: push, merge, tag and release nothing. Rewrite `NOW.md` and the state
+  (`templates/now.md`), append `- <YYYY-MM-DD> · <slug> · run · landing: <class> at <short head>,
+  nothing pushed` to the ledger, and say in one line that the landing holds until the next commit,
+  for the human's own program to check and merge. No card.
+- `landing` false, or an exit other than 0: the card below as always, with one Heads-up naming
+  why (`why`, `file`, `proof`).
+
+A tag, a release or a publication always waits for the go below, under a standing go or a
+mandate. After a landing, write and offer no revert: the return window is the human's program's;
+a revert the human asks for takes the usual track and this go.
 
 **Decision: what to do with <branch>**
 

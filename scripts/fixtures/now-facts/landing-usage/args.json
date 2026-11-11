@@ -1,0 +1,89 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "args": [
+        "--landing",
+        "Fix_Typo",
+        "--proofs",
+        "gate"
+      ]
+    },
+    {
+      "args": [
+        "--proofs",
+        "gate"
+      ]
+    },
+    {
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--proofs",
+        "gate,ci"
+      ]
+    },
+    {
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--proofs",
+        "gate,e2e"
+      ]
+    },
+    {
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--proofs",
+        ""
+      ]
+    },
+    {
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--proofs",
+        "gate,gate"
+      ]
+    },
+    {
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--proofs",
+        "gate,"
+      ]
+    },
+    {
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--state",
+        "{root}/state.json"
+      ]
+    },
+    {
+      "args": [
+        "--landing",
+        "fix-typo",
+        "--mandate",
+        "fix-typo"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "branch": "docs/fix-typo",
+  "commits": [
+    {
+      "base": true,
+      "write": {
+        "docs/b.md": "b\n"
+      }
+    },
+    {
+      "write": {
+        "docs/b.md": "b2\n",
+        "docs/a.md": "# A\n"
+      }
+    }
+  ],
+  "args": [
+    "--landing",
+    "fix-typo",
+    "--proofs",
+    "gate"
+  ],
+  "variants": [
+    {
+      "dirty": {
+        "file": "docs/new.md",
+        "min": 1
+      }
+    },
+    {
+      "dirty": {
+        "file": "docs/b.md",
+        "min": 1
+      }
+    },
+    {
+      "dirty": {
+        "file": "src/.hidden",
+        "min": 1
+      }
+    }
+  ]
+}

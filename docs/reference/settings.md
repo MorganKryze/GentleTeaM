@@ -40,7 +40,7 @@ JavaScript syntax, matched against repository-relative paths.
 | `git.forbid` | text never written in a commit message | `["Co-authored-by", "Generated with"]` | the implementer, `/gtm:ship` |
 | `git.never_name` | paths or words never written in tracked files | `[]` | the implementer, the final reviewer, `/gtm:ship` |
 | `git.merge` | `merge-commit`, `rebase` or `squash` | `merge-commit` | `/gtm:deliver`, the final reviewer, `/gtm:ship` |
-| `git.push` | `ask`: nothing pushed, merged, tagged or released without your go | `ask` | `/gtm:ship` |
+| `git.push` | `ask`: nothing pushed, merged, tagged or released without your go; `standing`: GTM still pushes nothing, and `/gtm:ship` records a landing for a class you signed ahead (below) | `ask` | `/gtm:ship` |
 | `footprint.words` | more regexes to flag in stealth mode | `[]` | `/gtm:ship` |
 | `footprint.allow` | regexes; a flagged line matching one is ignored | `[]` | `/gtm:ship` |
 | `footprint.skip` | writing habits the project's own voice uses, not flagged | `[]` | `/gtm:ship` |
@@ -114,3 +114,59 @@ runs with no budget, `/gtm:tune` proposes both at the medians of those runs. The
 plan over it goes back to the architect once, then you choose on a card to split or accept.
 
 To change any of them, see [Change your team settings](/guides/team-settings/).
+
+## How do I sign a standing go?
+
+A standing go is your go given ahead, for one class of change, until you take it back. Two
+settings turn it on: `git.push: standing` in `config.yml`, and one line in `team.md`'s Gates that
+`/gtm:tune standing go docs <regex>` writes on your answer to its card (`/gtm:tune standing go off`
+removes it). Under it, `/gtm:ship` pushes nothing: when every changed file is in the class and
+every proof holds, it records a landing that a program of yours reads, checks and merges;
+otherwise it shows its go card, with the reason. A tag or a release always asks you.
+
+The line has exactly this shape, on one line:
+
+```text
+- standing go: <class> · paths `<regex>` · proofs <list> · why: <reason> · <YYYY-MM-DD>
+```
+
+`<list>` is exactly the proofs the class requires, in this order, separated by `, `. The
+`<regex>` holds no backtick and can only narrow the class. A line one character off, a regex that
+fails, an unknown class or proof, or two lines for one class: no standing go for that class.
+
+| Class | The files it takes | The proofs it requires |
+| --- | --- | --- |
+| `docs` | added or modified regular files (mode 100644) under the top-level `docs/`, ending in `.md`, each folder and file name of ASCII letters, digits, `.`, `_` and `-`, none starting with `.`, matching the line's regex | `gate, ci` |
+
+Whatever the line says, no class takes a file on a risky path, and a deleted or renamed file, a
+link, a submodule or an executable file is never in a class. A class lists what may land, not what
+may not: a Markdown file outside `docs/`, `README.md` included, asks your go. An agent instruction
+file inside `docs/` (a nested `CLAUDE.md` or `AGENTS.md`), or a page an agent file imports, can
+land: if your agents read `docs/`, narrow the line's regex to the folders they do not.
+
+| Proof | Who holds it | In the landing |
+| --- | --- | --- |
+| `paths` | GTM: every changed file is in the class | `pass` |
+| `clean` | GTM: nothing uncommitted or untracked | `pass` |
+| `gate` | `/gtm:ship`: the gate it ran green | `pass` |
+| `footprint` | `/gtm:ship`, with `stealth: on` only | `pass` |
+| `ci` | your program, once the branch is pushed | `due` |
+
+The landing is `.gtm/reports/<slug>/landing.json`, also shown as `landing` in `state.json`:
+`{class, head, proofs}`, `head` the full sha of the commit it holds for, `proofs` one
+`{name, result}` per proof: `paths`, `clean`, the class's list, then `footprint` in stealth.
+`state.json` shows it only while the same check, run again, still gives it: a new commit, an
+uncommitted change or a changed line ends it, and the next check deletes a refused one. `git.base`
+counts only as a local branch name. `paths` holds against that local branch only, which any
+session can move or merge into. GTM records a landing only on the branch `state.json` names for
+its slug, `<type>/<slug>` in letters, digits and `._/-`, and refuses any other.
+
+GTM cannot prove that you wrote the line, nor the CI. Your program keeps a fingerprint of each line
+you sign, outside the repository: the line's bytes from `- ` to its last character, line end
+excluded. Any change to it, its proofs, reason and date included, is a new line to sign. Your
+program refuses a landing whose line differs, that names a class or a proof it does not know, or
+whose `due` proofs it cannot check. Before it merges exactly `head`, it checks the head and the CI
+again, and diffs `head` against the branch it merges into, not against the base GTM read, in a
+clone that fetched the branch over a transport (`git clone --no-local`, or a fetch from your
+remote). It never diffs in this repository or a plain local clone, which shares its objects and
+commit-graph: a session can rewrite either to hide a change from the diff.

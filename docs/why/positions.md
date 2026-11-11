@@ -144,6 +144,10 @@ Agents never push, merge, tag or release; the main session does it only after yo
 for that exact action, through `/gtm:ship` and `git.push: ask` in the config. Shipping is the
 decision with consequences outside the repository.
 
+You can also sign the go ahead for one class, `docs`, with `git.push: standing` and a line that
+`/gtm:tune` writes on your answer: `/gtm:ship` then pushes nothing and records a landing, which a
+program of yours checks and merges. A tag or a release always asks.
+
 <p class="gtm-cost">Cost: one message per branch.</p>
 
 :::
