@@ -51,6 +51,7 @@ const TWINS = [
   { test: 'guards', file: skill('init'), from: 'security-reviewer on, effort high;', to: 'security-reviewer on, effort xhigh;', says: 'holds effort xhigh' },
   { test: 'guards', file: 'plugins/gtm/templates/now.md', from: 'No run view written: no state.', to: 'No run view written: a state anyway.', says: 'No run view written: no state.' },
   { test: 'guards', file: 'plugins/gtm/templates/now.md', from: "answer before the run view's rewrite:", to: "answer after the run view's rewrite:", says: "answer before the run view's rewrite:" },
+  { test: 'guards', file: 'plugins/gtm/templates/now.md', from: '`--answer <slug>`', to: '`--answers <slug>`', says: '`--answer <slug>`' },
   { test: 'guards', file: 'plugins/gtm/templates/decision.md', from: 'each copied verbatim from that file.', to: 'each in your own words.', says: 'each copied verbatim from that file.' },
   { test: 'guards', file: LEDGER, from: '· limits <window> +<a>% ...', to: '· limits 5h +<a>% 7d +<b>%', says: 'holds limits 5h' },
   { test: 'guards', file: LEDGER, from: '· <slug> · ruling · default:', to: '· <slug> · ruling · auto:', says: 'ruling · default:' },

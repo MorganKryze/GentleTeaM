@@ -127,6 +127,7 @@ const PINS = {
     '--card <slug> <<\'GTM_CARD\'`, then one JSON object shaped as `templates/decision.md` says, then',
     'card as is with one Heads-up per session, never a hold-up.',
     "answer before the run view's rewrite:",
+    '`--answer <slug>`',
     'The file stays, answered, until the slug\'s next card.',
   ],
   'plugins/gtm/templates/decision.md': [
