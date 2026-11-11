@@ -13,6 +13,12 @@ versions follow [SemVer](https://semver.org/).
   files, added or modified), the proofs and a clean tree, then records a landing in `state.json`
   that a program of yours checks again and merges. Tags, releases and publishing always ask, and
   a mandate never grants a standing go.
+- Each decision card GTM shows also leaves `reports/<slug>/waiting.json` in a versioned shape,
+  `decision.v1`, for a program to read: the question, its context and criteria, each option with
+  what it proves, its cost and whether it can be undone, the recommendation or `null`, the second
+  reader's objection, a few modules and a place for another proposal. The facts script checks
+  every key and refuses the whole card on any miss; the card you see does not change. Your answer
+  is kept in the file, and `state.json` names the waiting card in `waiting.card`.
 
 ### Changed
 - `scripts/validate.mjs` gives each test 300 seconds instead of 120.
