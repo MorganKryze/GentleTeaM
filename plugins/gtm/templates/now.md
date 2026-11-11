@@ -51,6 +51,8 @@
   card is answered, and the file still holds that card's `id`, record the
   answer before the run view's rewrite: the same command with `--answer <slug>` and the answer
   `templates/decision.md` describes. The file stays, answered, until the slug's next card.
+  An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one
+  Heads-up; never shorten or reword the owner's words to fit.
 
 ## Example
 

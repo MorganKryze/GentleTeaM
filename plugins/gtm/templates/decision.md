@@ -58,3 +58,5 @@ format character; the number after a text is its most characters.
 `{"option": "<key>", "other": null}` for an option of the card, or `{"option": null, "other":
 "<the owner's words>"}` for anything else, a reworked option included: one line, at most 280
 characters. The script adds `by` and `at`; an answered card is never answered again.
+Longer, or on several lines, the script refuses it: never shorten or reword the owner's words to
+fit, as `templates/now.md` says.

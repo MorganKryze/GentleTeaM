@@ -7,7 +7,7 @@
 // window the status line leaves out is named nowhere: no fixed `5h … 7d` pair in the limits lines.
 // The state follows the run view, only where it is written, and the card file goes through the
 // facts script, never by hand, one card at a time, its answer recorded before the next rewrite,
-// on its own card only. A standing go: the line's shape, its proofs, the
+// on its own card only, a refused answer never reworded. A standing go: the line's shape, its proofs, the
 // never list and what a program must refuse, as the settings reference states them.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
@@ -131,6 +131,8 @@ const PINS = {
     '`--answer <slug>`',
     'cards in one message, hand only the first, and the second once the first is answered.',
     "and the file still holds that card's `id`,",
+    'An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one',
+    "Heads-up; never shorten or reword the owner's words to fit.",
     'The file stays, answered, until the slug\'s next card.',
   ],
   'plugins/gtm/templates/decision.md': [
@@ -139,6 +141,7 @@ const PINS = {
     'each copied verbatim from that file.',
     'holds `gtm`; else `option` names one option whose `recommendedBy` holds `by`.',
     'characters. The script adds `by` and `at`; an answered card is never answered again.',
+    "Longer, or on several lines, the script refuses it: never shorten or reword the owner's words to",
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
     '--base <git.base> --pr <root>/reports/<slug>/pr.md`',
