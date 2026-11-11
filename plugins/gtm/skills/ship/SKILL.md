@@ -44,6 +44,7 @@ Under a standing go (`git.push: standing`), first run and quote
   for the human's own program to check and merge. No card.
 - `landing` false, or an exit other than 0: the card below as always, with one Heads-up naming
   why (`why`, `file`, `proof`).
+
 A tag, a release or a publication always waits for the go below, under a standing go or a
 mandate. After a landing, write and offer no revert: the return window is the human's program's;
 a revert the human asks for takes the usual track and this go.
