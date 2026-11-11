@@ -44,6 +44,7 @@
 import { readFileSync, readSync, readdirSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
+import { isatty } from 'node:tty'
 import { createHash } from 'node:crypto'
 
 const SAFE = /^[A-Za-z0-9._/-]+$/
@@ -713,11 +714,16 @@ function decision(c, s, stored) {
   return o
 }
 // The orchestrator's input: at most 64 KiB of UTF-8 JSON on stdin, else undefined. A stdin with
-// nothing to read yet (EAGAIN) is waited on 10 ms at a time, not spun on.
+// nothing to read yet (EAGAIN) is waited on 10 ms at a time, not spun on, for 5 s at most; a
+// terminal is refused at once. A blocking pipe kept open with nothing on it still waits: the
+// session's shell gives an empty stdin, refused at once, when the heredoc is missing.
 function input() {
+  if (isatty(0)) return undefined
   const chunks = [], b = Buffer.alloc(1 << 16), idle = new Int32Array(new SharedArrayBuffer(4))
+  const end = Date.now() + 5000
   let n = 0
   for (;;) {
+    if (Date.now() > end) return undefined
     let r
     try { r = readSync(0, b, 0, b.length, null) } catch (e) { if (e.code === 'EAGAIN') { Atomics.wait(idle, 0, 0, 10); continue } if (e.code === 'EOF') break; return undefined }
     if (r === 0) break
