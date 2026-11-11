@@ -1,0 +1,353 @@
+{
+  "branch": "feat/where-am-i",
+  "stdin": "answer.json",
+  "args": [
+    "--answer",
+    "where-am-i"
+  ],
+  "variants": [
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"where-am-i-D1\",\n  \"kind\": \"decision\",\n  \"moment\": 1,\n  \"slug\": \"where-am-i\",\n  \"asked\": \"2026-10-15T09:00:00.000Z\",\n  \"question\": \"Which proof do we pay for?\",\n  \"summary\": \"A short summary of the card.\",\n  \"why\": \"Because every run depends on it.\",\n  \"criteria\": \"Prove it, and cheaply.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Pins and fixtures\",\n      \"proves\": \"The text holds in the gate.\",\n      \"cost\": {\n        \"tokens\": 0,\n        \"minutes\": 0,\n        \"text\": \"no run\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\",\n        \"reviewer\"\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"A live run\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 150000,\n        \"minutes\": 15,\n        \"text\": \"about 150k\"\n      },\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ]\n    },\n    {\n      \"key\": \"C\",\n      \"label\": \"Both of them\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": null,\n      \"recommendedBy\": []\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"The cheapest proof that holds.\",\n    \"costIfWrong\": \"A rule the model cannot follow slips through.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Pins read text, not what the model does.\"\n  },\n  \"modules\": [\n    {\n      \"type\": \"text\",\n      \"size\": \"s\",\n      \"title\": \"Context\",\n      \"src\": \"the spec\",\n      \"text\": \"Some context for the card.\"\n    },\n    {\n      \"type\": \"metrics\",\n      \"size\": \"m\",\n      \"title\": \"Numbers\",\n      \"src\": \"spec, Summary\",\n      \"items\": [\n        {\n          \"label\": \"Estimate\",\n          \"value\": \"150k\",\n          \"note\": null,\n          \"gauge\": 0.5,\n          \"tone\": null\n        }\n      ]\n    },\n    {\n      \"type\": \"excerpt\",\n      \"size\": \"l\",\n      \"title\": \"Attachment\",\n      \"src\": \"the spec\",\n      \"file\": \"specs/2026-10-15-where-am-i.md\",\n      \"where\": \"Decisions\",\n      \"head\": null,\n      \"lines\": [\n        \"Criteria: prove it cheaply.\"\n      ],\n      \"highlight\": \"prove it cheaply\"\n    },\n    {\n      \"type\": \"list\",\n      \"size\": \"p\",\n      \"title\": \"Facts\",\n      \"src\": \"the ledger\",\n      \"items\": [\n        {\n          \"k\": \"tasks\",\n          \"v\": \"two of them\"\n        },\n        {\n          \"k\": \"risky\",\n          \"v\": null\n        }\n      ]\n    }\n  ],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Another way, in your words.\"\n  },\n  \"answer\": {\n    \"option\": \"B\",\n    \"other\": null,\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "option",
+          null
+        ],
+        [
+          "other",
+          "My own way, in my words."
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"where-am-i-D1\",\n  \"kind\": \"decision\",\n  \"moment\": 1,\n  \"slug\": \"where-am-i\",\n  \"asked\": \"2026-10-15T09:00:00.000Z\",\n  \"question\": \"Which proof do we pay for?\",\n  \"summary\": \"A short summary of the card.\",\n  \"why\": \"Because every run depends on it.\",\n  \"criteria\": \"Prove it, and cheaply.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Pins and fixtures\",\n      \"proves\": \"The text holds in the gate.\",\n      \"cost\": {\n        \"tokens\": 0,\n        \"minutes\": 0,\n        \"text\": \"no run\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\",\n        \"reviewer\"\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"A live run\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 150000,\n        \"minutes\": 15,\n        \"text\": \"about 150k\"\n      },\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ]\n    },\n    {\n      \"key\": \"C\",\n      \"label\": \"Both of them\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": null,\n      \"recommendedBy\": []\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"The cheapest proof that holds.\",\n    \"costIfWrong\": \"A rule the model cannot follow slips through.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Pins read text, not what the model does.\"\n  },\n  \"modules\": [\n    {\n      \"type\": \"text\",\n      \"size\": \"s\",\n      \"title\": \"Context\",\n      \"src\": \"the spec\",\n      \"text\": \"Some context for the card.\"\n    },\n    {\n      \"type\": \"metrics\",\n      \"size\": \"m\",\n      \"title\": \"Numbers\",\n      \"src\": \"spec, Summary\",\n      \"items\": [\n        {\n          \"label\": \"Estimate\",\n          \"value\": \"150k\",\n          \"note\": null,\n          \"gauge\": 0.5,\n          \"tone\": null\n        }\n      ]\n    },\n    {\n      \"type\": \"excerpt\",\n      \"size\": \"l\",\n      \"title\": \"Attachment\",\n      \"src\": \"the spec\",\n      \"file\": \"specs/2026-10-15-where-am-i.md\",\n      \"where\": \"Decisions\",\n      \"head\": null,\n      \"lines\": [\n        \"Criteria: prove it cheaply.\"\n      ],\n      \"highlight\": \"prove it cheaply\"\n    },\n    {\n      \"type\": \"list\",\n      \"size\": \"p\",\n      \"title\": \"Facts\",\n      \"src\": \"the ledger\",\n      \"items\": [\n        {\n          \"k\": \"tasks\",\n          \"v\": \"two of them\"\n        },\n        {\n          \"k\": \"risky\",\n          \"v\": null\n        }\n      ]\n    }\n  ],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Another way, in your words.\"\n  },\n  \"answer\": {\n    \"option\": null,\n    \"other\": \"My own way, in my words.\",\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "option",
+          null
+        ],
+        [
+          "other",
+          {
+            "$x": 280
+          }
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "other",
+          "and my words"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer",
+          "why": "shape"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "option",
+          null
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer",
+          "why": "shape"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "option",
+          "D"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer.option",
+          "why": "option"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "option",
+          "a"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer.option",
+          "why": "option"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "option",
+          null
+        ],
+        [
+          "other",
+          {
+            "$x": 281
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer.other",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "option",
+          null
+        ],
+        [
+          "other",
+          "line one\nline two"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer.other",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "by",
+          "owner"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "at",
+          "2026-10-15T10:00:00.000Z"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "other",
+          "$drop"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer.other",
+          "why": "missing"
+        }
+      }
+    },
+    {
+      "patch": [],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer",
+          "why": "answered"
+        }
+      },
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"answer\": null",
+          "\"answer\": {\"option\": \"A\", \"other\": null, \"by\": \"owner\", \"at\": \"2026-10-15T09:30:00.000Z\"}"
+        ]
+      }
+    },
+    {
+      "patch": [],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer.by",
+          "why": "list"
+        }
+      },
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"answer\": null",
+          "\"answer\": {\"option\": \"A\", \"other\": null, \"by\": \"gtm\", \"at\": \"2026-10-15T09:30:00.000Z\"}"
+        ]
+      }
+    },
+    {
+      "patch": [],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "v",
+          "why": "list"
+        }
+      },
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"v\": 1",
+          "\"v\": 2"
+        ]
+      }
+    },
+    {
+      "patch": [],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "unknown"
+        }
+      },
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"answer\": null",
+          "\"answer\": null, \"extra\": 1"
+        ]
+      }
+    },
+    {
+      "patch": [],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "other.allowed",
+          "why": "list"
+        }
+      },
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"allowed\": true",
+          "\"allowed\": false"
+        ]
+      }
+    },
+    {
+      "patch": [],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "asked",
+          "why": "shape"
+        }
+      },
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"asked\": \"2026-10-15T09:00:00.000Z\"",
+          "\"asked\": \"2026-10-15\""
+        ]
+      }
+    },
+    {
+      "patch": [],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "asked",
+          "why": "shape"
+        }
+      },
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"asked\": \"2026-10-15T09:00:00.000Z\"",
+          "\"asked\": \"2026-02-30T09:00:00.000Z\""
+        ]
+      }
+    },
+    {
+      "patch": [],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "slug",
+          "why": "list"
+        }
+      },
+      "edit": {
+        "reports/where-am-i/waiting.json": [
+          "\"slug\": \"where-am-i\"",
+          "\"slug\": \"where-am-j\""
+        ]
+      }
+    }
+  ]
+}

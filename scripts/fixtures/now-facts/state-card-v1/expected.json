@@ -1,0 +1,27 @@
+{
+  "exit": 1,
+  "facts": {},
+  "state": {
+    "waiting": {
+      "kind": "decision",
+      "task": "2",
+      "question": "Which proof do we pay for?",
+      "options": [
+        {
+          "label": "Pins and fixtures",
+          "recommended": true
+        },
+        {
+          "label": "A live run",
+          "recommended": false
+        },
+        {
+          "label": "Both of them",
+          "recommended": false
+        }
+      ],
+      "costIfWrong": "A rule the model cannot follow slips through.",
+      "card": "reports/where-am-i/waiting.json"
+    }
+  }
+}

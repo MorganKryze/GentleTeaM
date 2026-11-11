@@ -1,0 +1,8 @@
+{
+  "branch": "feat/mandate",
+  "stdin": "answer.json",
+  "args": [
+    "--answer",
+    "mandate"
+  ]
+}

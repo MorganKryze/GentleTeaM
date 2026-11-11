@@ -1,0 +1,100 @@
+{
+  "v": 1,
+  "id": "mandate-D1",
+  "kind": "decision",
+  "moment": 1,
+  "slug": "mandate",
+  "asked": "2026-10-15T10:00:00.000Z",
+  "question": "Comment prouver le run d'acceptation sur gtm-sample-todo ?",
+  "summary": "Avant de livrer le mandat, GTM doit prouver que deliver tient avec et sans mandat. La gate ne peut lancer aucun run : verify.e2e est vide.",
+  "why": "Le cas sans mandat touche chaque run de chaque utilisateur, et la preuve se paie en quota.",
+  "criteria": "Montrer le comportement sous mandat (au moins deux rulings default, aucune question hors des quatre moments, la carte de fin) sans dépenser plus que nécessaire.",
+  "options": [
+    {
+      "key": "A",
+      "label": "Pins et un run réel avec mandat",
+      "proves": "Le seul run qui voit une question posée pour la forme ; le cas sans mandat reste tenu par les pins.",
+      "cost": {
+        "tokens": 330000,
+        "minutes": 30,
+        "text": "≈ 330 k"
+      },
+      "reversible": true,
+      "recommendedBy": [
+        "gtm"
+      ]
+    },
+    {
+      "key": "B",
+      "label": "Pins seulement",
+      "proves": "Le run réel devient une vérification manuelle avant la prochaine release.",
+      "cost": {
+        "tokens": 0,
+        "minutes": 0,
+        "text": "aucun run"
+      },
+      "reversible": true,
+      "recommendedBy": []
+    },
+    {
+      "key": "C",
+      "label": "Deux runs réels, avec et sans mandat",
+      "proves": "Comme A, plus le même run sans mandat, comparé aux cartes d'aujourd'hui.",
+      "cost": {
+        "tokens": 660000,
+        "minutes": null,
+        "text": "≈ 660 k"
+      },
+      "reversible": true,
+      "recommendedBy": [
+        "second-reader"
+      ]
+    }
+  ],
+  "recommendation": {
+    "by": "gtm",
+    "option": "A",
+    "why": "Le run avec mandat est le seul à montrer ce qu'aucun pin ne voit ; hors des clauses sous condition, aucun texte ne change.",
+    "costIfWrong": "≈ 30 min et 330 k ; une règle qui fuit se verrait au premier run réel, par moins de cartes. B ou C restent possibles."
+  },
+  "objection": {
+    "by": "second-reader",
+    "prefers": "C",
+    "text": "Les pins vérifient du texte, pas ce que fait le modèle. Une règle de mandat qui fuit retire des cartes sans bruit."
+  },
+  "modules": [
+    {
+      "type": "metrics",
+      "size": "s",
+      "title": "Données",
+      "src": "spec, Summary",
+      "items": [
+        {
+          "label": "Branche 2, estimée",
+          "value": "≈ 2 324 k",
+          "note": "≈ 200 min, médianes des cinq derniers runs",
+          "gauge": null,
+          "tone": null
+        }
+      ]
+    },
+    {
+      "type": "excerpt",
+      "size": "s",
+      "title": "Pièce jointe",
+      "src": "spec, Decisions",
+      "file": "specs/2026-11-09-mandate.md",
+      "where": "§ Decisions · D1",
+      "head": "Critères",
+      "lines": [
+        "…"
+      ],
+      "highlight": "sans dépenser plus que nécessaire."
+    }
+  ],
+  "other": {
+    "allowed": true,
+    "placeholder": "Une autre voie, en vos mots."
+  },
+  "answer": null
+}

@@ -1,0 +1,43 @@
+{
+  "branch": "feat/where-am-i",
+  "stdin": "in.json",
+  "args": [
+    "--card",
+    "where-am-i"
+  ],
+  "variants": [
+    {
+      "links": {
+        "reports/where-am-i/waiting.json": "../../ledger.md"
+      }
+    },
+    {
+      "links": {
+        "reports/where-am-i": "../specs"
+      }
+    },
+    {
+      "links": {
+        "reports": "specs"
+      }
+    },
+    {
+      "worktrees": [
+        {
+          "name": "wt",
+          "branch": "feat/other"
+        }
+      ],
+      "cwd": "wt"
+    },
+    {
+      "args": [
+        "--answer",
+        "where-am-i"
+      ],
+      "links": {
+        "reports/where-am-i/waiting.json": "../../ledger.md"
+      }
+    }
+  ]
+}

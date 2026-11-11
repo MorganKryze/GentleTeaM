@@ -1,0 +1,8 @@
+{
+  "branch": "feat/where-am-i",
+  "stdin": "answer.json",
+  "args": [
+    "--answer",
+    "where-am-i"
+  ]
+}
