@@ -38,6 +38,92 @@
       "links": {
         "reports/where-am-i/waiting.json": "../../ledger.md"
       }
+    },
+    {
+      "worktrees": [
+        {
+          "name": "wt",
+          "branch": "feat/other"
+        }
+      ],
+      "rootIn": "wt"
+    },
+    {
+      "absent": true,
+      "patch": [
+        [
+          "moment",
+          null
+        ],
+        [
+          "options.0.recommendedBy",
+          [
+            "gtm"
+          ]
+        ],
+        [
+          "options.1.recommendedBy",
+          []
+        ],
+        [
+          "objection",
+          null
+        ],
+        [
+          "modules",
+          [
+            {
+              "type": "text",
+              "size": "s",
+              "title": "Context",
+              "src": "the spec",
+              "text": "Some context for the card."
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "worktrees": [
+        {
+          "name": "wt",
+          "branch": "feat/other"
+        }
+      ],
+      "rootIn": "wt",
+      "absent": true,
+      "patch": [
+        [
+          "moment",
+          null
+        ],
+        [
+          "options.0.recommendedBy",
+          [
+            "gtm"
+          ]
+        ],
+        [
+          "options.1.recommendedBy",
+          []
+        ],
+        [
+          "objection",
+          null
+        ],
+        [
+          "modules",
+          [
+            {
+              "type": "text",
+              "size": "s",
+              "title": "Context",
+              "src": "the spec",
+              "text": "Some context for the card."
+            }
+          ]
+        ]
+      ]
     }
   ]
 }

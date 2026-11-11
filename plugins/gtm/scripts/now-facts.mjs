@@ -727,11 +727,15 @@ function input() {
   try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(chunks))) } catch { return undefined }
 }
 // --card and --answer (A2, A10 to A13, A16): exit 3 before anything when the card file cannot be
-// written safely; then one line {written, field, why}. A refused card deletes the slug's card file;
-// a refused answer changes nothing; any error in the check refuses (`error`).
+// written safely, the root first: a root that is not a folder already is never made, as git cannot
+// tell where it would be; then one line {written, field, why}. A refused card deletes the slug's
+// card file; a refused answer changes nothing; any error in the check refuses (`error`).
 function cardFile(s, answering) {
   const no3 = (why) => { console.error(`now-facts.mjs: card not written: ${why}`); return 3 }
   const dir = join(root, 'reports', s), file = join(dir, 'waiting.json')
+  let folder = false
+  try { folder = statSync(root).isDirectory() } catch {}
+  if (!folder) return no3('the root is not a folder')
   if (linked(root) || linked(process.cwd())) return no3('a linked worktree')
   for (const [d, k] of [[join(root, 'reports'), 'dir'], [dir, 'dir'], [file, 'file']]) if (![null, k].includes(kind(d))) return no3(`${relative(root, d)} is not a ${k === 'dir' ? 'folder' : 'file'}`)
   if (git(root, ['ls-files', '--error-unmatch', '--', relative(root, file)]) !== null) return no3('tracked by git')

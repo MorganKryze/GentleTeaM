@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
 // scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
-// dirty: { file, min, worktree? }, rootName?, rootIn?, cwd?, track?, readonly?, links?, fifos?, sizes?, modes?, fsize?, args }) and
+// dirty: { file, min, worktree? }, rootName?, rootIn?, absent?, cwd?, track?, readonly?, links?, fifos?, sizes?, modes?, fsize?, args }) and
 // expected.json ({ exit, facts, state?, files? }, facts and state matched as subsets, files ({ path:
 // text | null | { sha256 } }) the exact text (or sha256) of those root files after the run, null for absent; rootName names the
-// root folder, root by default; rootIn puts the root in that worktree, cwd runs the script there,
+// root folder, root by default; rootIn puts the root in that worktree, absent removes the root folder
+// before the run, cwd runs the script there,
 // track commits those root files, readonly locks the root folder, links ({ path: target }, folders made) and
 // fifos ([path]) make those root entries at run time, as git keeps no FIFO, sizes ({ path: bytes }) pad
 // those root files with newlines to that size, modes ({ path: octal }) set their mode for the run, fsize caps the files
@@ -55,7 +56,7 @@ function snapshot(dir, skip = []) {
     // A link is hashed by its target, a FIFO by its name: reading one would follow or block.
     if (e.isDirectory()) walk(p); else h.update(relative(dir, p)).update(e.isSymbolicLink() ? `-> ${readlinkSync(p)}` : e.isFIFO() ? 'fifo' : readFileSync(p))
   })
-  walk(dir)
+  if (existsSync(dir)) walk(dir)
   return h.digest('hex')
 }
 // The git index of the checkout and of every worktree: git status rewrites it when stat data is
@@ -159,6 +160,7 @@ function scenario(name, dir, a, want) {
     for (const [f, min] of Object.entries(a.mtimes || {})) utimesSync(join(gtm, f), ago(min), ago(min))
     for (const [f, to] of Object.entries(a.links || {})) { mkdirSync(dirname(join(gtm, f)), { recursive: true }); symlinkSync(to, join(gtm, f)) }
     for (const f of a.fifos || []) execFileSync('mkfifo', [join(gtm, f)])
+    if (a.absent) rmSync(gtm, { recursive: true })
     const stateFile = join(gtm, 'state.json'), skip = [...(want.state ? ['state.json'] : []), ...Object.keys(want.files || {})]
     const before = snapshot(gtm, skip), index = indexes(repo), ino = existsSync(stateFile) ? statSync(stateFile).ino : null
     const status = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env })
