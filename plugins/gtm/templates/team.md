@@ -78,5 +78,11 @@ Heads-up and goes on; no budget changes a verdict, a correction round or the ord
 without the budget lines reads as `none`. A profile without `review cadence` runs every task
 guarded, as before 0.7.0; without `tasks per branch`, the cap is 8. Nothing to migrate.
 
+No standing go line ships here: only `/gtm:tune standing go <class> <regex>` writes one in the
+Gates, on the human's answer to its card, with `git.push: standing` in `config.yml`, in exactly
+this shape: `- standing go: <class> · paths `<regex>` · proofs <list> · why: <reason> · <date>`.
+`<list>` is the class's proofs as the settings reference lists them (`docs`: `gate, ci`). A line
+one character off counts as none; the class's bounds live in the check, never in the line.
+
 ## History
 Changes made by `/gtm:tune`, newest last: `- YYYY-MM-DD · <setting>: <old> → <new> · <why>`.

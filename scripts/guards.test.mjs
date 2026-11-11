@@ -14,7 +14,6 @@ import { join } from 'node:path'
 
 const root = new URL('..', import.meta.url).pathname
 const PINS = {
-  'plugins/gtm/templates/config.yml': [/^ {2}push: ask\b/m],
   'plugins/gtm/templates/ui-gate.spec.mjs': [
     'r.width >= 44 && r.height >= 44',
     'document.documentElement.scrollWidth > width',
@@ -99,8 +98,24 @@ const PINS = {
     'An effort off that ladder, such as `max`, is never changed.',
     '| security-reviewer | opus | high |',
     '| final-reviewer | opus | high |',
+    'No standing go line ships here: only `/gtm:tune standing go <class> <regex>` writes one in the',
+    'this shape: `- standing go: <class> · paths `<regex>` · proofs <list> · why: <reason> · <date>`.',
+    'one character off counts as none; the class\'s bounds live in the check, never in the line.',
   ],
   'plugins/gtm/skills/init/SKILL.md': ['security-reviewer on, effort high;'],
+  'plugins/gtm/templates/config.yml': [/^ {2}push: ask\b/m, '# standing = still nothing pushed: /gtm:ship records a landing for', 'set by /gtm:tune only'],
+  'plugins/gtm/skills/tune/SKILL.md': [
+    'Asked for a standing go (`/gtm:tune standing go docs <regex>` or `/gtm:tune standing go off`)? §6.',
+    'No signal ever proposes a standing go or',
+    '`git.push: standing`: only the human\'s request does (§6).',
+    'On the human\'s request only; never from a signal, and a mandate never stands for it. A `<regex>`',
+    'holding a backtick or that does not compile goes back to the human.',
+    '`git.push: standing` in `config.yml`, both set by the same answer;',
+    'records a landing and pushes nothing; tags and releases still ask',
+    'History line and a ledger `ruling` line quoting the answer. `off`: one card; on the answer, remove',
+    'every standing go line and set `git.push: ask`, with the same two lines.',
+    'its reason or date included, is a new line, signed through a new card.',
+  ],
   'plugins/gtm/skills/gtm/SKILL.md': ['dispatch. State and card file: as `now.md` says.'],
   'plugins/gtm/templates/now.md': [
     '- **State:** after each run view write, run the facts again with the same flags plus `--state',
@@ -156,7 +171,7 @@ const PINS = {
 }
 // And what these files must never hold: no role ships at xhigh, which only risky work reaches.
 const ABSENT = {
-  'plugins/gtm/templates/team.md': ['| xhigh |'],
+  'plugins/gtm/templates/team.md': ['| xhigh |', '\n- standing go:'],
   'plugins/gtm/skills/init/SKILL.md': ['effort xhigh'],
   'plugins/gtm/skills/gtm/SKILL.md': ['limits at start: 5h'],
   'plugins/gtm/templates/ledger.md': ['limits 5h +<a>% 7d +<b>%'],
