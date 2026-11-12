@@ -6,8 +6,8 @@
 
 ## The progress line's tail
 Every run's progress line (design, spec, spec+plan, plan, second reading, plan critic, task,
-deferred or re-run review, hand, final review, fix wave) ends with four segments, in this order,
-after every segment it has today:
+deferred or re-run review, hand, final review, re-review, fix wave; a direct dispatch counts as 1
+agent) ends with four segments, in this order, after every segment it has today:
 `· start <S> · end <E> · models <M> · causes <C>`
 - `<S>`, `<E>`: UTC instants to the second, `YYYY-MM-DDThh:mm:ssZ`, read from the clock (`date -u
   +%Y-%m-%dT%H:%M:%SZ`) when you dispatch and when the result returns, or from what Claude Code
