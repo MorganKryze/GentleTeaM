@@ -33,6 +33,10 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
   A sheet with a standing remove ruling, or with no row in
   `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md`, gets no card.
 
+- **Project sheet:** where `config.yml`'s `project.sheet` reads `on`, hand `decisions` and
+  `difficulties` as `${CLAUDE_PLUGIN_ROOT}/templates/project-sheet.md` says;
+  list both in the report.
+
 ## 3. Spot patterns for /gtm:tune
 Suggest `/gtm:tune` in one line when the `run` lines show: correction rounds hitting the cap in two runs
 or more; a specialist that found nothing across three runs it ran on; a final-review finding a
@@ -40,4 +44,5 @@ specialist should have caught; design loops ending at the last round; `usage` no
 
 ## 4. Report
 TL;DR (lessons added, guideline proposals, minors closed), the sheets' counts in one table (sheet,
-runs, passes, findings `c/i/m`) when a line has them, then the decision cards, if any.
+runs, passes, findings `c/i/m`) when a line has them, the project sheet's `decisions` and
+`difficulties` as handed, then the decision cards, if any.

@@ -21,6 +21,8 @@ code cannot tell: purpose and users, non-negotiables, whether the product has sc
 command not found, and the **communication style**: language, detail level, emoji (off / light /
 generous; default light). Write the answers into `config.yml` (`language`, `briefing`); remove every
 `[CHECK]` except on verify commands not run at init, which `/gtm:deliver` confirms on its first run.
+- Where `config.yml`'s `project.sheet` reads `on`, as `templates/project-sheet.md`: one row per
+  `project.kind` unset, `purpose` or `users` null in `<root>/sheet.json`: rows, not questions.
 - Not on Windows: one card in this message, **the usage step**: A chain it with the progress line
   above your status line (tasks, milestone and what waits; else NOW.md's first line), B without it,
   C no; I recommend A. On A or B run `node "${CLAUDE_PLUGIN_ROOT}/scripts/usage-line.mjs" --install
