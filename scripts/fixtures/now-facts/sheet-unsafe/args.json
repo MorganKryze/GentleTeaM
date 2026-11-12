@@ -1,0 +1,158 @@
+{
+  "branch": "feat/where-am-i",
+  "args": [
+    "--state",
+    "{root}/state.json"
+  ],
+  "variants": [
+    {
+      "links": {
+        "sheet.json": "ledger.md"
+      }
+    },
+    {
+      "links": {
+        "sheet.json": "nowhere.json"
+      }
+    },
+    {
+      "links": {
+        "sheet.json": "specs"
+      }
+    },
+    {
+      "fifos": [
+        "sheet.json"
+      ]
+    },
+    {
+      "links": {
+        "sheet.json": "ledger.md"
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 3,
+        "state": null
+      }
+    },
+    {
+      "links": {
+        "sheet.json": "nowhere.json"
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 3,
+        "state": null
+      }
+    },
+    {
+      "links": {
+        "sheet.json": "specs"
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 3,
+        "state": null
+      }
+    },
+    {
+      "fifos": [
+        "sheet.json"
+      ],
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 3,
+        "state": null
+      }
+    },
+    {
+      "worktrees": [
+        {
+          "name": "wt",
+          "branch": "feat/other"
+        }
+      ],
+      "cwd": "wt",
+      "want": {
+        "state": null
+      }
+    },
+    {
+      "worktrees": [
+        {
+          "name": "wt",
+          "branch": "feat/other"
+        }
+      ],
+      "cwd": "wt",
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 3,
+        "state": null
+      }
+    },
+    {
+      "worktrees": [
+        {
+          "name": "wt",
+          "branch": "feat/other"
+        }
+      ],
+      "rootIn": "wt",
+      "want": {
+        "state": null
+      }
+    },
+    {
+      "worktrees": [
+        {
+          "name": "wt",
+          "branch": "feat/other"
+        }
+      ],
+      "rootIn": "wt",
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 3,
+        "state": null
+      }
+    },
+    {
+      "links": {
+        "sheet.json.lock": "ledger.md"
+      },
+      "mtimes": {
+        "ledger.md": 1
+      }
+    },
+    {
+      "fifos": [
+        "sheet.json.lock"
+      ]
+    }
+  ]
+}

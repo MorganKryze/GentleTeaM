@@ -57,6 +57,13 @@ footprint:
   skip: []                        # writing tells the project's own voice uses: em-dash, emoji, stock,
                                   # filler, triad, bullets
 
+# The project sheet (<root>/sheet.json): a versioned file for a program of yours that shows the
+# project. off = GTM writes, asks and shows nothing about it. on = rewritten with the run's state;
+# /gtm:init confirms the kind with you, /gtm:retro adds decisions and difficulties.
+project:
+  sheet: off
+  kind: null                      # app-mobile | app-web | infra | tool | sandbox; null = to confirm
+
 # Specialists, their triggers, risky paths, correction rounds and the design threshold are weights, not
 # mechanics: they live in the team settings (<root>/team.md), next to their reasons.
 

@@ -1,0 +1,409 @@
+{
+  "branch": "feat/where-am-i",
+  "args": [
+    "--state",
+    "{root}/state.json"
+  ],
+  "variants": [
+    {
+      "want": {
+        "sheet": {
+          "plan": {
+            "branch": "feat/where-am-i",
+            "steps": [
+              {
+                "n": 1,
+                "title": "the first slice",
+                "status": "done"
+              },
+              {
+                "n": 2,
+                "title": "the second slice",
+                "status": "doing"
+              },
+              {
+                "n": 3,
+                "title": "the third slice",
+                "status": "todo"
+              }
+            ],
+            "milestone": {
+              "title": "A sample milestone",
+              "branches": [
+                {
+                  "n": 1,
+                  "branch": "feat/shipped-one",
+                  "title": "the shipped one"
+                },
+                {
+                  "n": 2,
+                  "branch": "feat/where-am-i",
+                  "title": "where am I"
+                },
+                {
+                  "n": 3,
+                  "branch": "feat/next-one",
+                  "title": "the next one"
+                }
+              ]
+            },
+            "stories": {
+              "done": 1,
+              "total": 3
+            }
+          },
+          "cost": {
+            "tokens": 450000,
+            "seconds": 2000,
+            "dollars": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- final · ready · ? s · ?k · 1 agent\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": null,
+            "seconds": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- final · ready · 10 s · ?k · 1 agent\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": null,
+            "seconds": 2010
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- final · ready · ? s · 10k · 1 agent\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": 460000,
+            "seconds": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- final · ready · 1 171 s · 10k · 1 agent\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": 460000,
+            "seconds": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- final · ready · 12.5 s · 10k · 1 agent\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": 460000,
+            "seconds": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- final · ready · 10 s · 1 171k · 1 agent\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": null,
+            "seconds": 2010
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- final · ready · 10 s · 1 agent\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": null,
+            "seconds": 2010
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- final · ready · ?\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": null,
+            "seconds": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- final · ready\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": 450000,
+            "seconds": 2000
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "1000 s · 300k · 4 agents\n",
+          "1000 s · 300k · 4 agents · start 2026-11-12T09:00:00Z · end 2026-11-12T09:20:00Z · models implementer opus/low/medium, reviewer opus/medium · causes 1:reviewer/important/proof\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": 450000,
+            "seconds": 2000
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "1000 s · 300k · 4 agents\n",
+          "1000 s · 300k · 4 agents · start ? · end ? · models ? · causes ?\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": 450000,
+            "seconds": 2000
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "specs/2026-11-01-a-milestone.md": [
+          "Status: approved",
+          "Status: draft"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "plan": {
+            "milestone": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "specs/2026-11-01-a-milestone.md": [
+          "# A sample milestone\n",
+          ""
+        ]
+      },
+      "want": {
+        "sheet": {
+          "plan": {
+            "milestone": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "specs/2026-11-01-a-milestone.md": [
+          "`feat/next-one`",
+          "`feat/next one`"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "plan": {
+            "milestone": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "specs/2026-11-01-a-milestone.md": [
+          "## 3. `feat/next-one`: the next one\n",
+          "## 3. `feat/b0`: b\n## 4. `feat/b1`: b\n## 5. `feat/b2`: b\n## 6. `feat/b3`: b\n## 7. `feat/b4`: b\n## 8. `feat/b5`: b\n## 9. `feat/b6`: b\n## 10. `feat/b7`: b\n## 11. `feat/b8`: b\n## 12. `feat/b9`: b\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "plan": {
+            "milestone": {
+              "branches": [
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {},
+                {}
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "specs/2026-11-01-a-milestone.md": [
+          "## 3. `feat/next-one`: the next one\n",
+          "## 3. `feat/b0`: b\n## 4. `feat/b1`: b\n## 5. `feat/b2`: b\n## 6. `feat/b3`: b\n## 7. `feat/b4`: b\n## 8. `feat/b5`: b\n## 9. `feat/b6`: b\n## 10. `feat/b7`: b\n## 11. `feat/b8`: b\n## 12. `feat/b9`: b\n## 13. `feat/b10`: b\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "plan": {
+            "milestone": null
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "backlog.md": [
+          "| D · dropped one | story | P2 | dropped |",
+          "| D · dropped one | story | P2 | done |"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "plan": {
+            "stories": {
+              "done": 2,
+              "total": 4
+            }
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "plans/2026-10-15-where-am-i.md": [
+          "### Task 3: the third slice\n",
+          "### Task 3: t\n### Task 4: t\n### Task 5: t\n### Task 6: t\n### Task 7: t\n### Task 8: t\n### Task 9: t\n### Task 10: t\n### Task 11: t\n### Task 12: t\n### Task 13: t\n### Task 14: t\n### Task 15: t\n### Task 16: t\n### Task 17: t\n### Task 18: t\n### Task 19: t\n### Task 20: t\n### Task 21: t\n### Task 22: t\n### Task 23: t\n### Task 24: t\n### Task 25: t\n### Task 26: t\n### Task 27: t\n### Task 28: t\n### Task 29: t\n### Task 30: t\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "plan": {
+            "steps": [
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {}
+            ]
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "plans/2026-10-15-where-am-i.md": [
+          "### Task 3: the third slice\n",
+          "### Task 3: t\n### Task 4: t\n### Task 5: t\n### Task 6: t\n### Task 7: t\n### Task 8: t\n### Task 9: t\n### Task 10: t\n### Task 11: t\n### Task 12: t\n### Task 13: t\n### Task 14: t\n### Task 15: t\n### Task 16: t\n### Task 17: t\n### Task 18: t\n### Task 19: t\n### Task 20: t\n### Task 21: t\n### Task 22: t\n### Task 23: t\n### Task 24: t\n### Task 25: t\n### Task 26: t\n### Task 27: t\n### Task 28: t\n### Task 29: t\n### Task 30: t\n### Task 31: t\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "plan": {
+            "steps": null
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "facts": {
+    "written": true,
+    "field": null,
+    "why": null
+  },
+  "files": {
+    "sheet.json": "{\n  \"v\": 1,\n  \"kind\": \"tool\",\n  \"headline\": null,\n  \"purpose\": \"Un plugin qui fait travailler une petite équipe d'agents sur un changement, pendant que vous prenez trois décisions.\",\n  \"users\": \"Des développeurs dans un terminal, sur tout projet et dans leur langue ; peu de temps et un quota serré.\",\n  \"plan\": {\n    \"branch\": \"feat/where-am-i\",\n    \"steps\": [\n      {\n        \"n\": 1,\n        \"title\": \"the first slice\",\n        \"status\": \"done\"\n      },\n      {\n        \"n\": 2,\n        \"title\": \"the second slice\",\n        \"status\": \"doing\"\n      },\n      {\n        \"n\": 3,\n        \"title\": \"the third slice\",\n        \"status\": \"todo\"\n      }\n    ],\n    \"milestone\": {\n      \"title\": \"A sample milestone\",\n      \"branches\": [\n        {\n          \"n\": 1,\n          \"branch\": \"feat/shipped-one\",\n          \"title\": \"the shipped one\"\n        },\n        {\n          \"n\": 2,\n          \"branch\": \"feat/where-am-i\",\n          \"title\": \"where am I\"\n        },\n        {\n          \"n\": 3,\n          \"branch\": \"feat/next-one\",\n          \"title\": \"the next one\"\n        }\n      ]\n    },\n    \"stories\": {\n      \"done\": 1,\n      \"total\": 3\n    }\n  },\n  \"decisions\": [],\n  \"cost\": {\n    \"tokens\": 450000,\n    \"seconds\": 2000,\n    \"dollars\": null\n  },\n  \"difficulties\": [],\n  \"modules\": [],\n  \"showcase\": null\n}\n"
+  }
+}

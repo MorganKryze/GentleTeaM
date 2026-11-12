@@ -1,0 +1,44 @@
+{
+  "branch": "feat/where-am-i",
+  "template": true,
+  "args": [
+    "--state",
+    "{root}/state.json"
+  ],
+  "variants": [
+    {},
+    {
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  sheet: off",
+          "  sheet: on"
+        ]
+      },
+      "want": {
+        "files": {
+          "sheet.json": true
+        },
+        "sheet": {
+          "kind": null,
+          "users": null
+        }
+      }
+    }
+  ]
+}

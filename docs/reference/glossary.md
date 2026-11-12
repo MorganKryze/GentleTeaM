@@ -105,6 +105,11 @@ A small planted change; it survives when no test catches it.
 ### Reflex {#reflex}
 A method a role applies every time, listed in its file; it adds a lens and never weakens a check.
 
+### Project sheet {#project-sheet}
+`sheet.json` in your GTM folder, one page of the project as data for a program of yours, kept
+while `project.sheet` is `on`; see [what it holds](/reference/gtm-folder/#project-sheet). Not a
+[speciality sheet](#speciality-sheet).
+
 ### Retro {#retro}
 `/gtm:retro`: distils a delivered branch into at most five lessons and guideline edits.
 
@@ -118,7 +123,7 @@ left out, and how each part is checked.
 
 ### Speciality sheet {#speciality-sheet}
 One file per speciality that a plan names for a task, at most 2 per task: it adds a lens to the
-roles that read it and never softens a check.
+roles that read it and never softens a check. Not the [project sheet](#project-sheet).
 
 ### Stealth {#stealth}
 `stealth: on` in `config.yml`: GTM keeps its files out of the tracked tree and its names out of

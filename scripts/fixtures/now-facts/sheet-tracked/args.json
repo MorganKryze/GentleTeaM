@@ -1,0 +1,24 @@
+{
+  "branch": "feat/where-am-i",
+  "args": [
+    "--state",
+    "{root}/state.json"
+  ],
+  "track": [
+    "sheet.json"
+  ],
+  "variants": [
+    {},
+    {
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 3,
+        "state": null
+      }
+    }
+  ]
+}

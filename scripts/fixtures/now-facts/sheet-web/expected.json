@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "facts": {
+    "written": true,
+    "field": null,
+    "why": null
+  },
+  "files": {
+    "sheet.json": "{\n  \"v\": 1,\n  \"kind\": \"app-web\",\n  \"headline\": null,\n  \"purpose\": \"La page d'annuaire des services hébergés pour des proches : ce qu'est chaque outil, comment l'atteindre, et s'il marche.\",\n  \"users\": null,\n  \"plan\": {\n    \"branch\": null,\n    \"steps\": null,\n    \"milestone\": null,\n    \"stories\": {\n      \"done\": 2,\n      \"total\": 3\n    }\n  },\n  \"decisions\": [\n    {\n      \"at\": \"2026-10-10\",\n      \"text\": \"Version 1.2.1 publiée sur votre go ; la vérification complète est passée.\",\n      \"by\": \"owner\"\n    },\n    {\n      \"at\": \"2026-10-10\",\n      \"text\": \"Votre réponse B : sur une page de droite à gauche seulement, le texte de l'opérateur suit sa langue.\",\n      \"by\": \"owner\"\n    }\n  ],\n  \"cost\": {\n    \"tokens\": null,\n    \"seconds\": null,\n    \"dollars\": null\n  },\n  \"difficulties\": [\n    {\n      \"k\": \"docs\",\n      \"text\": \"Une passe en langage simple peut faire tomber une affirmation porteuse.\",\n      \"src\": \"ledger, rétro du 10.10\"\n    },\n    {\n      \"k\": \"CI\",\n      \"text\": \"L'analyse de code ne se filtre pas par chemin sur une PR.\",\n      \"src\": \"ledger, rétro du 10.10\"\n    }\n  ],\n  \"modules\": [],\n  \"showcase\": null\n}\n"
+  }
+}

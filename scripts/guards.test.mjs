@@ -7,8 +7,12 @@
 // window the status line leaves out is named nowhere: no fixed `5h … 7d` pair in the limits lines.
 // The state follows the run view, only where it is written, and the card file goes through the
 // facts script, never by hand, one card at a time, its answer recorded before the next rewrite,
-// on its own card only, a refused answer never reworded. A standing go: the line's shape, its proofs, the
-// never list and what a program must refuse, as the settings reference states them.
+// on its own card only, a refused answer never reworded. The project sheet goes through the same
+// script, its exclude line beside the state's, only where the switch is on: the owner's texts
+// never reworded, no showcase handed, init's rows inside its five questions and only for what the
+// stored sheet lacks, retro's lists in its report and merged into the stored ones, a stored
+// line counted once, matched by its date and what it says. A standing go:
+// the line's shape, its proofs, the never list and what a program must refuse, as the settings reference states them.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -105,7 +109,28 @@ const PINS = {
     'this shape: `- standing go: <class> · paths `<regex>` · proofs <list> · why: <reason> · <date>`.',
     'one character off counts as none; the class\'s bounds live in the check, never in the line.',
   ],
-  'plugins/gtm/skills/init/SKILL.md': ['security-reviewer on, effort high;'],
+  'plugins/gtm/skills/init/SKILL.md': [
+    'security-reviewer on, effort high;',
+    '## 2. Interview (one message, ≤ 5 questions)',
+    "Where `config.yml`'s `project.sheet` reads `on`,",
+    '`users` null in `<root>/sheet.json`',
+    'rows, not questions',
+  ],
+  'plugins/gtm/skills/retro/SKILL.md': [
+    "where `config.yml`'s `project.sheet` reads `on`, hand `decisions` and",
+    'list both in the report.',
+  ],
+  'plugins/gtm/templates/project-sheet.md': [
+    'never shorten or reword',
+    '`showcase` is never handed in this version',
+    '`/gtm:retro`: reads `<root>/sheet.json` first',
+    'never rebuilt from the ledger alone',
+    'counts once and its stored entry stays as it is',
+    'for the same lesson or minor',
+    'A date alone matches no line.',
+    "`/gtm:init`: reads `config.yml`'s `project.kind` and `<root>/sheet.json` first",
+    'the stored value beside the new one',
+  ],
   'plugins/gtm/templates/config.yml': [/^ {2}push: ask\b/m, '# standing = still nothing pushed: /gtm:ship records a landing for', 'set by /gtm:tune only'],
   'plugins/gtm/skills/tune/SKILL.md': [
     'Asked for a standing go (`/gtm:tune standing go docs <regex>` or `/gtm:tune standing go off`)? §6.',
@@ -135,6 +160,9 @@ const PINS = {
     'An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one',
     "Heads-up; never shorten or reword the owner's words to fit.",
     'The file stays, answered, until the slug\'s next card.',
+    "--sheet '<root>/sheet.json' <<'GTM_SHEET'`",
+    'never write `<root>/sheet.json` yourself',
+    '`/<rel>/sheet.json` goes to the exclude file',
   ],
   'plugins/gtm/templates/decision.md': [
     'You never write the card',
@@ -250,7 +278,7 @@ const quoted = (line) => [...line.matchAll(/`([^`]+)`/g)].map((m) => m[1])
 const team = readFileSync(join(root, 'plugins/gtm/templates/team.md'), 'utf8')
 const risky = quoted(team.match(/risky paths (.*?) · why/)?.[1] ?? '')
 const settings = readFileSync(join(root, 'docs/reference/settings.md'), 'utf8')
-const doc = settings.split('\n').slice(102, 105).join(' ')
+const doc = settings.split('\n').slice(104, 107).join(' ')
 const shown = quoted(doc.slice(doc.indexOf('on paths matching'))).slice(0, risky.length)
 if (!risky.length || shown.join('\n') !== risky.join('\n')) {
   errors.push(`settings.md shows ${shown}, the template holds ${risky}`)

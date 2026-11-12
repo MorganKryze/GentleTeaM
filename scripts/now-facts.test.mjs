@@ -2,7 +2,7 @@
 // Fixture test for plugins/gtm/scripts/now-facts.mjs. Each scenario under
 // scripts/fixtures/now-facts/ holds a GTM root (root/), args.json ({ branch, worktrees, mtimes,
 // dirty: { file, min, worktree? }, rootName?, rootIn?, absent?, cwd?, track?, readonly?, links?, fifos?, sizes?, modes?, fsize?, args }) and
-// expected.json ({ exit, facts, state?, files? }, facts and state matched as subsets, files ({ path:
+// expected.json ({ exit, facts, state?, sheet?, files? }, facts, state and sheet matched as subsets, files ({ path:
 // text | null | { sha256 } }) the exact text (or sha256) of those root files after the run, null for absent; rootName names the
 // root folder, root by default; rootIn puts the root in that worktree, absent removes the root folder
 // before the run, cwd runs the script there,
@@ -14,7 +14,7 @@
 // path: target }, gitlink?: [path] }], each applied in that order) are made in order in the
 // repository with fixed dates, those with base on main before the scenario's branch is made, the
 // others on their `on` branch (the scenario's by default); edit ({ path: [from, to] }) changes one root file
-// once; gitconfig ({ key: value }, `{root}` its path) sets the repository's config; replace ({ rev:
+// once, `{pidns}` in to the test's pid namespace (PIDNS), after template (true) copies the plugin's templates/config.yml into the root; gitconfig ({ key: value }, `{root}` its path) sets the repository's config; replace ({ rev:
 // rev }) replaces the first commit with the second and resets the checkout to it; grafts ([line])
 // writes .git/info/grafts, revs read first; graph ({ rev: rev }) writes a commit-graph in which the
 // first commit has the second as its second parent, the file a session could forge; `{rev:<rev>}`
@@ -29,14 +29,16 @@
 // fixture), with no global or system git config, and removes it after the run; runs the script at
 // a fixed time, and checks it changed no file but the state it was asked for, replaced by a rename,
 // and the files expected.json names, no git index and no git status; that a usage error prints nothing; that the state holds no `?`
-// and none of its card, step or mandate text reached stdout. Run by scripts/validate.mjs. No
-// dependencies.
+// and none of its card, step or mandate text reached stdout; that no owner text of the project
+// sheet, before or after the run, reached stdout or stderr; that the sheet step, waiting on its
+// input, holds no sheet.json.lock and killed there leaves none; that the lock a step holds names its
+// pid and its pid namespace. Run by scripts/validate.mjs. No dependencies.
 import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, lstatSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
-import { execFileSync, spawnSync } from 'node:child_process'
+import { execFileSync, spawnSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { JOBS, pool, run } from './pool.mjs'
 
 const root = new URL('..', import.meta.url).pathname
@@ -46,6 +48,9 @@ const NOW = Date.parse('2026-10-15T10:00:00Z')
 const ago = (min) => new Date(NOW - min * 60000)
 const errors = []
 const env = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' }
+// The pid namespace the script runs in, as it names it in sheet.json.lock: Linux's from /proc, the
+// platform's name elsewhere.
+const PIDNS = process.platform === 'linux' ? readlinkSync('/proc/self/ns/pid') : process.platform
 
 function git(cwd, args, extra = {}) {
   execFileSync('git', ['-c', 'commit.gpgsign=false', ...args], { cwd, stdio: 'pipe', env: { ...env, ...extra } })
@@ -104,6 +109,11 @@ function input(dir, a) {
   return `${JSON.stringify(v)}${' '.repeat(a.pad || 0)}`
 }
 const strings = (v) => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(strings) : [])
+// The owner texts of a project sheet, 8 characters or more; none when it is no regular file of
+// JSON (a FIFO is never read).
+function owner(f) {
+  try { if (!lstatSync(f).isFile()) return []; const s = JSON.parse(readFileSync(f, 'utf8')); return strings([s.purpose, s.users, s.decisions, s.difficulties]).filter((x) => x.trim().length >= 8) } catch { return [] }
+}
 
 const who = ['-c', 'user.name=t', '-c', 'user.email=t@t']
 // Every scenario, a variant one of its own, numbered in name order.
@@ -201,10 +211,11 @@ function scenario(name, dir, a, want) {
     }
     for (const w of a.worktrees || []) git(repo, ['worktree', 'add', '-q', '-b', w.branch, join(tmp, w.name)])
     if (a.rootIn) cpSync(join(dir, 'root'), gtm, { recursive: true })
+    if (a.template) cpSync(join(root, 'plugins/gtm/templates/config.yml'), join(gtm, 'config.yml'))
     for (const [f, [from, to]] of Object.entries(a.edit || {})) {
       const t = readFileSync(join(gtm, f), 'utf8')
       if (!t.includes(from)) errors.push(`${name}: edit finds no ${JSON.stringify(from)} in ${f}`)
-      writeFileSync(join(gtm, f), t.replace(from, to))
+      writeFileSync(join(gtm, f), t.replace(from, to.replaceAll('{pidns}', PIDNS)))
     }
     for (const [k, v] of Object.entries(a.gitconfig || {})) git(repo, ['config', k, v.replaceAll('{root}', gtm)])
     for (const [from, to] of Object.entries(a.replace || {})) { const sha = (r) => execFileSync('git', ['rev-parse', r], { cwd: repo, encoding: 'utf8', env }).trim(); git(repo, ['replace', sha(from), sha(to)]); git(repo, ['reset', '-q', '--hard']) }
@@ -222,7 +233,9 @@ function scenario(name, dir, a, want) {
     for (const [f, to] of Object.entries(a.links || {})) { mkdirSync(dirname(join(gtm, f)), { recursive: true }); symlinkSync(to, join(gtm, f)) }
     for (const f of a.fifos || []) execFileSync('mkfifo', [join(gtm, f)])
     if (a.absent) rmSync(gtm, { recursive: true })
-    const stateFile = join(gtm, 'state.json'), skip = [...(want.state ? ['state.json'] : []), ...Object.keys(want.files || {})]
+    const stateFile = join(gtm, 'state.json'), sheetFile = join(gtm, 'sheet.json')
+    const skip = [...(want.state ? ['state.json'] : []), ...(want.sheet ? ['sheet.json'] : []), ...Object.keys(want.files || {})]
+    const owned = [owner(sheetFile)]
     const before = snapshot(gtm, skip), index = indexes(repo), ino = existsSync(stateFile) ? statSync(stateFile).ino : null
     const status = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env })
     const args = (a.args || []).map((x) => x.replace(/\{ago:(\d+)\}/g, (_, m) => ago(+m).toISOString()).replaceAll('{root}', gtm))
@@ -240,6 +253,8 @@ function scenario(name, dir, a, want) {
     }
     if (a.readonly) chmodSync(gtm, 0o755)
     for (const f of Object.keys(a.modes || {})) chmodSync(join(gtm, f), 0o755)
+    owned.push(owner(sheetFile))
+    if (owned.flat().some((s) => r.stdout.includes(s) || r.stderr.includes(s))) errors.push(`${name}: a sheet's owner text reached the output`)
     if (r.status !== want.exit) errors.push(`${name}: exit ${r.status}, want ${want.exit} ${r.stderr.trim()}`)
     if (want.exit === 2 && r.stdout !== '') errors.push(`${name}: a usage error printed facts`)
     if (snapshot(gtm, skip) !== before) errors.push(`${name}: the script changed a file in the root`)
@@ -260,6 +275,11 @@ function scenario(name, dir, a, want) {
       if (ino !== null && statSync(stateFile).ino === ino) errors.push(`${name}: the state was rewritten in place, not replaced`)
       const own = strings([st.waiting?.question, st.waiting?.costIfWrong, st.waiting?.options, (st.steps || []).map((s) => s.title), st.mandate]).filter((s) => s.length >= 8)
       if (own.some((s) => r.stdout.includes(s))) errors.push(`${name}: card, step or mandate text reached the output`)
+    }
+    if (want.sheet) {
+      let sh
+      try { sh = JSON.parse(readFileSync(sheetFile, 'utf8')) } catch { errors.push(`${name}: no sheet written`); return }
+      subset(name, sh, want.sheet, 'sheet')
     }
     if (want.facts === undefined) return
     let got
@@ -303,5 +323,47 @@ function tailed(tail) {
 const READ = JSON.stringify({ exit: 1, phase: 'delivery', task: { n: 2, of: 3 }, events: ['plan: ?', 't1: CLEAN', 't2: OPEN'],
   eta: { minutes: 32.9, clock: '12:32', runs: 2, perTask: 6.9, parts: { tasks: 13.8, final: 17.5, fix: 1.6 }, afterAnswer: false } })
 for (const tail of [false, true]) if (tailed(tail) !== READ) errors.push(`A8: ${tail ? 'the tailed' : "today's"} lines read ${tailed(tail)}, want ${READ}`)
+// D2: the rewrite's scenario starts from the sheet the step gave for init's fixed input.
+if (d1('sheet-init-state/root/sheet.json') !== JSON.parse(d1('sheet-init/expected.json')).files['sheet.json']) errors.push('sheet-init-state: its sheet is not the one sheet-init writes')
+// The step reads its input before it takes sheet.json.lock: a step waiting on an open, empty stdin
+// holds no lock, and killed there it leaves none and the sheet as it was.
+async function waiting() {
+  const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-wait-'))
+  try {
+    const r = join(tmp, 'root'), lock = join(r, 'sheet.json.lock')
+    cpSync(join(fixtures, 'sheet-lock/root'), r, { recursive: true })
+    rmSync(lock)
+    const before = readFileSync(join(r, 'sheet.json'), 'utf8')
+    const p = spawn(process.execPath, [script, '--root', r, '--now', new Date(NOW).toISOString(), '--sheet', join(r, 'sheet.json')], { cwd: tmp, env: { ...env, TZ: 'UTC' }, stdio: ['pipe', 'ignore', 'ignore'] })
+    const gone = new Promise((done) => p.on('exit', done))
+    await new Promise((done) => setTimeout(done, 1000))
+    const held = existsSync(lock)
+    p.kill('SIGTERM')
+    await gone
+    if (held) errors.push('sheet step: the lock is held while the input is read')
+    if (existsSync(lock)) errors.push('sheet step: a kill while reading the input left the lock')
+    if (readFileSync(join(r, 'sheet.json'), 'utf8') !== before) errors.push('sheet step: a kill while reading the input changed the sheet')
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
+  }
+}
+await waiting()
+// The lock a step holds reads `<pid> <pid namespace>`, so a run in another namespace never takes
+// the pid for gone: a preload copies it as the step renames its sheet.
+function named() {
+  const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-lock-'))
+  try {
+    const r = join(tmp, 'root'), seen = join(tmp, 'seen'), pre = join(tmp, 'pre.mjs')
+    cpSync(join(fixtures, 'sheet-lock/root'), r, { recursive: true })
+    rmSync(join(r, 'sheet.json.lock'))
+    writeFileSync(pre, `import fs from 'node:fs'\nimport { syncBuiltinESMExports } from 'node:module'\nconst rename = fs.renameSync\nfs.renameSync = (a, b) => { if (b.endsWith('/sheet.json')) fs.copyFileSync(\`\${b}.lock\`, ${JSON.stringify(seen)}); return rename(a, b) }\nsyncBuiltinESMExports()\n`)
+    const p = spawnSync(process.execPath, ['--import', pathToFileURL(pre).href, script, '--root', r, '--now', new Date(NOW).toISOString(), '--sheet', join(r, 'sheet.json')], { cwd: tmp, encoding: 'utf8', env: { ...env, TZ: 'UTC' }, input: readFileSync(join(fixtures, 'sheet-lock/in.json')) })
+    const got = existsSync(seen) ? readFileSync(seen, 'utf8') : null
+    if (p.status !== 0 || got !== `${p.pid} ${PIDNS}`) errors.push(`sheet step: its lock reads ${JSON.stringify(got)}, want "${p.pid} ${PIDNS}" (exit ${p.status})`)
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
+  }
+}
+named()
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`now-facts: ${readdirSync(fixtures).length} scenarios and the delivery tail OK`)

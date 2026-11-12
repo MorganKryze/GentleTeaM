@@ -41,6 +41,16 @@
   repository and the state untracked, `/<rel>/state.json` goes to the exclude file as the `gtm`
   skill §0 adds `/<rel>/NOW.md`, when `git check-ignore -q <rel>/state.json` fails. Exit 3 (a
   worktree, a tracked or foreign file) or 2: one Heads-up per session, never a hold-up.
+  While `config.yml`'s `project.sheet` reads `on`, the same state run also rewrites
+  `<root>/sheet.json`, with no flag of its own; `/<rel>/sheet.json` goes to the exclude file as
+  `state.json` does, when `git check-ignore -q <rel>/sheet.json` fails. Its exit 3: one Heads-up
+  per session, never a hold-up.
+- **Project sheet:** while the switch is on, never write `<root>/sheet.json` yourself: hand the
+  owner's fields to the script, `node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root>
+  --sheet '<root>/sheet.json' <<'GTM_SHEET'`, then one JSON object shaped as
+  `templates/project-sheet.md` says, then `GTM_SHEET` alone on its line. Exit 1 names the refused
+  field and why: fix that field and hand it once more; refused again, or exit 2 or 3: one Heads-up
+  per session, never a hold-up. Never shorten or reword the owner's words. Switch off: never run it.
 - **Card file:** when a card is shown, never write `<root>/reports/<slug>/waiting.json` yourself:
   hand its content to the script, `node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root>
   --card <slug> <<'GTM_CARD'`, then one JSON object shaped as `templates/decision.md` says, then

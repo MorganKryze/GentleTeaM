@@ -1,0 +1,22 @@
+{
+  "v": 1,
+  "kind": "tool",
+  "headline": null,
+  "purpose": "Un but déjà relu par le propriétaire.",
+  "users": null,
+  "plan": {
+    "branch": null,
+    "steps": null,
+    "milestone": null,
+    "stories": null
+  },
+  "decisions": [],
+  "cost": {
+    "tokens": null,
+    "seconds": null,
+    "dollars": null
+  },
+  "difficulties": [],
+  "modules": [],
+  "showcase": null
+}
