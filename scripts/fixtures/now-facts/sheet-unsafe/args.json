@@ -140,6 +140,19 @@
         "exit": 3,
         "state": null
       }
+    },
+    {
+      "links": {
+        "sheet.json.lock": "ledger.md"
+      },
+      "mtimes": {
+        "ledger.md": 1
+      }
+    },
+    {
+      "fifos": [
+        "sheet.json.lock"
+      ]
     }
   ]
 }

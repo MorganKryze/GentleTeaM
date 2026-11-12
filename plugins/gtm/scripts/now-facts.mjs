@@ -48,7 +48,7 @@
 //        [--state <root>/state.json] [--mandate <slug> [--copy <file>]]
 //        [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug>]
 //        [--sheet <root>/sheet.json] No dependencies.
-import { readFileSync, readSync, readdirSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
+import { readFileSync, readSync, readdirSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, linkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { isatty } from 'node:tty'
@@ -898,7 +898,7 @@ function factsOf() {
 // prints one line {written, field, why}; any error refuses. The step reads its input first; then,
 // from the read of the old sheet to the rename, it holds sheet.json.lock, made exclusively, so a
 // step and a rewrite never put back each other's old owner fields: the step waits for it up to a
-// second, the rewrite not at all, then exit 3.
+// second, the rewrite not at all, then exit 3. A stale lock is reclaimed once first (lockFree).
 function sheet(stepping) {
   const file = join(root, 'sheet.json')
   const no1 = (field, why) => { console.log(JSON.stringify({ written: false, field: field || '.', why })); return 1 }
@@ -911,12 +911,45 @@ function sheet(stepping) {
   if (![null, 'file'].includes(kind(file))) return no3('sheet.json is not a file')
   if (git(root, ['ls-files', '--error-unmatch', '--', 'sheet.json']) !== null) return no3('tracked by git')
   const given = stepping ? input() : {}, lock = `${file}.lock`
-  for (let tries = stepping ? 20 : 1; ; ) {
-    try { closeSync(openSync(lock, 'wx')); break } catch (e) { if (e.code !== 'EEXIST') return no3('the write failed, the old sheet left as it is') }
-    if (--tries === 0) return no3('sheet.json.lock is held')
+  let ino = null
+  for (let tries = stepping ? 20 : 1, reclaims = 1; ; ) {
+    try { if ((ino = lockTake(lock)) !== null) break } catch { return no3('the write failed, the old sheet left as it is') }
+    if (reclaims && lockFree(lock)) { reclaims--; continue }
+    if (--tries === 0) return no3(`sheet.json.lock is held; reclaimed once ${LOCK / 1000} s old, or remove it by hand when no run writes the sheet`)
     Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50)
   }
-  try { return held(stepping, given, file, no1, no3) } finally { try { unlinkSync(lock) } catch {} }
+  try { return held(stepping, given, file, no1, no3) } finally { try { if (lstatSync(lock).ino === ino) unlinkSync(lock) } catch {} }
+}
+// The lock, made exclusively ('wx': never through a link) with this pid in it: its inode, or null
+// when it is there already; any other error throws, the lock it made removed.
+function lockTake(lock) {
+  let fd
+  try { fd = openSync(lock, 'wx') } catch (e) { if (e.code === 'EEXIST') return null; throw e }
+  try { writeFileSync(fd, String(process.pid)); return fstatSync(fd).ino } catch (e) { try { unlinkSync(lock) } catch {} throw e } finally { closeSync(fd) }
+}
+// A lock left by a killed run: a regular file whose pid is gone (ESRCH) or whose mtime is LOCK ms
+// or more before the run's time; a link, a FIFO or a folder never is. It is moved aside by a
+// rename and removed only when it is still the file judged stale, else put back: true when removed.
+const LOCK = 30000
+function lockFree(lock) {
+  let fd, st, pid
+  try { fd = openSync(lock, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK) } catch { return false }
+  try {
+    st = fstatSync(fd)
+    if (!st.isFile()) return false
+    const b = Buffer.alloc(16)
+    pid = b.toString('latin1', 0, readSync(fd, b, 0, b.length, 0))
+  } catch { return false } finally { closeSync(fd) }
+  let gone = false
+  if (/^[1-9]\d{0,9}$/.test(pid)) try { process.kill(+pid, 0) } catch (e) { gone = e.code === 'ESRCH' }
+  if (!gone && now - st.mtimeMs < LOCK) return false
+  const aside = `${lock}.${process.pid}.stale`
+  try { renameSync(lock, aside) } catch { return false }
+  try {
+    if (lstatSync(aside).ino === st.ino) return true
+    try { linkSync(aside, lock) } catch {}
+    return false
+  } finally { try { unlinkSync(aside) } catch {} }
 }
 function held(stepping, given, file, no1, no3) {
   let next
