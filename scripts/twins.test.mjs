@@ -141,6 +141,8 @@ const TWINS = [
   { test: 'usage-line', file: script('usage-line'), from: 'flagged = projected >= 100', to: 'flagged = projected >= 1000', says: 'flag' },
   { test: 'workflows', file: 'plugins/gtm/workflows/design-loop.js', from: 'taste >= TASTE_BAR', to: 'taste >= 0', says: 'design-loop' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'const MAX_SHEETS = 2', to: 'const MAX_SHEETS = 3', says: 'a third entry in bound' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: "category: 'proof', summary: `${r} reported", to: "category: 'behaviour', summary: `${r} reported", says: 'trace: a surviving mutation' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '· models <M> · causes <C>`', to: '· models <M>`', says: 'causes <C>' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []

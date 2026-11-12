@@ -45,6 +45,7 @@ async function run(name, src, args, reply) {
     dispatches.push(d)
     prompts[opts.label] = prompt
     if (opts.schema) required[opts.label] = opts.schema.required
+    if (opts.schema?.properties?.findings) required[`${opts.label} finding`] = opts.schema.properties.findings.items.required
     if (opts.schema) tags[opts.label] = opts.schema.properties?.findings?.items?.properties?.sheet ?? null
     if (opts.schema) capped[opts.label] = [...Object.entries(opts.schema.properties?.directions?.items?.properties || {}), ...Object.entries(opts.schema.properties || {})].flatMap(([k, v]) => (v.maxLength ? [[k, v.maxLength]] : []))
     const out = await reply(d)
@@ -121,6 +122,11 @@ const OPEN3 = (by, important) => ({
   status: 'OPEN', head: 'h3', fixRounds: 3, open: [{ ...badFinding, by }], minors: [],
   stats: { [by]: { critical: 0, important, minor: 0 } },
 })
+
+// Trace stubs: a profile as /gtm:deliver hands it, a finding with its category, the category line.
+const TRACED = { implementer: { model: 'opus', effort: 'low' }, reviewer: { model: 'opus', effort: 'medium' }, 'security-reviewer': { model: 'opus', effort: 'high' } }
+const hole = { severity: 'important', file: WF, summary: 'hole', category: 'security' }
+const CATEGORY = ['Category: give each finding one of behaviour, security, proof, doc, form']
 
 const deliver = [
   {
@@ -1582,6 +1588,66 @@ const deliver = [
     returns: { status: 'GATED', tier: 'standard', head: 'h0', files: ['src/a.js'] },
     dispatches: [implement()],
   },
+  {
+    name: 'trace: each role as dispatched, a raised fix round and a risky security raise shown, the round started by a category',
+    args: { team: TRACED, risky: RISKY, triggers: SEC },
+    reply: implementer([WF], (d) => (d.label === 'security-reviewer' ? { verdict: 'fix', findings: [hole], summary: 'fix' } : ok), [WF]),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [],
+      stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
+      trace: { models: 'implementer opus/low/medium, reviewer opus/medium, security-reviewer opus/xhigh', causes: '1:security-reviewer/important/security' },
+    },
+    dispatches: [
+      implement('gtm:implementer', { model: 'opus', effort: 'low' }), reviewer('reviewer', { model: 'opus', effort: 'medium' }),
+      security('security-reviewer', { model: 'opus', effort: 'xhigh' }),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', model: 'opus', effort: 'medium' },
+      security('security-reviewer · round 1', { model: 'opus', effort: 'xhigh' }),
+    ],
+    prompts: { reviewer: CATEGORY, 'security-reviewer · round 1': CATEGORY },
+  },
+  {
+    name: 'trace: a missing and an unknown category read ?, and the rounds go on',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ severity: 'important', summary: 'x', category: 'style' }], summary: 'fix' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
+      trace: { models: 'implementer ?/?/medium/high, reviewer ?/?', causes: '1:reviewer/important/?, 2:reviewer/important/?' },
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+  },
+  {
+    name: 'trace: a surviving mutation starts its round as proof, a fix verdict with nothing blocking as ?',
+    args: { triggers: SEC },
+    reply: implementer(['scripts/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [], summary: 's', mutations: { planted: 2, survived: 1 } }
+      : d.label === 'security-reviewer' ? { verdict: 'fix', findings: [], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 2, survived: 1 }, 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, security-reviewer ?/?', causes: '1:reviewer/important/proof, 1:security-reviewer/important/?' },
+    },
+    dispatches: [implement(), reviewer(), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), security('security-reviewer · round 1')],
+  },
+  {
+    name: 'trace: a model or effort off its alphabet reads ?, a critical cause keeps its severity, each finding needs a category',
+    args: { team: { implementer: { model: 'opus; rm -rf ~', effort: 'turbo' }, reviewer: { model: 'sonnet', effort: 'low' } } },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...critical, category: 'security' }], summary: 'fix' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], minors: [], stats: { reviewer: { critical: 1, important: 0, minor: 0 } },
+      trace: { models: 'implementer ?/?, reviewer sonnet/low', causes: '1:reviewer/critical/security' },
+    },
+    dispatches: [implement('gtm:implementer', { model: 'opus; rm -rf ~', effort: 'turbo' }), reviewer('reviewer', { model: 'sonnet', effort: 'low' }),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', model: 'opus; rm -rf ~', effort: 'turbo' }, reviewer('reviewer · round 1', { model: 'sonnet', effort: 'low' })],
+    required: { 'reviewer finding': ['severity', 'summary', 'category'] },
+  },
+  {
+    name: 'trace: a run that dispatches nothing shows none',
+    args: { review: 'range' },
+    reply: () => { throw new Error('nothing runs') },
+    returns: { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files', trace: { models: 'none', causes: 'none' } },
+    dispatches: [],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
@@ -2105,7 +2171,11 @@ for (const s of scenarios) {
   try {
     const src = readFileSync(join(folder, `${s.workflow}.js`), 'utf8')
     const { value, dispatches, logs, prompts, extra, required, capped, tags } = await run(s.workflow, src, s.args, s.reply)
-    if (canon(value) !== canon(s.returns)) differs(where, 'returned value', s.returns, value)
+    // The trace is compared only where a scenario states it: every other key is compared exactly.
+    const { trace, ...rest } = value && typeof value === 'object' ? value : { trace: undefined }
+    const shown = s.returns && typeof s.returns === 'object' && 'trace' in s.returns ? value : value && typeof value === 'object' ? rest : value
+    if (s.workflow === 'deliver-task' && !trace) failures.push(`${where}: returned no trace`)
+    if (canon(shown) !== canon(s.returns)) differs(where, 'returned value', s.returns, shown)
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
     // The expected entry is a set of fragments that exactly one log line must hold together.
     if (s.log && logs.filter((line) => s.log.every((part) => line.includes(part))).length !== 1) differs(where, 'log', s.log, logs)

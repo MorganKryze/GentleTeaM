@@ -214,5 +214,33 @@ function scenario(name, dir, a, want) {
 // A18: the answer step's scenario starts from the card the writer gave for the request's example.
 const d1 = (f) => readFileSync(join(fixtures, f), 'utf8')
 if (d1('card-d1-answer/root/reports/mandate/waiting.json') !== JSON.parse(d1('card-d1/expected.json')).files['reports/mandate/waiting.json']) errors.push('card-d1-answer: its card is not the one card-d1 writes')
+// A8: today's progress and ledger lines, then the same lines with the delivery tail appended and
+// an escape line in the ledger, give the same phase, task, events and ETA.
+function tailed(tail) {
+  const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-tail-'))
+  try {
+    const r = join(tmp, 'root')
+    mkdirSync(join(r, 'reports/x'), { recursive: true })
+    mkdirSync(join(r, 'plans'))
+    writeFileSync(join(r, 'plans/2026-11-12-x.md'), '### Task 1\n### Task 2\n### Task 3\n')
+    const run = (d, s) => `- ${d} · ${s} · run · tasks 2 · correction rounds 1, 0 · measured 61.1m 1237k 26a: spec 10.4m 129k 1a, plan 17.8m 190k 1a, tasks 13.8m 682k 21a, final 17.5m 211k 2a, fix 1.6m 25k 1a; roles ?`
+    const escape = '- 2026-11-03 · b · escape · a doc sentence false after ready · found after the landing, in the docs'
+    writeFileSync(join(r, 'ledger.md'), [run('2026-11-01', 'a'), run('2026-11-02', 'b'), ...(tail ? [escape] : [])].join('\n') + '\n')
+    const end = tail ? ' · start 2026-11-12T09:00:00Z · end 2026-11-12T09:20:00Z · models implementer opus/low/medium, reviewer opus/medium · causes 1:reviewer/important/proof · ab on' : ''
+    const lines = ['- spec · draft written · 400 s · 129k · 1 agent', '- plan · 3 tasks · 900 s · 200k · 1 agent',
+      '- task 1 · CLEAN · guarded · rounds 1 · reviewer · a..b · 900 s · 300k · 4 agents · run wf_1',
+      '- task 2 · OPEN · guarded · rounds 2 · reviewer · b..c · 900 s · 300k · 4 agents · run wf_2']
+    writeFileSync(join(r, 'reports/x/progress.md'), lines.map((l) => l + end).join('\n') + '\n')
+    const out = spawnSync(process.execPath, [script, '--root', r, '--slug', 'x', '--now', '2026-11-12T12:00:00Z'], { cwd: tmp, encoding: 'utf8', env: { ...env, TZ: 'UTC' } })
+    let f = {}
+    try { f = JSON.parse(out.stdout) } catch {}
+    return JSON.stringify({ exit: out.status, phase: f.phase, task: f.task, events: f.events, eta: f.eta })
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
+  }
+}
+const READ = JSON.stringify({ exit: 1, phase: 'delivery', task: { n: 2, of: 3 }, events: ['plan: ?', 't1: CLEAN', 't2: OPEN'],
+  eta: { minutes: 32.9, clock: '12:32', runs: 2, perTask: 6.9, parts: { tasks: 13.8, final: 17.5, fix: 1.6 }, afterAnswer: false } })
+for (const tail of [false, true]) if (tailed(tail) !== READ) errors.push(`A8: ${tail ? 'the tailed' : "today's"} lines read ${tailed(tail)}, want ${READ}`)
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`now-facts: ${readdirSync(fixtures).length} scenarios OK`)
+console.log(`now-facts: ${readdirSync(fixtures).length} scenarios and the delivery tail OK`)

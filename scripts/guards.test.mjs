@@ -28,6 +28,7 @@ const PINS = {
     '`<root>/reports/<slug>/mandate.md`): the plugin\'s `templates/mandate.md` first.',
     'under a mandate, its summary first (`mandate.md`).',
     'from every progress line; then each ruling taken not already there.',
+    'roles summed; last, `templates/delivery.md`\'s tail.',
   ],
   'plugins/gtm/templates/mandate.md': [
     'or `<root>/reports/<slug>/mandate.md` exists.',
@@ -196,7 +197,14 @@ const PINS = {
     'existing section over verbatim, its `> Source:` line included.',
   ],
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
-  'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m],
+  'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m, 'Each must-fix names one category: `behaviour`, `security`, `proof`'],
+  'plugins/gtm/templates/delivery.md': [
+    '`· start <S> · end <E> · models <M> · causes <C>`',
+    'Never estimated, never written later from memory: an instant you do not have is `?`.',
+    '`trace.models`, copied as it is.',
+    '`trace.causes`, copied as it is.',
+    'is `?` and never stops a run.',
+  ],
   'plugins/gtm/workflows/deliver-task.js': ["const SECURITY = 'high'"],
   'docs/reference/commands.md': [
     'the plan\'s section and holds for that branch, resumes included, until you delete it.',

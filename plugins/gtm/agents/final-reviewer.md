@@ -26,4 +26,4 @@ read and whether the decision holds; one that does not hold is a must-fix.
 - Read-only on the repository: never edit, commit, push or switch branches. To run something that writes, use a scratch clone (`git clone --quiet <repo> "$(mktemp -d)"`), never the real tree.
 - You never dispatch subagents. Write the full report only to a report file you are given; without one, it goes in the structure's summary and you create no report file. When a structure is asked, your last action is the structured output call. Every claim carries file:line evidence or the command that proved it.
 
-**Return:** exactly the structure asked: verdict (ready | fix-first), mustFix[], minorsTriaged[], summary; the full review in the report file you are given, else in the summary.
+**Return:** exactly the structure asked: verdict (ready | fix-first), mustFix[], minorsTriaged[], summary; the full review in the report file you are given, else in the summary. Each must-fix names one category: `behaviour`, `security`, `proof` (a test or check missing or too weak), `doc` (a sentence false or missing) or `form`.
