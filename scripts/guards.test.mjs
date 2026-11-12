@@ -204,6 +204,14 @@ const PINS = {
     '`trace.models`, copied as it is.',
     '`trace.causes`, copied as it is.',
     'is `?` and never stops a run.',
+    // The clock in UTC, the instant's shape, the default for what was not passed, the final
+    // review's cause, and the promise that keeps today's readers of the line right.
+    '`<S>`, `<E>`: UTC instants to the second, `YYYY-MM-DDThh:mm:ssZ`, read from the clock (`date -u',
+    '+%Y-%m-%dT%H:%M:%SZ`)',
+    'model or effort you did not pass: `?`.',
+    '`1:final-reviewer/important/<category>` per must-fix. No round: `none`.',
+    'Nothing else in the line changes, and segments are only added at its end, so every reader of',
+    'today\'s lines reads them as before.',
   ],
   'plugins/gtm/workflows/deliver-task.js': ["const SECURITY = 'high'"],
   'docs/reference/commands.md': [
