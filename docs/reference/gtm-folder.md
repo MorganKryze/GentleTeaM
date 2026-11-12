@@ -67,6 +67,7 @@ one learned.
 | `reports/<slug>/waiting.json` | the card waiting or last answered on this branch, one at a time, in the [card file](#card-file) shape: written by GTM's facts script, kept with your answer once you answer, replaced by the next card, or deleted when the script refuses it | the orchestrator, through the facts script |
 | `reports/<slug>/mandate.md` | the file given with `mandate=<file>`, copied byte for byte, its fingerprint in the logbook; any other file there counts as no mandate; it holds for the branch, resumes included, until you delete it | `/gtm:deliver` |
 | `reports/<slug>/landing.json` | the landing `/gtm:ship` records under a standing go: class, head, proofs; deleted when the check refuses | `/gtm:ship` |
+| `reports/<slug>/progress.md` | one line per run of the branch, ending with its start and end, the model and effort of each role it dispatched, and the cause of each [correction round](/reference/glossary/#correction-round); an instant nobody recorded reads `?` | the orchestrator |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
 | `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
 

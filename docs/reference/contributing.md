@@ -35,8 +35,8 @@ pull request small, and update the CHANGELOG and the version together.
 
 `node scripts/validate.mjs` and `claude plugin validate .` must pass; CI runs both on every push.
 Each `scripts/*.test.mjs` proves it can fail: `scripts/twins.test.mjs` plants one defect per row and
-the test must name it, so a new test needs its row. A test runs once, for two minutes at most: no
-rerun turns a red gate green.
+the test must name it, so a new test needs its row. Up to four tests run at a time, each once and
+for five minutes at most: no rerun turns a red gate green.
 `validate.mjs` also checks the documentation site's sources (`scripts/site-checks.test.mjs
 --source`). On every pull request the Pages workflow builds the site and runs the full checks:
 links, and in a browser the overflow, 44 px targets, reading measure, contrast, tables and axe
