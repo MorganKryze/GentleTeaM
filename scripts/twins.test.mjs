@@ -182,6 +182,13 @@ for (const f of tests) {
 const scratches = []
 const git = (cwd, ...a) => execFileSync('git', a, { cwd, stdio: 'pipe' })
 const found = []
+// A gate that cuts this test at its bound sends SIGTERM: the scratches go with it.
+for (const sig of ['SIGTERM', 'SIGINT']) {
+  process.on(sig, () => {
+    for (const s of scratches) rmSync(s, { recursive: true, force: true })
+    process.exit(143)
+  })
+}
 try {
   const first = mkdtempSync(join(tmpdir(), 'gtm-twins-'))
   scratches.push(first)
