@@ -9,9 +9,9 @@
 // facts script, never by hand, one card at a time, its answer recorded before the next rewrite,
 // on its own card only, a refused answer never reworded. The project sheet goes through the same
 // script, its exclude line beside the state's, only where the switch is on: the owner's texts
-// never reworded, no showcase handed, init's rows inside its five questions, retro's lists in its
-// report and merged into the stored ones. A standing go: the line's shape, its proofs, the
-// never list and what a program must refuse, as the settings reference states them.
+// never reworded, no showcase handed, init's rows inside its five questions and only for what the
+// stored sheet lacks, retro's lists in its report and merged into the stored ones. A standing go:
+// the line's shape, its proofs, the never list and what a program must refuse, as the settings reference states them.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -111,8 +111,9 @@ const PINS = {
   'plugins/gtm/skills/init/SKILL.md': [
     'security-reviewer on, effort high;',
     '## 2. Interview (one message, ≤ 5 questions)',
-    "Where `config.yml`'s `project.sheet` reads `on`, the table also holds one row per missing",
-    'rows, not questions;',
+    "Where `config.yml`'s `project.sheet` reads `on`,",
+    '`users` null in `<root>/sheet.json`',
+    'rows, not questions',
   ],
   'plugins/gtm/skills/retro/SKILL.md': [
     "where `config.yml`'s `project.sheet` reads `on`, hand `decisions` and",
@@ -123,6 +124,8 @@ const PINS = {
     '`showcase` is never handed in this version',
     '`/gtm:retro`: reads `<root>/sheet.json` first',
     'never rebuilt from the ledger alone',
+    "`/gtm:init`: reads `config.yml`'s `project.kind` and `<root>/sheet.json` first",
+    'the stored value beside the new one',
   ],
   'plugins/gtm/templates/config.yml': [/^ {2}push: ask\b/m, '# standing = still nothing pushed: /gtm:ship records a landing for', 'set by /gtm:tune only'],
   'plugins/gtm/skills/tune/SKILL.md': [

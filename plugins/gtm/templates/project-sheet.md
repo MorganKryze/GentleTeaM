@@ -26,10 +26,13 @@ line, never empty, no control or format character; the number after a text is it
   `modules`).
 
 ## Who hands what
-- `/gtm:init`: one row of its guesses table per missing kind, purpose or users (the kind: the guess
-  and why; purpose and users: a summary of the brief), rows, not questions, no extra message. On
-  the owner's OK, `purpose` and `users` go through the step and the kind into `config.yml` as
-  `kind:` under `project:`, never through the step; init never sets `project.sheet`.
+- `/gtm:init`: reads `config.yml`'s `project.kind` and `<root>/sheet.json` first (no file:
+  `purpose` and `users` null). One row of its guesses table per kind unset or `purpose` or `users`
+  null (the kind: the guess and why; purpose and users: a summary of the brief), rows, not
+  questions, no extra message; a stored value gets no row. When the owner asks to change a stored
+  value, the row shows the stored value beside the new one before the OK. On the owner's OK,
+  `purpose` and `users` go through the step and the kind into `config.yml` as `kind:` under
+  `project:`, never through the step; init never sets `project.sheet`.
 - `/gtm:retro`: reads `<root>/sheet.json` first (no file: both lists empty), then hands
   `decisions` and `difficulties` merged into the stored lists, never rebuilt from the ledger alone,
   both listed in its report. Decisions: the stored ones, an owner's correction included, and the
