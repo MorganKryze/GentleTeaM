@@ -49,6 +49,8 @@ JavaScript syntax, matched against repository-relative paths.
 | `design.render` | `"<cmd> {html} {png} {width}"`; empty uses a Playwright screenshot | `""` | the designer |
 | `design.kit` | the path of a validated design kit; a [Feature](/reference/glossary/#feature) whose screens use only its patterns is designed in code, with no mockups | `""` | `/gtm:gtm`, the analyst, `ux-qa` |
 | `design.widths` | the screen widths drawn and measured | `[360, 390, 1280]` | the designer, `ux-qa` |
+| `project.sheet` | `on` keeps the [project sheet](/reference/gtm-folder/#project-sheet), `sheet.json`, for a program that shows the project; `off` writes, asks and shows nothing about it | `off` | the orchestrator, `/gtm:init`, `/gtm:retro` |
+| `project.kind` | `app-mobile`, `app-web`, `infra`, `tool` or `sandbox`; `null` until `/gtm:init` confirms it with you | `null` | `/gtm:init`, the facts script |
 | `qa.live_url` | the live site checked after you deploy; empty skips the check | `""` | `release-qa` |
 | `qa.account` | where the test account's credentials live, never the values | `""` | `release-qa` |
 

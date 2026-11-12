@@ -103,7 +103,7 @@ for (const w of ['`Brainstorm:` line', 'Next steps']) if (!bullets.some((b) => b
 
 for (const s of ['init', 'tune']) if (!read(`skills/${s}/SKILL.md`).includes('templates/companions.md')) fail(`${s}/SKILL.md does not point at templates/companions.md`)
 const initLines = read('skills/init/SKILL.md').split('\n').length - 1
-if (initLines > 81) fail(`init/SKILL.md is ${initLines} lines (at most 81)`)
+if (initLines > 83) fail(`init/SKILL.md is ${initLines} lines (at most 83)`)
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('companions: rules, team template, pointers and frozen tool lists OK')

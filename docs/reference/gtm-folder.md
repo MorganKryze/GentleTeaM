@@ -43,6 +43,8 @@ one learned.
 <li><code>ledger.md</code><span class="why">the logbook</span><span class="badge">skip it</span></li>
 <li><code>state.json</code><span class="why">the run, for a program</span>
 <span class="badge">skip it</span></li>
+<li><code>sheet.json</code><span class="why">the project, for a program</span>
+<span class="badge">skip it</span></li>
 </ul>
 <figcaption>How to read it: the rows marked read it, on a tinted ground, are yours; the grey rows are written and read by the team.</figcaption>
 </figure>
@@ -68,6 +70,7 @@ one learned.
 | `reports/<slug>/mandate.md` | the file given with `mandate=<file>`, copied byte for byte, its fingerprint in the logbook; any other file there counts as no mandate; it holds for the branch, resumes included, until you delete it | `/gtm:deliver` |
 | `reports/<slug>/landing.json` | the landing `/gtm:ship` records under a standing go: class, head, proofs; deleted when the check refuses | `/gtm:ship` |
 | `reports/<slug>/progress.md` | one line per run of the branch, ending with its start and end, the model and effort of each role it dispatched, and the cause of each [correction round](/reference/glossary/#correction-round); an instant nobody recorded reads `?` | the orchestrator |
+| `sheet.json` | the [project sheet](#project-sheet): what the project is for, its plan, decisions, cost and difficulties, for a program that shows the project; kept out of commits like `state.json`, and written only while `project.sheet` is `on` | the orchestrator, through the facts script |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
 | `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
 
@@ -147,6 +150,53 @@ yours; every other key comes from the card GTM showed you.
 | `excerpt` | `file`, a file in your GTM folder; `where` (80); `head` (80, or null); `lines` (1 to 8 of 200) and `highlight` (200, or null), word for word from that file |
 | `list` | `items`: 1 to 8 `{k (40), v (120, or null)}` |
 | `pending` | none |
+
+## What does the project sheet hold? {#project-sheet}
+
+`sheet.json` is the [project sheet](/reference/glossary/#project-sheet): one page of the project
+as data, shape `sheet.v1`, for a program of yours that shows it. It exists only while
+`config.yml`'s `project.sheet` is `on` (see [settings](/reference/settings/)); off, GTM writes,
+asks and shows nothing about it. GTM's facts script rewrites it with `state.json` after each run
+view, keeps the fields you gave and recomputes the facts. It is never committed: GTM adds it to
+`.git/info/exclude` as it adds `state.json`. When a field is off the script writes nothing and
+GTM goes on with one Heads-up.
+
+The fields you give come from two moments. `/gtm:init` shows the kind, purpose and users as rows
+of its guesses table and writes them on your OK. `/gtm:retro` lists the decisions and
+difficulties in its report and writes those.
+
+A program reading it:
+- treats the sheet as stale when it is older than `NOW.md`;
+- treats every text as untrusted: GTM refuses control, format and separator characters and long
+  texts;
+- keeps its own reading when `v` is a version it does not know. Under `v` 1 fields are only added:
+  `v` changes when a field is removed, renamed or retyped, and a reader ignores the fields it does
+  not know.
+
+Every key is present but `showcase`; "or null" marks those that may be `null`. A text is one line,
+in your `language.human`, at most the characters given.
+
+| Key | What it holds | Set by |
+| --- | --- | --- |
+| `v` | 1 | the script |
+| `kind` | `app-mobile`, `app-web`, `infra`, `tool`, `sandbox` or null | the script, from `project.kind` |
+| `headline` | text, 140, or null; null in this version | the script |
+| `purpose`, `users` | text, 280, or null | `/gtm:init`, on your OK |
+| `plan` | `{branch, steps, milestone, stories}` | the script |
+| `plan.branch` | the state's branch, or null | the script |
+| `plan.steps` | the state's steps, or null | the script |
+| `plan.milestone` | `{title (80), branches}`, `branches` 1 to 12 `{n (1 to 99), branch (60), title (60)}`; or null | the script |
+| `plan.stories` | `{done, total}`, whole numbers, `done` at most `total`; or null | the script |
+| `decisions` | 0 to 6 `{at, text, by}`: `at` a `YYYY-MM-DD` date not after today; text, 200; `by` `owner` or `gtm` | `/gtm:retro` |
+| `cost` | `{tokens, seconds, dollars}`: the sums of this branch's progress lines, whole numbers or null; `dollars` null | the script |
+| `difficulties` | 0 to 6 `{k, text, src}`: texts, 20, 200 and 120 | `/gtm:retro` |
+| `modules` | 0 to 8 modules as in the [card file](#card-file); `[]` in this version | the script |
+| `showcase` | absent or null in this version; a later version's object, added under `v` 1 | the script |
+
+`cost` adds the seconds and tokens of each line in `reports/<slug>/progress.md`; the tail that
+ends a line (start, end, models, causes) adds nothing. A sum GTM cannot be sure of is `null`,
+never smaller. A `showcase` holding anything but `null` comes from a later GTM: read it as a field
+you do not know.
 
 ## What does a new project start with?
 
