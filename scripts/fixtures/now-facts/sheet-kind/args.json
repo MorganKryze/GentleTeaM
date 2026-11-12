@@ -1,0 +1,178 @@
+{
+  "branch": "feat/where-am-i",
+  "args": [
+    "--state",
+    "{root}/state.json"
+  ],
+  "variants": [
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: tool"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": "tool"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: tool # confirmed at init"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": "tool"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: tool "
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": null
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: Tool"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": null
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: \"tool\""
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": null
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: null"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": null
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: tools"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": null
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: app-web"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": "app-web"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: sandbox"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": "sandbox"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: infra"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": "infra"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "kind: tool",
+          "kind: app-mobile"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": "app-mobile"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  kind: tool\n",
+          ""
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": null
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "  kind: tool\n",
+          "  kind: tool\n  kind: tool\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "kind": null
+        }
+      }
+    }
+  ]
+}

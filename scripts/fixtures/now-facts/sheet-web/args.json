@@ -1,0 +1,8 @@
+{
+  "branch": "feat/at-rest",
+  "stdin": "in.json",
+  "args": [
+    "--sheet",
+    "{root}/sheet.json"
+  ]
+}

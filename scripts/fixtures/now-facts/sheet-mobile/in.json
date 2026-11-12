@@ -1,0 +1,28 @@
+{
+  "purpose": "Une app mobile d'exemple pour suivre un entraînement entre amis, utilisable hors ligne.",
+  "users": "Quelques dizaines de proches ; téléphone d'abord, d'une main, souvent sans réseau.",
+  "decisions": [
+    {
+      "at": "2026-10-15",
+      "text": "La règle des répétitions est recalculée à chaque série.",
+      "by": "owner"
+    },
+    {
+      "at": "2026-10-14",
+      "text": "Un menu étiqueté par exercice, au lieu de quatre icônes nues.",
+      "by": "gtm"
+    }
+  ],
+  "difficulties": [
+    {
+      "k": "1 sur 3",
+      "text": "Un test d'interface échoue une fois sur trois : la règle revient parfois à l'ancienne position.",
+      "src": "progress.md, gate 00be05f"
+    },
+    {
+      "k": "1,6 s",
+      "text": "Après un changement de forme, le cadre du lecteur d'écran reste à l'ancienne place.",
+      "src": "ledger"
+    }
+  ]
+}

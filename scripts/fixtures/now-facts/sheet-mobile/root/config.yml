@@ -1,0 +1,7 @@
+# fixture config
+root: .gtm
+stealth: off
+
+project:
+  sheet: on
+  kind: app-mobile

@@ -1,0 +1,18 @@
+{
+  "purpose": "Un but en une phrase.",
+  "users": "Des utilisateurs en une phrase.",
+  "decisions": [
+    {
+      "at": "2026-10-15",
+      "text": "Une décision relue.",
+      "by": "owner"
+    }
+  ],
+  "difficulties": [
+    {
+      "k": "CI",
+      "text": "Une difficulté relue.",
+      "src": "ledger"
+    }
+  ]
+}

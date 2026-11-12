@@ -37,10 +37,17 @@
 // changes nothing. Both print one line {written, field, why}: a refused field's path, built from
 // the shape's own keys, and a reason from a closed list; never a card's text. Exit 1 refused; 3
 // nothing written in a linked worktree or over a tracked file, a link or a non-file.
+// The project sheet <root>/sheet.json (sheet.v1), only while config.yml's `project.sheet` reads
+// `on`: --state then rewrites it by a rename, its fact fields (kind, plan, cost) recomputed and the
+// owner fields of a sheet that passes the check kept; a sheet that fails it is left as it is, exit
+// 3. With --sheet <root>/sheet.json it is the step: owner fields on stdin (as --card takes a card),
+// checked whole against sheet.v1, an allowlist built from decision.v1's pieces, each given field
+// replaced, or one line {written, field, why} and nothing written.
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
 //        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]
 //        [--state <root>/state.json] [--mandate <slug> [--copy <file>]]
-//        [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug>] No dependencies.
+//        [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug>]
+//        [--sheet <root>/sheet.json] No dependencies.
 import { readFileSync, readSync, readdirSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -66,8 +73,8 @@ const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >
 
 // Usage errors exit 2: an unknown flag, a flag without its value, no --root, a --now or --since
 // that is not a date-time.
-const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate', 'copy', 'landing', 'proofs', 'card', 'answer']
-const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug> [--copy <file>]] [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug>]'); process.exit(2) }
+const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate', 'copy', 'landing', 'proofs', 'card', 'answer', 'sheet']
+const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug> [--copy <file>]] [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug>] [--sheet <root>/sheet.json]'); process.exit(2) }
 const argv = process.argv.slice(2), opt = { running: [] }
 for (let i = 0; i < argv.length; i += 2) {
   const k = argv[i].slice(2), v = argv[i + 1]
@@ -92,6 +99,7 @@ const cardSlug = opt.card ?? opt.answer
 if (cardSlug !== undefined && (!/^[a-z0-9-]+$/.test(cardSlug) || (opt.card !== undefined && opt.answer !== undefined) || opt.state !== undefined || opt.mandate !== undefined || opt.landing !== undefined)) { console.error('now-facts.mjs: --card or --answer takes [a-z0-9-] only, alone, and no --state, --mandate or --landing'); process.exit(2) }
 const root = resolve(opt.root)
 if (opt.state !== undefined && resolve(opt.state) !== join(root, 'state.json')) { console.error('now-facts.mjs: --state takes <root>/state.json only'); process.exit(2) }
+if (opt.sheet !== undefined && (resolve(opt.sheet) !== join(root, 'sheet.json') || opt.state !== undefined || opt.mandate !== undefined || opt.landing !== undefined || cardSlug !== undefined)) { console.error('now-facts.mjs: --sheet takes <root>/sheet.json only, and no --state, --mandate, --landing, --card or --answer'); process.exit(2) }
 const now = opt.now === undefined ? Date.now() : Date.parse(opt.now)
 if (Number.isNaN(now)) { console.error('now-facts.mjs: --now takes an ISO date-time'); process.exit(2) }
 const repo = (git(root, ['rev-parse', '--show-toplevel']) || '').trim() || null
@@ -277,6 +285,8 @@ const text = (s, n) => (typeof s === 'string' && label(s, n)) || null
 const bytes = (f) => { try { const st = lstatSync(f); return st.isFile() && st.size <= 1 << 20 ? readFileSync(f) : null } catch { return null } }
 const small = (f) => { const b = bytes(f); return b === null ? null : b.toString('utf8') }
 const sha = (buf) => createHash('sha256').update(buf).digest('hex')
+// The run's date, YYYY-MM-DD in local time.
+const today = () => { const d = new Date(now); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
 // What a path is, not followed: 'file', 'dir', 'other' (a link, a FIFO) or null when absent.
 const kind = (f) => { try { const st = lstatSync(f); return st.isFile() ? 'file' : st.isDirectory() ? 'dir' : 'other' } catch { return null } }
 // The record --copy appends: the sha256 of the mandate file's raw bytes, the slug's last one wins.
@@ -310,18 +320,20 @@ function card() {
     costIfWrong: r === null ? null : text(r.costIfWrong, LONG), card: `reports/${slug}/waiting.json` }
 }
 // The latest approved milestone (by file name) with a `## <n>. `<branch>`: <title>` heading for
-// this branch: { n, of: its number of such headings, title }.
-function milestone() {
+// this branch: its text, those headings and this branch's, or null.
+function approved() {
   const dir = join(root, 'specs')
   if (out.branch === '?' || !existsSync(dir)) return null
   for (const f of readdirSync(dir).filter((x) => x.endsWith('-milestone.md')).sort().reverse()) {
     const t = small(join(dir, f)) || ''
     if (!/^>.*\bStatus: approved\b/m.test(t)) continue
     const heads = [...t.matchAll(/^## (\d+)\. `([^`]+)`: (.+)$/gm)], h = heads.find((m) => m[2] === out.branch)
-    if (h) return { n: +h[1], of: heads.length, title: text(h[3], LABEL) }
+    if (h) return { t, heads, h }
   }
   return null
 }
+// The state's milestone: { n, of: its number of such headings, title }.
+const milestone = () => { const m = approved(); return m && { n: +m.h[1], of: m.heads.length, title: text(m.h[3], LABEL) } }
 // Text t with the lines of its fenced code blocks blanked, so an example is never read as the
 // thing; a fence closes on a run of its character at least as long, alone on its line.
 function unfenced(t) {
@@ -439,8 +451,7 @@ function copy(s, from) {
     try { closeSync(lfd) } catch {}
     return no('the write failed')
   }
-  const d = new Date(now), day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-  try { appendFileSync(lfd, `${end.length && end[end.length - 1] !== 0x0a ? '\n' : ''}- ${day} · ${s} · ruling · mandate: sha256 ${sha(buf)}\n`) } catch {
+  try { appendFileSync(lfd, `${end.length && end[end.length - 1] !== 0x0a ? '\n' : ''}- ${today()} · ${s} · ruling · mandate: sha256 ${sha(buf)}\n`) } catch {
     console.error('now-facts.mjs: mandate copied without its record: the ledger write failed'); return 3
   } finally { try { closeSync(lfd) } catch {} }
   const { valid, source, why, budget } = mandate(s, readFileSync(led, 'utf8'))
@@ -579,7 +590,7 @@ const orNull = (v, f, check) => (v === null ? null : check(v, f))
 const upTo = (n) => (v, f) => txt(v, n, f)
 const ISO = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/
 const iso = (v, f) => { if (typeof v !== 'string' || !ISO.test(v) || Number.isNaN(Date.parse(v)) || new Date(v).toISOString() !== v) refuse(f, 'shape'); return v }
-const int = (max) => (v, f) => { if (!Number.isSafeInteger(v)) refuse(f, 'type'); if (v < 0 || v > max) refuse(f, 'range'); return v }
+const int = (max, min = 0) => (v, f) => { if (!Number.isSafeInteger(v)) refuse(f, 'type'); if (v < min || v > max) refuse(f, 'range'); return v }
 const list = (v, min, max, f) => { if (!Array.isArray(v)) refuse(f, 'type'); if (v.length < min || v.length > max) refuse(f, 'length'); return v }
 // An object with exactly these keys, copied in this order; its values are checked by the caller.
 const exact = (v, keys, f) => {
@@ -611,6 +622,35 @@ function quoted(p, f) {
     if (!st.isFile() || st.size > 1 << 20) refuse(f, 'file')
     return new TextDecoder('utf-8', { fatal: true }).decode(readFileSync(fd))
   } catch (e) { if (e instanceof Refused) throw e; refuse(f, 'file') } finally { if (fd !== null) try { closeSync(fd) } catch {} }
+}
+// A module (A8), the card's and the sheet's: one of MODULES' types, exactly its keys.
+function moduleOf(m, f) {
+  if (m === null || typeof m !== 'object' || Array.isArray(m)) refuse(f, 'type')
+  if (!Object.hasOwn(m, 'type')) refuse(at(f, 'type'), 'missing')
+  if (typeof m.type !== 'string' || !Object.hasOwn(MODULES, m.type)) refuse(at(f, 'type'), 'list')
+  const q = exact(m, ['type', 'size', 'title', 'src', ...MODULES[m.type]], f)
+  if (!SIZES.includes(q.size)) refuse(at(f, 'size'), 'list')
+  txt(q.title, 60, at(f, 'title')); txt(q.src, 120, at(f, 'src'))
+  if (q.type === 'text') txt(q.text, 600, at(f, 'text'))
+  if (q.type === 'metrics') q.items = list(q.items, 1, 6, at(f, 'items')).map((x, j) => {
+    const g = `${f}.items[${j}]`, r = exact(x, ['label', 'value', 'note', 'gauge', 'tone'], g)
+    txt(r.label, 40, at(g, 'label')); txt(r.value, 20, at(g, 'value')); orNull(r.note, at(g, 'note'), upTo(120))
+    if (r.gauge !== null && (typeof r.gauge !== 'number' || !(r.gauge >= 0 && r.gauge <= 1))) refuse(at(g, 'gauge'), 'range')
+    if (r.tone !== null) refuse(at(g, 'tone'), 'list')
+    return r
+  })
+  if (q.type === 'list') q.items = list(q.items, 1, 8, at(f, 'items')).map((x, j) => {
+    const g = `${f}.items[${j}]`, r = exact(x, ['k', 'v'], g)
+    txt(r.k, 40, at(g, 'k')); orNull(r.v, at(g, 'v'), upTo(120))
+    return r
+  })
+  if (q.type === 'excerpt') {
+    const body = quoted(q.file, at(f, 'file'))
+    txt(q.where, 80, at(f, 'where')); orNull(q.head, at(f, 'head'), upTo(80))
+    q.lines = list(q.lines, 1, 8, at(f, 'lines')).map((l, j) => { txt(l, 200, `${f}.lines[${j}]`); if (!body.includes(l)) refuse(`${f}.lines[${j}]`, 'quote'); return l })
+    orNull(q.highlight, at(f, 'highlight'), (v, g) => { txt(v, 200, g); if (!body.includes(v)) refuse(g, 'quote'); return v })
+  }
+  return q
 }
 // The answer (A11, A12): exactly one of an option key of the card or the owner's words; the full
 // shape, as stored, adds `by` (always owner) and `at`.
@@ -677,35 +717,7 @@ function decision(c, s, stored) {
     txt(b.text, 280, at(g, 'text'))
     return b
   })
-  o.modules = list(o.modules, 0, 4, 'modules').map((m, i) => {
-    const f = `modules[${i}]`
-    if (m === null || typeof m !== 'object' || Array.isArray(m)) refuse(f, 'type')
-    if (!Object.hasOwn(m, 'type')) refuse(at(f, 'type'), 'missing')
-    if (typeof m.type !== 'string' || !Object.hasOwn(MODULES, m.type)) refuse(at(f, 'type'), 'list')
-    const q = exact(m, ['type', 'size', 'title', 'src', ...MODULES[m.type]], f)
-    if (!SIZES.includes(q.size)) refuse(at(f, 'size'), 'list')
-    txt(q.title, 60, at(f, 'title')); txt(q.src, 120, at(f, 'src'))
-    if (q.type === 'text') txt(q.text, 600, at(f, 'text'))
-    if (q.type === 'metrics') q.items = list(q.items, 1, 6, at(f, 'items')).map((x, j) => {
-      const g = `${f}.items[${j}]`, r = exact(x, ['label', 'value', 'note', 'gauge', 'tone'], g)
-      txt(r.label, 40, at(g, 'label')); txt(r.value, 20, at(g, 'value')); orNull(r.note, at(g, 'note'), upTo(120))
-      if (r.gauge !== null && (typeof r.gauge !== 'number' || !(r.gauge >= 0 && r.gauge <= 1))) refuse(at(g, 'gauge'), 'range')
-      if (r.tone !== null) refuse(at(g, 'tone'), 'list')
-      return r
-    })
-    if (q.type === 'list') q.items = list(q.items, 1, 8, at(f, 'items')).map((x, j) => {
-      const g = `${f}.items[${j}]`, r = exact(x, ['k', 'v'], g)
-      txt(r.k, 40, at(g, 'k')); orNull(r.v, at(g, 'v'), upTo(120))
-      return r
-    })
-    if (q.type === 'excerpt') {
-      const body = quoted(q.file, at(f, 'file'))
-      txt(q.where, 80, at(f, 'where')); orNull(q.head, at(f, 'head'), upTo(80))
-      q.lines = list(q.lines, 1, 8, at(f, 'lines')).map((l, j) => { txt(l, 200, `${f}.lines[${j}]`); if (!body.includes(l)) refuse(`${f}.lines[${j}]`, 'quote'); return l })
-      orNull(q.highlight, at(f, 'highlight'), (v, g) => { txt(v, 200, g); if (!body.includes(v)) refuse(g, 'quote'); return v })
-    }
-    return q
-  })
+  o.modules = list(o.modules, 0, 4, 'modules').map((m, i) => moduleOf(m, `modules[${i}]`))
   const other = exact(o.other, stored ? ['allowed', 'placeholder'] : ['placeholder'], 'other')
   if (stored && other.allowed !== true) refuse('other.allowed', 'list')
   orNull(other.placeholder, 'other.placeholder', upTo(80))
@@ -783,10 +795,151 @@ function cardFile(s, answering) {
   console.log(JSON.stringify({ written: true, field: null, why: null }))
   return 0
 }
+// sheet.v1 (the sheet's A3 to A13), an allowlist from decision.v1's pieces: every key required,
+// nothing else. Owner fields come from the step only, fact fields from the script only.
+const PROJECTS = ['app-mobile', 'app-web', 'infra', 'tool', 'sandbox'], STEPS = ['done', 'blocked', 'todo', 'doing']
+const SHEET = ['v', 'kind', 'headline', 'purpose', 'users', 'plan', 'decisions', 'cost', 'difficulties', 'modules', 'showcase']
+const OWNER = ['purpose', 'users', 'decisions', 'difficulties']
+// config.yml's `project` block: `sheet` on only when it reads `on`, `kind` one of PROJECTS; each a
+// two-space key and one bare word, a comment after a space allowed, nothing else on the line; a
+// key given twice is no value.
+function project() {
+  const got = Object.create(null)
+  let inside = false
+  for (const l of (small(join(root, 'config.yml')) || '').split('\n')) {
+    if (/^\S/.test(l)) inside = /^project:(?: +#.*)?$/.test(l)
+    const m = inside ? l.match(/^ {2}(sheet|kind): ([^\s#]+)(?: +#.*)?$/) : null
+    if (m) got[m[1]] = m[1] in got ? null : m[2]
+  }
+  return { sheet: got.sheet === 'on', kind: PROJECTS.includes(got.kind) ? got.kind : null }
+}
+const listOf = (min, max, each) => (v, f) => list(v, min, max, f).map((x, i) => each(x, `${f}[${i}]`))
+const branchName = (n) => (v, f) => { if (typeof v !== 'string') refuse(f, 'type'); if (v.length > n || !SAFE.test(v)) refuse(f, 'shape'); return v }
+// A real YYYY-MM-DD, not after the run's date.
+const dated = (v, f) => {
+  if (typeof v !== 'string' || !/^\d{4}-\d\d-\d\d$/.test(v) || new Date(Date.parse(v) || 0).toISOString().slice(0, 10) !== v) refuse(f, 'shape')
+  if (v > today()) refuse(f, 'range')
+  return v
+}
+const step = (x, g) => { const q = exact(x, ['n', 'title', 'status'], g); int(99, 1)(q.n, at(g, 'n')); orNull(q.title, at(g, 'title'), upTo(60)); if (!STEPS.includes(q.status)) refuse(at(g, 'status'), 'list'); return q }
+const PLAN = {
+  branch: (v, f) => orNull(v, f, branchName(100)),
+  steps: (v, f) => orNull(v, f, listOf(0, 30, step)),
+  milestone: (v, f) => orNull(v, f, (m, g) => {
+    const q = exact(m, ['title', 'branches'], g)
+    txt(q.title, 80, at(g, 'title'))
+    q.branches = listOf(1, 12, (x, h) => { const b = exact(x, ['n', 'branch', 'title'], h); int(99, 1)(b.n, at(h, 'n')); branchName(60)(b.branch, at(h, 'branch')); txt(b.title, 60, at(h, 'title')); return b })(q.branches, at(g, 'branches'))
+    return q
+  }),
+  stories: (v, f) => orNull(v, f, (s, g) => { const q = exact(s, ['done', 'total'], g); int(1e6)(q.done, at(g, 'done')); int(1e6)(q.total, at(g, 'total')); if (q.done > q.total) refuse(at(g, 'done'), 'range'); return q }),
+}
+const CHECKS = {
+  v: (v, f) => { if (v !== 1) refuse(f, 'list'); return v },
+  kind: (v, f) => { if (v !== null && !PROJECTS.includes(v)) refuse(f, 'list'); return v },
+  headline: (v, f) => orNull(v, f, upTo(140)),
+  purpose: (v, f) => orNull(v, f, upTo(280)),
+  users: (v, f) => orNull(v, f, upTo(280)),
+  plan: (v, f) => { const p = exact(v, Object.keys(PLAN), f); for (const k of Object.keys(PLAN)) p[k] = PLAN[k](p[k], at(f, k)); return p },
+  decisions: listOf(0, 6, (x, g) => { const d = exact(x, ['at', 'text', 'by'], g); dated(d.at, at(g, 'at')); txt(d.text, 200, at(g, 'text')); if (!['owner', 'gtm'].includes(d.by)) refuse(at(g, 'by'), 'list'); return d }),
+  cost: (v, f) => { const c = exact(v, ['tokens', 'seconds', 'dollars'], f); orNull(c.tokens, at(f, 'tokens'), int(1e12)); orNull(c.seconds, at(f, 'seconds'), int(1e9)); if (c.dollars !== null) refuse(at(f, 'dollars'), 'list'); return c },
+  difficulties: listOf(0, 6, (x, g) => { const d = exact(x, ['k', 'text', 'src'], g); txt(d.k, 20, at(g, 'k')); txt(d.text, 200, at(g, 'text')); txt(d.src, 120, at(g, 'src')); return d }),
+  modules: listOf(0, 8, moduleOf),
+  showcase: (v, f) => { if (v !== null) refuse(f, 'list'); return v },
+}
+// A sheet checked whole, as stored, or the step's input: owner fields only, at least one, a fact
+// field given refusing as `set`. A stored sheet without `showcase` reads it as null. Returns a fresh
+// copy, keys in the table's order.
+function sheetOf(v, stored) {
+  if (stored && v !== null && typeof v === 'object' && !Array.isArray(v) && !Object.hasOwn(v, 'showcase')) v = { ...v, showcase: null }
+  if (!stored) {
+    if (v === null || typeof v !== 'object' || Array.isArray(v)) refuse('', 'type')
+    const fact = SHEET.find((k) => !OWNER.includes(k) && Object.hasOwn(v, k))
+    if (fact !== undefined) refuse(fact, 'set')
+    if (Object.keys(v).some((k) => !OWNER.includes(k))) refuse('', 'unknown')
+  }
+  const keys = stored ? SHEET : OWNER.filter((k) => Object.hasOwn(v, k))
+  if (!keys.length) refuse('', 'missing')
+  const s = exact(v, keys, '')
+  for (const k of keys) s[k] = CHECKS[k](s[k], k)
+  return s
+}
+// This slug's spend (A5): the sums of its progress lines' `<n> s` segments and of the `<n>k`
+// segment right after each; a `?` segment, a seconds segment off `<n> s` or one not followed by
+// `<n>k` makes that sum null, never smaller; no slug or no progress file, both null.
+function spend() {
+  const t = mine ? small(join(root, 'reports', slug, 'progress.md')) : null
+  let tokens = t === null ? null : 0, seconds = tokens
+  for (const l of (t || '').split('\n').filter((x) => x.startsWith('- '))) {
+    const segs = l.slice(2).split(' · ')
+    segs.forEach((x, i) => {
+      if (x === '?') { tokens = seconds = null; return }
+      if (!/ s$/.test(x)) return
+      seconds = seconds !== null && /^\d{1,9} s$/.test(x) ? seconds + parseInt(x, 10) : null
+      tokens = tokens !== null && /^\d{1,9}k$/.test(segs[i + 1] || '') ? tokens + parseInt(segs[i + 1], 10) * 1000 : null
+    })
+  }
+  return { tokens: tokens !== null && tokens <= 1e12 ? tokens : null, seconds: seconds !== null && seconds <= 1e9 ? seconds : null, dollars: null }
+}
+// The fact fields (A3 to A5): each null when unknown or off its shape; texts cut as the state's.
+function factsOf() {
+  const fit = (check, v) => { try { return check(v, '') } catch (e) { if (e instanceof Refused) return null; throw e } }
+  const m = mine ? approved() : null, rows = stories.filter((x) => x.type !== 'epic')
+  return { kind: project().kind, cost: spend(), plan: {
+    branch: mine ? fit(PLAN.branch, nul(out.branch)) : null,
+    steps: mine ? fit(PLAN.steps, steps()) : null,
+    milestone: m && fit(PLAN.milestone, { title: text((m.t.match(/^# (.+)$/m) || [])[1], 80), branches: m.heads.map((h) => ({ n: +h[1], branch: h[2], title: text(h[3], 60) })) }),
+    stories: existsSync(join(root, 'backlog.md')) ? fit(PLAN.stories, { done: rows.filter((x) => x.status === 'done').length, total: rows.filter((x) => x.status !== 'dropped').length }) : null,
+  } }
+}
+// The step (stepping) or the rewrite after the state (A2, A6 to A9): exit 3 before anything when
+// the sheet cannot be written safely; then the owner fields of the old sheet, read as an excerpt's
+// file is (no link, at most 1 MiB, UTF-8) and which must pass the check, the step's given fields
+// over them, the fact fields recomputed, the whole checked again and written by a rename. The step
+// prints one line {written, field, why}; any error refuses.
+function sheet(stepping) {
+  const file = join(root, 'sheet.json')
+  const no1 = (field, why) => { console.log(JSON.stringify({ written: false, field: field || '.', why })); return 1 }
+  const no3 = (why) => { console.error(`now-facts.mjs: sheet not written: ${why}`); return 3 }
+  if (stepping && !project().sheet) return no1('', 'off')
+  let folder = false
+  try { folder = statSync(root).isDirectory() } catch {}
+  if (!folder) return no3('the root is not a folder')
+  if (linked(root) || linked(process.cwd())) return no3('a linked worktree')
+  if (![null, 'file'].includes(kind(file))) return no3('sheet.json is not a file')
+  if (git(root, ['ls-files', '--error-unmatch', '--', 'sheet.json']) !== null) return no3('tracked by git')
+  let next
+  try {
+    let old = null
+    if (kind(file) === 'file') try { old = sheetOf(JSON.parse(quoted('sheet.json', '')), true) } catch { return stepping ? no1('', 'stored') : no3('sheet.json fails the check, left as it is') }
+    const given = stepping ? input() : {}
+    if (given === undefined) refuse('', 'json')
+    const o = { purpose: null, users: null, decisions: [], difficulties: [], ...(old && Object.fromEntries(OWNER.map((k) => [k, old[k]]))), ...(stepping ? sheetOf(given, false) : {}) }
+    const f = factsOf()
+    next = sheetOf({ v: 1, kind: f.kind, headline: null, purpose: o.purpose, users: o.users, plan: f.plan, decisions: o.decisions, cost: f.cost, difficulties: o.difficulties, modules: [], showcase: null }, true)
+  } catch (e) {
+    if (!stepping) return no3(e instanceof Refused ? `${e.field || '.'} off its shape` : 'an error in the check')
+    return no1(e instanceof Refused ? e.field : '', e instanceof Refused ? e.why : 'error')
+  }
+  const tmp = `${file}.${process.pid}.tmp`
+  let fd = null, made = false
+  try {
+    fd = openSync(tmp, 'wx'); made = true
+    writeFileSync(fd, `${JSON.stringify(next, null, 2)}\n`); closeSync(fd); fd = null
+    renameSync(tmp, file)
+  } catch {
+    if (fd !== null) try { closeSync(fd) } catch {}
+    if (made) try { unlinkSync(tmp) } catch {}
+    return no3('the write failed, the old sheet left as it is')
+  }
+  if (stepping) console.log(JSON.stringify({ written: true, field: null, why: null }))
+  return 0
+}
+if (opt.sheet !== undefined) process.exit(sheet(true))
 if (cardSlug !== undefined) process.exit(cardFile(cardSlug, opt.answer !== undefined))
 if (opt.landing !== undefined) process.exit(land(opt.landing))
 if (opt.copy !== undefined) process.exit(copy(opt.mandate, resolve(opt.copy)))
 if (opt.mandate !== undefined) { const { valid, source, why, budget } = mandate(opt.mandate); console.log(JSON.stringify({ valid, source, why, budget })); process.exit(0) }
-const code = (opt.state !== undefined && write(join(root, 'state.json'))) || (hasUnknown(out) ? 1 : 0)
+// The sheet is rewritten only after the state is, while the switch is on (A2, A7).
+const code = (opt.state !== undefined && (write(join(root, 'state.json')) || (project().sheet ? sheet(false) : null))) || (hasUnknown(out) ? 1 : 0)
 console.log(JSON.stringify(out, null, 2))
 process.exit(code)

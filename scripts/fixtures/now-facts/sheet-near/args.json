@@ -1,0 +1,1118 @@
+{
+  "branch": "feat/where-am-i",
+  "stdin": "in.json",
+  "args": [
+    "--sheet",
+    "{root}/sheet.json"
+  ],
+  "variants": [
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "sheet.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "purpose",
+          {
+            "$x": 280
+          }
+        ],
+        [
+          "users",
+          {
+            "$x": 280
+          }
+        ],
+        [
+          "decisions.0.text",
+          {
+            "$x": 200
+          }
+        ],
+        [
+          "difficulties.0.k",
+          {
+            "$x": 20
+          }
+        ],
+        [
+          "difficulties.0.text",
+          {
+            "$x": 200
+          }
+        ],
+        [
+          "difficulties.0.src",
+          {
+            "$x": 120
+          }
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "sheet.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "purpose",
+          null
+        ],
+        [
+          "users",
+          null
+        ],
+        [
+          "decisions",
+          []
+        ],
+        [
+          "difficulties",
+          []
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "sheet.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions",
+          [
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            }
+          ]
+        ],
+        [
+          "difficulties",
+          [
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            }
+          ]
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "sheet.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "purpose",
+          "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "sheet.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "purpose",
+          "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "purpose",
+          "why": "length"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "v",
+          null
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "v",
+          "why": "set"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "kind",
+          null
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "kind",
+          "why": "set"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "headline",
+          null
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "headline",
+          "why": "set"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "plan",
+          null
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "plan",
+          "why": "set"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "cost",
+          null
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "cost",
+          "why": "set"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules",
+          null
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "modules",
+          "why": "set"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "showcase",
+          null
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "showcase",
+          "why": "set"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "showcase",
+          {
+            "kicker": "x"
+          }
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "showcase",
+          "why": "set"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "purpose",
+          "$drop"
+        ],
+        [
+          "users",
+          "$drop"
+        ],
+        [
+          "decisions",
+          "$drop"
+        ],
+        [
+          "difficulties",
+          "$drop"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "missing"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "extra",
+          1
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "unknown"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "stdin": "proto.json",
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "unknown"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "stdin": "list.json",
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "type"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "stdin": "bad.txt",
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "json"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "pad": 65307,
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "sheet.json": true
+        }
+      }
+    },
+    {
+      "pad": 65308,
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "json"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.extra",
+          1
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0]",
+          "why": "unknown"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.by",
+          "$drop"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].by",
+          "why": "missing"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "difficulties.0.extra",
+          1
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "difficulties[0]",
+          "why": "unknown"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "difficulties.0.src",
+          "$drop"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "difficulties[0].src",
+          "why": "missing"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "purpose",
+          {
+            "$x": 281
+          }
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "purpose",
+          "why": "length"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "users",
+          {
+            "$x": 281
+          }
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "users",
+          "why": "length"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.text",
+          {
+            "$x": 201
+          }
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].text",
+          "why": "length"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "difficulties.0.k",
+          {
+            "$x": 21
+          }
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "difficulties[0].k",
+          "why": "length"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "difficulties.0.text",
+          {
+            "$x": 201
+          }
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "difficulties[0].text",
+          "why": "length"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "difficulties.0.src",
+          {
+            "$x": 121
+          }
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "difficulties[0].src",
+          "why": "length"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions",
+          [
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            },
+            {
+              "at": "2026-10-15",
+              "text": "Une décision relue.",
+              "by": "owner"
+            }
+          ]
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions",
+          "why": "length"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "difficulties",
+          [
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            },
+            {
+              "k": "CI",
+              "text": "Une difficulté relue.",
+              "src": "ledger"
+            }
+          ]
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "difficulties",
+          "why": "length"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions",
+          {}
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions",
+          "why": "type"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "purpose",
+          5
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "purpose",
+          "why": "type"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "purpose",
+          "un\u0007but"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "purpose",
+          "why": "text"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.text",
+          "une ‮décision"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].text",
+          "why": "text"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "users",
+          "des gens"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "users",
+          "why": "text"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "difficulties.0.text",
+          "a\ud800b"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "difficulties[0].text",
+          "why": "text"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "difficulties.0.k",
+          "   "
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "difficulties[0].k",
+          "why": "text"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.text",
+          "une\nligne"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].text",
+          "why": "text"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "purpose",
+          "un‍principe"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "purpose",
+          "why": "text"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.at",
+          "2026-02-30"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].at",
+          "why": "shape"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.at",
+          "2026-10-16"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].at",
+          "why": "range"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.at",
+          "2026-1-05"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].at",
+          "why": "shape"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.at",
+          "2026-10-15T00:00:00Z"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].at",
+          "why": "shape"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.at",
+          20261015
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].at",
+          "why": "shape"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.by",
+          "team"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].by",
+          "why": "list"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "decisions.0.by",
+          "Owner"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "decisions[0].by",
+          "why": "list"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    }
+  ]
+}

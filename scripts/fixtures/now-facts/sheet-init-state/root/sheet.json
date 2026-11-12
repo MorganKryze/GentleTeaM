@@ -1,0 +1,60 @@
+{
+  "v": 1,
+  "kind": "tool",
+  "headline": null,
+  "purpose": "Un plugin qui fait travailler une petite équipe d'agents sur un changement, pendant que vous prenez trois décisions.",
+  "users": "Des développeurs dans un terminal, sur tout projet et dans leur langue ; peu de temps et un quota serré.",
+  "plan": {
+    "branch": "feat/where-am-i",
+    "steps": [
+      {
+        "n": 1,
+        "title": "the first slice",
+        "status": "done"
+      },
+      {
+        "n": 2,
+        "title": "the second slice",
+        "status": "doing"
+      },
+      {
+        "n": 3,
+        "title": "the third slice",
+        "status": "todo"
+      }
+    ],
+    "milestone": {
+      "title": "A sample milestone",
+      "branches": [
+        {
+          "n": 1,
+          "branch": "feat/shipped-one",
+          "title": "the shipped one"
+        },
+        {
+          "n": 2,
+          "branch": "feat/where-am-i",
+          "title": "where am I"
+        },
+        {
+          "n": 3,
+          "branch": "feat/next-one",
+          "title": "the next one"
+        }
+      ]
+    },
+    "stories": {
+      "done": 1,
+      "total": 3
+    }
+  },
+  "decisions": [],
+  "cost": {
+    "tokens": 450000,
+    "seconds": 2000,
+    "dollars": null
+  },
+  "difficulties": [],
+  "modules": [],
+  "showcase": null
+}
