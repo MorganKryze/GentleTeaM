@@ -23,11 +23,11 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
 - Progress: `<root>/reports/<slug>/progress.md`, one line per run, any result (reruns append):
   status, tier, correction rounds, reviewers, `<base>..<head>`, a wave's merge commit. Each run's
   line (design, spec, plan, task, final review, re-review, re-run review, fix wave) ends `· <s> s ·
-  <t>k · <a> agents` from Claude Code's `duration_ms`, `subagent_tokens`, `agent_count` (a dispatch
-  is 1 agent), `?` if unreported, never an estimate; workflows add `· run <id>`. A line (task,
-  deferred or re-run review) whose result holds `stats.reviewer.planted` adds ` · mutations
-  <planted>/<survived>` from it; a re-run review, a direct dispatch, from its own `mutations`. One
-  holding `stats.<role>.sheets` adds ` · sheets <name> <passes> <c>/<i>/<m>, ...`, roles summed.
+  <t>k · <a> agents` from Claude Code's `duration_ms`, `subagent_tokens`, `agent_count`, `?` if
+  unreported, never an estimate; workflows add `· run <id>`. A line (task, deferred or re-run
+  review) whose result holds `stats.reviewer.planted` adds ` · mutations <planted>/<survived>`; a
+  re-run review, a direct dispatch, from its own `mutations`. One holding `stats.<role>.sheets` adds
+  ` · sheets <name> <passes> <c>/<i>/<m>, ...`, roles summed; last, `templates/delivery.md`'s tail.
 - `[CHECK]` verify commands in `config.yml`: run each once on the branch with `verify.prefix`; it
   runs → remove the mark; it cannot run or fails on the untouched base → stop before any task: a
   Heads-up and a card (correct the command / drop it / accept the failure as pre-existing, logged).

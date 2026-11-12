@@ -36,6 +36,8 @@ import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
+import { fileURLToPath } from 'node:url'
+import { JOBS, pool, run } from './pool.mjs'
 
 const root = new URL('..', import.meta.url).pathname
 const fixtures = join(root, 'scripts/fixtures/now-facts')
@@ -104,12 +106,71 @@ function input(dir, a) {
 const strings = (v) => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(strings) : [])
 
 const who = ['-c', 'user.name=t', '-c', 'user.email=t@t']
+// Every scenario, a variant one of its own, numbered in name order.
+const scenarios = []
 for (const name of readdirSync(fixtures).sort()) {
   const dir = join(fixtures, name)
   const { variants, ...args } = JSON.parse(readFileSync(join(dir, 'args.json'), 'utf8'))
   const expected = JSON.parse(readFileSync(join(dir, 'expected.json'), 'utf8'))
-  if (!variants) scenario(name, dir, args, expected)
-  else variants.forEach(({ want = {}, ...v }, i) => scenario(`${name}#${i + 1}`, dir, { ...args, ...v }, { ...expected, ...want }))
+  if (!variants) scenarios.push([name, dir, args, expected])
+  else variants.forEach(({ want = {}, ...v }, i) => scenarios.push([`${name}#${i + 1}`, dir, { ...args, ...v }, { ...expected, ...want }]))
+}
+
+// `--shard <i>/<n>` runs the scenarios whose index is i modulo n and prints one line: its own i/n,
+// the indices it ran and its errors by index; the tail checks stay with the parent. Without it,
+// the parent runs JOBS shards and joins their lines: a shard with no line fails with its output,
+// and the indices joined must be every scenario once.
+const at = process.argv.indexOf('--shard')
+if (at !== -1) {
+  const m = /^(\d+)\/(\d+)$/.exec(process.argv[at + 1] ?? '')
+  if (!m || +m[2] < 1 || +m[1] >= +m[2] || process.argv.length !== at + 2) {
+    console.error('usage: now-facts.test.mjs [--shard <i>/<n>]')
+    process.exit(2)
+  }
+  const own = [], ran = []
+  scenarios.forEach((s, i) => {
+    if (i % +m[2] !== +m[1]) return
+    const from = errors.length
+    scenario(...s)
+    ran.push(i)
+    for (const e of errors.slice(from)) own.push([i, e])
+  })
+  console.log(JSON.stringify({ shard: `${+m[1]}/${+m[2]}`, ran, errors: own }))
+  process.exit(0)
+}
+// The join's own check: every scenario once passes; a shard that ran short, two shards given the
+// same index and a shard with no line each fail, the last with its output.
+const line = (shard, ran, errs = []) => ({ code: 0, out: `${JSON.stringify({ shard, ran, errors: errs })}\n` })
+for (const [shards, total, want] of [
+  [[line('0/2', [0, 2], [[2, 'two']]), line('1/2', [1])], 3, 'two'],
+  [[line('0/2', [0, 2], [[2, 'two']]), line('1/2', [])], 3, 'ran 2 of 3 scenarios|two'],
+  [[line('0/2', [0, 2]), line('0/2', [0, 2])], 3, 'shard 1/2: ran as 0/2|ran 2 of 3 scenarios|scenarios run twice or unknown: 0, 2'],
+  [[{ code: 1, out: 'boom' }], 1, 'shard 0/1: exit 1, no result line:\nboom|ran 0 of 1 scenarios'],
+]) {
+  const got = collect(shards, total).join('|')
+  if (got !== want) errors.push(`shard join: ${JSON.stringify(got)}, want ${JSON.stringify(want)}`)
+}
+const shards = await pool(Array.from({ length: JOBS }, (_, i) => i), JOBS, (i) => run(fileURLToPath(import.meta.url), ['--shard', `${i}/${JOBS}`]))
+errors.push(...collect(shards, scenarios.length))
+
+// Joins the shards' result lines into one list: what went wrong with the run, then the scenarios'
+// errors by index.
+function collect(shards, total) {
+  const out = [], byIndex = [], times = new Map()
+  for (const [i, r] of shards.entries()) {
+    const line = r.out.split('\n').find((l) => l.startsWith('{"shard":'))
+    let got = null
+    try { got = line && JSON.parse(line) } catch {}
+    if (r.code !== 0 || !Array.isArray(got?.ran) || !Array.isArray(got?.errors)) { out.push(`shard ${i}/${shards.length}: exit ${r.code}, no result line:\n${r.out.trim()}`); continue }
+    if (got.shard !== `${i}/${shards.length}`) out.push(`shard ${i}/${shards.length}: ran as ${got.shard}`)
+    for (const k of got.ran) times.set(k, (times.get(k) ?? 0) + 1)
+    byIndex.push(...got.errors)
+  }
+  const ran = Array.from({ length: total }, (_, k) => k).filter((k) => times.has(k)).length
+  if (ran < total) out.push(`ran ${ran} of ${total} scenarios`)
+  const odd = [...times].filter(([k, n]) => n > 1 || !Number.isInteger(k) || k < 0 || k >= total).map(([k]) => k)
+  if (odd.length) out.push(`scenarios run twice or unknown: ${odd.join(', ')}`)
+  return [...out, ...byIndex.sort((a, b) => a[0] - b[0]).map(([, e]) => e)]
 }
 
 function scenario(name, dir, a, want) {
@@ -214,5 +275,33 @@ function scenario(name, dir, a, want) {
 // A18: the answer step's scenario starts from the card the writer gave for the request's example.
 const d1 = (f) => readFileSync(join(fixtures, f), 'utf8')
 if (d1('card-d1-answer/root/reports/mandate/waiting.json') !== JSON.parse(d1('card-d1/expected.json')).files['reports/mandate/waiting.json']) errors.push('card-d1-answer: its card is not the one card-d1 writes')
+// A8: today's progress and ledger lines, then the same lines with the delivery tail appended and
+// an escape line in the ledger, give the same phase, task, events and ETA.
+function tailed(tail) {
+  const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-tail-'))
+  try {
+    const r = join(tmp, 'root')
+    mkdirSync(join(r, 'reports/x'), { recursive: true })
+    mkdirSync(join(r, 'plans'))
+    writeFileSync(join(r, 'plans/2026-11-12-x.md'), '### Task 1\n### Task 2\n### Task 3\n')
+    const run = (d, s) => `- ${d} · ${s} · run · tasks 2 · correction rounds 1, 0 · measured 61.1m 1237k 26a: spec 10.4m 129k 1a, plan 17.8m 190k 1a, tasks 13.8m 682k 21a, final 17.5m 211k 2a, fix 1.6m 25k 1a; roles ?`
+    const escape = '- 2026-11-03 · b · escape · a doc sentence false after ready · found after the landing, in the docs'
+    writeFileSync(join(r, 'ledger.md'), [run('2026-11-01', 'a'), run('2026-11-02', 'b'), ...(tail ? [escape] : [])].join('\n') + '\n')
+    const end = tail ? ' · start 2026-11-12T09:00:00Z · end 2026-11-12T09:20:00Z · models implementer opus/low/medium, reviewer opus/medium · causes 1:reviewer/important/proof · ab on' : ''
+    const lines = ['- spec · draft written · 400 s · 129k · 1 agent', '- plan · 3 tasks · 900 s · 200k · 1 agent',
+      '- task 1 · CLEAN · guarded · rounds 1 · reviewer · a..b · 900 s · 300k · 4 agents · run wf_1',
+      '- task 2 · OPEN · guarded · rounds 2 · reviewer · b..c · 900 s · 300k · 4 agents · run wf_2']
+    writeFileSync(join(r, 'reports/x/progress.md'), lines.map((l) => l + end).join('\n') + '\n')
+    const out = spawnSync(process.execPath, [script, '--root', r, '--slug', 'x', '--now', '2026-11-12T12:00:00Z'], { cwd: tmp, encoding: 'utf8', env: { ...env, TZ: 'UTC' } })
+    let f = {}
+    try { f = JSON.parse(out.stdout) } catch {}
+    return JSON.stringify({ exit: out.status, phase: f.phase, task: f.task, events: f.events, eta: f.eta })
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
+  }
+}
+const READ = JSON.stringify({ exit: 1, phase: 'delivery', task: { n: 2, of: 3 }, events: ['plan: ?', 't1: CLEAN', 't2: OPEN'],
+  eta: { minutes: 32.9, clock: '12:32', runs: 2, perTask: 6.9, parts: { tasks: 13.8, final: 17.5, fix: 1.6 }, afterAnswer: false } })
+for (const tail of [false, true]) if (tailed(tail) !== READ) errors.push(`A8: ${tail ? 'the tailed' : "today's"} lines read ${tailed(tail)}, want ${READ}`)
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
-console.log(`now-facts: ${readdirSync(fixtures).length} scenarios OK`)
+console.log(`now-facts: ${readdirSync(fixtures).length} scenarios and the delivery tail OK`)

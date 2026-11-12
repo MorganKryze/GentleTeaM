@@ -6,6 +6,9 @@ versions follow [SemVer](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Each run's progress line now ends with when it started and ended, the model and effort of every
+  role it dispatched, and the cause of each correction round (reviewer, severity, category), so a
+  branch's time and its rounds can be measured instead of guessed.
 - A standing go: sign your go ahead for one class of change, `docs`, and `/gtm:ship` stops asking
   for it when a branch holds only that class. `/gtm:tune` writes the line on your answer and sets
   `git.push: standing`; `/gtm:tune standing go off` removes it. Under it GTM still pushes nothing:
@@ -21,6 +24,9 @@ versions follow [SemVer](https://semver.org/).
   is kept in the file, and `state.json` names the waiting card in `waiting.card`.
 
 ### Changed
+- `scripts/validate.mjs` runs its tests in parallel, and `twins` and the facts test split their
+  work: the full gate went from 286 to 433 seconds to 84 to 100 seconds on the same machine, every
+  check kept, none over 300 seconds.
 - `scripts/validate.mjs` gives each test 300 seconds instead of 120.
 - Scrolling code blocks on the docs site can be reached with Tab.
 

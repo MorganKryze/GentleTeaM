@@ -37,6 +37,7 @@ async function run(name, src, args, reply) {
   const required = {}
   const capped = {}
   const tags = {}
+  const kinds = {}
   const agent = async (prompt, opts = {}) => {
     if (dispatches.length >= MAX_DISPATCHES) throw new Error(`${name}: more than ${MAX_DISPATCHES} dispatches`)
     const d = { agentType: opts.agentType, label: opts.label }
@@ -45,7 +46,9 @@ async function run(name, src, args, reply) {
     dispatches.push(d)
     prompts[opts.label] = prompt
     if (opts.schema) required[opts.label] = opts.schema.required
+    if (opts.schema?.properties?.findings) required[`${opts.label} finding`] = opts.schema.properties.findings.items.required
     if (opts.schema) tags[opts.label] = opts.schema.properties?.findings?.items?.properties?.sheet ?? null
+    if (opts.schema) kinds[opts.label] = opts.schema.properties?.findings?.items?.properties?.category ?? null
     if (opts.schema) capped[opts.label] = [...Object.entries(opts.schema.properties?.directions?.items?.properties || {}), ...Object.entries(opts.schema.properties || {})].flatMap(([k, v]) => (v.maxLength ? [[k, v.maxLength]] : []))
     const out = await reply(d)
     if (opts.schema) extra.push(...undeclared(out, opts.schema, opts.label))
@@ -60,7 +63,7 @@ async function run(name, src, args, reply) {
   const body = src.replace(/^export const meta/m, 'const meta')
   try {
     const value = await vm.runInContext(`(async () => {\n${body}\n})()`, context, { filename: name })
-    return { value, dispatches, logs, prompts, extra, required, capped, tags }
+    return { value, dispatches, logs, prompts, extra, required, capped, tags, kinds }
   } catch (e) {
     // Errors from inside the context come from its own realm, so match on the name.
     const missing = e && e.name === 'ReferenceError' && /^(\S+) is not defined$/.exec(String(e.message))
@@ -121,6 +124,16 @@ const OPEN3 = (by, important) => ({
   status: 'OPEN', head: 'h3', fixRounds: 3, open: [{ ...badFinding, by }], minors: [],
   stats: { [by]: { critical: 0, important, minor: 0 } },
 })
+
+// Trace stubs: a profile as /gtm:deliver hands it, a finding with its category, the category line
+// and the field every review schema declares for it.
+const TRACED = { implementer: { model: 'opus', effort: 'low' }, reviewer: { model: 'opus', effort: 'medium' }, 'security-reviewer': { model: 'opus', effort: 'high' } }
+const hole = { severity: 'important', file: WF, summary: 'hole', category: 'security' }
+const CATEGORY = ['Category: give each finding one of behaviour, security, proof, doc, form']
+const CATEGORY_FIELD = { type: 'string', enum: ['behaviour', 'security', 'proof', 'doc', 'form'] }
+// Names a project could give a specialist or a model, each refused by one clause of the alphabet:
+// a segment separator, a newline, upper case, a leading `; `, and one character past the cap.
+const FORGED = ['x · start 2020', 'x\nstart', 'Security', '; rm', 'a'.repeat(61)]
 
 const deliver = [
   {
@@ -1582,6 +1595,125 @@ const deliver = [
     returns: { status: 'GATED', tier: 'standard', head: 'h0', files: ['src/a.js'] },
     dispatches: [implement()],
   },
+  {
+    name: 'trace: each role as dispatched, a raised fix round and a risky security raise shown, the round started by a category',
+    args: { team: TRACED, risky: RISKY, triggers: SEC },
+    reply: implementer([WF], (d) => (d.label === 'security-reviewer' ? { verdict: 'fix', findings: [hole], summary: 'fix' } : ok), [WF]),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [],
+      stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
+      trace: { models: 'implementer opus/low/medium, reviewer opus/medium, security-reviewer opus/xhigh', causes: '1:security-reviewer/important/security' },
+    },
+    dispatches: [
+      implement('gtm:implementer', { model: 'opus', effort: 'low' }), reviewer('reviewer', { model: 'opus', effort: 'medium' }),
+      security('security-reviewer', { model: 'opus', effort: 'xhigh' }),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', model: 'opus', effort: 'medium' },
+      security('security-reviewer · round 1', { model: 'opus', effort: 'xhigh' }),
+    ],
+    prompts: { reviewer: CATEGORY, 'security-reviewer · round 1': CATEGORY },
+  },
+  {
+    name: 'trace: a missing and an unknown category read ?, and the rounds go on',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ severity: 'important', summary: 'x', category: 'style' }], summary: 'fix' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
+      trace: { models: 'implementer ?/?/medium/high, reviewer ?/?', causes: '1:reviewer/important/?, 2:reviewer/important/?' },
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+  },
+  {
+    name: 'trace: a surviving mutation starts its round as proof, a fix verdict with nothing blocking as ?',
+    args: { triggers: SEC },
+    reply: implementer(['scripts/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [], summary: 's', mutations: { planted: 2, survived: 1 } }
+      : d.label === 'security-reviewer' ? { verdict: 'fix', findings: [], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 2, survived: 1 }, 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, security-reviewer ?/?', causes: '1:reviewer/important/proof, 1:security-reviewer/important/?' },
+    },
+    dispatches: [implement(), reviewer(), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), security('security-reviewer · round 1')],
+  },
+  {
+    name: 'trace: a model or effort off its alphabet reads ?, a critical cause keeps its severity, each finding needs a category',
+    args: { team: { implementer: { model: 'opus; rm -rf ~', effort: 'turbo' }, reviewer: { model: 'sonnet', effort: 'low' } } },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...critical, category: 'security' }], summary: 'fix' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], minors: [], stats: { reviewer: { critical: 1, important: 0, minor: 0 } },
+      trace: { models: 'implementer ?/?, reviewer sonnet/low', causes: '1:reviewer/critical/security' },
+    },
+    dispatches: [implement('gtm:implementer', { model: 'opus; rm -rf ~', effort: 'turbo' }), reviewer('reviewer', { model: 'sonnet', effort: 'low' }),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', model: 'opus; rm -rf ~', effort: 'turbo' }, reviewer('reviewer · round 1', { model: 'sonnet', effort: 'low' })],
+    required: { 'reviewer finding': ['severity', 'summary', 'category'] },
+  },
+  {
+    name: 'trace: a run that dispatches nothing shows none',
+    args: { review: 'range' },
+    reply: () => { throw new Error('nothing runs') },
+    returns: { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files', trace: { models: 'none', causes: 'none' } },
+    dispatches: [],
+  },
+  {
+    // Project specialists are named in the project's own team.md, and the progress line splits on
+    // ` · `: each clause of the name's alphabet keeps one of these names, used as role and model
+    // alike, out of the trace. A severity off the schema, which no real reply carries, reads important.
+    name: 'trace: a role or model off its alphabet that starts a round reads ? in models and causes',
+    args: { triggers: Object.fromEntries(FORGED.map((r) => [r, ['^src/']])), team: Object.fromEntries(FORGED.map((r) => [r, { model: r }])) },
+    reply: implementer(['src/a.js'], (d) => (d.agentType === 'gtm:reviewer' || d.label.includes('round') ? ok
+      : { verdict: 'fix', findings: [{ severity: d.agentType === 'Security' ? 'High' : 'important', summary: 'x', category: 'security' }], summary: 'fix' })),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', ...FORGED], minors: [],
+      stats: Object.fromEntries(FORGED.map((r) => [r, { critical: 0, important: 0, minor: 0, ...(r === 'Security' ? { High: null } : { important: 1 }) }])),
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, ? ?/?', causes: FORGED.map(() => '1:?/important/security').join(', ') },
+    },
+    dispatches: [implement(), reviewer(), ...FORGED.map((r) => ({ agentType: r, label: r, model: r })),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, ...FORGED.map((r) => ({ agentType: r, label: `${r} · round 1`, model: r }))],
+  },
+  {
+    // Decision 3: a reviewer with no review starts no round, so it adds no cause; the schema bounds
+    // the category every reviewer gives, as it is sent back to the fix round.
+    name: 'trace: a reviewer with no review adds no cause while another blocks, and the category is bounded',
+    args: { triggers: SEC },
+    reply: implementer(['scripts/a.js'], (d) => (d.label === 'reviewer' ? null : d.label === 'security-reviewer' ? { verdict: 'fix', findings: [hole], summary: 'fix' } : ok), ['scripts/a.js']),
+    returns: {
+      status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [],
+      open: [{ severity: 'important', summary: 'reviewer returned no review', by: 'reviewer' }],
+      stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, security-reviewer ?/?', causes: '1:security-reviewer/important/security' },
+    },
+    dispatches: [implement(), reviewer(), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, security('security-reviewer · round 1')],
+    categories: { reviewer: CATEGORY_FIELD, 'security-reviewer · round 1': CATEGORY_FIELD },
+  },
+  {
+    name: 'trace: a fix round that throws still shows the effort it was dispatched at',
+    args: {},
+    reply: (d) => {
+      if (d.label === 'implement') return { status: 'DONE', head: 'h0', files: ['src/a.js'], summary: 'done' }
+      if (d.label === 'fix · round 1') throw new Error('implementer crashed')
+      return bad
+    },
+    returns: {
+      status: 'BLOCKED', head: 'h0', open: [{ ...badFinding, by: 'reviewer' }], minors: [],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 } },
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?', causes: '1:reviewer/important/?' },
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }],
+  },
+  {
+    name: 'trace: a re-review that addresses every finding while a mutation survives starts its round as proof',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...bad, mutations: { planted: 2, survived: 1 } }
+      : d.label === 'reviewer · round 1' ? { verdict: 'approve', findings: [addressed, typo], summary: 's', mutations: { planted: 2, survived: 1 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], minors: [{ ...typo, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 2, minor: 1, planted: 2, survived: 1 } },
+      trace: { models: 'implementer ?/?/medium/high, reviewer ?/?', causes: '1:reviewer/important/?, 2:reviewer/important/proof' },
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
@@ -2104,8 +2236,12 @@ for (const s of scenarios) {
   }
   try {
     const src = readFileSync(join(folder, `${s.workflow}.js`), 'utf8')
-    const { value, dispatches, logs, prompts, extra, required, capped, tags } = await run(s.workflow, src, s.args, s.reply)
-    if (canon(value) !== canon(s.returns)) differs(where, 'returned value', s.returns, value)
+    const { value, dispatches, logs, prompts, extra, required, capped, tags, kinds } = await run(s.workflow, src, s.args, s.reply)
+    // The trace is compared only where a scenario states it: every other key is compared exactly.
+    const { trace, ...rest } = value && typeof value === 'object' ? value : { trace: undefined }
+    const shown = s.returns && typeof s.returns === 'object' && 'trace' in s.returns ? value : value && typeof value === 'object' ? rest : value
+    if (s.workflow === 'deliver-task' && !trace) failures.push(`${where}: returned no trace`)
+    if (canon(shown) !== canon(s.returns)) differs(where, 'returned value', s.returns, shown)
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
     // The expected entry is a set of fragments that exactly one log line must hold together.
     if (s.log && logs.filter((line) => s.log.every((part) => line.includes(part))).length !== 1) differs(where, 'log', s.log, logs)
@@ -2122,6 +2258,8 @@ for (const s of scenarios) {
     for (const [label, fields] of Object.entries(s.capped || {})) if (canon(capped[label]) !== canon(fields)) differs(where, `fields capped for ${label}`, fields, capped[label])
     // The schema sent to each listed label declares a finding's `sheet` exactly so, or not at all (null).
     for (const [label, field] of Object.entries(s.tags || {})) if (canon(tags[label]) !== canon(field)) differs(where, `sheet field of ${label}`, field, tags[label])
+    // The schema sent to each listed label declares a finding's `category` exactly so.
+    for (const [label, field] of Object.entries(s.categories || {})) if (canon(kinds[label]) !== canon(field)) differs(where, `category field of ${label}`, field, kinds[label])
     // The prompt sent to each listed label holds every fragment given for it, and none of the unprompted.
     for (const [label, parts] of Object.entries(s.prompts || {})) {
       for (const part of parts) if (!(prompts[label] || '').includes(part)) failures.push(`${where}: prompt of ${label} lacks "${part}"`)

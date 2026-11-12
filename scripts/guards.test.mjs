@@ -28,6 +28,7 @@ const PINS = {
     '`<root>/reports/<slug>/mandate.md`): the plugin\'s `templates/mandate.md` first.',
     'under a mandate, its summary first (`mandate.md`).',
     'from every progress line; then each ruling taken not already there.',
+    'roles summed; last, `templates/delivery.md`\'s tail.',
   ],
   'plugins/gtm/templates/mandate.md': [
     'or `<root>/reports/<slug>/mandate.md` exists.',
@@ -196,7 +197,24 @@ const PINS = {
     'existing section over verbatim, its `> Source:` line included.',
   ],
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
-  'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m],
+  'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m, 'Each must-fix names one category: `behaviour`, `security`, `proof`'],
+  'plugins/gtm/templates/delivery.md': [
+    '`· start <S> · end <E> · models <M> · causes <C>`',
+    'Never estimated, never written later from memory: an instant you do not have is `?`.',
+    '`trace.models`, copied as it is.',
+    '`trace.causes`, copied as it is.',
+    'is `?` and never stops a run.',
+    // The clock in UTC, the instant's shape, the default for what was not passed, the final
+    // review's cause, and the promise that keeps today's readers of the line right.
+    '`<S>`, `<E>`: UTC instants to the second, `YYYY-MM-DDThh:mm:ssZ`, read from the clock (`date -u',
+    '+%Y-%m-%dT%H:%M:%SZ`)',
+    'model or effort you did not pass: `?`.',
+    '`1:final-reviewer/important/<category>` per must-fix. No round: `none`.',
+    'Nothing else in the line changes, and segments are only added at its end, so every reader of',
+    'today\'s lines reads them as before.',
+    // Moved from the deliver skill: a direct dispatch reports no count of its own.
+    '`agent_count` (a dispatch is 1 agent)',
+  ],
   'plugins/gtm/workflows/deliver-task.js': ["const SECURITY = 'high'"],
   'docs/reference/commands.md': [
     'the plan\'s section and holds for that branch, resumes included, until you delete it.',

@@ -40,6 +40,9 @@ const IMPL = {
   },
   required: ['status', 'head', 'files', 'summary'],
 }
+// A blocking finding's family, for the progress line and the measure: what the code does, a hole,
+// a test or check missing or too weak, a sentence that is false or missing, names and structure.
+const CATEGORIES = ['behaviour', 'security', 'proof', 'doc', 'form']
 const REVIEW = {
   type: 'object',
   properties: {
@@ -53,9 +56,10 @@ const REVIEW = {
           file: { type: 'string' },
           summary: { type: 'string' },
           status: { type: 'string', enum: ['addressed', 'open'] },
+          category: { type: 'string', enum: CATEGORIES },
           ...(SHEETS.size ? { sheet: { type: 'string', enum: [...SHEETS.keys()] } } : {}),
         },
-        required: ['severity', 'summary'],
+        required: ['severity', 'summary', 'category'],
       },
     },
     summary: { type: 'string' },
@@ -69,11 +73,12 @@ const REVIEW = {
   required: ['verdict', 'findings', 'summary'],
 }
 
+const CATEGORY = `\nCategory: give each finding one of ${CATEGORIES.join(', ')} (what the code does, a hole, a test or check missing or too weak, a sentence false or missing, names and structure).`
 // Every task reviewer, every round, is told what a defect the diff did not introduce weighs, so a
 // pre-existing one waits in the ledger instead of blocking a task that did not cause it.
 // The scope rule reads against the task's whole range on every round: a re-review's diff is the
 // fix, and every finding it re-checks was introduced by the task, never by the fix.
-const SCOPE = (range) => `\nScope: a defect the task's diff ${range} did not introduce (it neither adds nor changes the faulty lines nor makes them newly reachable) is minor, its summary saying it predates the task, unless it is critical, a security hole or a data-integrity defect.`
+const SCOPE = (range) => `${CATEGORY}\nScope: a defect the task's diff ${range} did not introduce (it neither adds nor changes the faulty lines nor makes them newly reachable) is minor, its summary saying it predates the task, unless it is critical, a security hole or a data-integrity defect.`
 
 // The dispatch orders the sheet work, as a line in the brief or the role prompt goes unread, and only
 // after the normal review, as a sheet read first costs plain defects. A sheet stays data, so the
@@ -166,7 +171,24 @@ const per = (files, c) => ground(files).filter((r) => CADENCE[r] === c)
 // the verdict, and a sheet left unread must not turn into a finding. So `passed` says the order was
 // sent and the dispatch returned, not that the sheet was opened or used.
 const RETRY = '\n\nThis is a retry: your previous run ended without the structured result. Use at most 25 tool calls, write no report file, and make the structured output call your last action. What you could not check within that budget is an important finding, never an approval.'
+// The trace the progress line copies: each role as dispatched, `<role> <model>/<effort>` with every
+// effort it ran at, and the blocking findings that started each correction round. Only names in a
+// closed alphabet go in: anything else reads `?`, as a model or effort not passed does.
+const NAME = /^[a-z0-9][a-z0-9._:[\]-]{0,59}$/
+const named = (v) => (typeof v === 'string' && NAME.test(v) ? v : '?')
+const seen = new Map()
+function track(opts) {
+  const role = named(String(opts.agentType || '').replace(/^gtm:/, ''))
+  const key = `${role} ${named(opts.model)}`
+  const effort = [...LEVELS, 'max'].includes(opts.effort) ? opts.effort : '?'
+  if (!seen.has(key)) seen.set(key, [])
+  if (!seen.get(key).includes(effort)) seen.get(key).push(effort)
+}
+const causes = []
+const cause = (n, f) => causes.push(`${n}:${named(f.by)}/${f.severity === 'critical' ? 'critical' : 'important'}/${CATEGORIES.includes(f.category) ? f.category : '?'}`)
+const done = (result) => ({ ...result, trace: { models: [...seen].map(([k, e]) => `${k}/${e.join('/')}`).join(', ') || 'none', causes: causes.join(', ') || 'none' } })
 async function attempt(prompt, opts) {
+  track(opts)
   try {
     return await agent(prompt, opts)
   } catch {
@@ -174,6 +196,7 @@ async function attempt(prompt, opts) {
   }
 }
 async function retried(prompt, opts, pass = '') {
+  track(opts)
   try {
     const first = await agent(prompt + pass, opts)
     if (first == null) log(`${opts.label}: returned nothing (a blocked spawn, a skip or an API error), not dispatched again`)
@@ -191,13 +214,13 @@ phase('Implement')
 // range or file list missing fails closed, as nothing reviewed is never a clean range.
 if (A.review !== undefined && (!['range', 'branch'].includes(A.review) || !A.base || !A.head || !Array.isArray(A.files))) {
   log(`Deferred review ${A.review} not run: review range|branch, base, head and files are required`)
-  return { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files' }
+  return done({ status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files' })
 }
 const got = A.review ? { head: A.head, files: A.files } : await attempt(
   `Implement this task on branch ${A.branch} (base ${A.base}).\nBrief (read it first): ${A.brief}\nReport file: ${A.report}\nReturn head = the commit after your work, files = repo-relative paths changed since ${A.base}.${WT}`,
   as('implementer', { schema: IMPL, label: 'implement', phase: 'Implement' }),
 )
-if (!got || got.status === 'BLOCKED') return { status: 'BLOCKED', impl: got }
+if (!got || got.status === 'BLOCKED') return done({ status: 'BLOCKED', impl: got })
 const impl = { ...got, files: relative(got.files) }
 
 // A Fix escalates on size alone, counted over every file it has changed so far. On security or
@@ -214,12 +237,12 @@ function escalation(files, at) {
 }
 let changed = impl.files
 const early = escalation(changed, impl.head)
-if (early) return early
+if (early) return done(early)
 // A standard task off every per-task role's ground gets no review of its own: its range waits for
 // the deferred one. Anything else, a Fix, or a profile with the reviewer per task, is guarded.
 const guardedBy = per(impl.files, 'per-task')
 const standard = !A.review && A.tier === 'standard' && A.track !== 'fix' && CADENCE.reviewer !== 'per-task'
-if (standard && !guardedBy.length) return { status: 'GATED', tier: 'standard', head: impl.head, files: impl.files }
+if (standard && !guardedBy.length) return done({ status: 'GATED', tier: 'standard', head: impl.head, files: impl.files })
 if (standard) log(`Tier rises to guarded: ${guardedBy.join(', ')}`)
 const T = A.tier === 'standard' && !A.review ? { tier: 'guarded' } : {}
 const reviewers = A.review === 'branch' ? per(impl.files, 'per-branch')
@@ -299,12 +322,12 @@ for (; round <= limit; round++) {
     const held = r === 'reviewer' ? m : null
     if (held && held.survived > found) {
       count('important')
-      blocking.push({ severity: 'important', summary: `${r} reported ${m.survived} surviving mutations and ${found} findings: ${res.summary}` })
+      blocking.push({ severity: 'important', category: 'proof', summary: `${r} reported ${m.survived} surviving mutations and ${found} findings: ${res.summary}` })
     } else if (held && held.survived && pending[i].findings && !res.findings.some((f) => f.status === 'open' && f.severity !== 'minor')) {
       // A re-review that leaves no blocking finding open while a survivor still survives: the
       // survivor it replayed was not addressed after all.
       count('important')
-      blocking.push({ severity: 'important', summary: `${r} addressed every finding sent yet ${m.survived} mutations survive: ${res.summary}` })
+      blocking.push({ severity: 'important', category: 'proof', summary: `${r} addressed every finding sent yet ${m.survived} mutations survive: ${res.summary}` })
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
     // then the only reason given, so the fix round and the re-review get it, and it counts as one.
@@ -317,20 +340,21 @@ for (; round <= limit; round++) {
       still.push({ r, findings: blocking })
     }
   })
-  if (!open.length && !unreviewed.length) return { status: 'CLEAN', head, fixRounds: round, reviewers, stats, minors, ...T }
+  if (!open.length && !unreviewed.length) return done({ status: 'CLEAN', head, fixRounds: round, reviewers, stats, minors, ...T })
   if (!open.length || round === limit) break
   log(`Fix round ${round + 1}: ${open.length} finding(s)`)
+  for (const f of open) cause(round + 1, f)
   const fix = await attempt(
     `Fix these review findings on branch ${A.branch} (head ${head}), test-first, one commit per fix; append a fix section to ${A.report}.\nBrief: ${A.brief}\nFindings:\n${JSON.stringify(open, null, 2)}\nReturn head = the commit after your fixes, files = paths changed in the fixes.${WT}`,
     as('implementer', { schema: IMPL, effort: raised(round + 1), label: `fix · round ${round + 1}`, phase: 'Fix' }),
   )
-  if (!fix || fix.status === 'BLOCKED') return { status: 'BLOCKED', head, open: [...open, ...unreviewed], stats, minors, ...T }
+  if (!fix || fix.status === 'BLOCKED') return done({ status: 'BLOCKED', head, open: [...open, ...unreviewed], stats, minors, ...T })
   fix.files = relative(fix.files)
   changed = relative([...changed, ...fix.files])
   // The findings this fix round got are not re-reviewed yet: they go with the escalation, so the
   // Feature flow checks them instead of losing them.
   const grown = escalation(changed, fix.head)
-  if (grown) return { ...grown, open: [...open, ...unreviewed], reviewers, stats, minors }
+  if (grown) return done({ ...grown, open: [...open, ...unreviewed], reviewers, stats, minors })
   // A fix round on a specialist's ground goes back to that specialist, even after its approval,
   // on every track: a Fix has no final review, and a task's own review should not wait for it.
   for (const r of ground(fix.files)) {
@@ -345,4 +369,4 @@ for (; round <= limit; round++) {
   head = fix.head
   pending = still
 }
-return { status: 'OPEN', head, fixRounds: round, open: [...open, ...unreviewed], reviewers, stats, minors, ...T }
+return done({ status: 'OPEN', head, fixRounds: round, open: [...open, ...unreviewed], reviewers, stats, minors, ...T })

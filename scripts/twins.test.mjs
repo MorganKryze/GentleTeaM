@@ -7,7 +7,8 @@
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { tmpdir } from 'node:os'
-import { execFileSync, spawnSync } from 'node:child_process'
+import { execFileSync } from 'node:child_process'
+import { JOBS, pool, run } from './pool.mjs'
 
 const root = new URL('..', import.meta.url).pathname
 const skill = (name) => `plugins/gtm/skills/${name}/SKILL.md`
@@ -121,6 +122,7 @@ const TWINS = [
   { test: 'lenses', file: LEDGER, from: '· lenses <role>', to: '· lens <role>', says: 'does not state the `lenses` segment' },
   { test: 'methods', file: agent('reviewer'), from: 'Steelmanning [elicitation]', to: 'Steelman [elicitation]', says: 'reviewer' },
   { test: 'now-facts', file: script('now-facts'), from: 'return s.length % 2 ? s[m]', to: 'return s.length % 2 ? s[0]', says: 'want' },
+  { test: 'pool', file: 'scripts/pool.mjs', from: 'results[i] = await fn(items[i], i)', to: 'results.push(await fn(items[i], i))', says: 'order' },
   { test: 'prose-width', add: 'plugins/gtm/templates/sheets/long.md', to: `${'x'.repeat(101)}\n`, says: 'long.md:1 is 101 characters' },
   { test: 'research', file: skill('research'), from: 'the skill never overwrites a report', to: 'the skill may overwrite a report', says: 'never overwrites a report' },
   { test: 'researcher', file: agent('researcher'), from: 'tools: WebFetch, WebSearch', to: 'tools: WebFetch, WebSearch, Bash', says: 'tools' },
@@ -141,6 +143,8 @@ const TWINS = [
   { test: 'usage-line', file: script('usage-line'), from: 'flagged = projected >= 100', to: 'flagged = projected >= 1000', says: 'flag' },
   { test: 'workflows', file: 'plugins/gtm/workflows/design-loop.js', from: 'taste >= TASTE_BAR', to: 'taste >= 0', says: 'design-loop' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'const MAX_SHEETS = 2', to: 'const MAX_SHEETS = 3', says: 'a third entry in bound' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: "category: 'proof', summary: `${r} reported", to: "category: 'behaviour', summary: `${r} reported", says: 'trace: a surviving mutation' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '· models <M> · causes <C>`', to: '· models <M>`', says: 'causes <C>' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []
@@ -173,36 +177,70 @@ for (const f of tests) {
   if (!EXEMPT[f] && !TWINS.some((t) => `${t.test}.test.mjs` === f)) errors.push(`${f}: no broken twin`)
 }
 
-const scratch = mkdtempSync(join(tmpdir(), 'gtm-twins-'))
-const git = (...a) => execFileSync('git', a, { cwd: scratch, stdio: 'pipe' })
+// One scratch per job: a defect is planted in a free scratch and reverted before that scratch is
+// freed for the next one.
+const scratches = []
+const git = (cwd, ...a) => execFileSync('git', a, { cwd, stdio: 'pipe' })
+const found = []
+// A gate that cuts this test at its bound sends SIGTERM: the scratches go with it.
+for (const sig of ['SIGTERM', 'SIGINT']) {
+  process.on(sig, () => {
+    for (const s of scratches) rmSync(s, { recursive: true, force: true })
+    process.exit(143)
+  })
+}
 try {
+  const first = mkdtempSync(join(tmpdir(), 'gtm-twins-'))
+  scratches.push(first)
   const files = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
     .split('\0').filter((f) => f && existsSync(join(root, f)))
   for (const f of files) {
-    mkdirSync(dirname(join(scratch, f)), { recursive: true })
-    cpSync(join(root, f), join(scratch, f), { verbatimSymlinks: true })
+    mkdirSync(dirname(join(first, f)), { recursive: true })
+    cpSync(join(root, f), join(first, f), { verbatimSymlinks: true })
   }
-  git('init', '-q', '-b', 'main')
-  git('add', '-A')
-  git('-c', 'user.name=gtm', '-c', 'user.email=gtm@localhost', '-c', 'commit.gpgsign=false', 'commit', '-qm', 'scratch')
+  git(first, 'init', '-q', '-b', 'main')
+  git(first, 'add', '-A')
+  git(first, '-c', 'user.name=gtm', '-c', 'user.email=gtm@localhost', '-c', 'commit.gpgsign=false', 'commit', '-qm', 'scratch')
   // One commit: marked shallow, as taste.test.mjs asks of a clone without its base.
-  writeFileSync(join(scratch, '.git/shallow'), git('rev-parse', 'HEAD'))
-  for (const t of TWINS) {
+  writeFileSync(join(first, '.git/shallow'), git(first, 'rev-parse', 'HEAD'))
+  for (let j = 1; j < JOBS; j++) {
+    const s = mkdtempSync(join(tmpdir(), 'gtm-twins-'))
+    scratches.push(s)
+    cpSync(first, s, { recursive: true, verbatimSymlinks: true })
+  }
+  const free = [...scratches]
+  found.push(...await pool(TWINS, JOBS, async (t) => {
+    const scratch = free.pop()
     const name = `${t.test}: ${t.add ?? `${t.file}, ${t.from}`}`
     const path = join(scratch, t.add ?? t.file)
     const before = t.add ? null : readFileSync(path, 'utf8')
-    if (before !== null && !before.includes(t.from)) { errors.push(`${name}: no longer applies`); continue }
-    writeFileSync(path, t.add ? t.to : before.replaceAll(t.from, t.to))
-    const args = [join(scratch, 'scripts', `${t.test}.test.mjs`), ...(t.test in ARGS ? [`${scratch}/`, ...ARGS[t.test]] : [])]
-    const r = spawnSync(process.execPath, args, { cwd: scratch, encoding: 'utf8' })
-    const out = `${r.stdout}${r.stderr}`
-    if (r.status === 0) errors.push(`${name}: the defect passed`)
-    else if (!out.includes(t.says)) errors.push(`${name}: failed without saying "${t.says}":\n${out.slice(0, 400)}`)
-    if (t.add) rmSync(path)
-    else writeFileSync(path, before)
-  }
+    try {
+      if (before !== null && !before.includes(t.from)) return [`${name}: no longer applies`]
+      writeFileSync(path, t.add ? t.to : before.replaceAll(t.from, t.to))
+      const args = t.test in ARGS ? [`${scratch}/`, ...ARGS[t.test]] : []
+      const r = await run(join(scratch, 'scripts', `${t.test}.test.mjs`), args, { cwd: scratch })
+      if (r.code === 0) return [`${name}: the defect passed`]
+      if (!r.out.includes(t.says)) return [`${name}: failed without saying "${t.says}":\n${r.out.slice(0, 400)}`]
+      return []
+    } finally {
+      if (t.add) rmSync(path, { force: true })
+      else writeFileSync(path, before)
+      free.push(scratch)
+    }
+  }))
 } finally {
-  rmSync(scratch, { recursive: true, force: true })
+  for (const s of scratches) rmSync(s, { recursive: true, force: true })
+}
+// The count's own check: a twin the pool never ran is missed.
+if (shortRun([[], , []], 3) !== 'ran 2 of 3 twins') errors.push(`twin count: ${shortRun([[], , []], 3)}`)
+const missed = shortRun(found, TWINS.length)
+if (missed) errors.push(missed)
+errors.push(...found.flat().filter(Boolean))
+
+// The pool's results hold one list per twin it ran; a hole is a twin never run.
+function shortRun(found, total) {
+  const ran = found.filter(Boolean).length
+  return ran < total ? `ran ${ran} of ${total} twins` : ''
 }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
