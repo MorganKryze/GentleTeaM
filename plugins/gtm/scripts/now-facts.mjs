@@ -895,7 +895,9 @@ function factsOf() {
 // the sheet cannot be written safely; then the owner fields of the old sheet, read as an excerpt's
 // file is (no link, at most 1 MiB, UTF-8) and which must pass the check, the step's given fields
 // over them, the fact fields recomputed, the whole checked again and written by a rename. The step
-// prints one line {written, field, why}; any error refuses.
+// prints one line {written, field, why}; any error refuses. From the read to the rename it holds
+// sheet.json.lock, made exclusively, so a step and a rewrite never put back each other's old owner
+// fields: the step waits for it up to a second, the rewrite not at all, then exit 3.
 function sheet(stepping) {
   const file = join(root, 'sheet.json')
   const no1 = (field, why) => { console.log(JSON.stringify({ written: false, field: field || '.', why })); return 1 }
@@ -907,6 +909,15 @@ function sheet(stepping) {
   if (linked(root) || linked(process.cwd())) return no3('a linked worktree')
   if (![null, 'file'].includes(kind(file))) return no3('sheet.json is not a file')
   if (git(root, ['ls-files', '--error-unmatch', '--', 'sheet.json']) !== null) return no3('tracked by git')
+  const lock = `${file}.lock`
+  for (let tries = stepping ? 20 : 1; ; ) {
+    try { closeSync(openSync(lock, 'wx')); break } catch (e) { if (e.code !== 'EEXIST') return no3('the write failed, the old sheet left as it is') }
+    if (--tries === 0) return no3('sheet.json.lock is held')
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50)
+  }
+  try { return held(stepping, file, no1, no3) } finally { try { unlinkSync(lock) } catch {} }
+}
+function held(stepping, file, no1, no3) {
   let next
   try {
     let old = null
