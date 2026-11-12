@@ -7,6 +7,7 @@ import { readFileSync, readdirSync, writeFileSync, mkdtempSync, rmSync } from 'n
 import { join, basename } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync } from 'node:child_process'
+import { JOBS, pool, run } from './pool.mjs'
 
 const root = new URL('..', import.meta.url).pathname
 const plugin = join(root, 'plugins/gtm')
@@ -97,15 +98,24 @@ for (const name of readdirSync(join(plugin, 'workflows'))) {
 
 rmSync(tmp, { recursive: true, force: true })
 
-// One loop for every test. The site checks read sources only (the built-site lines run in the
+// One pool for every test. The site checks read sources only (the built-site lines run in the
 // Pages workflow); the site measure needs a build and a browser, so CI runs it there.
 // A test is bounded and runs once: a hang fails, and no rerun turns a red test green. The bound
-// is 300 s: twins replays every planted defect and takes about 110 s alone on a loaded machine.
+// is 300 s, the one constant below. Run alone on a loaded machine, twins took 397 s and now-facts
+// was the next slowest before they were split; split over JOBS children, twins took 63 s and
+// now-facts 142 s at a load average near 160 on 8 cores. They start first, with workflows, so the
+// longest tests never queue behind the short ones.
+const BOUND = 300
 const ARGS = { 'site-checks.test.mjs': [root, '--source', '--lasting'] }
-for (const test of readdirSync(join(root, 'scripts')).filter((f) => f.endsWith('.test.mjs') && f !== 'site-measure.test.mjs').sort()) {
-  const file = join(root, 'scripts', test)
-  try { execFileSync(process.execPath, [file, ...(ARGS[test] || [])], { stdio: 'pipe', timeout: 300_000 }) }
-  catch (e) { fail(file, '\n' + (((e.stdout || '') + (e.stderr || '')).toString().trim() || e.message)) }
+const FIRST = ['twins.test.mjs', 'now-facts.test.mjs', 'workflows.test.mjs']
+const tests = readdirSync(join(root, 'scripts')).filter((f) => f.endsWith('.test.mjs') && f !== 'site-measure.test.mjs').sort()
+const order = [...FIRST.filter((t) => tests.includes(t)), ...tests.filter((t) => !FIRST.includes(t))]
+const ended = await pool(order, JOBS, (t) => run(join(root, 'scripts', t), ARGS[t] || [], { timeout: BOUND * 1000 }))
+for (const test of tests) {
+  const r = ended[order.indexOf(test)]
+  if (r.code === 0 && !r.timedOut) continue
+  const how = r.timedOut ? `cut by the ${BOUND} s bound\n` : ''
+  fail(join(root, 'scripts', test), '\n' + ((how + r.out).trim() || `exit ${r.code}, signal ${r.signal}, no output`))
 }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }

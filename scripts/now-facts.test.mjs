@@ -36,6 +36,8 @@ import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
+import { fileURLToPath } from 'node:url'
+import { JOBS, pool, run } from './pool.mjs'
 
 const root = new URL('..', import.meta.url).pathname
 const fixtures = join(root, 'scripts/fixtures/now-facts')
@@ -104,13 +106,51 @@ function input(dir, a) {
 const strings = (v) => (typeof v === 'string' ? [v] : v && typeof v === 'object' ? Object.values(v).flatMap(strings) : [])
 
 const who = ['-c', 'user.name=t', '-c', 'user.email=t@t']
+// Every scenario, a variant one of its own, numbered in name order.
+const scenarios = []
 for (const name of readdirSync(fixtures).sort()) {
   const dir = join(fixtures, name)
   const { variants, ...args } = JSON.parse(readFileSync(join(dir, 'args.json'), 'utf8'))
   const expected = JSON.parse(readFileSync(join(dir, 'expected.json'), 'utf8'))
-  if (!variants) scenario(name, dir, args, expected)
-  else variants.forEach(({ want = {}, ...v }, i) => scenario(`${name}#${i + 1}`, dir, { ...args, ...v }, { ...expected, ...want }))
+  if (!variants) scenarios.push([name, dir, args, expected])
+  else variants.forEach(({ want = {}, ...v }, i) => scenarios.push([`${name}#${i + 1}`, dir, { ...args, ...v }, { ...expected, ...want }]))
 }
+
+// `--shard <i>/<n>` runs the scenarios whose index is i modulo n and prints one line, its count and
+// its errors by index; the tail checks stay with the parent. Without it, the parent runs JOBS
+// shards and reads each one's line: a shard with no line fails with its output.
+const at = process.argv.indexOf('--shard')
+if (at !== -1) {
+  const m = /^(\d+)\/(\d+)$/.exec(process.argv[at + 1] ?? '')
+  if (!m || +m[2] < 1 || +m[1] >= +m[2] || process.argv.length !== at + 2) {
+    console.error('usage: now-facts.test.mjs [--shard <i>/<n>]')
+    process.exit(2)
+  }
+  const own = []
+  let ran = 0
+  scenarios.forEach((s, i) => {
+    if (i % +m[2] !== +m[1]) return
+    const from = errors.length
+    scenario(...s)
+    ran++
+    for (const e of errors.slice(from)) own.push([i, e])
+  })
+  console.log(JSON.stringify({ ran, errors: own }))
+  process.exit(0)
+}
+const shards = await pool(Array.from({ length: JOBS }, (_, i) => i), JOBS, (i) => run(fileURLToPath(import.meta.url), ['--shard', `${i}/${JOBS}`]))
+const byIndex = []
+let ran = 0
+for (const [i, r] of shards.entries()) {
+  const line = r.out.split('\n').find((l) => l.startsWith('{"ran":'))
+  let got = null
+  try { got = line && JSON.parse(line) } catch {}
+  if (r.code !== 0 || !got) { errors.push(`shard ${i}/${JOBS}: exit ${r.code}, no result line:\n${r.out.trim()}`); continue }
+  ran += got.ran
+  byIndex.push(...got.errors)
+}
+if (ran < scenarios.length) errors.push(`ran ${ran} of ${scenarios.length} scenarios`)
+errors.push(...byIndex.sort((a, b) => a[0] - b[0]).map(([, e]) => e))
 
 function scenario(name, dir, a, want) {
   const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-'))
