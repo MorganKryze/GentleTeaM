@@ -11,7 +11,7 @@
 // script, its exclude line beside the state's, only where the switch is on: the owner's texts
 // never reworded, no showcase handed, init's rows inside its five questions and only for what the
 // stored sheet lacks, retro's lists in its report and merged into the stored ones, a stored
-// line counted once. A standing go:
+// line counted once, matched by its date and what it says. A standing go:
 // the line's shape, its proofs, the never list and what a program must refuse, as the settings reference states them.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
@@ -126,6 +126,8 @@ const PINS = {
     '`/gtm:retro`: reads `<root>/sheet.json` first',
     'never rebuilt from the ledger alone',
     'counts once and its stored entry stays as it is',
+    'for the same lesson or minor',
+    'A date alone matches no line.',
     "`/gtm:init`: reads `config.yml`'s `project.kind` and `<root>/sheet.json` first",
     'the stored value beside the new one',
   ],

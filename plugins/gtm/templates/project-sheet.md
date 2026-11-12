@@ -41,7 +41,8 @@ line, never empty, no control or format character; the number after a text is it
   open minors, `src` `ledger <date>` of the line it comes from, at most 6. A ledger line already
   stored counts once and its stored entry stays as it is: a `ruling` line whose date a stored
   decision holds as `at` for the same ruling, worded as stored or as the owner corrected it; a
-  lesson or minor whose line a stored difficulty names in `src`. Neither is handed again.
+  lesson or minor whose date a stored difficulty names in `src` for the same lesson or minor, its
+  `text` saying what that line says. Neither is handed again. A date alone matches no line.
 
 ## The words
 Every text is the owner's, seen: shown in the table or the report, in `language.human`. Hand the
