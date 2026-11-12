@@ -35,7 +35,7 @@
 import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, lstatSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
-import { execFileSync, spawnSync } from 'node:child_process'
+import { execFileSync, spawnSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 import { JOBS, pool, run } from './pool.mjs'
@@ -321,5 +321,28 @@ const READ = JSON.stringify({ exit: 1, phase: 'delivery', task: { n: 2, of: 3 },
 for (const tail of [false, true]) if (tailed(tail) !== READ) errors.push(`A8: ${tail ? 'the tailed' : "today's"} lines read ${tailed(tail)}, want ${READ}`)
 // D2: the rewrite's scenario starts from the sheet the step gave for init's fixed input.
 if (d1('sheet-init-state/root/sheet.json') !== JSON.parse(d1('sheet-init/expected.json')).files['sheet.json']) errors.push('sheet-init-state: its sheet is not the one sheet-init writes')
+// The step reads its input before it takes sheet.json.lock: a step waiting on an open, empty stdin
+// holds no lock, and killed there it leaves none and the sheet as it was.
+async function waiting() {
+  const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-wait-'))
+  try {
+    const r = join(tmp, 'root'), lock = join(r, 'sheet.json.lock')
+    cpSync(join(fixtures, 'sheet-lock/root'), r, { recursive: true })
+    rmSync(lock)
+    const before = readFileSync(join(r, 'sheet.json'), 'utf8')
+    const p = spawn(process.execPath, [script, '--root', r, '--now', new Date(NOW).toISOString(), '--sheet', join(r, 'sheet.json')], { cwd: tmp, env: { ...env, TZ: 'UTC' }, stdio: ['pipe', 'ignore', 'ignore'] })
+    const gone = new Promise((done) => p.on('exit', done))
+    await new Promise((done) => setTimeout(done, 1000))
+    const held = existsSync(lock)
+    p.kill('SIGTERM')
+    await gone
+    if (held) errors.push('sheet step: the lock is held while the input is read')
+    if (existsSync(lock)) errors.push('sheet step: a kill while reading the input left the lock')
+    if (readFileSync(join(r, 'sheet.json'), 'utf8') !== before) errors.push('sheet step: a kill while reading the input changed the sheet')
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
+  }
+}
+await waiting()
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`now-facts: ${readdirSync(fixtures).length} scenarios and the delivery tail OK`)
