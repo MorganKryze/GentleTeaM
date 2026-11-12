@@ -1,0 +1,6 @@
+# fixture config
+root: .gtm
+stealth: off
+
+project:
+  sheet: on

@@ -1,0 +1,28 @@
+{
+  "exit": 1,
+  "state": {
+    "v": 1
+  },
+  "sheet": {
+    "v": 1,
+    "kind": null,
+    "headline": null,
+    "purpose": null,
+    "users": null,
+    "plan": {
+      "branch": null,
+      "steps": null,
+      "milestone": null,
+      "stories": null
+    },
+    "decisions": [],
+    "cost": {
+      "tokens": null,
+      "seconds": null,
+      "dollars": null
+    },
+    "difficulties": [],
+    "modules": [],
+    "showcase": null
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "branch": "feat/where-am-i",
+  "args": [
+    "--state",
+    "{root}/state.json"
+  ]
+}

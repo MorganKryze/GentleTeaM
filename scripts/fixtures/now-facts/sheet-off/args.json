@@ -1,0 +1,285 @@
+{
+  "branch": "feat/where-am-i",
+  "args": [
+    "--state",
+    "{root}/state.json"
+  ],
+  "variants": [
+    {},
+    {
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n  sheet: On\n"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n  sheet: On\n"
+        ]
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n  sheet: on \n"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n  sheet: on \n"
+        ]
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n  sheet: \"on\"\n"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n  sheet: \"on\"\n"
+        ]
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\ngit:\n  sheet: on\n"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\ngit:\n  sheet: on\n"
+        ]
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n  sheet: on\n  sheet: on\n"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n  sheet: on\n  sheet: on\n"
+        ]
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject: \n  sheet: on\n"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject: \n  sheet: on\n"
+        ]
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n   sheet: on\n"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n   sheet: on\n"
+        ]
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n\tsheet: on\n"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n\tsheet: on\n"
+        ]
+      },
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "want": {
+        "exit": 1,
+        "state": null,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "off"
+        }
+      }
+    },
+    {
+      "edit": {
+        "config.yml": [
+          "root: .gtm\n",
+          "root: .gtm\nproject:\n  sheet: on\n"
+        ]
+      },
+      "want": {
+        "files": {
+          "sheet.json": true
+        },
+        "sheet": {
+          "purpose": "Un but déjà relu par le propriétaire.",
+          "plan": {
+            "branch": "feat/where-am-i"
+          }
+        }
+      }
+    }
+  ]
+}

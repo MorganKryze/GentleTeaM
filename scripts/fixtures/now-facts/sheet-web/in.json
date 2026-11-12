@@ -1,0 +1,27 @@
+{
+  "purpose": "La page d'annuaire des services hébergés pour des proches : ce qu'est chaque outil, comment l'atteindre, et s'il marche.",
+  "decisions": [
+    {
+      "at": "2026-10-10",
+      "text": "Version 1.2.1 publiée sur votre go ; la vérification complète est passée.",
+      "by": "owner"
+    },
+    {
+      "at": "2026-10-10",
+      "text": "Votre réponse B : sur une page de droite à gauche seulement, le texte de l'opérateur suit sa langue.",
+      "by": "owner"
+    }
+  ],
+  "difficulties": [
+    {
+      "k": "docs",
+      "text": "Une passe en langage simple peut faire tomber une affirmation porteuse.",
+      "src": "ledger, rétro du 10.10"
+    },
+    {
+      "k": "CI",
+      "text": "L'analyse de code ne se filtre pas par chemin sur une PR.",
+      "src": "ledger, rétro du 10.10"
+    }
+  ]
+}

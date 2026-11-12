@@ -1,0 +1,61 @@
+{
+  "branch": "feat/at-rest",
+  "args": [
+    "--sheet",
+    "{root}/other.json"
+  ],
+  "variants": [
+    {},
+    {
+      "args": [
+        "--sheet",
+        "{root}/sheet.json",
+        "--state",
+        "{root}/state.json"
+      ]
+    },
+    {
+      "args": [
+        "--sheet",
+        "{root}/sheet.json",
+        "--card",
+        "x"
+      ]
+    },
+    {
+      "args": [
+        "--sheet",
+        "{root}/sheet.json",
+        "--answer",
+        "x"
+      ]
+    },
+    {
+      "args": [
+        "--sheet",
+        "{root}/sheet.json",
+        "--mandate",
+        "x"
+      ]
+    },
+    {
+      "args": [
+        "--sheet",
+        "{root}/sheet.json",
+        "--landing",
+        "x"
+      ]
+    },
+    {
+      "args": [
+        "--sheet"
+      ]
+    },
+    {
+      "args": [
+        "--sheet",
+        "sheet.json"
+      ]
+    }
+  ]
+}
