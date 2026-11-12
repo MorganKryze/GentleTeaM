@@ -110,9 +110,16 @@ const ARGS = { 'site-checks.test.mjs': [root, '--source', '--lasting'] }
 const FIRST = ['twins.test.mjs', 'now-facts.test.mjs', 'workflows.test.mjs']
 const tests = readdirSync(join(root, 'scripts')).filter((f) => f.endsWith('.test.mjs') && f !== 'site-measure.test.mjs').sort()
 const order = [...FIRST.filter((t) => tests.includes(t)), ...tests.filter((t) => !FIRST.includes(t))]
-// The report's own check: failures come in the tests' name order, whatever order they ran in.
-const own = report(['a', 'b'], ['b', 'a'], [{ code: 1, out: 'b red' }, { code: 1, out: 'a red' }], 5)
-if (JSON.stringify(own) !== JSON.stringify([['a', '\na red'], ['b', '\nb red']])) fail('scripts/validate.mjs', `failure report out of name order: ${JSON.stringify(own)}`)
+// The report's own check: failures come in the tests' name order, whatever order they ran in, and
+// a test cut by the bound fails, killed (code null) or exiting 0 on the signal.
+const own = report(['a', 'b', 'c', 'd'], ['d', 'c', 'b', 'a'], [
+  { code: 0, timedOut: true, out: 'd ok' },
+  { code: null, signal: 'SIGTERM', timedOut: true, out: '' },
+  { code: 0, timedOut: false, out: 'b ok' },
+  { code: 1, timedOut: false, out: 'a red' },
+], 5)
+const want = [['a', '\na red'], ['c', '\ncut by the 5 s bound'], ['d', '\ncut by the 5 s bound\nd ok']]
+if (JSON.stringify(own) !== JSON.stringify(want)) fail('scripts/validate.mjs', `failure report: ${JSON.stringify(own)}, want ${JSON.stringify(want)}`)
 const ended = await pool(order, JOBS, (t) => run(join(root, 'scripts', t), ARGS[t] || [], { timeout: BOUND * 1000 }))
 for (const [test, text] of report(tests, order, ended, BOUND)) fail(join(root, 'scripts', test), text)
 
