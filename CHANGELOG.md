@@ -6,6 +6,12 @@ versions follow [SemVer](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- A project sheet, `sheet.json` in the GTM root, behind a `project.sheet` switch that is off by
+  default: the facts script writes and checks it on each run view rewrite, with the plan, the
+  stories, the spend and a few owner fields. `/gtm:init` asks the project's kind, purpose and
+  users, and `/gtm:retro` adds the decisions and difficulties worth keeping. Every field is
+  checked against a fixed shape; an unknown fact is `null`, and a stored sheet that fails the
+  check is left as it is.
 - Each run's progress line now ends with when it started and ended, the model and effort of every
   role it dispatched, and the cause of each correction round (reviewer, severity, category), so a
   branch's time and its rounds can be measured instead of guessed.
