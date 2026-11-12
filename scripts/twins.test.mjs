@@ -64,6 +64,7 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`showcase` is never handed', to: '`showcase` is handed', says: '`showcase` is never handed' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`/gtm:retro`: reads `<root>/sheet.json` first', to: '`/gtm:retro`:', says: '`/gtm:retro`: reads `<root>/sheet.json` first' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'never rebuilt from the ledger alone', to: 'rebuilt from the ledger', says: 'never rebuilt from the ledger alone' },
+  { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'counts once and its stored entry stays as it is', to: 'counts again', says: 'lacks counts once and its stored entry' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: "reads `config.yml`'s `project.kind` and `<root>/sheet.json` first", to: 'asks', says: "`/gtm:init`: reads `config.yml`'s" },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'the stored value beside the new one', to: 'the new one', says: 'the stored value beside the new one' },
   { test: 'guards', file: skill('init'), from: "Where `config.yml`'s `project.sheet` reads `on`,", to: 'Always,', says: "`project.sheet` reads `on`," },

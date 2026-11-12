@@ -38,7 +38,10 @@ line, never empty, no control or format character; the number after a text is it
   both listed in its report. Decisions: the stored ones, an owner's correction included, and the
   ledger's `ruling` lines that quote the owner or change what the owner sees, newest first, the 6
   newest kept. Difficulties: the stored ones not resolved since, then this retro's lessons and the
-  open minors, `src` `ledger <date>` of the line it comes from, at most 6.
+  open minors, `src` `ledger <date>` of the line it comes from, at most 6. A ledger line already
+  stored counts once and its stored entry stays as it is: a `ruling` line whose date a stored
+  decision holds as `at` for the same ruling, worded as stored or as the owner corrected it; a
+  lesson or minor whose line a stored difficulty names in `src`. Neither is handed again.
 
 ## The words
 Every text is the owner's, seen: shown in the table or the report, in `language.human`. Hand the
