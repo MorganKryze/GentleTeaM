@@ -116,9 +116,10 @@ for (const name of readdirSync(fixtures).sort()) {
   else variants.forEach(({ want = {}, ...v }, i) => scenarios.push([`${name}#${i + 1}`, dir, { ...args, ...v }, { ...expected, ...want }]))
 }
 
-// `--shard <i>/<n>` runs the scenarios whose index is i modulo n and prints one line, its count and
-// its errors by index; the tail checks stay with the parent. Without it, the parent runs JOBS
-// shards and reads each one's line: a shard with no line fails with its output.
+// `--shard <i>/<n>` runs the scenarios whose index is i modulo n and prints one line: its own i/n,
+// the indices it ran and its errors by index; the tail checks stay with the parent. Without it,
+// the parent runs JOBS shards and joins their lines: a shard with no line fails with its output,
+// and the indices joined must be every scenario once.
 const at = process.argv.indexOf('--shard')
 if (at !== -1) {
   const m = /^(\d+)\/(\d+)$/.exec(process.argv[at + 1] ?? '')
@@ -126,40 +127,49 @@ if (at !== -1) {
     console.error('usage: now-facts.test.mjs [--shard <i>/<n>]')
     process.exit(2)
   }
-  const own = []
-  let ran = 0
+  const own = [], ran = []
   scenarios.forEach((s, i) => {
     if (i % +m[2] !== +m[1]) return
     const from = errors.length
     scenario(...s)
-    ran++
+    ran.push(i)
     for (const e of errors.slice(from)) own.push([i, e])
   })
-  console.log(JSON.stringify({ ran, errors: own }))
+  console.log(JSON.stringify({ shard: `${+m[1]}/${+m[2]}`, ran, errors: own }))
   process.exit(0)
 }
-// The join's own check: a shard that ran short is counted, one with no line fails with its output.
-const short = collect([{ code: 0, out: '{"ran":2,"errors":[[2,"two"]]}\n' }, { code: 0, out: '{"ran":0,"errors":[]}\n' }], 3)
-if (short.join('|') !== 'ran 2 of 3 scenarios|two') errors.push(`shard join: ${JSON.stringify(short)}`)
-const lost = collect([{ code: 1, out: 'boom' }], 1)
-if (lost.join('|') !== 'shard 0/1: exit 1, no result line:\nboom|ran 0 of 1 scenarios') errors.push(`shard join: ${JSON.stringify(lost)}`)
+// The join's own check: every scenario once passes; a shard that ran short, two shards given the
+// same index and a shard with no line each fail, the last with its output.
+const line = (shard, ran, errs = []) => ({ code: 0, out: `${JSON.stringify({ shard, ran, errors: errs })}\n` })
+for (const [shards, total, want] of [
+  [[line('0/2', [0, 2], [[2, 'two']]), line('1/2', [1])], 3, 'two'],
+  [[line('0/2', [0, 2], [[2, 'two']]), line('1/2', [])], 3, 'ran 2 of 3 scenarios|two'],
+  [[line('0/2', [0, 2]), line('0/2', [0, 2])], 3, 'shard 1/2: ran as 0/2|ran 2 of 3 scenarios|scenarios run twice or unknown: 0, 2'],
+  [[{ code: 1, out: 'boom' }], 1, 'shard 0/1: exit 1, no result line:\nboom|ran 0 of 1 scenarios'],
+]) {
+  const got = collect(shards, total).join('|')
+  if (got !== want) errors.push(`shard join: ${JSON.stringify(got)}, want ${JSON.stringify(want)}`)
+}
 const shards = await pool(Array.from({ length: JOBS }, (_, i) => i), JOBS, (i) => run(fileURLToPath(import.meta.url), ['--shard', `${i}/${JOBS}`]))
 errors.push(...collect(shards, scenarios.length))
 
 // Joins the shards' result lines into one list: what went wrong with the run, then the scenarios'
 // errors by index.
 function collect(shards, total) {
-  const out = [], byIndex = []
-  let ran = 0
+  const out = [], byIndex = [], times = new Map()
   for (const [i, r] of shards.entries()) {
-    const line = r.out.split('\n').find((l) => l.startsWith('{"ran":'))
+    const line = r.out.split('\n').find((l) => l.startsWith('{"shard":'))
     let got = null
     try { got = line && JSON.parse(line) } catch {}
-    if (r.code !== 0 || !got) { out.push(`shard ${i}/${shards.length}: exit ${r.code}, no result line:\n${r.out.trim()}`); continue }
-    ran += got.ran
+    if (r.code !== 0 || !Array.isArray(got?.ran) || !Array.isArray(got?.errors)) { out.push(`shard ${i}/${shards.length}: exit ${r.code}, no result line:\n${r.out.trim()}`); continue }
+    if (got.shard !== `${i}/${shards.length}`) out.push(`shard ${i}/${shards.length}: ran as ${got.shard}`)
+    for (const k of got.ran) times.set(k, (times.get(k) ?? 0) + 1)
     byIndex.push(...got.errors)
   }
+  const ran = Array.from({ length: total }, (_, k) => k).filter((k) => times.has(k)).length
   if (ran < total) out.push(`ran ${ran} of ${total} scenarios`)
+  const odd = [...times].filter(([k, n]) => n > 1 || !Number.isInteger(k) || k < 0 || k >= total).map(([k]) => k)
+  if (odd.length) out.push(`scenarios run twice or unknown: ${odd.join(', ')}`)
   return [...out, ...byIndex.sort((a, b) => a[0] - b[0]).map(([, e]) => e)]
 }
 
