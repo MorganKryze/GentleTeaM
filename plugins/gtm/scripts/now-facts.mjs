@@ -6,7 +6,8 @@
 // git with argument arrays; it prints no message text: names outside SAFE and unknown shapes print
 // `?` and exit 1. It writes nothing but, with --state, <root>/state.json (the same facts for a
 // program (v 1, `null` for each unknown) with the plan's steps, the open card from
-// reports/<slug>/waiting.json, the branch's place in an approved milestone and its backlog story,
+// reports/<slug>/waiting.json while it passes the decision.v1 check, is of the --waiting kind and is
+// not answered, the branch's place in an approved milestone and its backlog story,
 // the mandate's `done when` and `stops for` and the count of the slug's default rulings in the
 // ledger; that text is stripped and cut there and never printed), and, with --mandate <slug>
 // --copy <file>, the mandate file and its ledger record. It refuses with exit 3 in a linked
@@ -28,13 +29,22 @@
 // `git.base` counts only as a branch, refs/heads/<base>, and the checkout's branch only when it
 // ends in /<slug>. The state's `landing` is that file while its shape is exact and the same check,
 // run again, gives the same landing.
+// With --card <slug> it is the card writer: the card's content on stdin (at most 64 KiB of UTF-8
+// JSON), checked whole against decision.v1 (an allowlist: every key required, nothing else, each
+// text, length, number and list checked); it writes reports/<slug>/waiting.json by a rename with
+// `v`, `slug`, `asked`, `other.allowed` and `answer` set, or refuses, deleting that file. With
+// --answer <slug> it records the owner's answer ({option, other} on stdin) in that card, or
+// changes nothing. Both print one line {written, field, why}: a refused field's path, built from
+// the shape's own keys, and a reason from a closed list; never a card's text. Exit 1 refused; 3
+// nothing written in a linked worktree or over a tracked file, a link or a non-file.
 // Usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]]
 //        [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>]
 //        [--state <root>/state.json] [--mandate <slug> [--copy <file>]]
-//        [--landing <slug> [--proofs <names>]] No dependencies.
-import { readFileSync, readdirSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
+//        [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug>] No dependencies.
+import { readFileSync, readSync, readdirSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
+import { isatty } from 'node:tty'
 import { createHash } from 'node:crypto'
 
 const SAFE = /^[A-Za-z0-9._/-]+$/
@@ -56,8 +66,8 @@ const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >
 
 // Usage errors exit 2: an unknown flag, a flag without its value, no --root, a --now or --since
 // that is not a date-time.
-const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate', 'copy', 'landing', 'proofs']
-const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug> [--copy <file>]] [--landing <slug> [--proofs <names>]]'); process.exit(2) }
+const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate', 'copy', 'landing', 'proofs', 'card', 'answer']
+const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug> [--copy <file>]] [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug>]'); process.exit(2) }
 const argv = process.argv.slice(2), opt = { running: [] }
 for (let i = 0; i < argv.length; i += 2) {
   const k = argv[i].slice(2), v = argv[i + 1]
@@ -78,6 +88,8 @@ const CLASSES = { docs: { proofs: ['gate', 'ci'], takes: (f) => /^[AM]$/.test(f.
 const passed = opt.proofs === undefined ? [] : opt.proofs.split(',')
 if (opt.landing !== undefined && (!/^[a-z0-9-]+$/.test(opt.landing) || opt.state !== undefined || opt.mandate !== undefined)) { console.error('now-facts.mjs: --landing takes [a-z0-9-] only, and no --state or --mandate'); process.exit(2) }
 if (opt.proofs !== undefined && (opt.landing === undefined || passed.some((p, i) => HOLDS[p] !== 'ship' || passed.indexOf(p) !== i))) { console.error('now-facts.mjs: --proofs takes --landing and the proofs ship holds, each once'); process.exit(2) }
+const cardSlug = opt.card ?? opt.answer
+if (cardSlug !== undefined && (!/^[a-z0-9-]+$/.test(cardSlug) || (opt.card !== undefined && opt.answer !== undefined) || opt.state !== undefined || opt.mandate !== undefined || opt.landing !== undefined)) { console.error('now-facts.mjs: --card or --answer takes [a-z0-9-] only, alone, and no --state, --mandate or --landing'); process.exit(2) }
 const root = resolve(opt.root)
 if (opt.state !== undefined && resolve(opt.state) !== join(root, 'state.json')) { console.error('now-facts.mjs: --state takes <root>/state.json only'); process.exit(2) }
 const now = opt.now === undefined ? Date.now() : Date.parse(opt.now)
@@ -265,6 +277,8 @@ const text = (s, n) => (typeof s === 'string' && label(s, n)) || null
 const bytes = (f) => { try { const st = lstatSync(f); return st.isFile() && st.size <= 1 << 20 ? readFileSync(f) : null } catch { return null } }
 const small = (f) => { const b = bytes(f); return b === null ? null : b.toString('utf8') }
 const sha = (buf) => createHash('sha256').update(buf).digest('hex')
+// What a path is, not followed: 'file', 'dir', 'other' (a link, a FIFO) or null when absent.
+const kind = (f) => { try { const st = lstatSync(f); return st.isFile() ? 'file' : st.isDirectory() ? 'dir' : 'other' } catch { return null } }
 // The record --copy appends: the sha256 of the mandate file's raw bytes, the slug's last one wins.
 const RECORD = /^- \d{4}-\d\d-\d\d · ([a-z0-9-]+) · ruling · mandate: sha256 ([0-9a-f]{64})$/
 const recorded = (s, t) => { let h = null; for (const l of t.split('\n')) { const m = l.match(RECORD); if (m && m[1] === s) h = m[2] } return h }
@@ -283,17 +297,17 @@ function steps() {
     return { n: +n, title: text(title.replace(/\s*\[P\]\s*$/, ''), LABEL), status }
   })
 }
-// The card the writer put in reports/<slug>/waiting.json, read only for the --waiting kind; a
-// missing, malformed or other card keeps the kind and task alone.
+// The card in reports/<slug>/waiting.json (A14, A15): shown only while it passes the writer's own
+// check, is of the --waiting kind and is not answered; any other file keeps the kind and task alone.
 function card() {
   const { kind, task } = out.waiting
-  const none = { kind: nul(kind), task: nul(task), question: null, options: null, costIfWrong: null }
+  const none = { kind: nul(kind), task: nul(task), question: null, options: null, costIfWrong: null, card: null }
   let c = null
-  try { c = slug === '?' ? null : JSON.parse(small(join(root, 'reports', slug, 'waiting.json'))) } catch {}
-  const ok = c && typeof c === 'object' && c.kind === kind && typeof c.question === 'string' && Array.isArray(c.options) &&
-    c.options.length <= OPTIONS && c.options.every((o) => o && typeof o.label === 'string')
-  if (!ok) return none
-  return { ...none, question: text(c.question, LONG), options: c.options.map((o) => ({ label: text(o.label, LABEL), recommended: o.recommended === true })), costIfWrong: text(c.costIfWrong, LONG) }
+  try { c = slug === '?' ? null : decision(JSON.parse(small(join(root, 'reports', slug, 'waiting.json'))), slug, true) } catch { return none }
+  if (!c || c.kind !== kind || c.answer !== null) return none
+  const r = c.recommendation
+  return { ...none, question: text(c.question, LONG), options: c.options.map((o) => ({ label: text(o.label, LABEL), recommended: r !== null && o.key === r.option })),
+    costIfWrong: r === null ? null : text(r.costIfWrong, LONG), card: `reports/${slug}/waiting.json` }
 }
 // The latest approved milestone (by file name) with a `## <n>. `<branch>`: <title>` heading for
 // this branch: { n, of: its number of such headings, title }.
@@ -404,7 +418,6 @@ function copy(s, from) {
     if (st.isFile() && st.size <= 1 << 20) buf = readFileSync(fd)
   } catch {} finally { if (fd !== null) try { closeSync(fd) } catch {} }
   if (buf === null) { console.log(JSON.stringify({ valid: false, source: 'file', why: 'unreadable', budget: null })); return 0 }
-  const kind = (f) => { try { const st = lstatSync(f); return st.isFile() ? 'file' : st.isDirectory() ? 'dir' : 'other' } catch { return null } }
   const led = join(root, 'ledger.md'), dir = join(root, 'reports', s), file = join(dir, 'mandate.md')
   if (kind(led) !== 'file') return no('no ledger.md')
   for (const [d, k] of [[join(root, 'reports'), 'dir'], [dir, 'dir'], [file, 'file']]) if (![null, k].includes(kind(d))) return no(`${relative(root, d)} is not a ${k === 'dir' ? 'folder' : 'file'}`)
@@ -525,7 +538,6 @@ function landed(s) {
 // the landing written or the slug's old one deleted, an error in the check included (fail closed).
 function land(s) {
   const no3 = (why) => { console.error(`now-facts.mjs: landing not written: ${why}`); return 3 }
-  const kind = (f) => { try { const st = lstatSync(f); return st.isFile() ? 'file' : st.isDirectory() ? 'dir' : 'other' } catch { return null } }
   const dir = join(root, 'reports', s), file = join(dir, 'landing.json')
   if (linked(root) || linked(process.cwd())) return no3('a linked worktree')
   for (const [d, k] of [[join(root, 'reports'), 'dir'], [dir, 'dir'], [file, 'file']]) if (![null, k].includes(kind(d))) return no3(`${relative(root, d)} is not a ${k === 'dir' ? 'folder' : 'file'}`)
@@ -554,6 +566,224 @@ function land(s) {
   console.log(JSON.stringify({ landing: true, class: v.class, head: v.head, why: null, file: null, proof: null }))
   return 0
 }
+// decision.v1 (A3 to A9), an allowlist: every key required, nothing else; any miss throws a
+// Refused naming the field by the shape's own keys and indices, never by a key or value it was given.
+class Refused { constructor(field, why) { this.field = field; this.why = why } }
+const refuse = (field, why) => { throw new Refused(field, why) }
+const at = (f, k) => (f ? `${f}.${k}` : k)
+// A text: a string, non-empty once trimmed, no control (C0, C1), format, lone surrogate, line or
+// paragraph separator character, at most n code points.
+const BAD = /[\x00-\x1f\x7f-\x9f\p{Cf}\p{Cs}\u2028\u2029]/u
+const txt = (v, n, f) => { if (typeof v !== 'string') refuse(f, 'type'); if (!v.trim() || BAD.test(v)) refuse(f, 'text'); if ([...v].length > n) refuse(f, 'length'); return v }
+const orNull = (v, f, check) => (v === null ? null : check(v, f))
+const upTo = (n) => (v, f) => txt(v, n, f)
+const ISO = /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/
+const iso = (v, f) => { if (typeof v !== 'string' || !ISO.test(v) || Number.isNaN(Date.parse(v)) || new Date(v).toISOString() !== v) refuse(f, 'shape'); return v }
+const int = (max) => (v, f) => { if (!Number.isSafeInteger(v)) refuse(f, 'type'); if (v < 0 || v > max) refuse(f, 'range'); return v }
+const list = (v, min, max, f) => { if (!Array.isArray(v)) refuse(f, 'type'); if (v.length < min || v.length > max) refuse(f, 'length'); return v }
+// An object with exactly these keys, copied in this order; its values are checked by the caller.
+const exact = (v, keys, f) => {
+  if (v === null || typeof v !== 'object' || Array.isArray(v)) refuse(f, 'type')
+  if (Object.keys(v).some((k) => !keys.includes(k))) refuse(f, 'unknown')
+  const gone = keys.find((k) => !Object.hasOwn(v, k))
+  if (gone !== undefined) refuse(at(f, gone), 'missing')
+  return Object.fromEntries(keys.map((k) => [k, v[k]]))
+}
+const KINDS = ['decision', 'verification', 'go', 'summary', 'review'], KEYS = 'ABCDEFGHI', SIZES = ['s', 'm', 'l', 'p']
+const MODULES = { text: ['text'], metrics: ['items'], excerpt: ['file', 'where', 'head', 'lines', 'highlight'], list: ['items'], pending: [] }
+// Who may recommend or object (A5): gtm, the second reader, or a role of team.md's Roles table.
+function names() {
+  const m = (unfenced(small(join(root, 'team.md'))) || '').match(/^## Roles[ \t]*\n([\s\S]*?)(?=^#{1,2} |(?![\s\S]))/m)
+  return ['gtm', 'second-reader', ...[...(m ? m[1] : '').matchAll(/^\| ([a-z][a-z0-9-]{0,39}) \|/gm)].map((x) => x[1])]
+}
+// An excerpt's file (A9): a relative path under the root, segments of [A-Za-z0-9._-] none starting
+// with `.`, every folder and the file itself reached through no link; its text, or a refusal.
+function quoted(p, f) {
+  if (typeof p !== 'string') refuse(f, 'type')
+  const segs = p.split('/')
+  if ([...p].length > 200 || !segs.every((x) => /^[A-Za-z0-9_-][A-Za-z0-9._-]*$/.test(x))) refuse(f, 'shape')
+  let path = root
+  for (const x of segs.slice(0, -1)) { path = join(path, x); if (kind(path) !== 'dir') refuse(f, 'file') }
+  let fd = null
+  try {
+    fd = openSync(join(path, segs[segs.length - 1]), constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK)
+    const st = fstatSync(fd)
+    if (!st.isFile() || st.size > 1 << 20) refuse(f, 'file')
+    return new TextDecoder('utf-8', { fatal: true }).decode(readFileSync(fd))
+  } catch (e) { if (e instanceof Refused) throw e; refuse(f, 'file') } finally { if (fd !== null) try { closeSync(fd) } catch {} }
+}
+// The answer (A11, A12): exactly one of an option key of the card or the owner's words; the full
+// shape, as stored, adds `by` (always owner) and `at`.
+function answerOf(v, f, keys, stored) {
+  const a = exact(v, stored ? ['option', 'other', 'by', 'at'] : ['option', 'other'], f)
+  if ((a.option === null) === (a.other === null)) refuse(f, 'shape')
+  if (a.option !== null && !keys.includes(a.option)) refuse(at(f, 'option'), 'option')
+  orNull(a.other, at(f, 'other'), upTo(280))
+  if (stored) { if (a.by !== 'owner') refuse(at(f, 'by'), 'list'); iso(a.at, at(f, 'at')) }
+  return a
+}
+// Card c of slug s checked whole: as stored (the writer's keys in) or as the orchestrator's input
+// (any of them given refuses as `set`). Returns a fresh copy, keys in the table's order.
+function decision(c, s, stored) {
+  const by = names()
+  if (!stored && c && typeof c === 'object' && !Array.isArray(c)) {
+    const given = ['v', 'slug', 'asked', 'answer'].find((k) => Object.hasOwn(c, k))
+    if (given) refuse(given, 'set')
+    if (c.other && typeof c.other === 'object' && Object.hasOwn(c.other, 'allowed')) refuse('other.allowed', 'set')
+  }
+  const o = exact(c, [...(stored ? ['v'] : []), 'id', 'kind', 'moment', ...(stored ? ['slug', 'asked'] : []), 'question', 'summary', 'why', 'criteria',
+    'options', 'recommendation', 'objection', 'modules', 'other', ...(stored ? ['answer'] : [])], '')
+  if (stored) { if (o.v !== 1) refuse('v', 'list'); if (o.slug !== s) refuse('slug', 'list'); iso(o.asked, 'asked') }
+  if (typeof o.id !== 'string') refuse('id', 'type')
+  if ([...o.id].length > 60 || !o.id.startsWith(`${s}-`) || !/^[A-Za-z0-9-]+$/.test(o.id.slice(s.length + 1))) refuse('id', 'shape')
+  if (!KINDS.includes(o.kind)) refuse('kind', 'list')
+  if (o.moment !== null) {
+    if (!Number.isInteger(o.moment)) refuse('moment', 'type')
+    if (o.moment < 1 || o.moment > 4) refuse('moment', 'range')
+    if (!mandate(s).valid) refuse('moment', 'mandate')
+  }
+  txt(o.question, 160, 'question')
+  for (const k of ['summary', 'why', 'criteria']) orNull(o[k], k, upTo(280))
+  o.options = list(o.options, 1, OPTIONS, 'options').map((x, i) => {
+    const f = `options[${i}]`, p = exact(x, ['key', 'label', 'proves', 'cost', 'reversible', 'recommendedBy'], f)
+    if (p.key !== KEYS[i]) refuse(at(f, 'key'), 'order')
+    txt(p.label, 60, at(f, 'label'))
+    orNull(p.proves, at(f, 'proves'), upTo(200))
+    p.cost = orNull(p.cost, at(f, 'cost'), (v, g) => {
+      const q = exact(v, ['tokens', 'minutes', 'text'], g)
+      orNull(q.tokens, at(g, 'tokens'), int(1e9)); orNull(q.minutes, at(g, 'minutes'), int(1e5)); orNull(q.text, at(g, 'text'), upTo(40))
+      return q
+    })
+    if (![true, false, null].includes(p.reversible)) refuse(at(f, 'reversible'), 'type')
+    p.recommendedBy = [...list(p.recommendedBy, 0, 3, at(f, 'recommendedBy'))]
+    p.recommendedBy.forEach((n, j) => { if (!by.includes(n) || p.recommendedBy.indexOf(n) !== j) refuse(`${f}.recommendedBy[${j}]`, 'by') })
+    return p
+  })
+  const keys = o.options.map((p) => p.key)
+  o.recommendation = orNull(o.recommendation, 'recommendation', (v, g) => {
+    const r = exact(v, ['by', 'option', 'why', 'costIfWrong'], g)
+    if (!by.includes(r.by)) refuse(at(g, 'by'), 'by')
+    if (!keys.includes(r.option)) refuse(at(g, 'option'), 'option')
+    if (!o.options[keys.indexOf(r.option)].recommendedBy.includes(r.by)) refuse(at(g, 'by'), 'by')
+    txt(r.why, 280, at(g, 'why')); txt(r.costIfWrong, 280, at(g, 'costIfWrong'))
+    return r
+  })
+  const gtm = o.options.findIndex((p) => p.recommendedBy.includes('gtm'))
+  if (o.recommendation === null && gtm >= 0) refuse(`options[${gtm}].recommendedBy`, 'by')
+  o.objection = orNull(o.objection, 'objection', (v, g) => {
+    const b = exact(v, ['by', 'prefers', 'text'], g)
+    if (!by.includes(b.by)) refuse(at(g, 'by'), 'by')
+    if (b.prefers !== null && !keys.includes(b.prefers)) refuse(at(g, 'prefers'), 'option')
+    txt(b.text, 280, at(g, 'text'))
+    return b
+  })
+  o.modules = list(o.modules, 0, 4, 'modules').map((m, i) => {
+    const f = `modules[${i}]`
+    if (m === null || typeof m !== 'object' || Array.isArray(m)) refuse(f, 'type')
+    if (!Object.hasOwn(m, 'type')) refuse(at(f, 'type'), 'missing')
+    if (typeof m.type !== 'string' || !Object.hasOwn(MODULES, m.type)) refuse(at(f, 'type'), 'list')
+    const q = exact(m, ['type', 'size', 'title', 'src', ...MODULES[m.type]], f)
+    if (!SIZES.includes(q.size)) refuse(at(f, 'size'), 'list')
+    txt(q.title, 60, at(f, 'title')); txt(q.src, 120, at(f, 'src'))
+    if (q.type === 'text') txt(q.text, 600, at(f, 'text'))
+    if (q.type === 'metrics') q.items = list(q.items, 1, 6, at(f, 'items')).map((x, j) => {
+      const g = `${f}.items[${j}]`, r = exact(x, ['label', 'value', 'note', 'gauge', 'tone'], g)
+      txt(r.label, 40, at(g, 'label')); txt(r.value, 20, at(g, 'value')); orNull(r.note, at(g, 'note'), upTo(120))
+      if (r.gauge !== null && (typeof r.gauge !== 'number' || !(r.gauge >= 0 && r.gauge <= 1))) refuse(at(g, 'gauge'), 'range')
+      if (r.tone !== null) refuse(at(g, 'tone'), 'list')
+      return r
+    })
+    if (q.type === 'list') q.items = list(q.items, 1, 8, at(f, 'items')).map((x, j) => {
+      const g = `${f}.items[${j}]`, r = exact(x, ['k', 'v'], g)
+      txt(r.k, 40, at(g, 'k')); orNull(r.v, at(g, 'v'), upTo(120))
+      return r
+    })
+    if (q.type === 'excerpt') {
+      const body = quoted(q.file, at(f, 'file'))
+      txt(q.where, 80, at(f, 'where')); orNull(q.head, at(f, 'head'), upTo(80))
+      q.lines = list(q.lines, 1, 8, at(f, 'lines')).map((l, j) => { txt(l, 200, `${f}.lines[${j}]`); if (!body.includes(l)) refuse(`${f}.lines[${j}]`, 'quote'); return l })
+      orNull(q.highlight, at(f, 'highlight'), (v, g) => { txt(v, 200, g); if (!body.includes(v)) refuse(g, 'quote'); return v })
+    }
+    return q
+  })
+  const other = exact(o.other, stored ? ['allowed', 'placeholder'] : ['placeholder'], 'other')
+  if (stored && other.allowed !== true) refuse('other.allowed', 'list')
+  orNull(other.placeholder, 'other.placeholder', upTo(80))
+  o.other = { allowed: true, placeholder: other.placeholder }
+  if (stored) o.answer = orNull(o.answer, 'answer', (v, g) => answerOf(v, g, keys, true))
+  return o
+}
+// The orchestrator's input: at most 64 KiB of UTF-8 JSON on stdin, else undefined. A stdin with
+// nothing to read yet (EAGAIN) is waited on 10 ms at a time, not spun on, for 5 s at most; a
+// terminal is refused at once. A blocking pipe kept open with nothing on it still waits: the
+// session's shell gives an empty stdin, refused at once, when the heredoc is missing.
+function input() {
+  if (isatty(0)) return undefined
+  const chunks = [], b = Buffer.alloc(1 << 16), idle = new Int32Array(new SharedArrayBuffer(4))
+  const end = Date.now() + 5000
+  let n = 0
+  for (;;) {
+    if (Date.now() > end) return undefined
+    let r
+    try { r = readSync(0, b, 0, b.length, null) } catch (e) { if (e.code === 'EAGAIN') { Atomics.wait(idle, 0, 0, 10); continue } if (e.code === 'EOF') break; return undefined }
+    if (r === 0) break
+    if ((n += r) > 1 << 16) return undefined
+    chunks.push(Buffer.from(b.subarray(0, r)))
+  }
+  try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(chunks))) } catch { return undefined }
+}
+// --card and --answer (A2, A10 to A13, A16): exit 3 before anything when the card file cannot be
+// written safely, the root first: a root that is not a folder already is never made, as git cannot
+// tell where it would be; then one line {written, field, why}. A refused card deletes the slug's
+// card file; a refused answer changes nothing; any error in the check refuses (`error`).
+function cardFile(s, answering) {
+  const no3 = (why) => { console.error(`now-facts.mjs: card not written: ${why}`); return 3 }
+  const dir = join(root, 'reports', s), file = join(dir, 'waiting.json')
+  let folder = false
+  try { folder = statSync(root).isDirectory() } catch {}
+  if (!folder) return no3('the root is not a folder')
+  if (linked(root) || linked(process.cwd())) return no3('a linked worktree')
+  for (const [d, k] of [[join(root, 'reports'), 'dir'], [dir, 'dir'], [file, 'file']]) if (![null, k].includes(kind(d))) return no3(`${relative(root, d)} is not a ${k === 'dir' ? 'folder' : 'file'}`)
+  if (git(root, ['ls-files', '--error-unmatch', '--', relative(root, file)]) !== null) return no3('tracked by git')
+  const drop = () => { if (!answering && kind(file) === 'file') unlinkSync(file) }
+  const stamp = new Date(now).toISOString()
+  let c
+  try {
+    const given = input()
+    if (given === undefined) refuse('', 'json')
+    if (answering) {
+      let old = null
+      try { old = JSON.parse(small(file)) } catch {}
+      if (old === null) refuse('', 'none')
+      c = decision(old, s, true)
+      if (c.answer !== null) refuse('answer', 'answered')
+      c.answer = { ...answerOf(given, 'answer', c.options.map((p) => p.key), false), by: 'owner', at: stamp }
+    } else {
+      const { id, kind: k, moment, ...rest } = decision(given, s, false)
+      c = { v: 1, id, kind: k, moment, slug: s, asked: stamp, ...rest, answer: null }
+    }
+  } catch (e) {
+    try { drop() } catch { return no3('the old card could not be deleted') }
+    console.log(JSON.stringify({ written: false, field: e instanceof Refused ? e.field || '.' : '.', why: e instanceof Refused ? e.why : 'error' }))
+    return 1
+  }
+  const tmp = `${file}.${process.pid}.tmp`
+  let fd = null, made = false
+  try {
+    mkdirSync(dir, { recursive: true })
+    fd = openSync(tmp, 'wx'); made = true
+    writeFileSync(fd, `${JSON.stringify(c, null, 2)}\n`); closeSync(fd); fd = null
+    renameSync(tmp, file)
+  } catch {
+    if (fd !== null) try { closeSync(fd) } catch {}
+    if (made) try { unlinkSync(tmp) } catch {}
+    try { drop() } catch {}
+    return no3(answering ? 'the write failed, the card unchanged' : 'the write failed, the old card deleted')
+  }
+  console.log(JSON.stringify({ written: true, field: null, why: null }))
+  return 0
+}
+if (cardSlug !== undefined) process.exit(cardFile(cardSlug, opt.answer !== undefined))
 if (opt.landing !== undefined) process.exit(land(opt.landing))
 if (opt.copy !== undefined) process.exit(copy(opt.mandate, resolve(opt.copy)))
 if (opt.mandate !== undefined) { const { valid, source, why, budget } = mandate(opt.mandate); console.log(JSON.stringify({ valid, source, why, budget })); process.exit(0) }

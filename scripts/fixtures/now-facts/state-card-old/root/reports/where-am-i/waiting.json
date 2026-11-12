@@ -1,0 +1,12 @@
+{
+  "kind": "decision",
+  "task": "2",
+  "question": "Which proof?",
+  "options": [
+    {
+      "label": "A pins",
+      "recommended": true
+    }
+  ],
+  "costIfWrong": "A slip."
+}

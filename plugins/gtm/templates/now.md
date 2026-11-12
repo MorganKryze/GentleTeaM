@@ -41,10 +41,18 @@
   repository and the state untracked, `/<rel>/state.json` goes to the exclude file as the `gtm`
   skill §0 adds `/<rel>/NOW.md`, when `git check-ignore -q <rel>/state.json` fails. Exit 3 (a
   worktree, a tracked or foreign file) or 2: one Heads-up per session, never a hold-up.
-- **Card file:** when a decision card is shown, write `<root>/reports/<slug>/waiting.json` whole,
-  `{"kind", "task", "question", "options": [{"label", "recommended"}], "costIfWrong"}`, in your
-  own words, never pasted text, and pass `--waiting '<kind>,<task>'`. When the card is answered,
-  delete that file before the run view's rewrite.
+- **Card file:** when a card is shown, never write `<root>/reports/<slug>/waiting.json` yourself:
+  hand its content to the script, `node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root>
+  --card <slug> <<'GTM_CARD'`, then one JSON object shaped as `templates/decision.md` says, then
+  `GTM_CARD` alone on its line; then pass `--waiting '<kind>,<task>'`. Exit 1 names the refused
+  field and why: fix that field and hand the card once more; refused again, or exit 2 or 3, show the
+  card as is with one Heads-up per session, never a hold-up. The file holds one card: with two
+  cards in one message, hand only the first, and the second once the first is answered. When the
+  card is answered, and the file still holds that card's `id`, record the
+  answer before the run view's rewrite: the same command with `--answer <slug>` and the answer
+  `templates/decision.md` describes. The file stays, answered, until the slug's next card.
+  An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one
+  Heads-up; never shorten or reword the owner's words to fit.
 
 ## Example
 

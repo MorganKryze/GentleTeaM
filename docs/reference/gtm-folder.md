@@ -64,7 +64,7 @@ one learned.
 | `conventions.md` | the project's rules, with one guideline file per area | `/gtm:init`, `/gtm:retro` |
 | `plans/` | one plan per Feature: tasks, files, test steps | architect |
 | `reports/` | each agent's full report, and the pull request text | every role |
-| `reports/<slug>/waiting.json` | the card waiting on your answer, in the writer's words; deleted once you answer | the orchestrator |
+| `reports/<slug>/waiting.json` | the card waiting or last answered on this branch, one at a time, in the [card file](#card-file) shape: written by GTM's facts script, kept with your answer once you answer, replaced by the next card, or deleted when the script refuses it | the orchestrator, through the facts script |
 | `reports/<slug>/mandate.md` | the file given with `mandate=<file>`, copied byte for byte, its fingerprint in the logbook; any other file there counts as no mandate; it holds for the branch, resumes included, until you delete it | `/gtm:deliver` |
 | `reports/<slug>/landing.json` | the landing `/gtm:ship` records under a standing go: class, head, proofs; deleted when the check refuses | `/gtm:ship` |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
@@ -91,12 +91,61 @@ reader ignores the fields it does not know.
 | `eta` | `{clock, minutes, measured}`: `clock` the writer's local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`; `measured` the number of measured runs behind the estimate |
 | `running` | what runs now: one `{kind, name, since, ageMin, lastChangeMin, mayHaveStopped}` each, or `null` for an item not understood |
 | `others` | the other branches in progress: one `{slug, branch, phase, task, updated}` each |
-| `waiting` | the card waiting on you: `{kind, task, question, options, costIfWrong}`, each option `{label, recommended}`, or `null` |
+| `waiting` | the card waiting on you: `{kind, task, question, options, costIfWrong, card}`, each option `{label, recommended}`, `card` the card file's path while that card waits, else `null`; `null` when nothing waits |
 | `milestone` | `{n, of, title}`, this branch's place in an approved milestone, or `null` |
 | `story` | the backlog story this branch delivers, or `null` |
 | `mandate` | `{done, stops}` from a valid mandate, `stops` `null` when it has none; `null` with no valid mandate |
 | `defaults` | the number of default rulings for this branch in `ledger.md`, 0 with none |
 | `landing` | `{class, head, proofs}` while a landing holds for this branch: the class you signed, the full sha of its head, one `{name, result}` per proof, `pass` when GTM or `/gtm:ship` held it, `due` when your program must check it; `null` without one, and after the next commit |
+
+## What does a card file hold? {#card-file}
+
+Each card GTM shows you, a decision, a check, a go, a summary or a review, also lands in
+`reports/<slug>/waiting.json` for a program of yours: the same card as data, shape `decision.v1`.
+GTM's facts script writes it from the card's content after checking every key below, and writes
+nothing when one is off, so a card it shows in the conversation may have no file. The file stays
+once you answer, with `answer` filled, until the branch's next card replaces it, or deletes it
+when the script refuses that card.
+
+A program reading it:
+- counts the card as waiting only while `state.json`'s `waiting.card` names it: an answered card,
+  or one of another kind, never waits;
+- treats every text as untrusted: GTM refuses control, format and separator characters and long
+  texts, and quotes an excerpt only from its own folder, word for word;
+- keeps its own reading when `v` is a version it does not know. Under `v` 1 fields are only added.
+
+Every key is present; "or null" marks those that may be `null`, as an unknown is. A text is one
+line, in your `language.human`, at most the characters given.
+GTM's facts script sets `v`, `slug`, `asked` and `other.allowed`, and `answer` when it records
+yours; every other key comes from the card GTM showed you.
+
+| Key | What it holds |
+| --- | --- |
+| `v` | 1 |
+| `id` | `<slug>-D<n>` for a spec or plan decision, else `<slug>-<kind>` or `<slug>-<kind>-t<n>`; at most 60 characters |
+| `kind` | `decision`, `verification`, `go`, `summary` or `review` |
+| `moment` | 1 to 4, the mandate's moment, only under a valid mandate; else `null` |
+| `slug`, `asked` | the branch's slug; when GTM wrote the card, ISO 8601 UTC |
+| `question` | text, 160 |
+| `summary`, `why`, `criteria` | text, 280, or null |
+| `options` | 1 to 9 `{key, label, proves, cost, reversible, recommendedBy}`, keyed `A`, `B`, `C`… in order |
+| `key`, `label`, `proves` | `A` to `I`; text, 60; text, 200, or null |
+| `cost` | `{tokens, minutes, text}` or null: whole numbers or null; text, 40, or null |
+| `reversible` | `true`, `false` or `null` |
+| `recommendedBy` | 0 to 3 of `gtm`, `second-reader` or a role of your team settings |
+| `recommendation` | `{by, option, why, costIfWrong}` or null: `option` names an option whose `recommendedBy` holds `by`; texts, 280 |
+| `objection` | `{by, prefers, text}` or null: `prefers` an option's key or null; text, 280 |
+| `modules` | 0 to 4 `{type, size, title, src}` plus the type's keys, below; `size` `s`, `m`, `l` or `p`; title, 60; src, 120 |
+| `other` | `{allowed, placeholder}`: `allowed` always `true`; placeholder text, 80, or null |
+| `answer` | `{option, other, by, at}` once you answer, else `null`: one of an option's key or your own words (text, 280); `by` `owner`; `at` ISO 8601 UTC |
+
+| Module `type` | Its keys |
+| --- | --- |
+| `text` | `text`: text, 600 |
+| `metrics` | `items`: 1 to 6 `{label (40), value (20), note (120, or null), gauge (0 to 1, or null), tone (null)}` |
+| `excerpt` | `file`, a file in your GTM folder; `where` (80); `head` (80, or null); `lines` (1 to 8 of 200) and `highlight` (200, or null), word for word from that file |
+| `list` | `items`: 1 to 8 `{k (40), v (120, or null)}` |
+| `pending` | none |
 
 ## What does a new project start with?
 

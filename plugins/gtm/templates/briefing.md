@@ -70,7 +70,7 @@ through Claude Code's question tool (`AskUserQuestion`) instead: header the word
 `language.human` (fr: `Humain`), the card's question, its options (at most four), the recommended
 option's label ending ` (Recommended)`, each description the option's meaning, and the cost if
 wrong in the recommended option's description. No question tool in the session, or more than
-four options: this Markdown card. The card file is written and deleted as for any card.
+four options: this Markdown card. The card file is handed over and answered as for any card.
 
 ## Decisions made for you
 

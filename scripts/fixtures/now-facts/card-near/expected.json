@@ -1,0 +1,9 @@
+{
+  "exit": 1,
+  "facts": {
+    "written": false
+  },
+  "files": {
+    "reports/where-am-i/waiting.json": null
+  }
+}

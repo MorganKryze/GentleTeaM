@@ -1,0 +1,20 @@
+{
+  "branch": "feat/where-am-i",
+  "stdin": "in.json",
+  "track": [
+    "reports/where-am-i/waiting.json"
+  ],
+  "args": [
+    "--card",
+    "where-am-i"
+  ],
+  "variants": [
+    {},
+    {
+      "args": [
+        "--answer",
+        "where-am-i"
+      ]
+    }
+  ]
+}

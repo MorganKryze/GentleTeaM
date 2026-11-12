@@ -1,0 +1,2839 @@
+{
+  "branch": "feat/where-am-i",
+  "stdin": "in.json",
+  "args": [
+    "--card",
+    "where-am-i"
+  ],
+  "variants": [
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "id",
+          "where-am-i-DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+        ],
+        [
+          "moment",
+          4
+        ],
+        [
+          "question",
+          {
+            "$x": 160
+          }
+        ],
+        [
+          "summary",
+          {
+            "$x": 280
+          }
+        ],
+        [
+          "why",
+          {
+            "$x": 280
+          }
+        ],
+        [
+          "criteria",
+          {
+            "$x": 280
+          }
+        ],
+        [
+          "options.0.label",
+          {
+            "$x": 60
+          }
+        ],
+        [
+          "options.0.proves",
+          {
+            "$x": 200
+          }
+        ],
+        [
+          "options.0.cost.text",
+          {
+            "$x": 40
+          }
+        ],
+        [
+          "options.0.cost.tokens",
+          1000000000
+        ],
+        [
+          "options.0.cost.minutes",
+          100000
+        ],
+        [
+          "recommendation.why",
+          {
+            "$x": 280
+          }
+        ],
+        [
+          "recommendation.costIfWrong",
+          {
+            "$x": 280
+          }
+        ],
+        [
+          "objection.text",
+          {
+            "$x": 280
+          }
+        ],
+        [
+          "other.placeholder",
+          {
+            "$x": 80
+          }
+        ],
+        [
+          "modules.0.title",
+          {
+            "$x": 60
+          }
+        ],
+        [
+          "modules.0.src",
+          {
+            "$x": 120
+          }
+        ],
+        [
+          "modules.0.text",
+          {
+            "$x": 600
+          }
+        ],
+        [
+          "modules.1.items.0.label",
+          {
+            "$x": 40
+          }
+        ],
+        [
+          "modules.1.items.0.value",
+          {
+            "$x": 20
+          }
+        ],
+        [
+          "modules.1.items.0.note",
+          {
+            "$x": 120
+          }
+        ],
+        [
+          "modules.1.items.0.gauge",
+          1
+        ],
+        [
+          "modules.2.where",
+          {
+            "$x": 80
+          }
+        ],
+        [
+          "modules.2.head",
+          {
+            "$x": 80
+          }
+        ],
+        [
+          "modules.2.lines.0",
+          {
+            "$x": 200
+          }
+        ],
+        [
+          "modules.2.highlight",
+          {
+            "$x": 200
+          }
+        ],
+        [
+          "modules.3.items.0.k",
+          {
+            "$x": 40
+          }
+        ],
+        [
+          "modules.3.items.0.v",
+          {
+            "$x": 120
+          }
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options",
+          [
+            {
+              "key": "A",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "B",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "C",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "D",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "E",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "F",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "G",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "H",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "I",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            }
+          ]
+        ],
+        [
+          "options.0.recommendedBy",
+          [
+            "second-reader",
+            "reviewer",
+            "analyst"
+          ]
+        ],
+        [
+          "recommendation",
+          null
+        ],
+        [
+          "objection",
+          null
+        ],
+        [
+          "modules.1.items",
+          [
+            {
+              "label": "n",
+              "value": "1",
+              "note": null,
+              "gauge": 0,
+              "tone": null
+            },
+            {
+              "label": "n",
+              "value": "1",
+              "note": null,
+              "gauge": 0,
+              "tone": null
+            },
+            {
+              "label": "n",
+              "value": "1",
+              "note": null,
+              "gauge": 0,
+              "tone": null
+            },
+            {
+              "label": "n",
+              "value": "1",
+              "note": null,
+              "gauge": 0,
+              "tone": null
+            },
+            {
+              "label": "n",
+              "value": "1",
+              "note": null,
+              "gauge": 0,
+              "tone": null
+            },
+            {
+              "label": "n",
+              "value": "1",
+              "note": null,
+              "gauge": 0,
+              "tone": null
+            }
+          ]
+        ],
+        [
+          "modules.3.items",
+          [
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            }
+          ]
+        ],
+        [
+          "modules.2.lines",
+          [
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply."
+          ]
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "kind",
+          "verification"
+        ],
+        [
+          "moment",
+          null
+        ],
+        [
+          "options",
+          [
+            {
+              "key": "A",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            }
+          ]
+        ],
+        [
+          "recommendation",
+          null
+        ],
+        [
+          "objection",
+          null
+        ],
+        [
+          "modules",
+          []
+        ],
+        [
+          "summary",
+          null
+        ],
+        [
+          "why",
+          null
+        ],
+        [
+          "criteria",
+          null
+        ],
+        [
+          "other.placeholder",
+          null
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.3",
+          {
+            "type": "pending",
+            "size": "s",
+            "title": "Still missing",
+            "src": "the plan"
+          }
+        ],
+        [
+          "recommendation.by",
+          "second-reader"
+        ],
+        [
+          "recommendation.option",
+          "B"
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0]",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.cost.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].cost",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "recommendation.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "recommendation",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "objection.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "objection",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.0.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[0]",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1]",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2]",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.3.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[3]",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items.0.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items[0]",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.3.items.0.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[3].items[0]",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "other.extra",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "other",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "stdin": "proto.json",
+      "want": {
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "unknown"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "summary",
+          "$drop"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "summary",
+          "why": "missing"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.proves",
+          "$drop"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].proves",
+          "why": "missing"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.head",
+          "$drop"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].head",
+          "why": "missing"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.0.type",
+          "$drop"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[0].type",
+          "why": "missing"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "other.placeholder",
+          "$drop"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "other.placeholder",
+          "why": "missing"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "v",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "v",
+          "why": "set"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "slug",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "slug",
+          "why": "set"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "asked",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "asked",
+          "why": "set"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "answer",
+          1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "answer",
+          "why": "set"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "other.allowed",
+          true
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "other.allowed",
+          "why": "set"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          {
+            "$x": 161
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "summary",
+          {
+            "$x": 281
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "summary",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "why",
+          {
+            "$x": 281
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "why",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "criteria",
+          {
+            "$x": 281
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "criteria",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.label",
+          {
+            "$x": 61
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].label",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.proves",
+          {
+            "$x": 201
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].proves",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.cost.text",
+          {
+            "$x": 41
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].cost.text",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "recommendation.why",
+          {
+            "$x": 281
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "recommendation.why",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "recommendation.costIfWrong",
+          {
+            "$x": 281
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "recommendation.costIfWrong",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "objection.text",
+          {
+            "$x": 281
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "objection.text",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "other.placeholder",
+          {
+            "$x": 81
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "other.placeholder",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.0.title",
+          {
+            "$x": 61
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[0].title",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.0.src",
+          {
+            "$x": 121
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[0].src",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.0.text",
+          {
+            "$x": 601
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[0].text",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items.0.label",
+          {
+            "$x": 41
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items[0].label",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items.0.value",
+          {
+            "$x": 21
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items[0].value",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items.0.note",
+          {
+            "$x": 121
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items[0].note",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.where",
+          {
+            "$x": 81
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].where",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.head",
+          {
+            "$x": 81
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].head",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.lines.0",
+          {
+            "$x": 201
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].lines[0]",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.highlight",
+          {
+            "$x": 201
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].highlight",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.3.items.0.k",
+          {
+            "$x": 41
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[3].items[0].k",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.3.items.0.v",
+          {
+            "$x": 121
+          }
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[3].items[0].v",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "id",
+          "where-am-i-DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "id",
+          "why": "shape"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options",
+          [
+            {
+              "key": "A",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "B",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "C",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "D",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "E",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "F",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "G",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "H",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "I",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            },
+            {
+              "key": "J",
+              "label": "an option",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            }
+          ]
+        ],
+        [
+          "recommendation",
+          null
+        ],
+        [
+          "objection",
+          null
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options",
+          []
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules",
+          [
+            {
+              "type": "text",
+              "size": "s",
+              "title": "Context",
+              "src": "the spec",
+              "text": "Some context for the card."
+            },
+            {
+              "type": "metrics",
+              "size": "m",
+              "title": "Numbers",
+              "src": "spec, Summary",
+              "items": [
+                {
+                  "label": "Estimate",
+                  "value": "150k",
+                  "note": null,
+                  "gauge": 0.5,
+                  "tone": null
+                }
+              ]
+            },
+            {
+              "type": "excerpt",
+              "size": "l",
+              "title": "Attachment",
+              "src": "the spec",
+              "file": "specs/2026-10-15-where-am-i.md",
+              "where": "Decisions",
+              "head": null,
+              "lines": [
+                "Criteria: prove it cheaply."
+              ],
+              "highlight": "prove it cheaply"
+            },
+            {
+              "type": "list",
+              "size": "p",
+              "title": "Facts",
+              "src": "the ledger",
+              "items": [
+                {
+                  "k": "tasks",
+                  "v": "two of them"
+                },
+                {
+                  "k": "risky",
+                  "v": null
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "size": "s",
+              "title": "Context",
+              "src": "the spec",
+              "text": "Some context for the card."
+            }
+          ]
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.recommendedBy",
+          [
+            "gtm",
+            "reviewer",
+            "analyst",
+            "second-reader"
+          ]
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].recommendedBy",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items",
+          [
+            {
+              "label": "Estimate",
+              "value": "150k",
+              "note": null,
+              "gauge": 0.5,
+              "tone": null
+            },
+            {
+              "label": "Estimate",
+              "value": "150k",
+              "note": null,
+              "gauge": 0.5,
+              "tone": null
+            },
+            {
+              "label": "Estimate",
+              "value": "150k",
+              "note": null,
+              "gauge": 0.5,
+              "tone": null
+            },
+            {
+              "label": "Estimate",
+              "value": "150k",
+              "note": null,
+              "gauge": 0.5,
+              "tone": null
+            },
+            {
+              "label": "Estimate",
+              "value": "150k",
+              "note": null,
+              "gauge": 0.5,
+              "tone": null
+            },
+            {
+              "label": "Estimate",
+              "value": "150k",
+              "note": null,
+              "gauge": 0.5,
+              "tone": null
+            },
+            {
+              "label": "Estimate",
+              "value": "150k",
+              "note": null,
+              "gauge": 0.5,
+              "tone": null
+            }
+          ]
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items",
+          []
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.3.items",
+          [
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            },
+            {
+              "k": "k",
+              "v": null
+            }
+          ]
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[3].items",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.3.items",
+          []
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[3].items",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.lines",
+          [
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply.",
+            "Criteria: prove it cheaply."
+          ]
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].lines",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.lines",
+          []
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].lines",
+          "why": "length"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "a\u0007b"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "a\u202eb"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "a\u2028b"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "a\ud800b"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "   "
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "a\u0085b"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "a\u200db"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "a\nb"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "a\tb"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "a\u00adb"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "\ufeffab"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.label",
+          "a\u2029b"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].label",
+          "why": "text"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          5
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.reversible",
+          "yes"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].reversible",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.cost.tokens",
+          -1
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].cost.tokens",
+          "why": "range"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.cost.tokens",
+          1.5
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].cost.tokens",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.cost.tokens",
+          1000000001
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].cost.tokens",
+          "why": "range"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.cost.minutes",
+          100001
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].cost.minutes",
+          "why": "range"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.cost.minutes",
+          "15"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].cost.minutes",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "moment",
+          0
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "moment",
+          "why": "range"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "moment",
+          5
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "moment",
+          "why": "range"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "moment",
+          1.5
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "moment",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "moment",
+          "1"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "moment",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items.0.gauge",
+          1.01
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items[0].gauge",
+          "why": "range"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items.0.gauge",
+          -0.01
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items[0].gauge",
+          "why": "range"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items.0.gauge",
+          "0.5"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items[0].gauge",
+          "why": "range"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options",
+          "A"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.0",
+          null
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[0]",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "kind",
+          "brainstorm"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "kind",
+          "why": "list"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "kind",
+          "Decision"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "kind",
+          "why": "list"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.0.size",
+          "xl"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[0].size",
+          "why": "list"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.0.type",
+          "image"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[0].type",
+          "why": "list"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.0.type",
+          "constructor"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[0].type",
+          "why": "list"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.1.items.0.tone",
+          "good"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[1].items[0].tone",
+          "why": "list"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.key",
+          "AA"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].key",
+          "why": "order"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.1.key",
+          "C"
+        ],
+        [
+          "options.2.key",
+          "B"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[1].key",
+          "why": "order"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.0.key",
+          "a"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].key",
+          "why": "order"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "recommendation.option",
+          "D"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "recommendation.option",
+          "why": "option"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "recommendation.option",
+          "a"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "recommendation.option",
+          "why": "option"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.1.recommendedBy",
+          [
+            "reviewr"
+          ]
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[1].recommendedBy[0]",
+          "why": "by"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.1.recommendedBy",
+          [
+            "second-reader",
+            "second-reader"
+          ]
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[1].recommendedBy[1]",
+          "why": "by"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options.1.recommendedBy",
+          [
+            "Reviewer"
+          ]
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[1].recommendedBy[0]",
+          "why": "by"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "recommendation",
+          null
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "options[0].recommendedBy",
+          "why": "by"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "recommendation.by",
+          "analyst"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "recommendation.by",
+          "why": "by"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "recommendation.by",
+          "owner"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "recommendation.by",
+          "why": "by"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "objection.prefers",
+          "D"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "objection.prefers",
+          "why": "option"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "objection.by",
+          "nobody"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "objection.by",
+          "why": "by"
+        }
+      }
+    },
+    {
+      "patch": [],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "moment",
+          "why": "mandate"
+        }
+      },
+      "edit": {
+        "plans/2026-10-15-where-am-i.md": [
+          "- decides alone: reversible",
+          "- decides alone: everything"
+        ]
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.lines.0",
+          "Criteria: prove it cheaply!"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].lines[0]",
+          "why": "quote"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.highlight",
+          "prove it cheaply!"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].highlight",
+          "why": "quote"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "../ledger.md"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "shape"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "specs/../ledger.md"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "shape"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          ".hidden/notes.md"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "shape"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "specs/.notes.md"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "shape"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "/etc/hosts"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "shape"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "specs//2026-10-15-where-am-i.md"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "shape"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "specs/2026-10-15-where-am-i.md "
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "shape"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "specs/link.md"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "file"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "linked/2026-10-15-where-am-i.md"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "file"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "specs/none.md"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "file"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules.2.file",
+          "specs"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules[2].file",
+          "why": "file"
+        }
+      },
+      "links": {
+        "specs/link.md": "2026-10-15-where-am-i.md",
+        "linked": "specs"
+      }
+    },
+    {
+      "patch": [
+        [
+          "id",
+          "other-D1"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "id",
+          "why": "shape"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "id",
+          "where-am-i-"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "id",
+          "why": "shape"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "id",
+          "where-am-i-D 1"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "id",
+          "why": "shape"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "id",
+          "where-am-iD1"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "id",
+          "why": "shape"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "id",
+          5
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "id",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "stdin": "bad.txt",
+      "want": {
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "json"
+        }
+      }
+    },
+    {
+      "stdin": "latin1.json",
+      "want": {
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "json"
+        }
+      }
+    },
+    {
+      "pad": 63983,
+      "want": {
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "json"
+        }
+      }
+    },
+    {
+      "pad": 63982,
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "options",
+          [
+            {
+              "key": "A",
+              "label": "Pins and fixtures",
+              "proves": "The text holds in the gate.",
+              "cost": {
+                "tokens": 0,
+                "minutes": 0,
+                "text": "no run"
+              },
+              "reversible": true,
+              "recommendedBy": [
+                "gtm",
+                "reviewer"
+              ]
+            },
+            {
+              "key": "B",
+              "label": "A live run",
+              "proves": null,
+              "cost": {
+                "tokens": 150000,
+                "minutes": 15,
+                "text": "about 150k"
+              },
+              "reversible": false,
+              "recommendedBy": [
+                "second-reader"
+              ]
+            },
+            {
+              "key": "C",
+              "label": "Both of them",
+              "proves": null,
+              "cost": null,
+              "reversible": null,
+              "recommendedBy": []
+            }
+          ]
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "modules",
+          {}
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "modules",
+          "why": "type"
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00"
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "reports/where-am-i/waiting.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "question",
+          "\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00"
+        ]
+      ],
+      "want": {
+        "facts": {
+          "written": false,
+          "field": "question",
+          "why": "length"
+        }
+      }
+    }
+  ]
+}
