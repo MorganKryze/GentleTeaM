@@ -224,9 +224,17 @@ try {
 } finally {
   for (const s of scratches) rmSync(s, { recursive: true, force: true })
 }
-const ran = found.filter(Boolean).length
-if (ran < TWINS.length) errors.push(`ran ${ran} of ${TWINS.length} twins`)
+// The count's own check: a twin the pool never ran is missed.
+if (shortRun([[], , []], 3) !== 'ran 2 of 3 twins') errors.push(`twin count: ${shortRun([[], , []], 3)}`)
+const missed = shortRun(found, TWINS.length)
+if (missed) errors.push(missed)
 errors.push(...found.flat().filter(Boolean))
+
+// The pool's results hold one list per twin it ran; a hole is a twin never run.
+function shortRun(found, total) {
+  const ran = found.filter(Boolean).length
+  return ran < total ? `ran ${ran} of ${total} twins` : ''
+}
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`twins: ${TWINS.length} planted defects caught, ${tests.length} tests, no key given twice`)

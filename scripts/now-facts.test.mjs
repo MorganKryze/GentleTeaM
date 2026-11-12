@@ -138,19 +138,30 @@ if (at !== -1) {
   console.log(JSON.stringify({ ran, errors: own }))
   process.exit(0)
 }
+// The join's own check: a shard that ran short is counted, one with no line fails with its output.
+const short = collect([{ code: 0, out: '{"ran":2,"errors":[[2,"two"]]}\n' }, { code: 0, out: '{"ran":0,"errors":[]}\n' }], 3)
+if (short.join('|') !== 'ran 2 of 3 scenarios|two') errors.push(`shard join: ${JSON.stringify(short)}`)
+const lost = collect([{ code: 1, out: 'boom' }], 1)
+if (lost.join('|') !== 'shard 0/1: exit 1, no result line:\nboom|ran 0 of 1 scenarios') errors.push(`shard join: ${JSON.stringify(lost)}`)
 const shards = await pool(Array.from({ length: JOBS }, (_, i) => i), JOBS, (i) => run(fileURLToPath(import.meta.url), ['--shard', `${i}/${JOBS}`]))
-const byIndex = []
-let ran = 0
-for (const [i, r] of shards.entries()) {
-  const line = r.out.split('\n').find((l) => l.startsWith('{"ran":'))
-  let got = null
-  try { got = line && JSON.parse(line) } catch {}
-  if (r.code !== 0 || !got) { errors.push(`shard ${i}/${JOBS}: exit ${r.code}, no result line:\n${r.out.trim()}`); continue }
-  ran += got.ran
-  byIndex.push(...got.errors)
+errors.push(...collect(shards, scenarios.length))
+
+// Joins the shards' result lines into one list: what went wrong with the run, then the scenarios'
+// errors by index.
+function collect(shards, total) {
+  const out = [], byIndex = []
+  let ran = 0
+  for (const [i, r] of shards.entries()) {
+    const line = r.out.split('\n').find((l) => l.startsWith('{"ran":'))
+    let got = null
+    try { got = line && JSON.parse(line) } catch {}
+    if (r.code !== 0 || !got) { out.push(`shard ${i}/${shards.length}: exit ${r.code}, no result line:\n${r.out.trim()}`); continue }
+    ran += got.ran
+    byIndex.push(...got.errors)
+  }
+  if (ran < total) out.push(`ran ${ran} of ${total} scenarios`)
+  return [...out, ...byIndex.sort((a, b) => a[0] - b[0]).map(([, e]) => e)]
 }
-if (ran < scenarios.length) errors.push(`ran ${ran} of ${scenarios.length} scenarios`)
-errors.push(...byIndex.sort((a, b) => a[0] - b[0]).map(([, e]) => e))
 
 function scenario(name, dir, a, want) {
   const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-'))
