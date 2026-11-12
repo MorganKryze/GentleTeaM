@@ -162,8 +162,9 @@ view, keeps the fields you gave and recomputes the facts. It is never committed:
 GTM goes on with one Heads-up.
 
 The fields you give come from two moments. `/gtm:init` shows the kind, purpose and users as rows
-of its guesses table and writes them on your OK. `/gtm:retro` lists the decisions and
-difficulties in its report and writes those.
+of its guesses table and writes them on your OK. `/gtm:retro` adds the decisions and
+difficulties it finds to those the sheet holds, your corrections included, lists them in its
+report and writes those.
 
 A program reading it:
 - treats the sheet as stale when it is older than `NOW.md`;

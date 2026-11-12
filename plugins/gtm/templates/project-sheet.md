@@ -30,10 +30,12 @@ line, never empty, no control or format character; the number after a text is it
   and why; purpose and users: a summary of the brief), rows, not questions, no extra message. On
   the owner's OK, `purpose` and `users` go through the step and the kind into `config.yml` as
   `kind:` under `project:`, never through the step; init never sets `project.sheet`.
-- `/gtm:retro`: `decisions` and `difficulties`, both listed in its report. Decisions come from
-  the ledger's `ruling` lines that quote the owner or change what the owner sees, newest first,
-  the previous ones kept while among the 6 newest. Difficulties come from this retro's lessons and
-  the open minors, `src` `ledger <date>` of the line it comes from.
+- `/gtm:retro`: reads `<root>/sheet.json` first (no file: both lists empty), then hands
+  `decisions` and `difficulties` merged into the stored lists, never rebuilt from the ledger alone,
+  both listed in its report. Decisions: the stored ones, an owner's correction included, and the
+  ledger's `ruling` lines that quote the owner or change what the owner sees, newest first, the 6
+  newest kept. Difficulties: the stored ones not resolved since, then this retro's lessons and the
+  open minors, `src` `ledger <date>` of the line it comes from, at most 6.
 
 ## The words
 Every text is the owner's, seen: shown in the table or the report, in `language.human`. Hand the

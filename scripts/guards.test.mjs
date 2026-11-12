@@ -10,7 +10,7 @@
 // on its own card only, a refused answer never reworded. The project sheet goes through the same
 // script, its exclude line beside the state's, only where the switch is on: the owner's texts
 // never reworded, no showcase handed, init's rows inside its five questions, retro's lists in its
-// report. A standing go: the line's shape, its proofs, the
+// report and merged into the stored ones. A standing go: the line's shape, its proofs, the
 // never list and what a program must refuse, as the settings reference states them.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
@@ -121,6 +121,8 @@ const PINS = {
   'plugins/gtm/templates/project-sheet.md': [
     'never shorten or reword',
     '`showcase` is never handed in this version',
+    '`/gtm:retro`: reads `<root>/sheet.json` first',
+    'never rebuilt from the ledger alone',
   ],
   'plugins/gtm/templates/config.yml': [/^ {2}push: ask\b/m, '# standing = still nothing pushed: /gtm:ship records a landing for', 'set by /gtm:tune only'],
   'plugins/gtm/skills/tune/SKILL.md': [

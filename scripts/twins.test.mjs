@@ -62,6 +62,8 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/now.md', from: '`/<rel>/sheet.json` goes to the exclude file', to: '`/<rel>/sheet.json` stays out of the exclude file', says: '`/<rel>/sheet.json` goes' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'never shorten or reword', to: 'shorten', says: 'project-sheet.md lacks never shorten' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`showcase` is never handed', to: '`showcase` is handed', says: '`showcase` is never handed' },
+  { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`/gtm:retro`: reads `<root>/sheet.json` first', to: '`/gtm:retro`:', says: '`/gtm:retro`: reads `<root>/sheet.json` first' },
+  { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'never rebuilt from the ledger alone', to: 'rebuilt from the ledger', says: 'never rebuilt from the ledger alone' },
   { test: 'guards', file: skill('init'), from: "Where `config.yml`'s `project.sheet` reads `on`, the table", to: 'The table', says: '`project.sheet` reads `on`, the table' },
   { test: 'guards', file: skill('init'), from: '≤ 5 questions', to: '≤ 7 questions', says: '≤ 5 questions' },
   { test: 'guards', file: skill('retro'), from: 'list both in the report.', to: 'keep both out of the report.', says: 'list both in the report' },
