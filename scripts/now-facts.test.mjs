@@ -14,7 +14,7 @@
 // path: target }, gitlink?: [path] }], each applied in that order) are made in order in the
 // repository with fixed dates, those with base on main before the scenario's branch is made, the
 // others on their `on` branch (the scenario's by default); edit ({ path: [from, to] }) changes one root file
-// once, after template (true) copies the plugin's templates/config.yml into the root; gitconfig ({ key: value }, `{root}` its path) sets the repository's config; replace ({ rev:
+// once, `{pidns}` in to the test's pid namespace (PIDNS), after template (true) copies the plugin's templates/config.yml into the root; gitconfig ({ key: value }, `{root}` its path) sets the repository's config; replace ({ rev:
 // rev }) replaces the first commit with the second and resets the checkout to it; grafts ([line])
 // writes .git/info/grafts, revs read first; graph ({ rev: rev }) writes a commit-graph in which the
 // first commit has the second as its second parent, the file a session could forge; `{rev:<rev>}`
@@ -31,14 +31,14 @@
 // and the files expected.json names, no git index and no git status; that a usage error prints nothing; that the state holds no `?`
 // and none of its card, step or mandate text reached stdout; that no owner text of the project
 // sheet, before or after the run, reached stdout or stderr; that the sheet step, waiting on its
-// input, holds no sheet.json.lock and killed there leaves none. Run by scripts/validate.mjs. No
-// dependencies.
+// input, holds no sheet.json.lock and killed there leaves none; that the lock a step holds names its
+// pid and its pid namespace. Run by scripts/validate.mjs. No dependencies.
 import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, lstatSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync, spawnSync, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { JOBS, pool, run } from './pool.mjs'
 
 const root = new URL('..', import.meta.url).pathname
@@ -48,6 +48,9 @@ const NOW = Date.parse('2026-10-15T10:00:00Z')
 const ago = (min) => new Date(NOW - min * 60000)
 const errors = []
 const env = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' }
+// The pid namespace the script runs in, as it names it in sheet.json.lock: Linux's from /proc, the
+// platform's name elsewhere.
+const PIDNS = process.platform === 'linux' ? readlinkSync('/proc/self/ns/pid') : process.platform
 
 function git(cwd, args, extra = {}) {
   execFileSync('git', ['-c', 'commit.gpgsign=false', ...args], { cwd, stdio: 'pipe', env: { ...env, ...extra } })
@@ -212,7 +215,7 @@ function scenario(name, dir, a, want) {
     for (const [f, [from, to]] of Object.entries(a.edit || {})) {
       const t = readFileSync(join(gtm, f), 'utf8')
       if (!t.includes(from)) errors.push(`${name}: edit finds no ${JSON.stringify(from)} in ${f}`)
-      writeFileSync(join(gtm, f), t.replace(from, to))
+      writeFileSync(join(gtm, f), t.replace(from, to.replaceAll('{pidns}', PIDNS)))
     }
     for (const [k, v] of Object.entries(a.gitconfig || {})) git(repo, ['config', k, v.replaceAll('{root}', gtm)])
     for (const [from, to] of Object.entries(a.replace || {})) { const sha = (r) => execFileSync('git', ['rev-parse', r], { cwd: repo, encoding: 'utf8', env }).trim(); git(repo, ['replace', sha(from), sha(to)]); git(repo, ['reset', '-q', '--hard']) }
@@ -345,5 +348,22 @@ async function waiting() {
   }
 }
 await waiting()
+// The lock a step holds reads `<pid> <pid namespace>`, so a run in another namespace never takes
+// the pid for gone: a preload copies it as the step renames its sheet.
+function named() {
+  const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-lock-'))
+  try {
+    const r = join(tmp, 'root'), seen = join(tmp, 'seen'), pre = join(tmp, 'pre.mjs')
+    cpSync(join(fixtures, 'sheet-lock/root'), r, { recursive: true })
+    rmSync(join(r, 'sheet.json.lock'))
+    writeFileSync(pre, `import fs from 'node:fs'\nimport { syncBuiltinESMExports } from 'node:module'\nconst rename = fs.renameSync\nfs.renameSync = (a, b) => { if (b.endsWith('/sheet.json')) fs.copyFileSync(\`\${b}.lock\`, ${JSON.stringify(seen)}); return rename(a, b) }\nsyncBuiltinESMExports()\n`)
+    const p = spawnSync(process.execPath, ['--import', pathToFileURL(pre).href, script, '--root', r, '--now', new Date(NOW).toISOString(), '--sheet', join(r, 'sheet.json')], { cwd: tmp, encoding: 'utf8', env: { ...env, TZ: 'UTC' }, input: readFileSync(join(fixtures, 'sheet-lock/in.json')) })
+    const got = existsSync(seen) ? readFileSync(seen, 'utf8') : null
+    if (p.status !== 0 || got !== `${p.pid} ${PIDNS}`) errors.push(`sheet step: its lock reads ${JSON.stringify(got)}, want "${p.pid} ${PIDNS}" (exit ${p.status})`)
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
+  }
+}
+named()
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`now-facts: ${readdirSync(fixtures).length} scenarios and the delivery tail OK`)

@@ -48,7 +48,7 @@
 //        [--state <root>/state.json] [--mandate <slug> [--copy <file>]]
 //        [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug>]
 //        [--sheet <root>/sheet.json] No dependencies.
-import { readFileSync, readSync, readdirSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, linkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
+import { readFileSync, readSync, readdirSync, readlinkSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, linkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
 import { join, basename, resolve, relative } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { isatty } from 'node:tty'
@@ -920,28 +920,34 @@ function sheet(stepping) {
   }
   try { return held(stepping, given, file, no1, no3) } finally { try { if (lstatSync(lock).ino === ino) unlinkSync(lock) } catch {} }
 }
-// The lock, made exclusively ('wx': never through a link) with this pid in it: its inode, or null
-// when it is there already; any other error throws, the lock it made removed.
+// The pid namespace this run's pid means something in: on Linux its own, read from /proc (null when
+// unreadable); elsewhere, with none, the platform's name.
+const PIDNS = process.platform !== 'linux' ? process.platform : (() => { try { return readlinkSync('/proc/self/ns/pid') } catch { return null } })()
+// The lock, made exclusively ('wx': never through a link) with `<pid> <PIDNS>` in it: its inode, or
+// null when it is there already; any other error throws, the lock it made removed.
 function lockTake(lock) {
   let fd
   try { fd = openSync(lock, 'wx') } catch (e) { if (e.code === 'EEXIST') return null; throw e }
-  try { writeFileSync(fd, String(process.pid)); return fstatSync(fd).ino } catch (e) { try { unlinkSync(lock) } catch {} throw e } finally { closeSync(fd) }
+  try { writeFileSync(fd, `${process.pid} ${PIDNS ?? '?'}`); return fstatSync(fd).ino } catch (e) { try { unlinkSync(lock) } catch {} throw e } finally { closeSync(fd) }
 }
-// A lock left by a killed run: a regular file whose pid is gone (ESRCH) or whose mtime is LOCK ms
-// or more before the run's time; a link, a FIFO or a folder never is. It is moved aside by a
-// rename and removed only when it is still the file judged stale, else put back: true when removed.
+// A lock left by a killed run: a regular file whose mtime is LOCK ms or more before the run's time,
+// or whose pid is gone (ESRCH) when the namespace it names is this run's PIDNS. A pid means nothing
+// in another namespace (a sandbox may run each command in a new one): such a lock frees by age
+// alone. A link, a FIFO or a folder never is stale. It is moved aside by a rename and removed only
+// when it is still the file judged stale, else put back: true when removed.
 const LOCK = 30000
 function lockFree(lock) {
-  let fd, st, pid
+  let fd, st, body
   try { fd = openSync(lock, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK) } catch { return false }
   try {
     st = fstatSync(fd)
     if (!st.isFile()) return false
-    const b = Buffer.alloc(16)
-    pid = b.toString('latin1', 0, readSync(fd, b, 0, b.length, 0))
+    const b = Buffer.alloc(64)
+    body = b.toString('latin1', 0, readSync(fd, b, 0, b.length, 0))
   } catch { return false } finally { closeSync(fd) }
+  const m = /^([1-9]\d{0,9}) (\S+)$/.exec(body)
   let gone = false
-  if (/^[1-9]\d{0,9}$/.test(pid)) try { process.kill(+pid, 0) } catch (e) { gone = e.code === 'ESRCH' }
+  if (m && m[2] === PIDNS) try { process.kill(+m[1], 0) } catch (e) { gone = e.code === 'ESRCH' }
   if (!gone && now - st.mtimeMs < LOCK) return false
   const aside = `${lock}.${process.pid}.stale`
   try { renameSync(lock, aside) } catch { return false }

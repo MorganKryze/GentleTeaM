@@ -85,7 +85,7 @@
       "edit": {
         "sheet.json.lock": [
           "",
-          "2147483647"
+          "2147483647 {pidns}"
         ]
       },
       "want": {
@@ -111,7 +111,7 @@
       "edit": {
         "sheet.json.lock": [
           "",
-          "2147483647"
+          "2147483647 {pidns}"
         ]
       },
       "want": {
@@ -136,7 +136,7 @@
       "edit": {
         "sheet.json.lock": [
           "",
-          "1"
+          "1 {pidns}"
         ]
       }
     },
@@ -149,7 +149,7 @@
       "edit": {
         "sheet.json.lock": [
           "",
-          "1"
+          "1 {pidns}"
         ]
       },
       "want": {
@@ -179,6 +179,71 @@
             "branch": "feat/where-am-i"
           }
         }
+      }
+    },
+    {
+      "edit": {
+        "sheet.json.lock": [
+          "",
+          "2147483647 pid:[1]"
+        ]
+      }
+    },
+    {
+      "stdin": "in.json",
+      "args": [
+        "--sheet",
+        "{root}/sheet.json"
+      ],
+      "edit": {
+        "sheet.json.lock": [
+          "",
+          "2147483647 pid:[1]"
+        ]
+      },
+      "want": {
+        "exit": 3,
+        "state": null
+      }
+    },
+    {
+      "edit": {
+        "sheet.json.lock": [
+          "",
+          "2147483647 pid:[1]"
+        ]
+      },
+      "mtimes": {
+        "sheet.json.lock": 0.5
+      },
+      "want": {
+        "exit": 0,
+        "files": {
+          "sheet.json": true,
+          "sheet.json.lock": null
+        },
+        "sheet": {
+          "purpose": "Un but déjà relu par le propriétaire.",
+          "plan": {
+            "branch": "feat/where-am-i"
+          }
+        }
+      }
+    },
+    {
+      "edit": {
+        "sheet.json.lock": [
+          "",
+          "2147483647"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "sheet.json.lock": [
+          "",
+          "2147483647 {pidns}x"
+        ]
       }
     }
   ]
