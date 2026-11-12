@@ -127,6 +127,9 @@ const OPEN3 = (by, important) => ({
 const TRACED = { implementer: { model: 'opus', effort: 'low' }, reviewer: { model: 'opus', effort: 'medium' }, 'security-reviewer': { model: 'opus', effort: 'high' } }
 const hole = { severity: 'important', file: WF, summary: 'hole', category: 'security' }
 const CATEGORY = ['Category: give each finding one of behaviour, security, proof, doc, form']
+// Names a project could give a specialist or a model, each refused by one clause of the alphabet:
+// a segment separator, a newline, upper case, a leading `; `, and one character past the cap.
+const FORGED = ['x · start 2020', 'x\nstart', 'Security', '; rm', 'a'.repeat(61)]
 
 const deliver = [
   {
@@ -1647,6 +1650,22 @@ const deliver = [
     reply: () => { throw new Error('nothing runs') },
     returns: { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files', trace: { models: 'none', causes: 'none' } },
     dispatches: [],
+  },
+  {
+    // Project specialists are named in the project's own team.md, and the progress line splits on
+    // ` · `: each clause of the name's alphabet keeps one of these names, used as role and model
+    // alike, out of the trace. A severity off the schema, which no real reply carries, reads important.
+    name: 'trace: a role or model off its alphabet that starts a round reads ? in models and causes',
+    args: { triggers: Object.fromEntries(FORGED.map((r) => [r, ['^src/']])), team: Object.fromEntries(FORGED.map((r) => [r, { model: r }])) },
+    reply: implementer(['src/a.js'], (d) => (d.agentType === 'gtm:reviewer' || d.label.includes('round') ? ok
+      : { verdict: 'fix', findings: [{ severity: d.agentType === 'Security' ? 'High' : 'important', summary: 'x', category: 'security' }], summary: 'fix' })),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', ...FORGED], minors: [],
+      stats: Object.fromEntries(FORGED.map((r) => [r, { critical: 0, important: 0, minor: 0, ...(r === 'Security' ? { High: null } : { important: 1 }) }])),
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, ? ?/?', causes: FORGED.map(() => '1:?/important/security').join(', ') },
+    },
+    dispatches: [implement(), reviewer(), ...FORGED.map((r) => ({ agentType: r, label: r, model: r })),
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, ...FORGED.map((r) => ({ agentType: r, label: `${r} · round 1`, model: r }))],
   },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
