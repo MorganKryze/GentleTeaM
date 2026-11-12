@@ -30,7 +30,8 @@
 // a fixed time, and checks it changed no file but the state it was asked for, replaced by a rename,
 // and the files expected.json names, no git index and no git status; that a usage error prints nothing; that the state holds no `?`
 // and none of its card, step or mandate text reached stdout; that no owner text of the project
-// sheet, before or after the run, reached stdout or stderr. Run by scripts/validate.mjs. No
+// sheet, before or after the run, reached stdout or stderr; that the sheet step, waiting on its
+// input, holds no sheet.json.lock and killed there leaves none. Run by scripts/validate.mjs. No
 // dependencies.
 import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, lstatSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
