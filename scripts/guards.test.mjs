@@ -212,6 +212,8 @@ const PINS = {
     '`1:final-reviewer/important/<category>` per must-fix. No round: `none`.',
     'Nothing else in the line changes, and segments are only added at its end, so every reader of',
     'today\'s lines reads them as before.',
+    // Moved from the deliver skill: a direct dispatch reports no count of its own.
+    '`agent_count` (a dispatch is 1 agent)',
   ],
   'plugins/gtm/workflows/deliver-task.js': ["const SECURITY = 'high'"],
   'docs/reference/commands.md': [

@@ -24,6 +24,8 @@ after every segment it has today:
   `1:final-reviewer/important/<category>` per must-fix. No round: `none`.
 - A category is one of `behaviour`, `security`, `proof`, `doc`, `form`; a missing or unknown one
   is `?` and never stops a run.
+- Before the tail, the skill's `· <a> agents` takes Claude Code's
+  `agent_count` (a dispatch is 1 agent).
 
 Nothing else in the line changes, and segments are only added at its end, so every reader of
 today's lines reads them as before. A run's line without this tail lacks its trace.
