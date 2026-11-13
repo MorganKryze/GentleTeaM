@@ -29,3 +29,13 @@ agent) ends with four segments, in this order, after every segment it has today:
 
 Nothing else in the line changes, and segments are only added at its end, so every reader of
 today's lines reads them as before. A run's line without this tail lacks its trace.
+
+## The lead's own files
+Read before the first dispatch. The orchestrator keeps the scripts, logs and tool installs it
+makes for a run in `<root>/reports/<slug>/lead/`, never in the session scratchpad, which Claude
+Code can wipe mid-run; a log's name carries the run's start instant, so a rerun never overwrites
+it. An agent never writes there. No secret or token goes in them.
+The folder is out of git when `reports/` is excluded, as `/gtm:init` sets it.
+Root inside the repository: with `<rel>` its path from `git rev-parse --show-toplevel`, run from
+that top, if `git check-ignore -q <rel>/reports/<slug>/lead/` fails, the folder is not ignored:
+write nothing there and stop with a Heads-up. A root outside the repository is out of git already.

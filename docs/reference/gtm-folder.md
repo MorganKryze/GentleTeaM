@@ -72,6 +72,7 @@ one learned.
 | `reports/<slug>/progress.md` | one line per run of the branch, ending with its start and end, the model and effort of each role it dispatched, and the cause of each [correction round](/reference/glossary/#correction-round); an instant nobody recorded reads `?` | the orchestrator |
 | `sheet.json` | the [project sheet](#project-sheet): what the project is for, its plan, decisions, cost and difficulties, for a program that shows the project; kept out of commits like `state.json`, and written only while `project.sheet` is `on` | the orchestrator, through the facts script |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
+| `reports/<slug>/lead/` | the scripts, logs and tool installs the orchestrator makes for a run, kept here rather than in the session scratchpad Claude Code can wipe | the orchestrator, never an agent |
 | `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
 
 ## What does state.json hold?
