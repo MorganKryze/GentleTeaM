@@ -225,6 +225,20 @@ const PINS = {
     'existing section over verbatim, its `> Source:` line included.',
   ],
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
+  // An agent stays within its task: the implementer's limits, the reviewer's scope findings.
+  'plugins/gtm/agents/implementer.md': [
+    '- Stay inside your task: touch only its files, in your own worktree or checkout,',
+    'the report file and the GTM root files you are told to read. Never another worktree,',
+    'scripts or logs, or a file outside the repository; never kill or signal a process',
+    'start; never read, print or write a secret or token.',
+  ],
+  'plugins/gtm/agents/reviewer.md': [
+    '- Scope: a changed file the brief does not name is a finding, important, category `form`;',
+    'any sign of the implementer working outside its task (another worktree,',
+    'logs, a file outside the repository, a process it did not start)',
+    'and GTM root files it was told to read. A secret or token read, printed or written:',
+    'category `security`.',
+  ],
   'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m, 'Each must-fix names one category: `behaviour`, `security`, `proof`'],
   'plugins/gtm/templates/delivery.md': [
     '`· start <S> · end <E> · models <M> · causes <C>`',
