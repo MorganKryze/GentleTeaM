@@ -65,7 +65,8 @@ The action follows the verdict:
 - `not reproduced` (the gap and the cap included): one diagnosis round from the quoted lines; on
   a second CI red of the same check, a card: **A** another round, **B** the human takes it.
 - `config`: a card naming the CI setting at fault and the change it would take; no rerun.
-- `infra`: a card, **A** rerun the failed job later with the branch unchanged, **B** wait.
+- `infra`: a card quoting the failed step's line that shows it runs no check, **A** rerun the
+  failed job later with the branch unchanged, **B** wait.
 
 A CI round runs as the final review's fix wave: one brief quoting the CI lines and the runner's
 red, the gap or the cap; the fix gated locally and, when the runner command runs, the failing

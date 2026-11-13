@@ -302,7 +302,7 @@ const PINS = {
     '## The runner command', '## Before the push', '## On a CI red', '## The ci line',
     // P1: `infra` only for a step that runs no check.
     w("`infra` only for a step that runs none of the project's checks"),
-    w('a step that runs a check is never `infra`.'),
+    w("the forge's own service), the quoted line showing it; a step that runs a check is never `infra`."),
     // P2: runs only through the runner command, stop at the first red, the job's command once.
     w('not reproduced locally: runs only through the runner command.'),
     w('stop at the first red; with no red and time left, the job\'s command once.'),
@@ -333,7 +333,7 @@ const PINS = {
     w('- `flaky`: a card, **A** a CI round, **B** quarantine'),
     w('- `not reproduced` (the gap and the cap included): one diagnosis round from the quoted lines; on a second CI red of the same check, a card: **A** another round, **B** the human takes it.'),
     w('- `config`: a card naming the CI setting at fault and the change it would take; no rerun.'),
-    w('- `infra`: a card, **A** rerun the failed job later with the branch unchanged, **B** wait.'),
+    w("- `infra`: a card quoting the failed step's line that shows it runs no check, **A** rerun the failed job later with the branch unchanged, **B** wait."),
     // The ci line and its causes.
     '`- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then',
     w('`1:ci/important/runner` for a round on `reproduced`, `flaky` or `not reproduced`'),
