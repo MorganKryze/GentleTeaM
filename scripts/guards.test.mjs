@@ -221,10 +221,8 @@ const PINS = {
     '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',
     '(split as proposed / one branch anyway / wait), with your recommendation;',
     'under 4 hours, none.',
-    'Split: back to `/gtm:spec` as an amend: the architect moves the deferred EARS lines and rows',
-    'verbatim to Out of scope, the human approves the cut as any amended spec, then you write one',
-    '`todo` story for the rest (its Spec cell: this spec and the lines it defers). Wait: nothing',
-    'runs. No measured run: the architect\'s own W stands in.',
+    'Split: the human\'s answer is logged as a `ruling` and the cut is made by hand',
+    'the human approves; wait: nothing runs. No measured run: the architect\'s own W stands in.',
     'or 4 hours (§2\'s split card), or the human asked to see',
     'so it reaches the brief; a missing one goes back to the architect:',
     '`security-reviewer`, `data-reviewer` or `ux-qa` sits on a task with a File matching a trigger of',
@@ -236,6 +234,9 @@ const PINS = {
   ],
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
   // An agent stays within its task: the implementer's limits, the reviewer's scope findings.
+  'plugins/gtm/agents/architect.md': [
+    'None: `no measured run yet` with your own rough `≈ <W> min, <T>k tokens`',
+  ],
   'plugins/gtm/agents/implementer.md': [
     '- Stay inside your task: touch only its files, in your own worktree or checkout,',
     'the report file and the GTM root files you are told to read. Never another worktree,',

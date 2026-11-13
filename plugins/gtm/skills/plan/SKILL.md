@@ -57,10 +57,8 @@ phase's lines are summed in the run line.
   in the spec: no comparison, no card.
 - Past 4 hours (W > 240 min): the Summary's proposed split, then a card before any delivery
   (split as proposed / one branch anyway / wait), with your recommendation; under 4 hours, none.
-  Split: back to `/gtm:spec` as an amend: the architect moves the deferred EARS lines and rows
-  verbatim to Out of scope, the human approves the cut as any amended spec, then you write one
-  `todo` story for the rest (its Spec cell: this spec and the lines it defers). Wait: nothing
-  runs. No measured run: the architect's own W stands in.
+  Split: the human's answer is logged as a `ruling` and the cut is made by hand, as a spec amend
+  the human approves; wait: nothing runs. No measured run: the architect's own W stands in.
 One round of corrections with the architect if a check fails.
 
 ## 3. Continue
