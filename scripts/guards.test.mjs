@@ -132,6 +132,8 @@ const PINS = {
   'plugins/gtm/skills/init/SKILL.md': [
     // The runner guess: a row of the guesses table, inside the five questions.
     w("the analyst's `verify.runner` row"),
+    // Its `[CHECK]` stays: runner.md proves the runner on the untouched base at first use.
+    w("every `[CHECK]` but `verify.runner`'s (`templates/runner.md`)"),
     'security-reviewer on, effort high;',
     '## 2. Interview (one message, ≤ 5 questions)',
     "Where `config.yml`'s `project.sheet` reads `on`,",
