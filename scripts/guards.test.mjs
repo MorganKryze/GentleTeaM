@@ -235,8 +235,8 @@ const PINS = {
   'plugins/gtm/agents/reviewer.md': [
     '- Scope: a changed file the brief\'s Files do not name is a finding, important, category `form`;',
     'so is any sign of work outside the task (another worktree, the lead\'s scripts or logs, a file',
-    'outside the repository, a process it did not start). A secret or token read, printed or written:',
-    'important, category `security`.',
+    'outside the repository, a process it did not start), beyond the brief and report file it was',
+    'given. A secret or token read, printed or written: important, category `security`.',
   ],
   'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m, 'Each must-fix names one category: `behaviour`, `security`, `proof`'],
   'plugins/gtm/templates/delivery.md': [
