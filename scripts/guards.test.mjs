@@ -221,6 +221,8 @@ const PINS = {
     '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',
     '(split as proposed / one branch anyway / wait), with your recommendation;',
     'under 4 hours, none.',
+    'Split: the architect amends spec and plan to the first part, the rest moved',
+    'wait: nothing runs. No measured run: the architect\'s own W stands in.',
     'or 4 hours (§2\'s split card), or the human asked to see',
     'so it reaches the brief; a missing one goes back to the architect:',
     '`security-reviewer`, `data-reviewer` or `ux-qa` sits on a task with a File matching a trigger of',

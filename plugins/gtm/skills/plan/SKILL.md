@@ -57,6 +57,8 @@ phase's lines are summed in the run line.
   in the spec: no comparison, no card.
 - Past 4 hours (W > 240 min): the Summary's proposed split, then a card before any delivery
   (split as proposed / one branch anyway / wait), with your recommendation; under 4 hours, none.
+  Split: the architect amends spec and plan to the first part, the rest moved to Out of scope and
+  one `todo` story; wait: nothing runs. No measured run: the architect's own W stands in.
 One round of corrections with the architect if a check fails.
 
 ## 3. Continue
