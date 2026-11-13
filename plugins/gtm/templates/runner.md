@@ -61,7 +61,8 @@ The action follows the verdict:
 - `local`, `reproduced`: a CI round.
 - `flaky`: a card, **A** a CI round, **B** quarantine (the test skipped in its own commit with a
   Known flakes line: symptom, how to confirm, the guideline's deadline). `flaky` offers no rerun;
-  a quarantine only on the human's go.
+  a quarantine only on the human's go. The quarantine commit is gated and reviewed as a CI
+  round's fix is, the skip no wider than the flaky test, then named in the push card again.
 - `not reproduced` (the gap and the cap included): one diagnosis round from the quoted lines; on
   a second CI red of the same check, a card: **A** another round, **B** the human takes it.
 - `config`: a card naming the CI setting at fault and the change it would take; no rerun.

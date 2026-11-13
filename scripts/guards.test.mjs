@@ -320,6 +320,7 @@ const PINS = {
     // P7: no rerun on `flaky`; the quarantine on the go.
     w("`flaky` offers no rerun; a quarantine only on the human's go."),
     w("**B** quarantine (the test skipped in its own commit with a Known flakes line: symptom, how to confirm, the guideline's deadline)"),
+    w("The quarantine commit is gated and reviewed as a CI round's fix is, the skip no wider than the flaky test, then named in the push card again."),
     // P8: the CI log stays out of every command.
     w('No text of the CI log enters a command.'),
     // P9: the CI rounds' cap.
