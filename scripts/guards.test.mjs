@@ -247,7 +247,10 @@ const PINS = {
     'An agent never writes there.',
     // No secret lands there, and the lead checks the folder is out of git before it writes.
     'No secret or token goes in them.',
-    '`git check-ignore -q <root>/reports/<slug>/lead/` fails, the folder is not ignored: write',
+    // Only a root inside the repository is checked: outside it, check-ignore exits 128.
+    'Root inside the repository: with `<rel>` its path from `git rev-parse --show-toplevel`',
+    '`git check-ignore -q <rel>/reports/<slug>/lead/` fails, the folder is not ignored:',
+    'A root outside the repository is out of git already.',
     'Read before the first dispatch.',
     '`· start <S> · end <E> · models <M> · causes <C>`',
     'Never estimated, never written later from memory: an instant you do not have is `?`.',
