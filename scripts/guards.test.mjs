@@ -110,6 +110,10 @@ const PINS = {
     'The card file is handed over and answered as for any card.',
   ],
   'plugins/gtm/templates/plan.md': [
+    // The plan's Runner differences: its heading, columns and `none:` line.
+    '## Runner differences',
+    '| Check | Class | Tasks | Cover |',
+    w('else one line `none: <reason>`'),
     'Past 4 hours (W > 240): one more line, the split you propose (which tasks first, own branch).',
     '<Only when the human\'s request or answer gives a mandate; otherwise no such section.'],
   'plugins/gtm/templates/team.md': [
@@ -126,6 +130,8 @@ const PINS = {
     'one character off counts as none; the class\'s bounds live in the check, never in the line.',
   ],
   'plugins/gtm/skills/init/SKILL.md': [
+    // The runner guess: a row of the guesses table, inside the five questions.
+    w("the analyst's `verify.runner` row"),
     'security-reviewer on, effort high;',
     '## 2. Interview (one message, ≤ 5 questions)',
     "Where `config.yml`'s `project.sheet` reads `on`,",
@@ -256,6 +262,8 @@ const PINS = {
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
   // An agent stays within its task: the implementer's limits, the reviewer's scope findings.
   'plugins/gtm/agents/architect.md': [
+    // A required check behind a path filter or a scanner's upload: a `config` row.
+    w("a required check behind a path filter or a scanner's upload is a `config` row"),
     'None: `no measured run yet` with your own rough `≈ <W> min, <T>k tokens`.',
     'A plan past 4 hours: the split you propose on the line after.',
   ],
@@ -365,6 +373,11 @@ const PINS = {
     w('a CI red from runs through `verify.runner`.'),
   ],
   'plugins/gtm/workflows/deliver-task.js': ["const SECURITY = 'high'"],
+  // The analyst's runner guess: `[CHECK]` with Docker, else the gap and its reason.
+  'plugins/gtm/agents/analyst.md': [
+    w('propose `verify.runner` (`docker run --rm --init …`'),
+    w('marked `[CHECK]`; else leave it empty and give the gap and its reason'),
+  ],
   'docs/reference/commands.md': [
     'the plan\'s section and holds for that branch, resumes included, until you delete it.',
     'counts as no mandate, with a Heads-up; give the file again.',

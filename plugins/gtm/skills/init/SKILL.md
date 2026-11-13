@@ -17,10 +17,10 @@ under ten minutes of the human's time; the analyst guesses (1-2 min, say so), th
 
 ## 2. Interview (one message, ≤ 5 questions)
 Show the guesses as a table (item · my guess · why) for an "OK" or corrections. Cover only what the
-code cannot tell: purpose and users, non-negotiables, whether the product has screens, any verify
-command not found, and the **communication style**: language, detail level, emoji (off / light /
-generous; default light). Write the answers into `config.yml` (`language`, `briefing`); remove every
-`[CHECK]` except on verify commands not run at init, which `/gtm:deliver` confirms on its first run.
+code cannot tell: purpose and users, non-negotiables, screens or not, any verify command not found
+(with the analyst's `verify.runner` row), and the **communication style**: language, detail level,
+emoji (off / light / generous; default light). Write the answers into `config.yml`; remove every
+`[CHECK]` but `verify.runner`'s (`templates/runner.md`) and verify commands' not run at init.
 - Where `config.yml`'s `project.sheet` reads `on`, as `templates/project-sheet.md`: one row per
   `project.kind` unset, `purpose` or `users` null in `<root>/sheet.json`: rows, not questions.
 - Not on Windows: one card in this message, **the usage step**: A chain it with the progress line
