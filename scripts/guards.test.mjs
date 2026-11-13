@@ -24,6 +24,7 @@ const PINS = {
     'document.documentElement.scrollWidth > width',
   ],
   'plugins/gtm/skills/deliver/SKILL.md': [
+    'Your own run files: `templates/delivery.md`.',
     '`git merge --no-ff --no-edit "<branch>-t<n>"`',
     '- Efforts: `team`\'s, raised or lowered on each dispatch\'s range as the Roles note of',
     '`${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the `risky paths` regexes, a list.',
@@ -228,8 +229,9 @@ const PINS = {
   'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m, 'Each must-fix names one category: `behaviour`, `security`, `proof`'],
   'plugins/gtm/templates/delivery.md': [
     // The lead's own files live in the project, never the scratchpad Claude Code can wipe.
-    'keeps the scripts, logs and tool installs it makes for a run in `<root>/reports/<slug>/lead/`',
-    'never in the session scratchpad, which Claude Code can wipe mid-run. An agent never writes',
+    'makes for a run in `<root>/reports/<slug>/lead/`, never in the session scratchpad',
+    'An agent never writes there.',
+    'Read before the first dispatch.',
     '`· start <S> · end <E> · models <M> · causes <C>`',
     'Never estimated, never written later from memory: an instant you do not have is `?`.',
     '`trace.models`, copied as it is.',
