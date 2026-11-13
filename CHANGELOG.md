@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.18.0] - 2026-11-13
+
 ### Added
 - With `verify.runner` set, ship runs each gate command through it once before the push; a red
   stops the ship.
