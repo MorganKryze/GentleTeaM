@@ -57,8 +57,9 @@ phase's lines are summed in the run line.
   in the spec: no comparison, no card.
 - Past 4 hours (W > 240 min): the Summary's proposed split, then a card before any delivery
   (split as proposed / one branch anyway / wait), with your recommendation; under 4 hours, none.
-  Split: the human's answer is logged as a `ruling` and the cut is made by hand, as a spec amend
-  the human approves; wait: nothing runs. No measured run: the architect's own W stands in.
+  Split: the human's answer is logged as a `ruling`; the cut is a spec amend made by hand, which
+  never defers a line or row guarding what the first part ships, and nothing runs until the human
+  approves it. Wait: nothing runs. No measured run: the architect's own W stands in.
 One round of corrections with the architect if a check fails.
 
 ## 3. Continue

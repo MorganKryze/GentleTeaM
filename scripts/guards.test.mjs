@@ -221,8 +221,11 @@ const PINS = {
     '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',
     '(split as proposed / one branch anyway / wait), with your recommendation;',
     'under 4 hours, none.',
-    'Split: the human\'s answer is logged as a `ruling` and the cut is made by hand',
-    'the human approves; wait: nothing runs. No measured run: the architect\'s own W stands in.',
+    'Split: the human\'s answer is logged as a `ruling`;',
+    'the cut is a spec amend made by hand, which',
+    'never defers a line or row guarding what the first part ships, and',
+    'ships, and nothing runs until the human',
+    'approves it. Wait: nothing runs. No measured run: the architect\'s own W stands in.',
     'or 4 hours (§2\'s split card), or the human asked to see',
     'so it reaches the brief; a missing one goes back to the architect:',
     '`security-reviewer`, `data-reviewer` or `ux-qa` sits on a task with a File matching a trigger of',
@@ -235,7 +238,8 @@ const PINS = {
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
   // An agent stays within its task: the implementer's limits, the reviewer's scope findings.
   'plugins/gtm/agents/architect.md': [
-    'None: `no measured run yet` with your own rough `≈ <W> min, <T>k tokens`',
+    'None: `no measured run yet` with your own rough `≈ <W> min, <T>k tokens`.',
+    'A plan past 4 hours: the split you propose on the line after.',
   ],
   'plugins/gtm/agents/implementer.md': [
     '- Stay inside your task: touch only its files, in your own worktree or checkout,',
