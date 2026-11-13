@@ -230,6 +230,7 @@ const PINS = {
   ],
   'docs/reference/settings.md': [
     w('`verify.runner`'), w('a prefix, not a gate key'),
+    w("an official or toolchain publisher's image"), w('its tag or digest pinned'),
     'otherwise it shows its go card, with the reason. A tag or a release always asks you.',
     '- standing go: <class> · paths `<regex>` · proofs <list> · why: <reason> · <YYYY-MM-DD>',
     '`<list>` is exactly the proofs the class requires, in this order, separated by `, `. The',
@@ -383,6 +384,9 @@ const PINS = {
   // The analyst's runner guess: `[CHECK]` with Docker, else the gap and its reason.
   'plugins/gtm/agents/analyst.md': [
     w('propose `verify.runner` (`docker run --rm --init …`'),
+    // The image runs the project's code with write access: a trusted source, a fixed version.
+    w("an official or toolchain publisher's image of that OS family"),
+    w("its tag or digest pinned, the row's why naming its source)"),
     w('marked `[CHECK]`; else leave it empty and give the gap and its reason'),
   ],
   // The team page on a CI red, the glossary's two entries.

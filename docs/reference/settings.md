@@ -34,7 +34,7 @@ JavaScript syntax, matched against repository-relative paths.
 | `verify.size` | the project's size check, failing past its budget; run at task end | `""` | the implementer, the reviewers |
 | `verify.ui` | the command that runs the UI gate test (`ui-gate.spec.mjs`): accessibility, overflow, touch targets and dark theme on every route, width and theme; empty keeps ux-qa checking them by hand | `""` | the implementer, `ux-qa` |
 | `verify.gate` | the commands run before every commit; build, size and e2e run at task end | `[lint, typecheck, test]` | the implementer |
-| `verify.runner` | a prefix, not a gate key: it runs one verify command in the [CI runner's conditions](/reference/glossary/#runners-conditions), as `<verify.prefix> <verify.runner> <command>`; shaped `docker run --rm --init <image> …`, an image of the runner's OS family with the project's toolchain; `/gtm:init` proposes one when Docker answers; GTM installs and starts nothing for it | `""` | `/gtm:ship` |
+| `verify.runner` | a prefix, not a gate key: it runs one verify command in the [CI runner's conditions](/reference/glossary/#runners-conditions), as `<verify.prefix> <verify.runner> <command>`; shaped `docker run --rm --init <image> …`, an official or toolchain publisher's image of the runner's OS family with the project's toolchain, its tag or digest pinned; `/gtm:init` proposes one when Docker answers; GTM installs and starts nothing for it | `""` | `/gtm:ship` |
 | `git.base` | the base branch | `main` | every command that branches or merges |
 | `git.branch` | the branch name pattern | `"<slug>"` | `/gtm:deliver` |
 | `git.commits` | Conventional Commits, one logical change, tests with their code | `conventional` | the implementer |
