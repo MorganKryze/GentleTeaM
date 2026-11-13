@@ -245,6 +245,9 @@ const PINS = {
     // The lead's own files live in the project, never the scratchpad Claude Code can wipe.
     'makes for a run in `<root>/reports/<slug>/lead/`, never in the session scratchpad',
     'An agent never writes there.',
+    // No secret lands there, and the lead checks the folder is out of git before it writes.
+    'No secret or token goes in them.',
+    '`git check-ignore -q <root>/reports/<slug>/lead/` fails, the folder is not ignored: write',
     'Read before the first dispatch.',
     '`· start <S> · end <E> · models <M> · causes <C>`',
     'Never estimated, never written later from memory: an instant you do not have is `?`.',
