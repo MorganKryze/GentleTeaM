@@ -14,10 +14,11 @@
 // line counted once, matched by its date and what it says. A standing go:
 // the line's shape, its proofs, the never list and what a program must refuse, as the settings reference states them.
 // A CI red: no rerun of a check that ran and went red, `infra` bounded, runs only through the
-// runner command within k and the cap, the cap and the gap never a pass nor `flaky`, the quarantine
-// and the rerun on the human's go, no CI log text in a command, at most 2 CI rounds, a required
-// check that never started never green; the `ci` line, its `runner` cause, retro's counts, the
-// tests template's flaky line, `verify.runner` and ship's pointers.
+// runner command within k and the cap, the verdicts and each action, the cap and the gap never a
+// pass nor `flaky`, the quarantine and the rerun on the human's go, no CI log text in a command,
+// at most 2 CI rounds, a required check that never started never green; the `ci` line, its
+// `runner` cause, retro's counts, the tests template's flaky line, `verify.runner` and ship's
+// pointers.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -324,6 +325,13 @@ const PINS = {
     w('At most 2 CI rounds per branch, counted from the `ci` lines with action `round`'),
     // P10: a required check that never started.
     w('A required check that never started is a `config` red, never a green.'),
+    // A3's verdicts and A7's actions: no red read as green, no rerun outside `infra`.
+    w('Verdict: `reproduced` when the first run is red, `flaky` when a red follows at least one green, `not reproduced` when no run is red.'),
+    w('- `local`, `reproduced`: a CI round.'),
+    w('- `flaky`: a card, **A** a CI round, **B** quarantine'),
+    w('- `not reproduced` (the gap and the cap included): one diagnosis round from the quoted lines; on a second CI red of the same check, a card: **A** another round, **B** the human takes it.'),
+    w('- `config`: a card naming the CI setting at fault and the change it would take; no rerun.'),
+    w('- `infra`: a card, **A** rerun the failed job later with the branch unchanged, **B** wait.'),
     // The ci line and its causes.
     '`- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then',
     w('`1:ci/important/runner` for a round on `reproduced`, `flaky` or `not reproduced`'),
