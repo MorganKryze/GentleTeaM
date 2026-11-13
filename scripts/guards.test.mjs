@@ -134,6 +134,9 @@ const PINS = {
     w("the analyst's `verify.runner` row"),
     // Its `[CHECK]` stays: runner.md proves the runner on the untouched base at first use.
     w("every `[CHECK]` but `verify.runner`'s (`templates/runner.md`)"),
+    // Each answer has its file: the brief's fields to brief.md, the rest to config.yml.
+    w('purpose, users and non-negotiables (into `brief.md`)'),
+    w('default light), into `config.yml`.'),
     'security-reviewer on, effort high;',
     '## 2. Interview (one message, ≤ 5 questions)',
     "Where `config.yml`'s `project.sheet` reads `on`,",
