@@ -215,6 +215,7 @@ const PINS = {
   ],
   'docs/why/positions.md': ['`/gtm:tune` writes on your answer: `/gtm:ship` then pushes nothing and records a landing, which a', 'program of yours checks and merges. A tag or a release always asks.'],
   'docs/reference/gtm-folder.md': [
+    w("ship's `ci` line, one per CI red"),
     'Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a',
     'reader ignores the fields it does not know.',
     "GTM's facts script sets `v`, `slug`, `asked` and `other.allowed`, and `answer` when it records",
@@ -223,6 +224,7 @@ const PINS = {
     '`clock` the writer\'s local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`',
   ],
   'docs/reference/settings.md': [
+    w('`verify.runner`'), w('a prefix, not a gate key'),
     'otherwise it shows its go card, with the reason. A tag or a release always asks you.',
     '- standing go: <class> · paths `<regex>` · proofs <list> · why: <reason> · <YYYY-MM-DD>',
     '`<list>` is exactly the proofs the class requires, in this order, separated by `, `. The',
@@ -378,6 +380,12 @@ const PINS = {
     w('propose `verify.runner` (`docker run --rm --init …`'),
     w('marked `[CHECK]`; else leave it empty and give the gap and its reason'),
   ],
+  // The team page on a CI red, the glossary's two entries.
+  'docs/reference/how-the-team-works.md': [
+    '## What happens when CI goes red?',
+    w('never reruns a check that ran and went red'),
+  ],
+  'docs/reference/glossary.md': ['{#runners-conditions}', '{#ci-only-red}'],
   'docs/reference/commands.md': [
     'the plan\'s section and holds for that branch, resumes included, until you delete it.',
     'counts as no mandate, with a Heads-up; give the file again.',
@@ -415,8 +423,10 @@ const quoted = (line) => [...line.matchAll(/`([^`]+)`/g)].map((m) => m[1])
 const team = readFileSync(join(root, 'plugins/gtm/templates/team.md'), 'utf8')
 const risky = quoted(team.match(/risky paths (.*?) · why/)?.[1] ?? '')
 const settings = readFileSync(join(root, 'docs/reference/settings.md'), 'utf8')
-const doc = settings.split('\n').slice(104, 107).join(' ')
-const shown = quoted(doc.slice(doc.indexOf('on paths matching'))).slice(0, risky.length)
+// Found by its words, not its line: a row added above it moves the line.
+const at = settings.indexOf('on paths matching')
+const doc = at < 0 ? '' : settings.slice(at, settings.indexOf('\n\n', at) >>> 0).replace(/\n/g, ' ')
+const shown = quoted(doc).slice(0, risky.length)
 if (!risky.length || shown.join('\n') !== risky.join('\n')) {
   errors.push(`settings.md shows ${shown}, the template holds ${risky}`)
 }

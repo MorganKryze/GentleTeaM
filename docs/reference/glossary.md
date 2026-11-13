@@ -26,6 +26,11 @@ in a note under `.gtm/brainstorms/` that the spec cites.
 ### Brief {#brief}
 `.gtm/brief.md`: your project's one-page constitution: purpose, users, principles, limits.
 
+### CI-only red {#ci-only-red}
+A check that went red in CI on a commit whose local gate is green. `/gtm:ship` gives it a class
+and runs the failing test again only in the [runner's conditions](#runners-conditions), never the
+red check itself.
+
 ### Checkpoint {#checkpoint}
 A moment where you decide, three per Feature: the mockups, the summary and the go, at
 `/gtm:design`, `/gtm:spec` and `/gtm:ship`.
@@ -116,6 +121,10 @@ while `project.sheet` is `on`; see [what it holds](/reference/gtm-folder/#projec
 ### Roundtable {#roundtable}
 The voices of a brainstorm: architect, security, UX, data and a user or a skeptic, played in the
 chat, each line prefixed with its speaker.
+
+### Runner's conditions {#runners-conditions}
+The CI runner's OS family, toolchain and, as far as stated, its architecture, CPU and memory,
+rebuilt on your machine by the `verify.runner` command, such as `docker run --rm --init …`.
 
 ### Spec {#spec}
 The document the architect writes before any code, in `.gtm/specs/`: what will be built, what is
