@@ -421,6 +421,23 @@
           }
         }
       }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- wave T1 merged · abc1234 · gate green\n",
+          "- wave T1 merged · abc1234 · gate green\n- fix · CLEAN · c..d · 600 s · 100k · 2 agents\n- ci · validate · os · reproduced · round · 300 s · 40k · 2 agents · start 2026-11-13T09:00:00Z · end 2026-11-13T09:05:00Z · models ? · causes 1:ci/important/runner\n"
+        ]
+      },
+      "want": {
+        "sheet": {
+          "cost": {
+            "tokens": 590000,
+            "seconds": 2900,
+            "dollars": null
+          }
+        }
+      }
     }
   ]
 }

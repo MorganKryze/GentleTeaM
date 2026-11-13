@@ -336,6 +336,7 @@ const PINS = {
     w('- `config`: a card naming the CI setting at fault and the change it would take; no rerun.'),
     w("- `infra`: a card quoting the failed step's line that shows it runs no check, **A** rerun the failed job later with the branch unchanged, **B** wait."),
     // The ci line and its causes.
+    w("its seconds and tokens cover the reading and the runner's runs only, a round's dispatches writing their own progress lines as the fix wave's do"),
     '`- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then',
     w('`1:ci/important/runner` for a round on `reproduced`, `flaky` or `not reproduced`'),
     w('`1:ci/important/proof` on `local`; else `none`.'),
@@ -363,7 +364,7 @@ const ABSENT = {
   'docs/reference/gtm-folder.md': ['kept for later versions'],
   // Ship has one card; the merge waits on every check, not on the required ones only.
   'plugins/gtm/skills/ship/SKILL.md': ['merge card'],
-  'plugins/gtm/templates/runner.md': ['merge card'],
+  'plugins/gtm/templates/runner.md': ['merge card', 'the runs and the round'],
 }
 const errors = []
 for (const [file, pins] of Object.entries(PINS)) {

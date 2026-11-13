@@ -85,7 +85,8 @@ follows this section from step 1.
 
 ## The ci line
 One progress line per CI red, written once its action has ended (the round gated and reviewed, or
-the card answered); its seconds and tokens cover the reading, the runs and the round:
+the card answered); its seconds and tokens cover the reading and the runner's runs only, a
+round's dispatches writing their own progress lines as the fix wave's do:
 `- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then
 `templates/delivery.md`'s tail.
 - `<check>`: the check's name, each character outside `[A-Za-z0-9._/-]` written `-`.
