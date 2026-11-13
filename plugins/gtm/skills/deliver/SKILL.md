@@ -15,9 +15,10 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
   with their regexes; `fixRounds`; `fixCeiling`, the N of `Fix track ceiling: N files`; the budgets,
   Gates lines `budget per task` and `budget per branch` (`<minutes> min, <tokens>k tokens`; absent
   or `none`: none); `cadence`, `review cadence` (absent: none); `standardRounds`, `fix rounds per
-  standard review: N` (1). A ledger `ruling` `limits: lighter …` for this slug overrides the roles
-  it names in `team`, on every dispatch (resumes too), unless struck through or beyond what `gtm`
-  §0's card A allows (then ignored, a Heads-up). Your own run files: `templates/delivery.md`.
+  standard review: N` (1); `paths`, the `review path` lines as `{ text|code: {paths, reviewer} }`.
+  A ledger `ruling` `limits: lighter …` for this slug overrides the roles it names in `team`, on
+  every dispatch (resumes too), unless struck through or beyond what `gtm` §0's card A allows (then
+  ignored, a Heads-up). Your own run files: `templates/delivery.md`.
 - Efforts: `team`'s, raised or lowered on each dispatch's range as the Roles note of
   `${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the `risky paths` regexes, a list.
 - Progress: `<root>/reports/<slug>/progress.md`, one line per run, any result (reruns append):
@@ -47,11 +48,11 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
    the spec, `<root>/team.md`, the validated mockup and the guidelines it touches; nothing else.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report: "<root>/reports/<slug>/task-<n>.md",
    branch, base: <head before this task>, worktree (in a wave only), mockup, triggers, risky, team,
-   fixRounds, fixCeiling, track, tier, cadence, standardRounds, sheets, review, head, files }`, an
-   arg not given omitted, never "none": `tier` the plan's, `guarded` once a progress line of it says
-   so (resumes too); `sheets` what `node "${CLAUDE_PLUGIN_ROOT}/scripts/sheet-paths.mjs" --brief
-   "<brief>"` prints, omitted on `[]` or any other exit than 0, the task going on; `review`, `head`,
-   `files`: step 5 only.
+   fixRounds, fixCeiling, track, tier, cadence, standardRounds, sheets, paths, review, head, files
+   }`, an arg not given omitted, never "none": `tier` the plan's, `guarded` once a progress line of
+   it says so (resumes too); `sheets` what `node "${CLAUDE_PLUGIN_ROOT}/scripts/sheet-paths.mjs"
+   --brief "<brief>"` prints, omitted on `[]` or any other exit than 0, the task going on; `review`,
+   `head`, `files`: step 5 only.
 3. Measure it, any result: its run id (`wf_...` in the diagnostics) on `^wf_[0-9a-f-]+$`, the one
    folder `"<config>"/projects/*/*/subagents/workflows/<id>` (`<config>` =
    `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`), `node "${CLAUDE_PLUGIN_ROOT}/scripts/role-split.mjs"

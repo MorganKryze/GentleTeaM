@@ -25,6 +25,7 @@ their row (none: `high`), at most `xhigh`. Each correction round raises the impl
 up to `high`, or `xhigh` on risky work, never below its row. The final review's second pass takes
 the final reviewer's effort for its fix range, one level lower (`low` at least) when that range
 matches no trigger and no risky path. An effort off that ladder, such as `max`, is never changed.
+On a `text` or `code` review path (Gates), the reviewer takes that line's model, not its row's.
 
 | Role | Model | Effort | Why | Decided |
 | --- | --- | --- | --- | --- |
@@ -62,13 +63,15 @@ section has none on: nothing to migrate.
 
 ## Gates
 - fix rounds per task: 3 · why: past three, the plan is wrong, not the code · YYYY-MM-DD
-- fix rounds per standard review: 1 · why: a standard review fixes once, minors go to the ledger · YYYY-MM-DD
+- fix rounds per standard review: 1 · why: one correction, minors to the ledger · YYYY-MM-DD
 - review cadence: reviewer per-wave, ux-qa per-branch, security-reviewer per-task, data-reviewer per-task · why: a role left out reviews per task; security and data reviewers never lighter · YYYY-MM-DD
 - tasks per branch: 8 · why: each task costs a fixed ceremony; slices, not layers, keep a branch at 8 or fewer · YYYY-MM-DD
 - Fix track ceiling: 3 files · why: above it, the change deserves a spec · YYYY-MM-DD
 - design threshold: 8/10, zero must-fix · why: <reason> · YYYY-MM-DD
 - taste threshold: 7/10 · why: the lowest of the five grades, so a bland board fails · YYYY-MM-DD
 - design rounds: 3 · why: <reason> · YYYY-MM-DD
+- review path: text · paths `[.]md$` · reviewer sonnet · why: one reviewer and the gate · YYYY-MM-DD
+- review path: code · paths `^(scripts|hooks|[.]github/workflows)/` · reviewer sonnet · why: CI · YYYY-MM-DD
 - replay risky tasks: yes · risky paths `migrations?/`, `((?<!a)sync|contract|schema)`, `(db|store|storage)/` · why: <reason> · YYYY-MM-DD
 - budget per task: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD
 - budget per branch: none · why: no measured run yet; `/gtm:tune` proposes the medians · YYYY-MM-DD
@@ -77,6 +80,14 @@ A budget is `none` or `<minutes> min, <tokens>k tokens`. Past 1.5× of one, `/gt
 Heads-up and goes on; no budget changes a verdict, a correction round or the order of tasks. A profile
 without the budget lines reads as `none`. A profile without `review cadence` runs every task
 guarded, as before 0.7.0; without `tasks per branch`, the cap is 8. Nothing to migrate.
+
+A `review path` line is an allowlist of regexes on a task's changed files. Every file on `text`:
+the reviewer alone, on the line's model, planting no mutation, and a fix asked over minors only
+starts no round (they go to the ledger). Every file on `text` or `code`, one `code` at least: the
+reviewer on the `code` line's model plus the security reviewer, alone, under the same two rules.
+Any other file, no file, or no line: the full path, every triggered specialist on its row's model,
+with mutations, as before 0.19.0; nothing to migrate. A file on both reads `code`; a regex that
+fails matches nothing. A security or data finding is re-reviewed over the whole task.
 
 No standing go line ships here: only `/gtm:tune standing go <class> <regex>` writes one in the
 Gates, on the human's answer to its card, with `git.push: standing` in `config.yml`, in exactly

@@ -150,8 +150,14 @@ for (const r of new Set(['reviewer', ...Object.keys(triggers), ...Object.keys(MA
 // An absolute path under the worktree loses its prefix; with no worktree, one ending in a relative
 // path already listed does; any other stays as given and counts.
 const TREE = A.worktree ? `${String(A.worktree).replace(/\/+$/, '')}/` : null
+// The implementer's own report is no change to the repository: it never counts toward the ceiling
+// or a review path, given as the brief names it, or one side absolute ending in the other, which
+// holds a folder; a bare file name is kept.
+const REPORT = typeof A.report === 'string' ? A.report.replace(/^(\.\/)+/, '') : null
+const own = (f) => REPORT !== null && (f === REPORT || (f.startsWith('/') !== REPORT.startsWith('/')
+  && (f.startsWith('/') ? REPORT.includes('/') && f.endsWith(`/${REPORT}`) : f.includes('/') && REPORT.endsWith(`/${f}`))))
 function relative(files) {
-  const plain = (files || []).map((f) => String(f).replace(/^(\.\/)+/, ''))
+  const plain = (files || []).map((f) => String(f).replace(/^(\.\/)+/, '')).filter((f) => !own(f))
   const listed = new Set(plain.filter((f) => !f.startsWith('/')))
   return [...new Set(plain.map((f) => {
     if (!f.startsWith('/')) return f
@@ -161,7 +167,38 @@ function relative(files) {
     return f
   }))]
 }
-const per = (files, c) => ground(files).filter((r) => CADENCE[r] === c)
+// Team.md's `review path` lines, an allowlist. Every file on `text`: the reviewer alone, on that
+// line's model, planting no mutation, and a fix asked over minors only starts no round. Every file
+// on `text` or `code`, one `code` at least: the reviewer on the `code` line's model plus the
+// security reviewer, alone, the same two rules. Any other file, no file or no line: the full path
+// as before, every triggered specialist on its profile model, with mutations. A file on both reads
+// `code`; a regex that fails, or an empty one, matches nothing, so the task only reads heavier.
+const PATHS = {}
+for (const p of ['text', 'code']) {
+  const line = A.paths && typeof A.paths === 'object' && !Array.isArray(A.paths) ? A.paths[p] : null
+  if (!line || typeof line !== 'object') continue
+  const res = [].concat(line.paths ?? []).filter((src) => String(src).trim() !== '').map((src) => {
+    try {
+      return new RegExp(src)
+    } catch {
+      log(`Invalid ${p} review path: ${src}. It matches nothing until it is fixed.`)
+      return null
+    }
+  }).filter(Boolean)
+  const model = typeof line.reviewer === 'string' && line.reviewer.trim() !== 'inherit' ? line.reviewer.trim() : ''
+  PATHS[p] = { res, model }
+}
+const LADDER = ['text', 'code', 'full']
+const on = (p, f) => (PATHS[p]?.res || []).some((re) => re.test(f))
+const pathOf = (files) => (files.length ? LADDER[Math.max(...files.map((f) => (on('code', f) ? 1 : on('text', f) ? 0 : 2)))] : 'full')
+const SEC = 'security-reviewer'
+// The specialists a path calls for: none on `text`, the security reviewer when on for `code`.
+const specialists = (files, p) => (p === 'text' ? [] : p === 'code' ? (triggers[SEC] ? [SEC] : []) : ground(files))
+let path = 'none'
+const per = (files, c) => specialists(files, path).filter((r) => CADENCE[r] === c)
+const light = () => path === 'text' || path === 'code'
+const model = (role) => (role === 'reviewer' && light() && PATHS[path].model ? { model: PATHS[path].model } : {})
+const UNPLANTED = () => `\nMutations: none on the ${path} review path; plant none, return 0 planted and write \`mutations skipped: light path\` in the summary.`
 
 // A reviewer whose dispatch throws (its structured result lost) gets one more dispatch on a
 // budget, with the same diff, findings, model and effort; a second throw is logged and left to the
@@ -186,7 +223,7 @@ function track(opts) {
 }
 const causes = []
 const cause = (n, f) => causes.push(`${n}:${named(f.by)}/${f.severity === 'critical' ? 'critical' : 'important'}/${CATEGORIES.includes(f.category) ? f.category : '?'}`)
-const done = (result) => ({ ...result, trace: { models: [...seen].map(([k, e]) => `${k}/${e.join('/')}`).join(', ') || 'none', causes: causes.join(', ') || 'none' } })
+const done = (result) => ({ ...result, trace: { models: [...seen].map(([k, e]) => `${k}/${e.join('/')}`).join(', ') || 'none', causes: causes.join(', ') || 'none', path } })
 async function attempt(prompt, opts) {
   track(opts)
   try {
@@ -222,6 +259,9 @@ const got = A.review ? { head: A.head, files: A.files } : await attempt(
 )
 if (!got || got.status === 'BLOCKED') return done({ status: 'BLOCKED', impl: got })
 const impl = { ...got, files: relative(got.files) }
+path = pathOf(impl.files)
+log(`Review path: ${path}`)
+if (path === 'code' && !triggers[SEC]) log('Review path code with the security reviewer off: the reviewer alone')
 
 // A Fix escalates on size alone, counted over every file it has changed so far. On security or
 // data ground it stays a Fix and that specialist reviews it, as on any task. A ceiling is a whole
@@ -246,8 +286,8 @@ if (standard && !guardedBy.length) return done({ status: 'GATED', tier: 'standar
 if (standard) log(`Tier rises to guarded: ${guardedBy.join(', ')}`)
 const T = A.tier === 'standard' && !A.review ? { tier: 'guarded' } : {}
 const reviewers = A.review === 'branch' ? per(impl.files, 'per-branch')
-  : A.review ? ['reviewer', ...ground(impl.files).filter((r) => CADENCE[r] !== 'per-branch')]
-  : ['reviewer', ...ground(impl.files)]
+  : A.review ? ['reviewer', ...specialists(impl.files, path).filter((r) => CADENCE[r] !== 'per-branch')]
+  : ['reviewer', ...specialists(impl.files, path)]
 // A deferred review gets the standard fix rounds, the profile's once guarded ground is in it.
 let limit = A.review && !guardedBy.length ? (A.standardRounds ?? 1) : ROUNDS
 log(`Reviews for this task: ${reviewers.join(', ')}`)
@@ -271,12 +311,14 @@ for (; round <= limit; round++) {
     pending.map((p) => {
       const pass = PASS_ROLES.includes(p.r) && !dispatched.has(p.r) ? PASS : ''
       dispatched.add(p.r)
+      const unit = A.review ? 'range' : 'task'
+      const what = !round || (p.whole && !p.findings) ? `Review the ${unit}` : p.whole ? `Re-review the whole ${unit}` : 'Re-review the fix round'
       return () => retried(
-        `${round && !p.whole ? 'Re-review the fix round' : `Review the ${A.review ? 'range' : 'task'}`}: diff ${p.whole ? `${A.base}..${head}` : scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
+        `${what}: diff ${p.whole ? `${A.base}..${head}` : scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
           (A.mockup ? `\nValidated mockup: ${A.mockup}` : '') +
-          (p.findings ? `\nYour findings this fix must address. Return each with status "addressed" or "open", then only new breakage in the fix diff; approve when none is left open. Each finding sent keeps its severity until it is addressed:\n${JSON.stringify(p.findings, null, 2)}` : '') +
-          SCOPE(`${A.base}..${head}`) + WT,
-        as(p.r, { schema: REVIEW, label: `${p.r}${round ? ` · round ${round}` : ''}`, phase: 'Review', ...harder(p.r) }),
+          (p.findings ? `\nYour findings this fix must address. Return each with status "addressed" or "open", then ${p.whole ? `any new breakage in ${A.base}..${head}` : 'only new breakage in the fix diff'}; approve when none is left open. Each finding sent keeps its severity until it is addressed:\n${JSON.stringify(p.findings, null, 2)}` : '') +
+          (p.r === 'reviewer' && light() ? UNPLANTED() : '') + SCOPE(`${A.base}..${head}`) + WT,
+        as(p.r, { schema: REVIEW, label: `${p.r}${round ? ` · round ${round}` : ''}`, phase: 'Review', ...harder(p.r), ...model(p.r) }),
         pass,
       )
     }),
@@ -298,6 +340,7 @@ for (; round <= limit; round++) {
     // not that the sheet was opened or used, and a pass that found nothing still counts as ordered.
     const yields = res.passed ? (at().sheets = Object.fromEntries([...SHEETS.keys()].map((n) => [n, { passes: 1, critical: 0, important: 0, minor: 0 }]))) : {}
     let found = 0
+    let small = 0
     for (const f of res.findings) {
       // Only a reviewer sent findings to re-check can close one; anywhere else the severity decides.
       if (pending[i].findings && f.status === 'addressed') continue
@@ -307,8 +350,10 @@ for (; round <= limit; round++) {
       else found++
       // A status it may not set goes too, or the fix round and the re-review would read it as true.
       const { status, ...kept } = f
-      if (f.severity === 'minor') minors.push({ ...kept, by: r })
-      else blocking.push(kept)
+      if (f.severity === 'minor') {
+        minors.push({ ...kept, by: r })
+        small++
+      } else blocking.push(kept)
     }
     // Mutations count once, on a review's first round: a re-review replays the survivors it sent.
     // A survivor is a finding, never a silent pass: more survivors than findings is one more.
@@ -331,13 +376,19 @@ for (; round <= limit; round++) {
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
     // then the only reason given, so the fix round and the re-review get it, and it counts as one.
-    if (res.verdict === 'fix' && !blocking.length) {
+    // On a light path a fix asked over minors only starts no round: they go to the ledger. With
+    // no finding at all, the summary stays the only reason given, and it still counts.
+    if (res.verdict === 'fix' && !blocking.length && light() && small) {
+      log(`${r} asked for a fix over minors only: no round on the ${path} path, the minors go to the ledger`)
+    } else if (res.verdict === 'fix' && !blocking.length) {
       count('important')
       blocking.push({ severity: 'important', summary: `${r} asked for a fix without a blocking finding: ${res.summary}` })
     }
     if (blocking.length) {
       open.push(...blocking.map((f) => ({ ...f, by: r })))
-      still.push({ r, findings: blocking })
+      // A finding on security or data is re-reviewed over the whole range, never the fix alone.
+      const wide = r === SEC || r === 'data-reviewer' || blocking.some((f) => f.category === 'security')
+      still.push({ r, findings: blocking, ...(wide ? { whole: true } : {}) })
     }
   })
   if (!open.length && !unreviewed.length) return done({ status: 'CLEAN', head, fixRounds: round, reviewers, stats, minors, ...T })
@@ -355,9 +406,22 @@ for (; round <= limit; round++) {
   // Feature flow checks them instead of losing them.
   const grown = escalation(changed, fix.head)
   if (grown) return done({ ...grown, open: [...open, ...unreviewed], reviewers, stats, minors })
+  // A fix reaching a file off the task's path raises it, never lowers it: each specialist the new
+  // path calls for that never saw the task reviews its whole range.
+  const was = path
+  path = pathOf(changed)
+  if (LADDER.indexOf(path) > LADDER.indexOf(was)) {
+    log(`Review path rises from ${was} to ${path}`)
+    for (const r of specialists(changed, path).filter((r) => !reviewers.includes(r) && !unreviewed.some((f) => f.by === r))) {
+      if (A.review) limit = Math.max(limit, ROUNDS)
+      still.push({ r, findings: null, whole: true })
+      reviewers.push(r)
+    }
+  }
   // A fix round on a specialist's ground goes back to that specialist, even after its approval,
   // on every track: a Fix has no final review, and a task's own review should not wait for it.
-  for (const r of ground(fix.files)) {
+  const touched = path === 'full' ? ground(fix.files) : path === 'code' && fix.files.some((f) => on('code', f)) ? specialists(fix.files, path) : []
+  for (const r of touched) {
     if (unreviewed.some((f) => f.by === r)) continue
     // In a deferred review, a fix on guarded ground gets that specialist on the whole range.
     const whole = Boolean(A.review) && CADENCE[r] === 'per-task'
