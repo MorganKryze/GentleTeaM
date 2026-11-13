@@ -325,6 +325,7 @@ const PINS = {
     w('No text of the CI log enters a command.'),
     // P9: the CI rounds' cap.
     w('At most 2 CI rounds per branch, counted from the `ci` lines with action `round`'),
+    w('with action `round`, each written before its round starts (a resume continues the count)'),
     // P10: a required check that never started.
     w('A required check that never started is a `config` red, never a green.'),
     w("Ship's card (§3) comes back for the merge only when every check has ended green and none is red, required or not."),
@@ -336,6 +337,8 @@ const PINS = {
     w('- `config`: a card naming the CI setting at fault and the change it would take; no rerun.'),
     w("- `infra`: a card quoting the failed step's line that shows it runs no check, **A** rerun the failed job later with the branch unchanged, **B** wait."),
     // The ci line and its causes.
+    w("One progress line per CI red, written as soon as its action is known, before that action runs:"),
+    w("(a card left unanswered writes none, and a resume reads the checks again from step 1)"),
     w("its seconds and tokens cover the reading and the runner's runs only, a round's dispatches writing their own progress lines as the fix wave's do"),
     '`- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then',
     w('`1:ci/important/runner` for a round on `reproduced`, `flaky` or `not reproduced`'),
@@ -364,7 +367,7 @@ const ABSENT = {
   'docs/reference/gtm-folder.md': ['kept for later versions'],
   // Ship has one card; the merge waits on every check, not on the required ones only.
   'plugins/gtm/skills/ship/SKILL.md': ['merge card'],
-  'plugins/gtm/templates/runner.md': ['merge card', 'the runs and the round'],
+  'plugins/gtm/templates/runner.md': ['merge card', 'the runs and the round', 'written once its action has ended'],
 }
 const errors = []
 for (const [file, pins] of Object.entries(PINS)) {

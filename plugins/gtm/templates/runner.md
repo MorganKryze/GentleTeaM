@@ -72,8 +72,8 @@ The action follows the verdict:
 A CI round runs as the final review's fix wave: one brief quoting the CI lines and the runner's
 red, the gap or the cap; the fix gated locally and, when the runner command runs, the failing
 check through it; reviewed as the touched task's tier says; then the push card again. At most 2
-CI rounds per branch, counted from the `ci` lines with action `round` (a resume continues the
-count); the next red goes to the human's card.
+CI rounds per branch, counted from the `ci` lines with action `round`, each written before its
+round starts (a resume continues the count); the next red goes to the human's card.
 
 After the push, ship reads the checks with `gh pr checks <n> --watch`, read-only, when `gh` is
 present and signed in (`gh auth status`), until each has ended. Every started check ended and a
@@ -84,9 +84,10 @@ line. Under `git.push: standing` nothing is pushed; a CI red the human reports o
 follows this section from step 1.
 
 ## The ci line
-One progress line per CI red, written once its action has ended (the round gated and reviewed, or
-the card answered); its seconds and tokens cover the reading and the runner's runs only, a
-round's dispatches writing their own progress lines as the fix wave's do:
+One progress line per CI red, written as soon as its action is known, before that action runs: at
+once for a round, on the human's answer for a card (a card left unanswered writes none, and a resume
+reads the checks again from step 1); its seconds and tokens cover the reading and the runner's runs
+only, a round's dispatches writing their own progress lines as the fix wave's do:
 `- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then
 `templates/delivery.md`'s tail.
 - `<check>`: the check's name, each character outside `[A-Za-z0-9._/-]` written `-`.
