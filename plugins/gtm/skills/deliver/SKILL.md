@@ -30,7 +30,8 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
   ` · sheets <name> <passes> <c>/<i>/<m>, ...`, roles summed; last, `templates/delivery.md`'s tail.
 - `[CHECK]` verify commands in `config.yml` (`runner` aside: `templates/runner.md` proves it, a
   red a gap): run each once on the branch with `verify.prefix`; runs → remove the mark; cannot run
-  or fails on the untouched base → stop before any task, Heads-up, card (fix, drop, pre-existing).
+  or fails on the untouched base → stop before any task, Heads-up, card (correct the command / drop
+  it / accept the failure as pre-existing, logged as a ledger `lesson` line).
 - Resume (progress lines exist): skip tasks last `CLEAN` or `GATED`; rerun each `PAUSED` one whole,
   `base` its line's, never its head (unlike §3 step 3), in its worktree if any, a wave's as one
   wave; then §3 step 2 merges each wave with an unmerged task, `PAUSED` or not; a `PAUSED` final

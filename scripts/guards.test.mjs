@@ -35,6 +35,8 @@ const PINS = {
     'Your own run files: `templates/delivery.md`.',
     '(`runner` aside: `templates/runner.md` proves it, a',
     'red a gap): run each once on the branch with `verify.prefix`',
+    // A failing verify command accepted as pre-existing is an exemption: written down.
+    w('card (correct the command / drop it / accept the failure as pre-existing, logged as a ledger `lesson` line).'),
     '`git merge --no-ff --no-edit "<branch>-t<n>"`',
     '- Efforts: `team`\'s, raised or lowered on each dispatch\'s range as the Roles note of',
     '`${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the `risky paths` regexes, a list.',
