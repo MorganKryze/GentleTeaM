@@ -227,6 +227,9 @@ const PINS = {
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
   'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m, 'Each must-fix names one category: `behaviour`, `security`, `proof`'],
   'plugins/gtm/templates/delivery.md': [
+    // The lead's own files live in the project, never the scratchpad Claude Code can wipe.
+    'keeps the scripts, logs and tool installs it makes for a run in `<root>/reports/<slug>/lead/`',
+    'never in the session scratchpad, which Claude Code can wipe mid-run. An agent never writes',
     '`· start <S> · end <E> · models <M> · causes <C>`',
     'Never estimated, never written later from memory: an instant you do not have is `?`.',
     '`trace.models`, copied as it is.',

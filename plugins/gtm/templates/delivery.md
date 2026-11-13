@@ -29,3 +29,9 @@ agent) ends with four segments, in this order, after every segment it has today:
 
 Nothing else in the line changes, and segments are only added at its end, so every reader of
 today's lines reads them as before. A run's line without this tail lacks its trace.
+
+## The lead's own files
+The orchestrator
+keeps the scripts, logs and tool installs it makes for a run in `<root>/reports/<slug>/lead/`,
+never in the session scratchpad, which Claude Code can wipe mid-run. An agent never writes
+there. The folder sits inside the GTM root, already out of git.
