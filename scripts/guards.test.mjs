@@ -194,7 +194,7 @@ const PINS = {
     'nothing pushed` to the ledger, and say in one line that the landing holds until the next commit,',
     'for the human\'s own program to check and merge. No card.',
     w('With `verify.runner` set, run each gate command through it once at the head too, as `${CLAUDE_PLUGIN_ROOT}/templates/runner.md` says (`## Before the push`).'),
-    w('show the merge card only when every required check is green (`runner.md`, `## On a CI red`).'),
+    w('the card above comes back for the merge only when every check has ended green and none is red (`runner.md`, `## On a CI red`).'),
     w('A CI red follows `## On a CI red`; under `git.push: standing`, so does a CI red the human reports on a landing.'),
     '- `landing` false, or an exit other than 0: the card below as always, with one Heads-up naming',
     'why (`why`, `file`, `proof`).',
@@ -326,6 +326,7 @@ const PINS = {
     w('At most 2 CI rounds per branch, counted from the `ci` lines with action `round`'),
     // P10: a required check that never started.
     w('A required check that never started is a `config` red, never a green.'),
+    w("Ship's card (§3) comes back for the merge only when every check has ended green and none is red, required or not."),
     // A3's verdicts and A7's actions: no red read as green, no rerun outside `infra`.
     w('Verdict: `reproduced` when the first run is red, `flaky` when a red follows at least one green, `not reproduced` when no run is red.'),
     w('- `local`, `reproduced`: a CI round.'),
@@ -359,6 +360,9 @@ const ABSENT = {
   'plugins/gtm/templates/ledger.md': ['limits 5h +<a>% 7d +<b>%'],
   'docs/guides/too-slow.md': ['limits 5h +<a>% 7d +<b>%'],
   'docs/reference/gtm-folder.md': ['kept for later versions'],
+  // Ship has one card; the merge waits on every check, not on the required ones only.
+  'plugins/gtm/skills/ship/SKILL.md': ['merge card'],
+  'plugins/gtm/templates/runner.md': ['merge card'],
 }
 const errors = []
 for (const [file, pins] of Object.entries(PINS)) {

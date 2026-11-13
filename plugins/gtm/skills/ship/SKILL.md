@@ -66,9 +66,9 @@ the commits since the last tag, grouped by type, in the project's voice (`guidel
 the same humanize pass runs on the notes, then with `stealth: on` §2b's command with `--pr <notes
 file>`, and the notes are shown to the human with the release go.
 
-After a push, watch the checks read-only and show the merge card only when every required check
-is green (`runner.md`, `## On a CI red`). A CI red follows `## On a CI red`; under `git.push:
-standing`, so does a CI red the human reports on a landing.
+After a push, watch the checks read-only; the card above comes back for the merge only when every
+check has ended green and none is red (`runner.md`, `## On a CI red`). A CI red follows `## On a
+CI red`; under `git.push: standing`, so does a CI red the human reports on a landing.
 
 ## 4. After the human deploys
 If `qa.live_url` is set, offer one line: run `gtm:release-qa` on the live instance. Report per the

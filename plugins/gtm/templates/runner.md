@@ -76,9 +76,10 @@ count); the next red goes to the human's card.
 After the push, ship reads the checks with `gh pr checks <n> --watch`, read-only, when `gh` is
 present and signed in (`gh auth status`), until each has ended. Every started check ended and a
 required one has no run: wait 5 more minutes once. A required check that never started is a
-`config` red, never a green. The merge card only when every required check is green. Without
-`gh`, ask the human for the result in one line. Under `git.push: standing` nothing is pushed; a
-CI red the human reports on a landing follows this section from step 1.
+`config` red, never a green. Ship's card (§3) comes back for the merge only when every check has
+ended green and none is red, required or not. Without `gh`, ask the human for the result in one
+line. Under `git.push: standing` nothing is pushed; a CI red the human reports on a landing
+follows this section from step 1.
 
 ## The ci line
 One progress line per CI red, written once its action has ended (the round gated and reviewed, or
