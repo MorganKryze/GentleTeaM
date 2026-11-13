@@ -33,6 +33,8 @@ const PINS = {
   ],
   'plugins/gtm/skills/deliver/SKILL.md': [
     'Your own run files: `templates/delivery.md`.',
+    '(`runner` aside: `templates/runner.md` proves it, a',
+    'red a gap): run each once on the branch with `verify.prefix`',
     '`git merge --no-ff --no-edit "<branch>-t<n>"`',
     '- Efforts: `team`\'s, raised or lowered on each dispatch\'s range as the Roles note of',
     '`${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the `risky paths` regexes, a list.',
