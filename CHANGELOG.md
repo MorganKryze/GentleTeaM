@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-11-13
+
 ### Added
 - A project sheet, `sheet.json` in the GTM root, behind a `project.sheet` switch that is off by
   default: the facts script writes and checks it on each run view rewrite, with the plan, the
