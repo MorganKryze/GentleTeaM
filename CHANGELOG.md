@@ -5,6 +5,11 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- The implementer stays within its task: its own files and worktree, never another worktree, the
+  lead's scripts or logs, a process it did not start or a secret; the reviewer flags any file or
+  step outside the task.
+
 ## [0.17.0] - 2026-11-13
 
 ### Added
