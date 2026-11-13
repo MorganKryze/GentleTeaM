@@ -96,7 +96,9 @@ const PINS = {
     'No question tool in the session, or more than',
     'The card file is handed over and answered as for any card.',
   ],
-  'plugins/gtm/templates/plan.md': ['<Only when the human\'s request or answer gives a mandate; otherwise no such section.'],
+  'plugins/gtm/templates/plan.md': [
+    'Past 4 hours (W > 240): one more line, the split you propose (which tasks first, own branch).',
+    '<Only when the human\'s request or answer gives a mandate; otherwise no such section.'],
   'plugins/gtm/templates/team.md': [
     '(a regex that fails matches all), the security reviewer and the final reviewer rise one level from',
     'their row (none: `high`), at most `xhigh`.',
@@ -217,6 +219,15 @@ const PINS = {
   ],
   'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
   'plugins/gtm/skills/plan/SKILL.md': [
+    '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',
+    '(split as proposed / one branch anyway / wait), with your recommendation;',
+    'under 4 hours, none.',
+    'Split: the human\'s answer is logged as a `ruling`;',
+    'the cut is a spec amend made by hand, which',
+    'never defers a line or row guarding what the first part ships, and',
+    'ships, and nothing runs until the human',
+    'approves it. Wait: nothing runs. No measured run: the architect\'s own W stands in.',
+    'or 4 hours (§2\'s split card), or the human asked to see',
     'so it reaches the brief; a missing one goes back to the architect:',
     '`security-reviewer`, `data-reviewer` or `ux-qa` sits on a task with a File matching a trigger of',
     'that specialist, which is on; a row naming `design-critic` or `final-reviewer`, or a match that',
@@ -227,6 +238,10 @@ const PINS = {
   ],
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
   // An agent stays within its task: the implementer's limits, the reviewer's scope findings.
+  'plugins/gtm/agents/architect.md': [
+    'None: `no measured run yet` with your own rough `≈ <W> min, <T>k tokens`.',
+    'A plan past 4 hours: the split you propose on the line after.',
+  ],
   'plugins/gtm/agents/implementer.md': [
     '- Stay inside your task: touch only its files, in your own worktree or checkout,',
     'the report file and the GTM root files you are told to read. Never another worktree,',

@@ -6,6 +6,8 @@ versions follow [SemVer](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
+- A plan past 4 hours shows a card before any delivery (split as proposed, one branch anyway,
+  wait); with no run history the architect gives its own rough estimate, so the card still fires.
 - The orchestrator keeps its own scripts, logs and tool installs in `<root>/reports/<slug>/lead/`,
   never in the session scratchpad that Claude Code can wipe mid-run, and reads where before its
   first dispatch.
