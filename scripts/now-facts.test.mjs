@@ -296,8 +296,9 @@ function scenario(name, dir, a, want) {
 const d1 = (f) => readFileSync(join(fixtures, f), 'utf8')
 if (d1('card-d1-answer/root/reports/mandate/waiting.json') !== JSON.parse(d1('card-d1/expected.json')).files['reports/mandate/waiting.json']) errors.push('card-d1-answer: its card is not the one card-d1 writes')
 // A8: today's progress and ledger lines, then the same lines with the delivery tail appended and
-// an escape line in the ledger, give the same phase, task, events and ETA.
-function tailed(tail) {
+// an escape line in the ledger, give the same phase, task, events and ETA; `more` lines are
+// appended after them.
+function tailed(tail, more = []) {
   const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-tail-'))
   try {
     const r = join(tmp, 'root')
@@ -311,7 +312,7 @@ function tailed(tail) {
     const lines = ['- spec · draft written · 400 s · 129k · 1 agent', '- plan · 3 tasks · 900 s · 200k · 1 agent',
       '- task 1 · CLEAN · guarded · rounds 1 · reviewer · a..b · 900 s · 300k · 4 agents · run wf_1',
       '- task 2 · OPEN · guarded · rounds 2 · reviewer · b..c · 900 s · 300k · 4 agents · run wf_2']
-    writeFileSync(join(r, 'reports/x/progress.md'), lines.map((l) => l + end).join('\n') + '\n')
+    writeFileSync(join(r, 'reports/x/progress.md'), [...lines.map((l) => l + end), ...more].join('\n') + '\n')
     const out = spawnSync(process.execPath, [script, '--root', r, '--slug', 'x', '--now', '2026-11-12T12:00:00Z'], { cwd: tmp, encoding: 'utf8', env: { ...env, TZ: 'UTC' } })
     let f = {}
     try { f = JSON.parse(out.stdout) } catch {}
@@ -323,6 +324,12 @@ function tailed(tail) {
 const READ = JSON.stringify({ exit: 1, phase: 'delivery', task: { n: 2, of: 3 }, events: ['plan: ?', 't1: CLEAN', 't2: OPEN'],
   eta: { minutes: 32.9, clock: '12:32', runs: 2, perTask: 6.9, parts: { tasks: 13.8, final: 17.5, fix: 1.6 }, afterAnswer: false } })
 for (const tail of [false, true]) if (tailed(tail) !== READ) errors.push(`A8: ${tail ? 'the tailed' : "today's"} lines read ${tailed(tail)}, want ${READ}`)
+// A25: the same lines with one ship `ci` line appended read the same tasks' events, then the
+// line's action, in phase go.
+const CI = '- ci · validate · os · reproduced · round · 900 s · 210k · 3 agents · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low · causes 1:ci/important/runner'
+const seen = JSON.parse(READ), ci = JSON.parse(tailed(false, [CI]))
+const CI_WANT = JSON.stringify({ phase: 'go', events: [...seen.events, 'ci: round'].slice(-3) })
+if (JSON.stringify({ phase: ci.phase, events: ci.events }) !== CI_WANT) errors.push(`A25: a ci line appended reads ${JSON.stringify(ci)}, want ${CI_WANT}`)
 // D2: the rewrite's scenario starts from the sheet the step gave for init's fixed input.
 if (d1('sheet-init-state/root/sheet.json') !== JSON.parse(d1('sheet-init/expected.json')).files['sheet.json']) errors.push('sheet-init-state: its sheet is not the one sheet-init writes')
 // The step reads its input before it takes sheet.json.lock: a step waiting on an open, empty stdin

@@ -13,7 +13,8 @@ The final review says ready, or the last `run` line a delivery wrote for this sl
 `final review skipped: one task, clean at 0 fix rounds` or `Fix: CLEAN, no final review`
 (read anywhere else, neither counts); the working tree is clean; the gate passes once more
 (run it, quote the result). Commit messages carry nothing from `git.forbid` (check with
-`git log --format=%B`).
+`git log --format=%B`). With `verify.runner` set, run each gate command through it once at the
+head too, as `${CLAUDE_PLUGIN_ROOT}/templates/runner.md` says (`## Before the push`).
 
 ## 2. Write the PR text
 `<root>/reports/<slug>/pr.md`, written as `<root>/guidelines/voice.md` says: a Conventional title; a body with the Summary, what changed
@@ -64,6 +65,11 @@ unless the config says so. Tag and release only when asked: release notes from t
 the commits since the last tag, grouped by type, in the project's voice (`guidelines/voice.md`);
 the same humanize pass runs on the notes, then with `stealth: on` §2b's command with `--pr <notes
 file>`, and the notes are shown to the human with the release go.
+
+After a push, watch the checks read-only; the card above comes back for the merge only when every
+check has ended green and none is red, a skipped or cancelled one read as `runner.md` says (`## On
+a CI red`). A CI red follows `## On a CI red`; under `git.push: standing`, so does a CI red the
+human reports on a landing.
 
 ## 4. After the human deploys
 If `qa.live_url` is set, offer one line: run `gtm:release-qa` on the live instance. Report per the

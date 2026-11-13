@@ -199,6 +199,23 @@ One fix wave at most per branch: the implementer at a correction round's effort,
 re-review of the fix range, one effort level lower when that range touches no specialist's
 ground and no risky path.
 
+## What happens when CI goes red?
+
+Before the push, with `verify.runner` set, `/gtm:ship` runs the whole gate through it once at
+the head; a red there stops the ship as a red gate does. Each plan names its Runner differences:
+the checks whose behaviour can differ between your machine and the CI runner, and how each is
+covered (the runner before the push, a CI setting to change, or a gap and its reason).
+
+On a [CI-only red](/reference/glossary/#ci-only-red), ship reads the failed step's log, read-only,
+runs the same command locally, then gives the red a class: `os`, `config`, `resources`, `timing`
+or `infra`. An `os`, `resources` or `timing` red not seen locally runs only through the runner:
+the failing test alone up to k times (10 by default) within a cap (30 minutes by default). The
+verdict is `local`, `reproduced`, `flaky` or `not reproduced`; the cap or a missing runner gives
+`not reproduced`, never a pass and never `flaky`. The action follows: a CI round of fixes (at
+most two per branch), a card for a quarantine, a CI setting, or a rerun of an `infra` failure on
+your go. Ship never reruns a check that ran and went red. Ship's card asks for the merge only when
+every check has ended green and none is red. Each red writes one `ci` line in the progress file.
+
 ## How is a risky task proved before delivery?
 
 While planning, the architect runs a risky task's code in a scratch clone to prove the plan

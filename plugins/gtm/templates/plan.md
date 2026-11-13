@@ -21,6 +21,16 @@ Each one numbered, so a task names the ones it touches.
 - C2 Commits: <rules from config>. Tests in the same commit as their code.
 - C3 <Budgets, copy rules, a11y rules that bind every task.>
 
+## Runner differences
+<One row per check, of the gate or the CI, whose behaviour can differ between the local OS and the
+CI runner. Cover: the runner command (`verify.runner`) before the push, a CI setting to change, or
+a gap and its reason. A row per such check; else one line `none: <reason>` (no CI; or the runner's
+OS is the local one and the CI runs no check the gate lacks).>
+
+| Check | Class | Tasks | Cover |
+| --- | --- | --- | --- |
+| <command or CI check> | <os, config, resources, timing> | <T1, …> | <runner before the push / CI setting / gap: why> |
+
 ## Review focus
 <The three to five places a reviewer must look hardest, each pointing at the task and test that
 covers it.>
