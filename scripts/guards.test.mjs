@@ -35,6 +35,7 @@ const PINS = {
     'Your own run files: `templates/delivery.md`.',
     '(`runner` aside: `templates/runner.md` proves it, a',
     'red a gap): run each once on the branch with `verify.prefix`',
+    w("a `PAUSED` final review or fix wave (one after a `ci` line is ship's: `templates/runner.md`) reruns whole from its base"),
     // A failing verify command accepted as pre-existing is an exemption: written down.
     w('card (correct the command / drop it / accept the failure as pre-existing, logged as a ledger `lesson` line).'),
     '`git merge --no-ff --no-edit "<branch>-t<n>"`',
@@ -350,6 +351,8 @@ const PINS = {
     '`- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then',
     w('`1:ci/important/runner` for a round on `reproduced`, `flaky` or `not reproduced`'),
     w('`1:ci/important/proof` on `local`; else `none`.'),
+    // A round's own lines: `fix` lines after its `ci` line, read as go, resumed by ship.
+    w("A round's dispatches write `fix` lines after its `ci` line, in the fix wave's shape; the run view keeps the phase at `go` through them, and ship resumes a `PAUSED` one, not deliver."),
   ],
   'plugins/gtm/templates/guidelines/tests.md': [
     w('A flaky verdict needs up to <k> solo runs (10 by default) within <m> minutes per verdict (30 by default), with both a red and a green;'),

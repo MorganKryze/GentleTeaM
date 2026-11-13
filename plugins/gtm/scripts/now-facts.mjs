@@ -166,7 +166,7 @@ function facts(s) {
   const plan = latest('plans'), spec = latest('specs')
   const of = plan ? (readFileSync(join(root, 'plans', plan), 'utf8').match(/^### Task \d+\b/gm) || []).length || '?' : null
   const status = {}, events = []
-  let phase = 'spec', unknown = false, paused = null
+  let phase = 'spec', unknown = false, paused = null, round = false
   // Two shapes orchestrators write, read strictly: `- task <n> · ` is task n's line, and
   // `- wave <ids> merged · ` (`T1-T4`, `T2,T3,T5`) a wave line; any near shape stays unknown.
   for (const l of lines.map((x) => x.replace(/^- task (\d+) · /, (_, n) => `- t${+n} · `).replace(/^- wave T\d+(?:[-,]T\d+)* merged · /, '- wave · '))) {
@@ -177,11 +177,13 @@ function facts(s) {
     if (step === 'paused') { paused = PHASES.slice(0, -1).includes(second.trim()) ? second.trim() : '?'; events.push('paused'); continue }
     paused = null
     // `- ci · <check> · <class> · <verdict> · <action> · …`: the check SAFE, the rest from CI's lists.
+    // A CI round's own `fix` lines follow it and keep the phase at go.
     if (step === 'ci') {
       const [, check, cls, verdict, action] = l.slice(2).split(' · ')
       if (!SAFE.test(check || '') || !CI.class.includes(cls) || !CI.verdict.includes(verdict) || !CI.action.includes(action)) { unknown = true; continue }
-      phase = 'go'; events.push(`ci: ${action}`); continue
+      phase = 'go'; round = true; events.push(`ci: ${action}`); continue
     }
+    if (step !== 'fix') round = false
     if (word === 'PAUSED') { if (/^t\d+$/.test(step)) status[step] = word }
     else if (step === 'design') phase = 'spec'
     else if (step === 'spec') phase = 'plan'
@@ -189,7 +191,7 @@ function facts(s) {
     else if (/^t\d+$/.test(step)) { status[step] = word; phase = 'delivery' }
     else if (step === 'wave') phase = 'delivery'
     else if (step === 'final') phase = /ready$/.test(word) ? 'go' : 'correction'
-    else if (step === 'fix') phase = 'final review'
+    else if (step === 'fix') { if (!round) phase = 'final review' }
     else { unknown = true; continue }
     const name = { design: 'mockups', final: 'final review', fix: 'correction' }[step] || step
     events.push(`${name}: ${done ? 'done' : SAFE.test(word) || PHRASES.includes(word) ? word : '?'}`)

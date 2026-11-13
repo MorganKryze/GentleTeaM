@@ -238,6 +238,66 @@
           ]
         }
       }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner\n",
+          " · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner\n- fix · CLEAN · c..d · 600 s · 100k · 2 agents\n"
+        ]
+      },
+      "want": {
+        "exit": 0,
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "final review: ready",
+            "ci: round",
+            "correction: CLEAN"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner\n",
+          " · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner\n- fix · PAUSED · c..d · 300 s · 50k · 1 agents\n"
+        ]
+      },
+      "want": {
+        "exit": 0,
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "final review: ready",
+            "ci: round",
+            "correction: PAUSED"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner\n",
+          " · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner\n- task 2 · OPEN · guarded · rounds 1 · reviewer · c..d · 100 s · 10k · 2 agents\n- fix · CLEAN · d..e · 600 s · 100k · 2 agents\n"
+        ]
+      },
+      "want": {
+        "exit": 0,
+        "facts": {
+          "phase": "final review",
+          "next": "final review",
+          "events": [
+            "ci: round",
+            "t2: OPEN",
+            "correction: CLEAN"
+          ]
+        }
+      }
     }
   ]
 }

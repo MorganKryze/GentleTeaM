@@ -35,7 +35,8 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
 - Resume (progress lines exist): skip tasks last `CLEAN` or `GATED`; rerun each `PAUSED` one whole,
   `base` its line's, never its head (unlike §3 step 3), in its worktree if any, a wave's as one
   wave; then §3 step 2 merges each wave with an unmerged task, `PAUSED` or not; a `PAUSED` final
-  review or fix wave reruns whole from its base; the handoff's "what waited" card shows again. If
+  review or fix wave (one after a `ci` line is ship's: `templates/runner.md`) reruns whole from its
+  base; the handoff's "what waited" card shows again. If
   `git -C "<wt>" status --porcelain --ignored -unormal` (lone task: `-C` top, no `--ignored`, `--
   ':/' ':(exclude,top)<rel>'`) fails or lists anything: stop after wave merges, no rerun, keep all
   (no delete, clean, stash, checkout, worktree remove); Heads-up, card (recheck, rerun / by hand).

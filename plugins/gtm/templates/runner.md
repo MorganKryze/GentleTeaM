@@ -99,4 +99,6 @@ only, a round's dispatches writing their own progress lines as the fix wave's do
 - `<action>`: `round`, `quarantine`, `rerun`, `hand`, `wait`, `config`.
 - Causes: `1:ci/important/runner` for a round on `reproduced`, `flaky` or `not reproduced` (the
   gap and the cap included); `1:ci/important/proof` on `local`; else `none`.
-The run view reads a line off any list as unknown.
+The run view reads a line off any list as unknown. A round's dispatches write `fix` lines after its
+`ci` line, in the fix wave's shape; the run view keeps the phase at `go` through them, and ship
+resumes a `PAUSED` one, not deliver.
