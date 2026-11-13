@@ -17,7 +17,7 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
   or `none`: none); `cadence`, `review cadence` (absent: none); `standardRounds`, `fix rounds per
   standard review: N` (1). A ledger `ruling` `limits: lighter …` for this slug overrides the roles
   it names in `team`, on every dispatch (resumes too), unless struck through or beyond what `gtm`
-  §0's card A allows (then ignored, a Heads-up).
+  §0's card A allows (then ignored, a Heads-up). Your own run files: `templates/delivery.md`.
 - Efforts: `team`'s, raised or lowered on each dispatch's range as the Roles note of
   `${CLAUDE_PLUGIN_ROOT}/templates/team.md` says; `risky`: the `risky paths` regexes, a list.
 - Progress: `<root>/reports/<slug>/progress.md`, one line per run, any result (reruns append):

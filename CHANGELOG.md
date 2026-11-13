@@ -6,6 +6,9 @@ versions follow [SemVer](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
+- The orchestrator keeps its own scripts, logs and tool installs in `<root>/reports/<slug>/lead/`,
+  never in the session scratchpad that Claude Code can wipe mid-run, and reads where before its
+  first dispatch.
 - The implementer stays within its task: its own files and worktree, never another worktree, the
   lead's scripts or logs, a process it did not start or a secret; the reviewer flags any file or
   step outside the task.
