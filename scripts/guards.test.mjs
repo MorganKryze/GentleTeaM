@@ -227,9 +227,10 @@ const PINS = {
   'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
   // An agent stays within its task: the implementer's limits, the reviewer's scope findings.
   'plugins/gtm/agents/implementer.md': [
-    '- Stay inside your task: touch only its files, in your own worktree or checkout. Never another',
-    'worktree, the lead\'s scripts or logs, or a file outside the repository; never kill or signal a',
-    'process you did not start; never read, print or write a secret or token.',
+    '- Stay inside your task: touch only its files, in your own worktree or checkout, plus the brief',
+    'and report file you are given. Never another worktree, the lead\'s scripts or logs, or a file',
+    'outside the repository; never kill or signal a process you did not start; never read, print or',
+    'write a secret or token.',
   ],
   'plugins/gtm/agents/reviewer.md': [
     '- Scope: a changed file the brief\'s Files do not name is a finding, important, category `form`;',
