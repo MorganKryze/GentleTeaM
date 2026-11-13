@@ -347,6 +347,8 @@ const PINS = {
     // The ci line and its causes.
     w("One progress line per CI red, written as soon as its action is known, before that action runs:"),
     w("(a card left unanswered writes none, and a resume reads the checks again from step 1)"),
+    // A red is read once: a resume continues the last line's action, never a second line.
+    w("A red is read once. On a resume, a red whose run, or rerun attempt, started before the `start` of its check's last `ci` line is that line's red: its action resumes, with no new read and no second line"),
     w("its seconds and tokens cover the reading and the runner's runs only, a round's dispatches writing their own progress lines as the fix wave's do"),
     '`- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then',
     w('`1:ci/important/runner` for a round on `reproduced`, `flaky` or `not reproduced`'),

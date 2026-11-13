@@ -91,7 +91,10 @@ once for a round, on the human's answer for a card (a card left unanswered write
 reads the checks again from step 1); its seconds and tokens cover the reading and the runner's runs
 only, a round's dispatches writing their own progress lines as the fix wave's do:
 `- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then
-`templates/delivery.md`'s tail.
+`templates/delivery.md`'s tail. A red is read once. On a resume, a red whose run, or rerun attempt,
+started before the `start` of its check's last `ci` line is that line's red: its action resumes,
+with no new read and no second line (a round from its `fix` lines, then the push card; a card's
+answer, its action); without `gh`, the human says whether it is the same red.
 - `<check>`: the check's name, each character outside `[A-Za-z0-9._/-]` written `-`.
 - `<class>`: `os`, `config`, `resources`, `timing`, `infra`.
 - `<verdict>`: `local`, `reproduced`, `flaky`, `not reproduced`, `not reproduced (gap)`, `not
