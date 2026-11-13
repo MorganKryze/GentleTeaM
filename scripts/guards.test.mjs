@@ -13,11 +13,18 @@
 // stored sheet lacks, retro's lists in its report and merged into the stored ones, a stored
 // line counted once, matched by its date and what it says. A standing go:
 // the line's shape, its proofs, the never list and what a program must refuse, as the settings reference states them.
+// A CI red: no rerun of a check that ran and went red, `infra` bounded, runs only through the
+// runner command within k and the cap, the cap and the gap never a pass nor `flaky`, the quarantine
+// and the rerun on the human's go, no CI log text in a command, at most 2 CI rounds, a required
+// check that never started never green; the `ci` line, its `runner` cause, retro's counts, the
+// tests template's flaky line, `verify.runner` and ship's pointers.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
 const root = new URL('..', import.meta.url).pathname
+// A phrase that may wrap: its words in order, any run of whitespace between them.
+const w = (s) => new RegExp(s.split(' ').map((x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s+'))
 const PINS = {
   'plugins/gtm/templates/ui-gate.spec.mjs': [
     'r.width >= 44 && r.height >= 44',
@@ -122,6 +129,7 @@ const PINS = {
   'plugins/gtm/skills/retro/SKILL.md': [
     "where `config.yml`'s `project.sheet` reads `on`, hand `decisions` and",
     'list both in the report.',
+    w('the CI reds by class, by verdict and by action, the CI rounds (action `round`) and the reruns (action `rerun`).'),
   ],
   'plugins/gtm/templates/project-sheet.md': [
     'never shorten or reword',
@@ -134,7 +142,7 @@ const PINS = {
     "`/gtm:init`: reads `config.yml`'s `project.kind` and `<root>/sheet.json` first",
     'the stored value beside the new one',
   ],
-  'plugins/gtm/templates/config.yml': [/^ {2}push: ask\b/m, '# standing = still nothing pushed: /gtm:ship records a landing for', 'set by /gtm:tune only'],
+  'plugins/gtm/templates/config.yml': [/^ {2}runner: ""\s+# a prefix/m, 'not a gate key. Empty = none: a CI red is then a stated gap', /^ {2}push: ask\b/m, '# standing = still nothing pushed: /gtm:ship records a landing for', 'set by /gtm:tune only'],
   'plugins/gtm/skills/tune/SKILL.md': [
     'Asked for a standing go (`/gtm:tune standing go docs <regex>` or `/gtm:tune standing go off`)? §6.',
     'No signal ever proposes a standing go or',
@@ -184,6 +192,9 @@ const PINS = {
     '(`templates/now.md`), append `- <YYYY-MM-DD> · <slug> · run · landing: <class> at <short head>,',
     'nothing pushed` to the ledger, and say in one line that the landing holds until the next commit,',
     'for the human\'s own program to check and merge. No card.',
+    w('With `verify.runner` set, run each gate command through it once at the head too, as `${CLAUDE_PLUGIN_ROOT}/templates/runner.md` says (`## Before the push`).'),
+    w('show the merge card only when every required check is green (`runner.md`, `## On a CI red`).'),
+    w('A CI red follows `## On a CI red`; under `git.push: standing`, so does a CI red the human reports on a landing.'),
     '- `landing` false, or an exit other than 0: the card below as always, with one Heads-up naming',
     'why (`why`, `file`, `proof`).',
     'A tag, a release or a publication always waits for the go below, under a standing go or a',
@@ -282,6 +293,46 @@ const PINS = {
     'today\'s lines reads them as before.',
     // Moved from the deliver skill: a direct dispatch reports no count of its own.
     '`agent_count` (a dispatch is 1 agent)',
+    // The runner cause: ship's `ci` line only; the reviewers keep their five.
+    w("`runner` is given only by ship's `ci` line (`templates/runner.md`); the reviewers keep their five."),
+    w("fix wave, ship's `ci`;"),
+  ],
+  'plugins/gtm/templates/runner.md': [
+    '## The runner command', '## Before the push', '## On a CI red', '## The ci line',
+    // P1: `infra` only for a step that runs no check.
+    w("`infra` only for a step that runs none of the project's checks"),
+    w('a step that runs a check is never `infra`.'),
+    // P2: runs only through the runner command, stop at the first red, the job's command once.
+    w('not reproduced locally: runs only through the runner command.'),
+    w('stop at the first red; with no red and time left, the job\'s command once.'),
+    // P3: k and the cap from the tests guideline, 10 and 30 by default.
+    w("k and the cap come from the tests guideline's flaky line"),
+    w('absent, not a whole number or 0, 10 and 30;'),
+    // P4: the cap's end.
+    w('the run in progress is stopped and counts as no red: `not reproduced (cap)`, never `flaky`, never a pass,'),
+    // P5: the gap.
+    w('`not reproduced (gap)` when the runner command is empty, cannot start'),
+    w('fails on the untouched base; its reason in one Heads-up, never `flaky`, never a pass.'),
+    // P6: no rerun of a red check; `infra` only, on the go.
+    w('Never rerun a CI check that ran and went red;'),
+    w("A rerun only for `infra`, as a card, on the human's go."),
+    // P7: no rerun on `flaky`; the quarantine on the go.
+    w("`flaky` offers no rerun; a quarantine only on the human's go."),
+    // P8: the CI log stays out of every command.
+    w('No text of the CI log enters a command.'),
+    // P9: the CI rounds' cap.
+    w('At most 2 CI rounds per branch, counted from the `ci` lines with action `round`'),
+    // P10: a required check that never started.
+    w('A required check that never started is a `config` red, never a green.'),
+    // The ci line and its causes.
+    '`- ci · <check> · <class> · <verdict> · <action> · <s> s · <t>k · <a> agents`, then',
+    w('`1:ci/important/runner` for a round on `reproduced`, `flaky` or `not reproduced`'),
+    w('`1:ci/important/proof` on `local`; else `none`.'),
+  ],
+  'plugins/gtm/templates/guidelines/tests.md': [
+    w('A flaky verdict needs up to <k> solo runs (10 by default) within <m> minutes per verdict (30 by default), with both a red and a green;'),
+    w('no rerun turns a red gate or a red CI check green.'),
+    w('a CI red from runs through `verify.runner`.'),
   ],
   'plugins/gtm/workflows/deliver-task.js': ["const SECURITY = 'high'"],
   'docs/reference/commands.md': [

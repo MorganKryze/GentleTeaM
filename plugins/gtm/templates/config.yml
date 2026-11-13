@@ -34,6 +34,9 @@ verify:
   e2e: ""
   ui: ""             # the committed UI gate test (/gtm:init offers it for web screens); add `ui`
                      # to gate to run it before every commit. Empty = no UI gate, as before 0.9.0
+  runner: ""         # a prefix that runs one verify command in the CI runner's conditions: a
+                     # container of the project's own Docker (/gtm:ship, on a CI red and before
+                     # the push); not a gate key. Empty = none: a CI red is then a stated gap
   gate: [lint, typecheck, test]   # run before every commit; build/size/e2e at task end
 
 git:

@@ -15,6 +15,9 @@ Ground rules: as in the `gtm` skill §0.
 ledger. Guideline edits follow `<root>/guidelines/voice.md`.
 
 ## 2. Distil
+- **CI reds:** with `ci` lines in the progress file, count them by hand before the lessons, as
+  numbers only, in one table: the CI reds by class, by verdict and by action, the CI rounds
+  (action `round`) and the reruns (action `rerun`).
 - **Lessons:** what would have saved a correction round, a blocked task or a final-review finding. One line
   each, phrased as a rule to keep (`- <date> · <slug> · lesson · <rule>`). At most five; fewer is
   better. Skip what a test or a lint rule now enforces. A lesson a reflex found ends with its
