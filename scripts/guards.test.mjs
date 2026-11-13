@@ -354,7 +354,10 @@ const PINS = {
     w('`1:ci/important/runner` for a round on `reproduced`, `flaky` or `not reproduced`'),
     w('`1:ci/important/proof` on `local`; else `none`.'),
     // A round's own lines: `fix` lines after its `ci` line, read as go, resumed by ship.
-    w("A round's dispatches write `fix` lines after its `ci` line, in the fix wave's shape; the run view keeps the phase at `go` through them, and ship resumes a `PAUSED` one, not deliver."),
+    w("A round's dispatches write `fix` lines after its `ci` line, in the fix wave's shape; the run view keeps the phase at `go` through them, and ship resumes a `PAUSED` one, not deliver: whole from its line's base, never its head."),
+    // That resume keeps deliver's guard: a tree with anything in it is kept whole, never rerun over.
+    w("Before it touches the tree, from the repository's top, ship runs `git status --porcelain -- ':/' ':(exclude,top)<rel>'`"),
+    w('if that fails or lists anything: no rerun, keep all (no delete, clean, stash, checkout, reset, worktree remove), one Heads-up naming what it lists, and a card: **A** check again, then rerun, **B** the human finishes it by hand.'),
   ],
   'plugins/gtm/templates/guidelines/tests.md': [
     w('A flaky verdict needs up to <k> solo runs (10 by default) within <m> minutes per verdict (30 by default), with both a red and a green;'),

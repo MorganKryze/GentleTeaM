@@ -104,4 +104,9 @@ answer, its action); without `gh`, the human says whether it is the same red.
   gap and the cap included); `1:ci/important/proof` on `local`; else `none`.
 The run view reads a line off any list as unknown. A round's dispatches write `fix` lines after its
 `ci` line, in the fix wave's shape; the run view keeps the phase at `go` through them, and ship
-resumes a `PAUSED` one, not deliver.
+resumes a `PAUSED` one, not deliver: whole from its line's base, never its head. Before it touches
+the tree, from the repository's top, ship runs
+`git status --porcelain -- ':/' ':(exclude,top)<rel>'` (`<rel>` the root's path from that top);
+if that fails or lists anything: no rerun, keep all (no delete, clean, stash, checkout, reset,
+worktree remove), one Heads-up naming what it lists, and a card: **A** check again, then rerun,
+**B** the human finishes it by hand.
