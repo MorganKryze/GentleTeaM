@@ -196,7 +196,7 @@ const PINS = {
     'nothing pushed` to the ledger, and say in one line that the landing holds until the next commit,',
     'for the human\'s own program to check and merge. No card.',
     w('With `verify.runner` set, run each gate command through it once at the head too, as `${CLAUDE_PLUGIN_ROOT}/templates/runner.md` says (`## Before the push`).'),
-    w('the card above comes back for the merge only when every check has ended green and none is red (`runner.md`, `## On a CI red`).'),
+    w('the card above comes back for the merge only when every check has ended green and none is red, a skipped or cancelled one read as `runner.md` says (`## On a CI red`).'),
     w('A CI red follows `## On a CI red`; under `git.push: standing`, so does a CI red the human reports on a landing.'),
     '- `landing` false, or an exit other than 0: the card below as always, with one Heads-up naming',
     'why (`why`, `file`, `proof`).',
@@ -331,6 +331,9 @@ const PINS = {
     // P10: a required check that never started.
     w('A required check that never started is a `config` red, never a green.'),
     w("Ship's card (§3) comes back for the merge only when every check has ended green and none is red, required or not."),
+    // A check that ends neither green nor red: skipped or neutral, cancelled.
+    w('A check that ends `skipping` or `neutral` counts as green only when it is not required; a required one is a `config` red, as one that never started.'),
+    w('A check that ends `cancel` is a red, read from step 1.'),
     // A3's verdicts and A7's actions: no red read as green, no rerun outside `infra`.
     w('Verdict: `reproduced` when the first run is red, `flaky` when a red follows at least one green, `not reproduced` when no run is red.'),
     w('- `local`, `reproduced`: a CI round.'),
