@@ -95,7 +95,9 @@ const PINS = {
     'No question tool in the session, or more than',
     'The card file is handed over and answered as for any card.',
   ],
-  'plugins/gtm/templates/plan.md': ['<Only when the human\'s request or answer gives a mandate; otherwise no such section.'],
+  'plugins/gtm/templates/plan.md': [
+    'Past 4 hours (W > 240): one more line, the split you propose (which tasks first, own branch).',
+    '<Only when the human\'s request or answer gives a mandate; otherwise no such section.'],
   'plugins/gtm/templates/team.md': [
     '(a regex that fails matches all), the security reviewer and the final reviewer rise one level from',
     'their row (none: `high`), at most `xhigh`.',
@@ -216,6 +218,10 @@ const PINS = {
   ],
   'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
   'plugins/gtm/skills/plan/SKILL.md': [
+    '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',
+    '(split as proposed / one branch anyway / wait), with your recommendation;',
+    'under 4 hours, none.',
+    'or 4 hours (§2\'s split card), or the human asked to see',
     'so it reaches the brief; a missing one goes back to the architect:',
     '`security-reviewer`, `data-reviewer` or `ux-qa` sits on a task with a File matching a trigger of',
     'that specialist, which is on; a row naming `design-critic` or `final-reviewer`, or a match that',

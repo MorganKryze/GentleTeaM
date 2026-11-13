@@ -7,7 +7,8 @@
 <At most ten lines: how many tasks, which are risky and had a dry run, what the human must know.
 Usually nothing to decide here: the spec settled it. Last line, the estimate, as in the spec:
 `<n> tasks × <m> min + <phase> <m> min, ... ≈ <W> min, <T>k tokens (medians of the last <k>
-measured runs)`, or `no measured run yet`.>
+measured runs)`, or `no measured run yet`.
+Past 4 hours (W > 240): one more line, the split you propose (which tasks first, own branch).>
 
 ## Mandate
 <Only when the human's request or answer gives a mandate; otherwise no such section. Its lines

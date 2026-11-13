@@ -55,10 +55,13 @@ phase's lines are summed in the run line.
 - The Summary holds the estimate line. Past 1.5× of the spec's (minutes or tokens): a Heads-up
   and a decision card (go on / revise the plan), with your recommendation; no numeric estimate
   in the spec: no comparison, no card.
+- Past 4 hours (W > 240 min): the Summary's proposed split, then a card before any delivery
+  (split as proposed / one branch anyway / wait), with your recommendation; under 4 hours, none.
 One round of corrections with the architect if a check fails.
 
 ## 3. Continue
 Do not present the plan. Go straight to `/gtm:deliver`, unless the plan deviates from the spec (a
 Heads-up and a decision card), its task count passes the cap (§2's split / accept card), its
-estimate passes 1.5× of the spec's (§2), or the human asked to see it (`/gtm:brief-me`).
+estimate passes 1.5× of the spec's (§2) or 4 hours (§2's split card), or the human asked to see
+it (`/gtm:brief-me`).
 After an amend, show the plan and wait for the human's go before `/gtm:deliver`.
