@@ -5,6 +5,15 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- A CI red at ship is read, classed (`test`, `os`, `resources`, `timing`, `config`, `infra`) and, for
+  a test red that passes locally, reproduced in the runner's conditions with `verify.runner` (10
+  runs at most, 30 minutes per verdict, never a pass); `flaky` only on red and green seen, quarantined
+  on your go. Each red writes a `ci` line the run view reads; at most two CI rounds per branch.
+- Ship offers the merge only once every check has ended green, none red.
+- Plans name their runner differences; `/gtm:init` proposes `verify.runner` when the CI runs on
+  another OS and Docker answers, and `/gtm:deliver` leaves that command to its own proof.
+
 ### Fixed
 - A plan past 4 hours shows a card before any delivery (split as proposed, one branch anyway,
   wait); with no run history the architect gives its own rough estimate, so the card still fires.
