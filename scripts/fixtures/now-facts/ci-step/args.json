@@ -1,0 +1,243 @@
+{
+  "branch": "feat/where-am-i",
+  "mtimes": {
+    "NOW.md": 0,
+    "ledger.md": 5,
+    "backlog.md": 5,
+    "reports/where-am-i/progress.md": 5
+  },
+  "variants": [
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · reproduced · round · ",
+          " · os · reproduced · round · "
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: round"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · reproduced · round · ",
+          " · timing · flaky · quarantine · "
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: quarantine"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · reproduced · round · ",
+          " · infra · none · rerun · "
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: rerun"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · reproduced · round · ",
+          " · resources · not reproduced (cap) · hand · "
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: hand"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · reproduced · round · ",
+          " · infra · none · wait · "
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: wait"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · reproduced · round · ",
+          " · config · none · config · "
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: config"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · reproduced · round · ",
+          " · os · not reproduced (gap) · round · "
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: round"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · reproduced · round · ",
+          " · os · local · round · "
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: round"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · reproduced · round · ",
+          " · timing · not reproduced · round · "
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: round"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner",
+          ""
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: round"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- ci · validate",
+          "- ci · lint/prose-width.test.mjs"
+        ]
+      },
+      "want": {
+        "facts": {
+          "phase": "go",
+          "next": "go",
+          "events": [
+            "t2: CLEAN",
+            "final review: ready",
+            "ci: round"
+          ]
+        }
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner\n",
+          " · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner\n- task 2 · OPEN · guarded · rounds 1 · reviewer · c..d · 100 s · 10k · 2 agents\n"
+        ]
+      },
+      "want": {
+        "exit": 0,
+        "facts": {
+          "phase": "delivery",
+          "task": {
+            "n": 2,
+            "of": 2
+          },
+          "events": [
+            "final review: ready",
+            "ci: round",
+            "t2: OPEN"
+          ]
+        }
+      }
+    }
+  ]
+}

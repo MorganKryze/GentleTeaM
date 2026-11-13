@@ -2,7 +2,8 @@
 // Gathers the facts of a run's one-page view (NOW.md) from the GTM root and git, and prints them as
 // JSON: breadcrumb parts, task n/N, worktrees, last events, waiting kind, next step, ETA, staleness
 // and last change; a pause's phase, handoff and resume command, uncommitted or ignored entries per
-// worktree, and with --since the slug's root files changed since a time. It reads files and runs
+// worktree, and with --since the slug's root files changed since a time. Ship's `ci` line (one per
+// CI red, templates/runner.md) moves the phase to go, its event the action; read strictly. It reads files and runs
 // git with argument arrays; it prints no message text: names outside SAFE and unknown shapes print
 // `?` and exit 1. It writes nothing but, with --state, <root>/state.json (the same facts for a
 // program (v 1, `null` for each unknown) with the plan's steps, the open card from
@@ -59,6 +60,9 @@ const WINDOW = 5, EVENTS = 3, LABEL = 60, LONG = 200, OPTIONS = 9, STOPPED = 2
 // Event words: one SAFE token, or a status phrase from this closed list; any other text prints `?`.
 const PHRASES = ['re-review ready', 'second re-review ready']
 const PHASES = ['mockups', 'spec', 'plan', 'delivery', 'final review', 'correction', 'go', 'shipped']
+// A `ci` line's class, verdict and action: closed lists (templates/runner.md); any other is unknown.
+const CI = { class: ['os', 'config', 'resources', 'timing', 'infra'], verdict: ['local', 'reproduced', 'flaky', 'not reproduced', 'not reproduced (gap)', 'not reproduced (cap)', 'none'],
+  action: ['round', 'quarantine', 'rerun', 'hand', 'wait', 'config'] }
 const safe = (s) => (typeof s === 'string' && SAFE.test(s) ? s : '?')
 const label = (s, n = LABEL) => [...s.replace(/[\x00-\x1f\x7f-\x9f\p{Cf}\u2028\u2029]/gu, '').trim()].slice(0, n).join('')
 const read = (f) => (existsSync(f) ? readFileSync(f, 'utf8') : null)
@@ -172,6 +176,12 @@ function facts(s) {
     // `- paused · <phase>` starts a pause; any later line ends it. A PAUSED line moves no phase.
     if (step === 'paused') { paused = PHASES.slice(0, -1).includes(second.trim()) ? second.trim() : '?'; events.push('paused'); continue }
     paused = null
+    // `- ci · <check> · <class> · <verdict> · <action> · …`: the check SAFE, the rest from CI's lists.
+    if (step === 'ci') {
+      const [, check, cls, verdict, action] = l.slice(2).split(' · ')
+      if (!SAFE.test(check || '') || !CI.class.includes(cls) || !CI.verdict.includes(verdict) || !CI.action.includes(action)) { unknown = true; continue }
+      phase = 'go'; events.push(`ci: ${action}`); continue
+    }
     if (word === 'PAUSED') { if (/^t\d+$/.test(step)) status[step] = word }
     else if (step === 'design') phase = 'spec'
     else if (step === 'spec') phase = 'plan'

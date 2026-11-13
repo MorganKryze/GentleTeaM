@@ -1,0 +1,163 @@
+{
+  "branch": "feat/where-am-i",
+  "mtimes": {
+    "NOW.md": 0,
+    "ledger.md": 5,
+    "backlog.md": 5,
+    "reports/where-am-i/progress.md": 5
+  },
+  "variants": [
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- ci · ",
+          "- CI · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- ci · ",
+          "- ci-red · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- ci · validate · os · reproduced · round · 900 s · 210k · 3 agents · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner",
+          "- ci ·"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- ci · validate · os · reproduced · round · 900 s · 210k · 3 agents · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner",
+          "- ci · validate"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- ci · ",
+          "- ci  · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- ci · ",
+          "-  ci · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- ci · validate · os · reproduced · round · 900 s · 210k · 3 agents · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner",
+          "- ci·validate·os·reproduced·round·900 s·210k·3 agents"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "· validate ·",
+          "· my check ·"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "· validate ·",
+          "·  ·"
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · ",
+          " · OS · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · ",
+          " · os  · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · os · ",
+          " · network · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · reproduced · ",
+          " · Reproduced · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · reproduced · ",
+          " · not reproduced (later) · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · reproduced · ",
+          " · flaky? · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · round · ",
+          " · retry · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · round · ",
+          " · Round · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          " · round · ",
+          " · round  · "
+        ]
+      }
+    },
+    {
+      "edit": {
+        "reports/where-am-i/progress.md": [
+          "- ci · validate · os · reproduced · round · 900 s · 210k · 3 agents · start 2026-11-13T09:00:00Z · end 2026-11-13T09:15:00Z · models implementer opus/low, reviewer opus/medium · causes 1:ci/important/runner",
+          "- ci · validate · os · reproduced"
+        ]
+      }
+    }
+  ]
+}
