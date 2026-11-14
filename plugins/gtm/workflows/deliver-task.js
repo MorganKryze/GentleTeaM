@@ -407,9 +407,10 @@ for (; round <= limit; round++) {
   const grown = escalation(changed, fix.head)
   if (grown) return done({ ...grown, open: [...open, ...unreviewed], reviewers, stats, minors })
   // A fix reaching a file off the task's path raises it, never lowers it: each specialist the new
-  // path calls for that never saw the task reviews its whole range.
+  // path calls for that never saw the task reviews its whole range. With no worktree, a fix naming
+  // the relative twin of an absolute file can make `changed` read lighter: the heavier path holds.
   const was = path
-  path = pathOf(changed)
+  path = LADDER[Math.max(LADDER.indexOf(was), LADDER.indexOf(pathOf(changed)))]
   if (LADDER.indexOf(path) > LADDER.indexOf(was)) {
     log(`Review path rises from ${was} to ${path}`)
     for (const r of specialists(changed, path).filter((r) => !reviewers.includes(r) && !unreviewed.some((f) => f.by === r))) {

@@ -1957,6 +1957,16 @@ const deliver = [
       reviewer('reviewer · round 1')],
     log: ['Review path rises from code to full'],
   },
+  {
+    name: 'review path: with no worktree, a fix naming an absolute file\'s relative twin never lowers full to code (P12)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['/abs/repo/scripts/a.mjs'], (d) => (d.label === 'reviewer' ? bad : ok), ['scripts/a.mjs']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, trace: { models: 'implementer ?/?/medium, reviewer ?/?, security-reviewer ?/?', causes: '1:reviewer/important/?', path: 'full' } },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), security('security-reviewer · round 1')],
+    log: ['Review path: full'],
+    unlogged: ['Review path rises'],
+    unprompted: { 'reviewer · round 1': LIGHT },
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
