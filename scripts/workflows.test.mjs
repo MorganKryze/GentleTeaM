@@ -1773,15 +1773,18 @@ const deliver = [
     dispatches: [implement(), reviewer()],
     log: ['Review path: text'],
   },
-  {
-    name: 'review path: under the template text line an agent or skill .md reads full (finding 13)',
+  // Each file alone beside a docs page: an instruction file, a nested docs folder or README, a
+  // skill, an agent, and one character past the end anchor.
+  ...['plugins/gtm/agents/x.md', 'CLAUDE.md', '.claude/agents/x.md', 'src/docs/a.md', 'x/README.md', 'SKILL.md',
+    'plugins/gtm/skills/x/SKILL.md', 'docs/a.mdx'].map((f) => ({
+    name: `review path: under the template text line ${f} reads full (finding 13)`,
     args: { paths: { text: { paths: TEXT } } },
-    reply: implementer(['docs/a.md', 'plugins/gtm/agents/x.md'], () => ok),
+    reply: implementer(['docs/a.md', f], () => ok),
     returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
     dispatches: [implement(), reviewer()],
     log: ['Review path: full'],
     unprompted: { reviewer: LIGHT },
-  },
+  })),
   {
     name: 'review path: a reviewer skipping mutations on the full path is a blocking security finding (task 2)',
     args: { base: 'b0', paths: PATHS },
