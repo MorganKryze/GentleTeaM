@@ -172,18 +172,20 @@ function relative(files) {
 // on `text` or `code`, one `code` at least: the reviewer on the `code` line's model plus the
 // security reviewer, alone, the same two rules. Any other file, no file or no line: the full path
 // as before, every triggered specialist on its profile model, with mutations. A file on both reads
-// `code`; a regex that fails, or an empty one, matches nothing, so the task only reads heavier.
+// `code`; a regex that fails, an empty one or an entry that is not a string matches nothing, so the
+// task only reads heavier.
 const PATHS = {}
 for (const p of ['text', 'code']) {
   const line = A.paths && typeof A.paths === 'object' && !Array.isArray(A.paths) ? A.paths[p] : null
   if (!line || typeof line !== 'object') continue
-  const res = [].concat(line.paths ?? []).filter((src) => String(src).trim() !== '').map((src) => {
-    try {
-      return new RegExp(src)
-    } catch {
-      log(`Invalid ${p} review path: ${src}. It matches nothing until it is fixed.`)
-      return null
+  const res = [].concat(line.paths ?? []).filter((src) => typeof src !== 'string' || src.trim() !== '').map((src) => {
+    if (typeof src === 'string') {
+      try {
+        return new RegExp(src)
+      } catch {}
     }
+    log(`Invalid ${p} review path: ${typeof src === 'string' ? src : JSON.stringify(src)}. It matches nothing until it is fixed.`)
+    return null
   }).filter(Boolean)
   const model = typeof line.reviewer === 'string' && line.reviewer.trim() !== 'inherit' ? line.reviewer.trim() : ''
   PATHS[p] = { res, model }

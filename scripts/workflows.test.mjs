@@ -1967,6 +1967,23 @@ const deliver = [
     unlogged: ['Review path rises'],
     unprompted: { 'reviewer · round 1': LIGHT },
   },
+  {
+    name: 'review path: an entry that is not a string matches nothing, so the task reads full (P6)',
+    args: { paths: { text: { paths: [{}, ['.*'], null, 5], reviewer: 'sonnet' } }, triggers: TRIGGERS },
+    reply: implementer(['templates/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'data-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:data-reviewer', label: 'data-reviewer' }],
+    log: ['Invalid text review path: {}. It matches nothing until it is fixed.'],
+    unprompted: { reviewer: LIGHT },
+  },
+  {
+    name: 'review path: an object entry never reads every file as text (P7)',
+    args: { paths: { text: { paths: [{}] } }, triggers: TRIGGERS },
+    reply: implementer(['src/core/auth.js'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: full'],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
