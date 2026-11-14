@@ -1784,11 +1784,21 @@ const deliver = [
   },
   {
     name: 'review path: a reviewer skipping mutations on the full path is a blocking security finding (task 2)',
-    args: { paths: PATHS },
+    args: { base: 'b0', paths: PATHS },
     reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'fine; mutations skipped: light path' } : ok)),
-    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [] },
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?', causes: '1:reviewer/important/security', path: 'full' } },
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'reviewer · round 1': ['Re-review the whole task: diff b0..h1'] },
   },
+  ...['text', 'code'].map((p) => ({
+    name: `review path: a ${p} reviewer writing the light path phrase blocks nothing`,
+    args: { paths: PATHS },
+    reply: implementer([p === 'text' ? 'docs/a.md' : 'scripts/a.mjs'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'fine; mutations skipped: light path' } : ok)),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' })],
+    log: [`Review path: ${p}`],
+  })),
   {
     name: 'review path: a specialist quoting the light path phrase on the full path blocks nothing',
     args: { triggers: TRIGGERS },
