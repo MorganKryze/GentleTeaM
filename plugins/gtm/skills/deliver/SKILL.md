@@ -61,7 +61,7 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
    skip or the order of tasks; past 1.5× a budget (a task's minutes or tokens; the branch's total so
    far): one Heads-up per crossing (task or phase, measure, budget, largest role),
    a ledger `usage` line `over budget: <the same>` unless that slug and crossing has one; go on.
-4. Read the result:
+4. Read the result (a minor already in the ledger for this slug is not appended again):
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line, go on.
    - `OPEN` (correction rounds exhausted, or a reviewer gave no review) or `BLOCKED`: each minor to
      the ledger (`minor`), its progress line, then stop the loop. A Heads-up and one decision card
