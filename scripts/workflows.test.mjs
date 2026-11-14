@@ -1937,6 +1937,26 @@ const deliver = [
     log: ['reviewer asked for a fix over minors only: no round on the code path'],
     prompts: { 'security-reviewer · round 1': ['Re-review the whole task: diff b0..h1'] },
   },
+  {
+    name: 'review path: a fix off the data ground raises text to full; the data reviewer reads the whole task (P12)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['templates/a.md'], (d) => (d.label === 'reviewer' ? bad : ok), ['src/a.js']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'data-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } } },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' }],
+    log: ['Review path rises from text to full'],
+    prompts: { 'data-reviewer · round 1': ['Review the task: diff b0..h1'] },
+    unprompted: { 'reviewer · round 1': LIGHT },
+  },
+  {
+    name: 'review path: a rise from code to full sends no specialist that already reviewed back over the task (P12)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['scripts/a.mjs'], (d) => (d.label === 'reviewer' ? bad : ok), ['src/a.js']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } } },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1')],
+    log: ['Review path rises from code to full'],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
