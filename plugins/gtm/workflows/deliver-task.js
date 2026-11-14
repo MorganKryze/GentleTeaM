@@ -193,7 +193,11 @@ for (const p of ['text', 'code']) {
 }
 const LADDER = ['text', 'code', 'full']
 const on = (p, f) => (PATHS[p]?.res || []).some((re) => re.test(f))
-const pathOf = (files) => (files.length ? LADDER[Math.max(...files.map((f) => (on('code', f) ? 1 : on('text', f) ? 0 : 2)))] : 'full')
+// A line overrides the other specialists' triggers on the files it covers, never the data
+// reviewer's ground or a risky path: such a file reads full, whatever line covers it.
+const DATA = 'data-reviewer'
+const held = (f) => ground([f]).includes(DATA) || risky([f])
+const pathOf = (files) => (files.length ? LADDER[Math.max(...files.map((f) => (held(f) ? 2 : on('code', f) ? 1 : on('text', f) ? 0 : 2)))] : 'full')
 const SEC = 'security-reviewer'
 // The specialists a path calls for: none on `text`, the security reviewer when on for `code`.
 const specialists = (files, p) => (p === 'text' ? [] : p === 'code' ? (triggers[SEC] ? [SEC] : []) : ground(files))
@@ -366,6 +370,11 @@ for (; round <= limit; round++) {
       const s = at()
       s.planted = (s.planted || 0) + m.planted
       s.survived = (s.survived || 0) + m.survived
+    }
+    // Skipping mutations is for a light path only: said on the full path, it is a blocking finding.
+    if (path === 'full' && /mutations skipped: light path/.test(String(res.summary || ''))) {
+      count('important')
+      blocking.push({ severity: 'important', category: 'security', summary: `${r} skipped its mutations on the full path: ${res.summary}` })
     }
     // The guards read the reviewer alone: a specialist's own plants are counted and never block.
     const held = r === 'reviewer' ? m : null
