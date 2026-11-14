@@ -1765,6 +1765,17 @@ const deliver = [
     log: ['Review path: full'],
     unprompted: { reviewer: LIGHT },
   },
+  // An absolute path left absolute (no worktree and no relative twin listed, or outside the
+  // worktree) misses an anchored data trigger while an unanchored line still covers it.
+  ...[[{}, '/abs/repo/templates/a.md'], [{ worktree: '/tmp/wt/acme-t2' }, '/elsewhere/templates/a.md']].map(([wt, f]) => ({
+    name: `review path: an absolute file left absolute reads full, whatever line covers it (${f})`,
+    args: { ...wt, paths: { text: { paths: ['[.]md$'] } }, triggers: { 'data-reviewer': ['^templates/'] } },
+    reply: implementer([f], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: full'],
+    unprompted: { reviewer: LIGHT },
+  })),
   {
     name: 'review path: the template text line takes docs, README and CHANGELOG Markdown, any other .md reads full (finding 13)',
     args: { paths: { text: { paths: TEXT } } },
