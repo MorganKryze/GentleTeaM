@@ -1901,6 +1901,20 @@ const deliver = [
     returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
     dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security()],
   },
+  {
+    name: 'review path: a bare report name drops that name alone, never an absolute file ending in it (P13)',
+    args: { track: 'fix', fixCeiling: 1, paths: PATHS, report: 'task-1.md' },
+    reply: implementer(['docs/a.md', 'task-1.md', '/abs/x/task-1.md'], () => ok),
+    returns: { status: 'ESCALATE', reason: '2 files > 1', head: 'h0', files: ['docs/a.md', '/abs/x/task-1.md'] },
+    dispatches: [implement()],
+  },
+  {
+    name: 'review path: with a relative report, a relative file ending in it still counts (P13)',
+    args: { track: 'fix', fixCeiling: 1, paths: PATHS, report: '.gtm/reports/s/task-1.md' },
+    reply: implementer(['reports/s/task-1.md', 's/task-1.md'], () => ok),
+    returns: { status: 'ESCALATE', reason: '2 files > 1', head: 'h0', files: ['reports/s/task-1.md', 's/task-1.md'] },
+    dispatches: [implement()],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
