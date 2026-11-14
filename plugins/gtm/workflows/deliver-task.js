@@ -371,8 +371,9 @@ for (; round <= limit; round++) {
       s.planted = (s.planted || 0) + m.planted
       s.survived = (s.survived || 0) + m.survived
     }
-    // Skipping mutations is for a light path only: said on the full path, it is a blocking finding.
-    if (path === 'full' && /mutations skipped: light path/.test(String(res.summary || ''))) {
+    // Skipping mutations is for a light path only: the reviewer saying so on the full path, with
+    // nothing planted, is a blocking finding. A specialist, or a review that planted, may quote it.
+    if (path === 'full' && r === 'reviewer' && !(m?.planted > 0) && /mutations skipped: light path/.test(String(res.summary || ''))) {
       count('important')
       blocking.push({ severity: 'important', category: 'security', summary: `${r} skipped its mutations on the full path: ${res.summary}` })
     }

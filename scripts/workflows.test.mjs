@@ -1790,6 +1790,20 @@ const deliver = [
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
   },
   {
+    name: 'review path: a specialist quoting the light path phrase on the full path blocks nothing',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['scripts/a.mjs'], (d) => (d.label === 'security-reviewer' ? { ...ok, summary: 'Checked the guard on `mutations skipped: light path`; approve' } : ok)),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), security()],
+  },
+  {
+    name: 'review path: a reviewer that planted mutations and quotes the light path phrase blocks nothing',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'Planted 2 on the guard `mutations skipped: light path`', mutations: { planted: 2, survived: 0 } } : ok)),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 0, minor: 0, planted: 2, survived: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer()],
+  },
+  {
     name: 'review path: a file on both lines reads code; one off by a character reads full (P4)',
     args: { paths: { text: { paths: ['[.]md$'] }, code: { paths: ['^scripts/'] } }, triggers: TRIGGERS },
     reply: implementer(['scripts/a.md'], () => ok),
