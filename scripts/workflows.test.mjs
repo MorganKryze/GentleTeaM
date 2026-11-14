@@ -1984,6 +1984,14 @@ const deliver = [
     dispatches: [implement(), reviewer()],
     log: ['Review path: full'],
   },
+  {
+    name: 'review path: the branch review stays full, so a per-branch role keeps its files on a light line',
+    args: { review: 'branch', base: 'b0', head: 'h9', files: ['docs/a.md', 'ui/a.css'], cadence: CAD, triggers: TRIGGERS, paths: { text: { paths: ['[.]md$', '[.]css$'], reviewer: 'sonnet' } } },
+    reply: () => ok,
+    returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: ['ux-qa'], stats: {}, minors: [], trace: { models: 'ux-qa ?/?', causes: 'none', path: 'full' } },
+    dispatches: [{ agentType: 'gtm:ux-qa', label: 'ux-qa' }],
+    log: ['Review path: full'],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).

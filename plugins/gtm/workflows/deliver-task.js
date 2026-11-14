@@ -261,7 +261,8 @@ const got = A.review ? { head: A.head, files: A.files } : await attempt(
 )
 if (!got || got.status === 'BLOCKED') return done({ status: 'BLOCKED', impl: got })
 const impl = { ...got, files: relative(got.files) }
-path = pathOf(impl.files)
+// A review path is a task's: the branch review stays full, as the final review does.
+path = A.review === 'branch' ? 'full' : pathOf(impl.files)
 log(`Review path: ${path}`)
 if (path === 'code' && !triggers[SEC]) log('Review path code with the security reviewer off: the reviewer alone')
 
