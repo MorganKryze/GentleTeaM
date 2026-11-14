@@ -1915,6 +1915,28 @@ const deliver = [
     returns: { status: 'ESCALATE', reason: '2 files > 1', head: 'h0', files: ['reports/s/task-1.md', 's/task-1.md'] },
     dispatches: [implement()],
   },
+  {
+    name: 'review path: on code the security reviewer runs with no file on its triggers (P2)',
+    args: { paths: PATHS, triggers: TRIGGERS },
+    reply: implementer([WF], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security()],
+    log: ['Review path: code'],
+  },
+  {
+    name: 'review path: on code one reviewer\'s minor never swallows another\'s fix asked with no finding (P10)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['scripts/a.mjs'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [typo], summary: 'polish' }
+      : d.label === 'security-reviewer' ? { verdict: 'fix', findings: [], summary: 'unclear' } : ok), ['scripts/a.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [{ ...typo, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 0, minor: 1 }, 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
+    },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      security('security-reviewer · round 1')],
+    log: ['reviewer asked for a fix over minors only: no round on the code path'],
+    prompts: { 'security-reviewer · round 1': ['Re-review the whole task: diff b0..h1'] },
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
