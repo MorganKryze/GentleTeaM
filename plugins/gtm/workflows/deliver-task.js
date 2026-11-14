@@ -108,7 +108,8 @@ function raised(round) {
 // a first review, a re-review or a retry alike. Off it, and for every other role, the profile holds.
 const harder = (role) => (role === 'security-reviewer' && risky(changed)
   ? { effort: up((TEAM[role] || {}).effort || SECURITY, 1, 'xhigh') } : {})
-// Specialists run only when the diff touches their ground. A bad regex runs the specialist anyway.
+// On the full path, a specialist runs only when the diff touches its ground; the review path below
+// decides who runs on text and code. A bad regex runs the specialist anyway.
 const triggers = {}
 for (const [role, list] of Object.entries(A.triggers || {})) {
   triggers[role] = (list || []).map((src) => {
@@ -267,8 +268,8 @@ log(`Review path: ${path}`)
 if (path === 'code' && !triggers[SEC]) log('Review path code with the security reviewer off: the reviewer alone')
 
 // A Fix escalates on size alone, counted over every file it has changed so far. On security or
-// data ground it stays a Fix and that specialist reviews it, as on any task. A ceiling is a whole
-// number, or a text that starts with one (`3 files`); any other value escalates every Fix.
+// data ground it stays a Fix, reviewed by the roles its review path calls for. A ceiling is a
+// whole number, or a text that starts with one (`3 files`); any other value escalates every Fix.
 const given = A.fixCeiling ?? 3
 const lead = typeof given === 'number' ? given : Number((String(given).match(/^\s*(\d+)\b/) || [])[1])
 const ceiling = Number.isSafeInteger(lead) && lead >= 0 ? lead : null
@@ -422,8 +423,10 @@ for (; round <= limit; round++) {
       reviewers.push(r)
     }
   }
-  // A fix round on a specialist's ground goes back to that specialist, even after its approval,
-  // on every track: a Fix has no final review, and a task's own review should not wait for it.
+  // A fix round goes back, even after an approval and on every track, to the specialists its
+  // files call for: on full, each whose ground it touches; on code, the security reviewer when
+  // it reaches a code file; on text, none. A Fix has no final review, and a task's review should
+  // not wait for it.
   const touched = path === 'full' ? ground(fix.files) : path === 'code' && fix.files.some((f) => on('code', f)) ? specialists(fix.files, path) : []
   for (const r of touched) {
     if (unreviewed.some((f) => f.by === r)) continue
