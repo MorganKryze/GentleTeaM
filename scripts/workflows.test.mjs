@@ -1894,6 +1894,13 @@ const deliver = [
     dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security()],
     log: ['Tier rises to guarded: security-reviewer'],
   },
+  {
+    name: 'review path: a code task takes the code line\'s model, never the text line\'s (P2)',
+    args: { paths: { text: { paths: ['[.]md$'], reviewer: 'haiku' }, code: { paths: ['^scripts/'], reviewer: 'sonnet' } }, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md', 'scripts/a.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security()],
+  },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
