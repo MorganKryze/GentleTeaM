@@ -63,11 +63,11 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
    a ledger `usage` line `over budget: <the same>` unless that slug and crossing has one; go on.
 4. Read the result:
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line, go on.
-   - `OPEN` (correction rounds exhausted, or a reviewer gave no review) or `BLOCKED`: its progress
-     line, then stop the loop. A Heads-up and one decision card (re-run the missing review: that
-     role alone on `<base>..<head>` with its open findings, its line written and measured as step 3
-     says / revise the plan / accept with the open findings logged / take over by hand), with your
-     recommendation; resume from this task after the answer.
+   - `OPEN` (correction rounds exhausted, or a reviewer gave no review) or `BLOCKED`: each minor to
+     the ledger (`minor`), its progress line, then stop the loop. A Heads-up and one decision card
+     (re-run the missing review: that role alone on `<base>..<head>` with its open findings, its
+     line written and measured as step 3 says / revise the plan / accept with the open findings
+     logged / take over by hand), with your recommendation; resume from this task after the answer.
    - `ESCALATE` (Fix only): append each minor to the ledger (`minor`), then continue as a Feature
      from `/gtm:spec`; the spec states each `open` finding (from a correction round that grew the
      Fix past the ceiling, not re-reviewed) as a requirement with its test, and each `<role>
