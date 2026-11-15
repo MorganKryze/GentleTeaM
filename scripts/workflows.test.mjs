@@ -139,6 +139,8 @@ const PATHS = { text: { paths: ['[.]md$'], reviewer: 'sonnet' }, code: { paths: 
 // The template's `text` line, read from team.md as /gtm:deliver hands it.
 const TEXT = JSON.parse(`[${(readFileSync(new URL('../plugins/gtm/templates/team.md', import.meta.url), 'utf8').match(/review path: text · paths (.*?) · reviewer/)?.[1] ?? '').split(', ').map((r) => JSON.stringify(r.replace(/`/g, ''))).join(',')}]`)
 const LIGHT = ['plant none, return 0 planted', '`mutations skipped: light path`']
+// The order a reviewer that skipped its mutations on the full path is dispatched again with.
+const MUTATE = 'Mutations: this task is on the full review path, so no light path skip applies. Plant your mutations now, whatever the round, as your Mutations paragraph says, and return their count.'
 const FORGED = ['x · start 2020', 'x\nstart', 'Security', '; rm', 'a'.repeat(61)]
 
 const deliver = [
@@ -1797,13 +1799,32 @@ const deliver = [
     unprompted: { reviewer: LIGHT },
   })),
   {
-    name: 'review path: a reviewer skipping mutations on the full path is a blocking security finding (task 2)',
+    name: 'review path: a reviewer skipping mutations on the full path is dispatched again at once to plant them, no fix round',
     args: { base: 'b0', paths: PATHS },
-    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'fine; mutations skipped: light path' } : ok)),
-    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
-      trace: { models: 'implementer ?/?/medium, reviewer ?/?', causes: '1:reviewer/important/security', path: 'full' } },
-    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
-    prompts: { 'reviewer · round 1': ['Re-review the whole task: diff b0..h1'] },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'fine; mutations skipped: light path' }
+      : d.label === 'reviewer · mutations' ? { ...ok, mutations: { planted: 2, survived: 0 } } : ok)),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 0, minor: 0, planted: 2, survived: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · mutations')],
+    prompts: { 'reviewer · mutations': ['Review the task: diff b0..h0', MUTATE] },
+    unprompted: { 'reviewer · mutations': LIGHT },
+  },
+  {
+    name: 'review path: past round 0, a skip in any case and spacing is dispatched again and its plants counted',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad
+      : d.label === 'reviewer · round 1' ? { ...ok, findings: [addressed], summary: 'fine; Mutations  Skipped :  LIGHT path' }
+        : d.label === 'reviewer · round 1 · mutations' ? { ...ok, findings: [addressed], mutations: { planted: 1, survived: 0 } } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 1, survived: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), reviewer('reviewer · round 1 · mutations')],
+    prompts: { 'reviewer · round 1 · mutations': ['Re-review the fix round', MUTATE] },
+  },
+  {
+    name: 'review path: a reviewer that skips again on its second dispatch is no review, never a fix round',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label.startsWith('reviewer') ? { ...ok, summary: 'mutations skipped: light path' } : ok)),
+    returns: { status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [],
+      open: [{ severity: 'important', summary: 'reviewer skipped its mutations on the full path twice: mutations skipped: light path', by: 'reviewer' }] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · mutations')],
   },
   ...['text', 'code'].map((p) => ({
     name: `review path: a ${p} reviewer writing the light path phrase blocks nothing`,

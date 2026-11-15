@@ -206,6 +206,8 @@ let path = 'none'
 const per = (files, c) => specialists(files, path).filter((r) => CADENCE[r] === c)
 const light = () => path === 'text' || path === 'code'
 const model = (role) => (role === 'reviewer' && light() && PATHS[path].model ? { model: PATHS[path].model } : {})
+const MUTATE = '\nMutations: this task is on the full review path, so no light path skip applies. Plant your mutations now, whatever the round, as your Mutations paragraph says, and return their count.'
+const skipped = (res) => !(res.mutations?.planted > 0) && /mutations\s+skipped\s*:\s*light\s+path/i.test(String(res.summary || ''))
 const UNPLANTED = () => `\nMutations: none on the ${path} review path; plant none, return 0 planted and write \`mutations skipped: light path\` in the summary.`
 
 // A reviewer whose dispatch throws (its structured result lost) gets one more dispatch on a
@@ -316,27 +318,40 @@ let open = []
 let round = 0
 for (; round <= limit; round++) {
   phase('Review')
-  const results = await parallel(
-    pending.map((p) => {
-      const pass = PASS_ROLES.includes(p.r) && !dispatched.has(p.r) ? PASS : ''
-      dispatched.add(p.r)
-      const unit = A.review ? 'range' : 'task'
-      const what = !round || (p.whole && !p.findings) ? `Review the ${unit}` : p.whole ? `Re-review the whole ${unit}` : 'Re-review the fix round'
-      return () => retried(
-        `${what}: diff ${p.whole ? `${A.base}..${head}` : scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
-          (A.mockup ? `\nValidated mockup: ${A.mockup}` : '') +
-          (p.findings ? `\nYour findings this fix must address. Return each with status "addressed" or "open", then ${p.whole ? `any new breakage in ${A.base}..${head}` : 'only new breakage in the fix diff'}; approve when none is left open. Each finding sent keeps its severity until it is addressed:\n${JSON.stringify(p.findings, null, 2)}` : '') +
-          (p.r === 'reviewer' && light() ? UNPLANTED() : '') + SCOPE(`${A.base}..${head}`) + WT,
-        as(p.r, { schema: REVIEW, label: `${p.r}${round ? ` · round ${round}` : ''}`, phase: 'Review', ...harder(p.r), ...model(p.r) }),
-        pass,
-      )
-    }),
-  )
+  const asks = pending.map((p) => {
+    const pass = PASS_ROLES.includes(p.r) && !dispatched.has(p.r) ? PASS : ''
+    dispatched.add(p.r)
+    const unit = A.review ? 'range' : 'task'
+    const what = !round || (p.whole && !p.findings) ? `Review the ${unit}` : p.whole ? `Re-review the whole ${unit}` : 'Re-review the fix round'
+    const prompt = `${what}: diff ${p.whole ? `${A.base}..${head}` : scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
+      (A.mockup ? `\nValidated mockup: ${A.mockup}` : '') +
+      (p.findings ? `\nYour findings this fix must address. Return each with status "addressed" or "open", then ${p.whole ? `any new breakage in ${A.base}..${head}` : 'only new breakage in the fix diff'}; approve when none is left open. Each finding sent keeps its severity until it is addressed:\n${JSON.stringify(p.findings, null, 2)}` : '') +
+      (p.r === 'reviewer' && light() ? UNPLANTED() : '') + SCOPE(`${A.base}..${head}`) + WT
+    const opts = as(p.r, { schema: REVIEW, label: `${p.r}${round ? ` · round ${round}` : ''}`, phase: 'Review', ...harder(p.r), ...model(p.r) })
+    return { prompt, opts, pass }
+  })
+  const results = await parallel(asks.map((q) => () => retried(q.prompt, q.opts, q.pass)))
+  // Skipping mutations is for a light path only: the reviewer saying so on the full path, with
+  // nothing planted, is no review. It is dispatched again at once, on any round, with the full
+  // path's mutation order, and those plants count; never a fix round. A second skip is no review.
+  // A specialist, or a review that planted, may quote the phrase.
+  const fresh = new Set()
+  for (const [i, res] of results.entries()) {
+    if (!(res && path === 'full' && pending[i].r === 'reviewer' && skipped(res))) continue
+    const again = await retried(asks[i].prompt + MUTATE, { ...asks[i].opts, label: `${asks[i].opts.label} · mutations` })
+    results[i] = again && skipped(again) ? { ...again, twice: true } : again
+    fresh.add(i)
+  }
   open = []
   const still = []
   results.forEach((res, i) => {
     const r = pending[i].r
     // The findings its last fix round got go with the placeholder: nobody has checked them.
+    if (res?.twice) {
+      unreviewed.push({ severity: 'important', summary: `${r} skipped its mutations on the full path twice: ${res.summary}`, by: r },
+        ...(pending[i].findings || []).map((f) => ({ ...f, by: r })))
+      return
+    }
     if (!res) {
       unreviewed.push({ severity: 'important', summary: `${r} returned no review`, by: r },
         ...(pending[i].findings || []).map((f) => ({ ...f, by: r })))
@@ -367,16 +382,10 @@ for (; round <= limit; round++) {
     // Mutations count once, on a review's first round: a re-review replays the survivors it sent.
     // A survivor is a finding, never a silent pass: more survivors than findings is one more.
     const m = res.mutations
-    if (m && !round) {
+    if (m && (!round || fresh.has(i))) {
       const s = at()
       s.planted = (s.planted || 0) + m.planted
       s.survived = (s.survived || 0) + m.survived
-    }
-    // Skipping mutations is for a light path only: the reviewer saying so on the full path, with
-    // nothing planted, is a blocking finding. A specialist, or a review that planted, may quote it.
-    if (path === 'full' && r === 'reviewer' && !(m?.planted > 0) && /mutations skipped: light path/.test(String(res.summary || ''))) {
-      count('important')
-      blocking.push({ severity: 'important', category: 'security', summary: `${r} skipped its mutations on the full path: ${res.summary}` })
     }
     // The guards read the reviewer alone: a specialist's own plants are counted and never block.
     const held = r === 'reviewer' ? m : null
