@@ -197,6 +197,8 @@ no execute bit. A `lien` holds no whitespace, no backslash, no user name and no 
 `apercu` is 1 to 10 texts of 200, word for word from the piece's file.
 GTM checked each piece when it wrote the card, but the file may have changed since. A program
 re-checks a piece under the project's top before it opens it, and opens only https links.
+The re-check applies every rule above to the resolved file: under the top, outside `.git`, a
+regular file with no execute bit, its type's extension on the resolved file as well as on `chemin`.
 
 A piece with no file, as an error pasted in the conversation, has `chemin` null, a type of
 `tableau`, `texte`, `diff` or `doc`, and its lines in `apercu`. A program offers a piece with no

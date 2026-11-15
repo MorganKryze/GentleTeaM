@@ -25,8 +25,9 @@
 // words whole up to 2000 characters, their line feeds escaped, and the characters refused in them,
 // a piece with no file, a piece's file left as it is until the answer, the session id never shown,
 // the next message handed as the answer first, also on a resume, a card handed again only for a
-// refused piece, never for a newer card, and the folder reference's
-// re-check, copy and never-displayed sentences, its v1.1 key table named apart from decision.v1's.
+// refused piece, never for a newer card, and the folder reference's re-check, every rule on the
+// resolved file, copy and never-displayed sentences, its v1.1 key table named apart from
+// decision.v1's.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -257,6 +258,7 @@ const PINS = {
     "GTM's facts script sets `v`, `slug`, `asked` and `other.allowed`, and `answer` when it records",
     '### decision.v1.1',
     w("A program re-checks a piece under the project's top before it opens it, and opens only https links."),
+    w("The re-check applies every rule above to the resolved file: under the top, outside `.git`, a regular file with no execute bit, its type's extension on the resolved file as well as on `chemin`."),
     w("A program offers a piece with no file's lines to copy, never to open."),
     w('it is never displayed'),
     '| v1.1 key | What it holds |',
