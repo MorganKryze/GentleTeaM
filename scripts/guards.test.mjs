@@ -277,7 +277,9 @@ const PINS = {
     'clone that fetched the branch over a transport (`git clone --no-local`, or a fetch from your',
     'remote). It never diffs in this repository or a plain local clone, which shares its objects and',
   ],
-  'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
+  'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:',
+    '> An answer quoted that holds several lines goes in as its first line plus `(+<n> lines,',
+    '> reports/<slug>/waiting.json)`; the card file holds the words whole.'],
   'plugins/gtm/skills/plan/SKILL.md': [
     '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',
     '(split as proposed / one branch anyway / wait), with your recommendation;',
