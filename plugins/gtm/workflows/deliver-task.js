@@ -326,7 +326,7 @@ for (; round <= limit; round++) {
     const prompt = `${what}: diff ${p.whole ? `${A.base}..${head}` : scope} on branch ${A.branch}.\nBrief: ${A.brief}\nImplementer report: ${A.report}` +
       (A.mockup ? `\nValidated mockup: ${A.mockup}` : '') +
       (p.findings ? `\nYour findings this fix must address. Return each with status "addressed" or "open", then ${p.whole ? `any new breakage in ${A.base}..${head}` : 'only new breakage in the fix diff'}; approve when none is left open. Each finding sent keeps its severity until it is addressed:\n${JSON.stringify(p.findings, null, 2)}` : '') +
-      (p.r === 'reviewer' && light() ? UNPLANTED() : '') + SCOPE(`${A.base}..${head}`) + WT
+      (p.r === 'reviewer' && light() ? UNPLANTED() : '') + (p.mutate ? MUTATE : '') + SCOPE(`${A.base}..${head}`) + WT
     const opts = as(p.r, { schema: REVIEW, label: `${p.r}${round ? ` · round ${round}` : ''}`, phase: 'Review', ...harder(p.r), ...model(p.r) })
     return { prompt, opts, pass }
   })
@@ -338,7 +338,7 @@ for (; round <= limit; round++) {
   // A specialist, or a review that planted, may quote the phrase.
   const fresh = new Set()
   for (const [i, res] of results.entries()) {
-    if (!(res && path === 'full' && pending[i].r === 'reviewer' && skipped(res))) continue
+    if (!(res && path === 'full' && pending[i].r === 'reviewer' && !pending[i].mutate && skipped(res))) continue
     const again = await retried(asks[i].prompt + MUTATE, { ...asks[i].opts, label: `${asks[i].opts.label} · mutations` })
     results[i] = again && (skipped(again) || !again.mutations) ? { ...again, twice: true } : again
     fresh.add(i)
@@ -348,6 +348,13 @@ for (; round <= limit; round++) {
   results.forEach((res, i) => {
     const r = pending[i].r
     // The findings its last fix round got go with the placeholder: nobody has checked them.
+    // A re-review sent the mutation order on a rise to full that plants nothing and gives no
+    // reason is no review, as for a skip; 0 planted with a reason is its count.
+    if (res && pending[i].mutate && (skipped(res) || !res.mutations)) {
+      unreviewed.push({ severity: 'important', summary: `${r} planted no mutation on the rise to full: ${res.summary}`, by: r },
+        ...(pending[i].findings || []).map((f) => ({ ...f, by: r })))
+      return
+    }
     if (res?.twice) {
       unreviewed.push({ severity: 'important', summary: `${r} skipped its mutations on the full path twice: ${res.summary}`, by: r },
         ...(pending[i].findings || []).map((f) => ({ ...f, by: r })))
@@ -383,7 +390,7 @@ for (; round <= limit; round++) {
     // Mutations count once, on a review's first round: a re-review replays the survivors it sent.
     // A survivor is a finding, never a silent pass: more survivors than findings is one more.
     const m = res.mutations
-    if (m && (!round || fresh.has(i))) {
+    if (m && (!round || fresh.has(i) || pending[i].mutate)) {
       const s = at()
       s.planted = (s.planted || 0) + m.planted
       s.survived = (s.survived || 0) + m.survived
@@ -442,6 +449,13 @@ for (; round <= limit; round++) {
       if (A.review) limit = Math.max(limit, ROUNDS)
       still.push({ r, findings: null, whole: true })
       reviewers.push(r)
+    }
+    // The reviewer got no mutation order on the light path: on a rise to full it re-reviews the
+    // whole range with the full path's order, and those plants count.
+    if (path === 'full' && !unreviewed.some((f) => f.by === 'reviewer')) {
+      const own = still.find((p) => p.r === 'reviewer')
+      if (own) Object.assign(own, { whole: true, mutate: true })
+      else still.push({ r: 'reviewer', findings: null, whole: true, mutate: true })
     }
   }
   // A fix round goes back, even after an approval and on every track, to the specialists its
