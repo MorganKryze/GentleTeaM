@@ -36,7 +36,10 @@ Each task review plants up to five mutations first: one small change per accepta
 touches, in a throwaway clone, with the project's own tests run against each. A mutation the tests
 miss is a finding, never a silent pass, and a re-review replays it against the fix. A task with no
 executable code, one with no executable test, a red suite or a `review mutations: off` line in
-`team.md` skips the step, and the summary says why.
+`team.md` skips the step, and the summary says why. So does a task on the `text` or `code`
+[review path](/reference/glossary/#review-path): its reviewer plants none and writes
+`mutations skipped: light path`; a skip on a full task sends the review back with the order to
+plant, and a second skip counts as no review.
 
 The final review replays two of the mutations the task reports planted, those that move or drop a
 pinned threshold, plan order on a tie (all of them when two or fewer); one that survives is a
@@ -90,7 +93,8 @@ whole branch and catches it; a Fix has no final review.
 ## Who re-reviews a correction, and when does a finding stop counting?
 
 Re-reviews go only to the reviewers who flagged something and to every specialist whose ground
-the correction's diff touches. They check only their findings and that diff.
+the correction's diff touches. They check only their findings and that diff, unless a security
+or data finding asks for more: that one is re-reviewed over the whole task.
 
 A re-review returns each finding it was sent with a status. `addressed` stops it blocking and
 counting; no status leaves it open, and each finding keeps its severity until it is addressed.
@@ -111,6 +115,20 @@ block go to the logbook. The `review cadence` line in `team.md` sets how often e
 per task, per wave, or once per branch for ux-qa. Without that line every task is guarded, as
 before GTM 0.7.0. A standard task that turns out to touch a per-task specialist's paths is
 reviewed on its range and stays guarded from then on.
+
+Within its tier, each task follows a review path, set by the `review path` lines of `team.md`:
+
+| Path | When | Who reviews |
+| --- | --- | --- |
+| `text` | every changed file on a `text` line | the reviewer alone, on the line's model, no mutation; a fix asked over minor findings only starts no round, the minors go to the logbook |
+| `code` | every file on a `text` or `code` line, one `code` at least | the reviewer on the `code` line's model plus the security reviewer, alone, under the same rules; with the security reviewer off, the reviewer alone |
+| `full` | any other file, no file, or no line | every triggered specialist on its own model, with mutations, as before |
+
+A file on the data reviewer's triggers or on a risky path reads full, whatever line covers it.
+A mistake in a line only makes reviews heavier: a regex that fails matches nothing and leaves the
+task full. After a task, GTM matches the files git lists for its range, not only those the task
+reported; a heavier path there sends the range to the reviewers that path calls for before the
+next task. A correction can raise a path, never lower it. The final review stays full.
 
 ## How hard does the implementer think on each correction round?
 
@@ -231,7 +249,9 @@ review. A plan over the limit goes back once, then you choose on a card to split
 
 Each task names the numbered global constraints of the plan it touches. Its brief holds the task
 word for word, those constraints, and paths to the rest: the implementer reads less, and the rule
-stays in one place.
+stays in one place. Before each dispatch, the brief is read against the logbook: each
+decision made for you or answer of yours newer than the brief goes into it, quoted with its date,
+and the brief ends with the logbook line it was read to.
 
 ## When is a screen designed in code?
 
@@ -258,8 +278,8 @@ first and fails above its budget. The gate and CI run it on every push.
 ## How does each branch make the next one cheaper?
 
 The [logbook](/reference/glossary/#logbook), `ledger.md`, is append-only, one line per entry:
-`- <date> · <slug> · <kind> · <text>`, with kinds `lesson`, `ruling`, `minor`, `resolved`, `run`
-and `usage`. Superseded lines are struck through, never deleted.
+`- <date> · <slug> · <kind> · <text>`, with kinds `lesson`, `ruling`, `minor`, `resolved`, `run`,
+`usage` and `escape`. Superseded lines are struck through, never deleted.
 
 This is the compound step. The architect reads the logbook before every plan and lists the
 lessons it applied. [`/gtm:retro`](/reference/glossary/#retro) distils each delivered branch into
@@ -272,7 +292,13 @@ reflex lenses on that branch, zeros included, as in `lenses reviewer Steelmannin
 that keeps reading 0 is what `/gtm:tune` offers to drop. Lines written before 0.11.0 have no
 segment; they count as not measured for lenses and read as before everywhere else. Since 0.12.0
 a `mutations` segment comes before it: the mutations the task reviewers planted and how many
-survived; a branch with no measure has no segment, and older lines count as not measured.
+survived; a branch with no measure has no segment, and older lines count as not measured. A
+`paths` segment, after `limits`, gives each review path its tasks, minutes, tokens and correction
+rounds, as in `paths text 3 12.0m 140k 0r, full 1 9.5m 210k 1r`; a line without it is not
+measured for paths. An `escape` line records a defect found after its branch merged: what it was,
+the merge, who found it where, the review path its task took and its category, as in
+`- <date> · <slug> · escape · <what>, merged in <PR>, found <where and by whom>, path text,
+category <category>`.
 
 ## Where does the team track larger work?
 

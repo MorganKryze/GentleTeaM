@@ -66,6 +66,10 @@ paths are set in `team.md`, and work on them raises the security and final revie
 ### Dig {#dig}
 `/gtm:brief-me` asked to challenge an artifact with one method; it changes no file.
 
+### Escape {#escape}
+A defect found after the merge of the branch that brought it; the logbook keeps one `escape` line
+each, with the review path its task took.
+
 ### Feature {#feature}
 One capability on one branch, with three checkpoints, started with `/gtm:gtm`.
 
@@ -117,6 +121,10 @@ while `project.sheet` is `on`; see [what it holds](/reference/gtm-folder/#projec
 
 ### Retro {#retro}
 `/gtm:retro`: distils a delivered branch into at most five lessons and guideline edits.
+
+### Review path {#review-path}
+How much review a task gets, set by the `review path` lines in `team.md`: `text` (the reviewer
+alone, no mutation), `code` (plus the security reviewer) or `full` (every triggered specialist).
 
 ### Roundtable {#roundtable}
 The voices of a brainstorm: architect, security, UX, data and a user or a skeptic, played in the
