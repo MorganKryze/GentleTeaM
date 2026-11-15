@@ -440,7 +440,7 @@ add('plugins/gtm/templates/delivery.md', [
   w("a specialist its path calls for missing from a guarded task's `reviewers` reviews it alone."),
   w('`GATED`: `verify.gate` on its head, red → `BLOCKED`'),
   '## Re-reviews',
-  w("Outside the workflow (a hand fix's re-check, the final review's second pass), only the roles whose blocking findings the fix answers re-review, on the range since the review they answer;"),
+  w("Outside the workflow (a hand fix's re-check, the final review's second pass), only the roles whose blocking findings the fix answers re-review, with each specialist the task's path calls for whose ground the fix touches (the final review's path: `full`), on the range since the review they answer;"),
   w("the whole task's range, or the branch for the final review, when one of those findings is category `security` or comes from the security or data reviewer."),
 ])
 add('plugins/gtm/skills/deliver/SKILL.md', [

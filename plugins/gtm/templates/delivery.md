@@ -61,9 +61,10 @@ Heads-up per `Cadence` log.
 
 ## Re-reviews
 Outside the workflow (a hand fix's re-check, the final review's second pass), only the roles whose
-blocking findings the fix answers re-review, on the range since the review they answer; the whole
-task's range, or the branch for the final review, when one of those findings is category
-`security` or comes from the security or data reviewer.
+blocking findings the fix answers re-review, with each specialist the task's path calls for whose
+ground the fix touches (the final review's path: `full`), on the range since the review they
+answer; the whole task's range, or the branch for the final review, when one of those findings is
+category `security` or comes from the security or data reviewer.
 
 ## The lead's own files
 Read before the first dispatch. The orchestrator keeps the scripts, logs and tool installs it
