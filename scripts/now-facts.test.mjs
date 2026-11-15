@@ -29,7 +29,8 @@
 // fixture), with no global or system git config, and removes it after the run; runs the script at
 // a fixed time, and checks it changed no file but the state it was asked for, replaced by a rename,
 // and the files expected.json names, no git index and no git status; that a usage error prints nothing; that the state holds no `?`
-// and none of its card, step or mandate text reached stdout; that no owner text of the project
+// and none of its card, step or mandate text reached stdout; that no waiting session's id a card
+// file holds reached the state, stdout or stderr; that no owner text of the project
 // sheet, before or after the run, reached stdout or stderr; that the sheet step, waiting on its
 // input, holds no sheet.json.lock and killed there leaves none; that the lock a step holds names its
 // pid and its pid namespace. Run by scripts/validate.mjs. No dependencies.
@@ -236,6 +237,8 @@ function scenario(name, dir, a, want) {
     const stateFile = join(gtm, 'state.json'), sheetFile = join(gtm, 'sheet.json')
     const skip = [...(want.state ? ['state.json'] : []), ...(want.sheet ? ['sheet.json'] : []), ...Object.keys(want.files || {})]
     const owned = [owner(sheetFile)]
+    // The waiting sessions' ids the root's card files hold: never in the state or the output.
+    const sessions = (existsSync(join(gtm, 'reports')) ? readdirSync(join(gtm, 'reports')) : []).flatMap((d) => { try { const x = JSON.parse(readFileSync(join(gtm, 'reports', d, 'waiting.json'), 'utf8')).session; return typeof x === 'string' && x ? [x] : [] } catch { return [] } })
     const before = snapshot(gtm, skip), index = indexes(repo), ino = existsSync(stateFile) ? statSync(stateFile).ino : null
     const status = execFileSync('git', ['--no-optional-locks', 'status', '--porcelain'], { cwd: repo, encoding: 'utf8', env })
     const args = (a.args || []).map((x) => x.replace(/\{ago:(\d+)\}/g, (_, m) => ago(+m).toISOString()).replaceAll('{root}', gtm))
@@ -267,12 +270,14 @@ function scenario(name, dir, a, want) {
       if (got !== null) got = t && t.sha256 ? createHash('sha256').update(got).digest('hex') : got.toString('utf8')
       if (got !== (t && t.sha256 ? t.sha256 : t)) errors.push(`${name}: files ${f} differs${t === null ? ', want absent' : ''}`)
     }
+    if (sessions.some((x) => r.stdout.includes(x) || r.stderr.includes(x))) errors.push(`${name}: a waiting session's id reached the output`)
     if (want.state) {
       let st
       try { st = JSON.parse(readFileSync(stateFile, 'utf8')) } catch { errors.push(`${name}: no state written`); return }
       subset(name, st, want.state, 'state')
       if (JSON.stringify(st).includes('"?"')) errors.push(`${name}: the state holds ?`)
       if (ino !== null && statSync(stateFile).ino === ino) errors.push(`${name}: the state was rewritten in place, not replaced`)
+      if (sessions.some((x) => JSON.stringify(st).includes(x))) errors.push(`${name}: a waiting session's id reached the state`)
       const own = strings([st.waiting?.question, st.waiting?.costIfWrong, st.waiting?.options, (st.steps || []).map((s) => s.title), st.mandate]).filter((s) => s.length >= 8)
       if (own.some((s) => r.stdout.includes(s))) errors.push(`${name}: card, step or mandate text reached the output`)
     }

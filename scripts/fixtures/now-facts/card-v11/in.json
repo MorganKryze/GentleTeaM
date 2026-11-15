@@ -1,0 +1,132 @@
+{
+  "id": "tri-D1",
+  "kind": "decision",
+  "moment": null,
+  "question": "Comment intégrer main avant le push ?",
+  "why": "main a bougé pendant la livraison ; trois fichiers sont en conflit.",
+  "criteria": "Un historique lisible, sans rien perdre du tri livré.",
+  "options": [
+    {
+      "key": "A",
+      "label": "Merge de main",
+      "proves": null,
+      "cost": {
+        "tokens": 40000,
+        "minutes": 10,
+        "text": "≈ 40 k"
+      },
+      "reversible": true,
+      "recommendedBy": [
+        "gtm"
+      ],
+      "implique": "Un commit de merge garde les deux historiques tels quels.",
+      "gestes": [],
+      "vous": null,
+      "risque": {
+        "niveau": "faible",
+        "texte": "Un conflit mal résolu se voit à la gate."
+      },
+      "message": "Option A : merge de main, puis la revue finale.",
+      "suite": [
+        {
+          "t": "Merge de main et résolution des trois conflits",
+          "vous": false
+        },
+        {
+          "t": "Gate locale, puis revue finale",
+          "vous": false
+        },
+        {
+          "t": "Carte de go pour le push",
+          "vous": false
+        }
+      ]
+    },
+    {
+      "key": "B",
+      "label": "Rebase sur main",
+      "proves": null,
+      "cost": null,
+      "reversible": false,
+      "recommendedBy": [
+        "second-reader"
+      ],
+      "implique": "L'historique reste linéaire ; les commits livrés sont réécrits.",
+      "gestes": [
+        "Relire le diff réécrit"
+      ],
+      "vous": "Tu relis le diff après le rebase, avant la revue finale.",
+      "risque": {
+        "niveau": "moyen",
+        "texte": "Les commits relus changent de sha."
+      },
+      "message": "Option B : rebase sur main, je relis le diff.",
+      "suite": [
+        {
+          "t": "Rebase sur main",
+          "vous": false
+        },
+        {
+          "t": "Relire le diff réécrit",
+          "vous": true
+        },
+        {
+          "t": "Gate locale, puis revue finale",
+          "vous": false
+        }
+      ]
+    }
+  ],
+  "recommendation": {
+    "by": "gtm",
+    "option": "A",
+    "why": "Rien de livré n'est réécrit, et la gate voit le résultat.",
+    "costIfWrong": "Un commit de merge de plus dans l'historique."
+  },
+  "objection": {
+    "by": "second-reader",
+    "prefers": "B",
+    "text": "Un historique linéaire se relit mieux."
+  },
+  "modules": [],
+  "other": {
+    "placeholder": "Une autre voie, en vos mots."
+  },
+  "tldr": "main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.",
+  "hesitation": null,
+  "assurance": null,
+  "doute": null,
+  "pieces": [
+    {
+      "type": "tableau",
+      "titre": "Merge ou rebase",
+      "chemin": "root/reports/tri/choix.md",
+      "essentielle": true,
+      "apercu": [
+        "| Merge | garde les sha | un commit de plus |"
+      ]
+    },
+    {
+      "type": "texte",
+      "titre": "Notes",
+      "chemin": "docs/notes.txt",
+      "essentielle": false,
+      "apercu": null
+    },
+    {
+      "type": "image",
+      "titre": "Capture",
+      "chemin": "root/reports/tri/capture.png",
+      "essentielle": false,
+      "apercu": null
+    },
+    {
+      "type": "lien",
+      "titre": "La PR",
+      "chemin": "https://example.org/pr/1",
+      "essentielle": false,
+      "apercu": null
+    }
+  ],
+  "session": "0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b"
+}

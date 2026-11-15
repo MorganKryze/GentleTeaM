@@ -1,0 +1,23 @@
+{
+  "exit": 0,
+  "facts": {},
+  "state": {
+    "waiting": {
+      "kind": "decision",
+      "task": "1",
+      "question": "Comment intégrer main avant le push ?",
+      "options": [
+        {
+          "label": "Merge de main",
+          "recommended": true
+        },
+        {
+          "label": "Rebase sur main",
+          "recommended": false
+        }
+      ],
+      "costIfWrong": "Un commit de merge de plus dans l'historique.",
+      "card": "reports/tri/waiting.json"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "exit": 0,
+  "facts": {
+    "written": true,
+    "field": null,
+    "why": null
+  },
+  "files": {
+    "reports/tri/waiting.json": true
+  }
+}

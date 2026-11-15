@@ -1,0 +1,308 @@
+{
+  "branch": "feat/tri",
+  "stdin": "answer.json",
+  "args": [
+    "--answer",
+    "tri"
+  ],
+  "commits": [
+    {
+      "write": {
+        "docs/notes.txt": "Des notes sur le tri.\n",
+        "docs/notes.md": "# Notes\n",
+        "docs/dir.md/x.txt": "x\n"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null,
+          "option": "B"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": \"0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b\",\n  \"answer\": {\n    \"option\": \"B\",\n    \"other\": null,\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      }
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null,
+          "option": "B"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": \"0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b\",\n  \"answer\": {\n    \"option\": \"B\",\n    \"other\": null,\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "other",
+          "  Option B : rebase sur main, je relis le diff.\n"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null,
+          "option": null
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": \"0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b\",\n  \"answer\": {\n    \"option\": null,\n    \"other\": \"Option B : rebase sur main, je relis le diff\",\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "other",
+          "Option B : rebase sur main, je relis le diff"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null,
+          "option": null
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": \"0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b\",\n  \"answer\": {\n    \"option\": null,\n    \"other\": \"option B : rebase sur main, je relis le diff.\",\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "other",
+          "option B : rebase sur main, je relis le diff."
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null,
+          "option": "A"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": \"0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b\",\n  \"answer\": {\n    \"option\": \"A\",\n    \"other\": null,\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "option",
+          "A"
+        ],
+        [
+          "other",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null,
+          "option": null
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": \"0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b\",\n  \"answer\": {\n    \"option\": null,\n    \"other\": \"Ni l'un ni l'autre :\\nattends la CI.\",\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "other",
+          "Ni l'un ni l'autre :\nattends la CI."
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null,
+          "option": null
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": \"0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b\",\n  \"answer\": {\n    \"option\": null,\n    \"other\": \"ligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nligne\\nab\",\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "other",
+          "ligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nab"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "answer.other",
+          "why": "length",
+          "option": null
+        }
+      },
+      "patch": [
+        [
+          "other",
+          "ligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nligne\nabc"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "answer.other",
+          "why": "text",
+          "option": null
+        }
+      },
+      "patch": [
+        [
+          "other",
+          "Ni l'un\r\nni l'autre."
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "answer.other",
+          "why": "text",
+          "option": null
+        }
+      },
+      "patch": [
+        [
+          "other",
+          "Ni l'un\tni l'autre."
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "answer",
+          "why": "shape",
+          "option": null
+        }
+      },
+      "patch": [
+        [
+          "option",
+          "B"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[1].chemin",
+          "why": "file",
+          "option": null
+        }
+      },
+      "commits": []
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "summary",
+          "why": "shape",
+          "option": null
+        }
+      },
+      "edit": {
+        "reports/tri/waiting.json": [
+          "\"summary\": \"main a bougé",
+          "\"summary\": \"main a changé"
+        ]
+      }
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "recommandation",
+          "why": "shape",
+          "option": null
+        }
+      },
+      "edit": {
+        "reports/tri/waiting.json": [
+          "\"pourquoi\": \"Rien de livré",
+          "\"pourquoi\": \"Rien du tout"
+        ]
+      }
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": "session",
+          "why": "shape",
+          "option": "B"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": null,\n  \"answer\": {\n    \"option\": \"B\",\n    \"other\": null,\n    \"by\": \"owner\",\n    \"at\": \"2026-10-15T10:00:00.000Z\"\n  }\n}\n"
+        }
+      },
+      "edit": {
+        "reports/tri/waiting.json": [
+          "\"session\": \"0f8e",
+          "\"session\": \"xx8e"
+        ]
+      }
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "answer",
+          "why": "answered",
+          "option": null
+        }
+      },
+      "edit": {
+        "reports/tri/waiting.json": [
+          "\"answer\": null",
+          "\"answer\": {\"option\": \"A\", \"other\": null, \"by\": \"owner\", \"at\": \"2026-10-15T09:30:00.000Z\"}"
+        ]
+      }
+    }
+  ]
+}

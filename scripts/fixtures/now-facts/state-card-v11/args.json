@@ -1,0 +1,62 @@
+{
+  "branch": "feat/tri",
+  "mtimes": {
+    "NOW.md": 1,
+    "ledger.md": 5,
+    "backlog.md": 5,
+    "reports/tri/progress.md": 5
+  },
+  "args": [
+    "--waiting",
+    "decision,1",
+    "--state",
+    "{root}/state.json"
+  ],
+  "commits": [
+    {
+      "write": {
+        "docs/notes.txt": "Des notes sur le tri.\n",
+        "docs/notes.md": "# Notes\n",
+        "docs/dir.md/x.txt": "x\n"
+      }
+    }
+  ],
+  "variants": [
+    {},
+    {
+      "args": [
+        "--waiting",
+        "go,1",
+        "--state",
+        "{root}/state.json"
+      ],
+      "want": {
+        "state": {
+          "waiting": {
+            "kind": "go",
+            "task": "1",
+            "question": null,
+            "options": null,
+            "costIfWrong": null,
+            "card": null
+          }
+        }
+      }
+    },
+    {
+      "commits": [],
+      "want": {
+        "state": {
+          "waiting": {
+            "kind": "decision",
+            "task": "1",
+            "question": null,
+            "options": null,
+            "costIfWrong": null,
+            "card": null
+          }
+        }
+      }
+    }
+  ]
+}

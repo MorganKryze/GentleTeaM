@@ -38,6 +38,15 @@
 // changes nothing. Both print one line {written, field, why}: a refused field's path, built from
 // the shape's own keys, and a reason from a closed list; never a card's text. Exit 1 refused; 3
 // nothing written in a linked worktree or over a tracked file, a link or a non-file.
+// decision.v1.1 is a decision.v1 card that holds `tldr`, `v` still 1: 2 to 4 options, each with
+// what it implies, the owner's own steps, its risk, the exact message that answers it and the
+// steps that follow; a recommendation or a hesitation, never both; pieces under the project's top
+// (the repository the root sits in) or https links. The script sets `summary` from `tldr` and
+// `recommandation` from `recommendation`. --answer on such a card takes the owner's words, line
+// breaks included, at most 2000 characters, and records an option whose `message` they equal once
+// trimmed as that option; its line adds `option`, the key recorded or null. A piece with no file
+// (`chemin` null) carries its lines in `apercu`. `session`, optional, is the waiting session's id:
+// a lowercase UUID, else written null with the card, never refused and never printed.
 // The project sheet <root>/sheet.json (sheet.v1), only while config.yml's `project.sheet` reads
 // `on`: --state then rewrites it by a rename, its fact fields (kind, plan, cost) recomputed and the
 // owner fields of a sheet that passes the check kept; a sheet that fails it is left as it is, exit
@@ -50,7 +59,7 @@
 //        [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug>]
 //        [--sheet <root>/sheet.json] No dependencies.
 import { readFileSync, readSync, readdirSync, readlinkSync, statSync, lstatSync, fstatSync, existsSync, realpathSync, writeFileSync, appendFileSync, renameSync, unlinkSync, linkSync, openSync, closeSync, mkdirSync, constants } from 'node:fs'
-import { join, basename, resolve, relative } from 'node:path'
+import { join, basename, resolve, relative, isAbsolute, sep } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import { isatty } from 'node:tty'
 import { createHash } from 'node:crypto'
@@ -665,26 +674,102 @@ function moduleOf(m, f) {
   return q
 }
 // The answer (A11, A12): exactly one of an option key of the card or the owner's words; the full
-// shape, as stored, adds `by` (always owner) and `at`.
-function answerOf(v, f, keys, stored) {
+// shape, as stored, adds `by` (always owner) and `at`. On a v1.1 card the words may hold line
+// breaks, 2000 characters at most, and words equal to an option's `message` once trimmed are
+// recorded as that option.
+const WORDS = /[\x00-\x09\x0b-\x1f\x7f-\x9f\p{Cf}\p{Cs}\u2028\u2029]/u
+function answerOf(v, f, options, stored, v11) {
+  const keys = options.map((p) => p.key)
   const a = exact(v, stored ? ['option', 'other', 'by', 'at'] : ['option', 'other'], f)
   if ((a.option === null) === (a.other === null)) refuse(f, 'shape')
   if (a.option !== null && !keys.includes(a.option)) refuse(at(f, 'option'), 'option')
-  orNull(a.other, at(f, 'other'), upTo(280))
+  if (!v11) orNull(a.other, at(f, 'other'), upTo(280))
+  else if (a.other !== null) {
+    const g = at(f, 'other')
+    if (typeof a.other !== 'string') refuse(g, 'type')
+    if (!a.other.trim() || WORDS.test(a.other)) refuse(g, 'text')
+    if ([...a.other].length > 2000) refuse(g, 'length')
+    const m = stored ? undefined : options.find((p) => p.message === a.other.trim())
+    if (m) { a.option = m.key; a.other = null }
+  }
   if (stored) { if (a.by !== 'owner') refuse(at(f, 'by'), 'list'); iso(a.at, at(f, 'at')) }
   return a
+}
+const SESSION = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+let dropped = null
+// decision.v1.1's lists: a risk's levels, each piece type's file extensions (`lien` an https link)
+// and the types whose `apercu` is quoted from their file.
+const RISKS = ['faible', 'moyen', 'eleve'], QUOTABLE = ['tableau', 'texte', 'diff', 'doc']
+const PIECES = { tableau: ['md', 'csv', 'tsv'], texte: ['md', 'txt'], diff: ['diff', 'patch'], image: ['png', 'jpg', 'jpeg', 'gif', 'webp', 'heic'],
+  video: ['mp4', 'mov', 'm4v', 'webm'], pdf: ['pdf'], doc: ['md', 'txt', 'rtf', 'docx', 'odt'], lien: [] }
+const ext = (x) => (/\.([^./]+)$/.exec(x)?.[1] ?? '').toLowerCase()
+// A piece's file: a path relative to the project's top, no empty, `.`, `..` or `.git` segment, no
+// backslash, no leading `-`, ending in one of the type's extensions; once every link is resolved, a
+// regular file under that top, outside `.git`, with that extension and no execute bit. Returns its
+// UTF-8 text when asked (null when it is not UTF-8), else ''.
+function opened(p, exts, f, asked) {
+  txt(p, 200, f)
+  const segs = p.split('/')
+  if (p.includes('\\') || segs[0].startsWith('-') || segs.some((x) => !x || x === '.' || x === '..' || x.toLowerCase() === '.git') || !exts.includes(ext(p))) refuse(f, 'shape')
+  if (!repo) refuse(f, 'file')
+  let fd = null
+  try {
+    const top = realpathSync(repo), real = realpathSync(join(top, p)), rel = relative(top, real), parts = rel.split(sep)
+    if (!rel || isAbsolute(rel) || parts[0] === '..' || parts.some((x) => x.toLowerCase() === '.git') || !exts.includes(ext(real))) refuse(f, 'file')
+    fd = openSync(real, constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK)
+    const st = fstatSync(fd)
+    if (!st.isFile() || st.mode & 0o111 || (asked && st.size > 1 << 20)) refuse(f, 'file')
+    if (!asked) return ''
+    try { return new TextDecoder('utf-8', { fatal: true }).decode(readFileSync(fd)) } catch { return null }
+  } catch (e) { if (e instanceof Refused) throw e; refuse(f, 'file') } finally { if (fd !== null) try { closeSync(fd) } catch {} }
+}
+// A piece: its type, a title, its path (`lien`: an https link with no user or password), whether
+// it is essential, and `apercu`, null or 1 to 10 lines copied word for word from a text file. A
+// text piece with no file (`chemin` null, as an error from the conversation) carries its lines in
+// `apercu`, required then and quoted from nothing.
+function piece(v, f) {
+  const q = exact(v, ['type', 'titre', 'chemin', 'essentielle', 'apercu'], f)
+  if (typeof q.type !== 'string' || !Object.hasOwn(PIECES, q.type)) refuse(at(f, 'type'), 'list')
+  txt(q.titre, 80, at(f, 'titre'))
+  if (typeof q.essentielle !== 'boolean') refuse(at(f, 'essentielle'), 'type')
+  if (q.apercu !== null && !QUOTABLE.includes(q.type)) refuse(at(f, 'apercu'), 'type')
+  const g = at(f, 'chemin')
+  if (q.chemin === null) {
+    if (!QUOTABLE.includes(q.type)) refuse(g, 'type')
+    if (q.apercu === null) refuse(at(f, 'apercu'), 'missing')
+    q.apercu = list(q.apercu, 1, 10, at(f, 'apercu')).map((l, j) => txt(l, 200, `${f}.apercu[${j}]`))
+    return q
+  }
+  if (q.type === 'lien') {
+    txt(q.chemin, 500, g)
+    let u = null
+    try { u = new URL(q.chemin) } catch {}
+    if (!q.chemin.startsWith('https://') || /\s/.test(q.chemin) || !u || u.protocol !== 'https:' || !u.hostname || u.username || u.password) refuse(g, 'shape')
+    return q
+  }
+  const body = opened(q.chemin, PIECES[q.type], g, q.apercu !== null)
+  if (q.apercu !== null) q.apercu = list(q.apercu, 1, 10, at(f, 'apercu')).map((l, j) => {
+    const h = `${f}.apercu[${j}]`
+    txt(l, 200, h)
+    if (body === null || !body.includes(l)) refuse(h, 'quote')
+    return l
+  })
+  return q
 }
 // Card c of slug s checked whole: as stored (the writer's keys in) or as the orchestrator's input
 // (any of them given refuses as `set`). Returns a fresh copy, keys in the table's order.
 function decision(c, s, stored) {
-  const by = names()
-  if (!stored && c && typeof c === 'object' && !Array.isArray(c)) {
-    const given = ['v', 'slug', 'asked', 'answer'].find((k) => Object.hasOwn(c, k))
+  const by = names(), whole = c !== null && typeof c === 'object' && !Array.isArray(c), v11 = whole && Object.hasOwn(c, 'tldr')
+  if (!stored && whole) {
+    const given = ['v', 'slug', 'asked', 'answer', ...(v11 ? ['summary', 'recommandation'] : [])].find((k) => Object.hasOwn(c, k))
     if (given) refuse(given, 'set')
     if (c.other && typeof c.other === 'object' && Object.hasOwn(c.other, 'allowed')) refuse('other.allowed', 'set')
+    // decision.v1.1: the script writes `summary` and `recommandation` itself (checked below).
+    if (v11) c = { ...c, summary: c.tldr, recommandation: null, session: Object.hasOwn(c, 'session') ? c.session : null }
   }
   const o = exact(c, [...(stored ? ['v'] : []), 'id', 'kind', 'moment', ...(stored ? ['slug', 'asked'] : []), 'question', 'summary', 'why', 'criteria',
-    'options', 'recommendation', 'objection', 'modules', 'other', ...(stored ? ['answer'] : [])], '')
+    'options', 'recommendation', 'objection', 'modules', 'other', ...(v11 ? ['tldr', 'recommandation', 'hesitation', 'assurance', 'doute', 'pieces', 'session'] : []),
+    ...(stored ? ['answer'] : [])], '')
   if (stored) { if (o.v !== 1) refuse('v', 'list'); if (o.slug !== s) refuse('slug', 'list'); iso(o.asked, 'asked') }
   if (typeof o.id !== 'string') refuse('id', 'type')
   if ([...o.id].length > 60 || !o.id.startsWith(`${s}-`) || !/^[A-Za-z0-9-]+$/.test(o.id.slice(s.length + 1))) refuse('id', 'shape')
@@ -695,9 +780,16 @@ function decision(c, s, stored) {
     if (!mandate(s).valid) refuse('moment', 'mandate')
   }
   txt(o.question, 160, 'question')
+  if (v11) {
+    txt(o.tldr, 280, 'tldr')
+    // At most two sentences: a `.`, `!`, `?` or `…` before a space or the end ends one.
+    if ((o.tldr.match(/[.!?…](?=\s|$)/gu) || []).length > 2) refuse('tldr', 'length')
+    if (o.summary !== o.tldr) refuse('summary', 'shape')
+  }
   for (const k of ['summary', 'why', 'criteria']) orNull(o[k], k, upTo(280))
-  o.options = list(o.options, 1, OPTIONS, 'options').map((x, i) => {
-    const f = `options[${i}]`, p = exact(x, ['key', 'label', 'proves', 'cost', 'reversible', 'recommendedBy'], f)
+  o.options = list(o.options, v11 ? 2 : 1, v11 ? 4 : OPTIONS, 'options').map((x, i) => {
+    const f = `options[${i}]`, p = exact(x, ['key', 'label', 'proves', 'cost', 'reversible', 'recommendedBy',
+      ...(v11 ? ['implique', 'gestes', 'vous', 'risque', 'message', 'suite'] : [])], f)
     if (p.key !== KEYS[i]) refuse(at(f, 'key'), 'order')
     txt(p.label, 60, at(f, 'label'))
     orNull(p.proves, at(f, 'proves'), upTo(200))
@@ -709,8 +801,29 @@ function decision(c, s, stored) {
     if (![true, false, null].includes(p.reversible)) refuse(at(f, 'reversible'), 'type')
     p.recommendedBy = [...list(p.recommendedBy, 0, 3, at(f, 'recommendedBy'))]
     p.recommendedBy.forEach((n, j) => { if (!by.includes(n) || p.recommendedBy.indexOf(n) !== j) refuse(`${f}.recommendedBy[${j}]`, 'by') })
+    if (v11) {
+      if (typeof p.reversible !== 'boolean') refuse(at(f, 'reversible'), 'type')
+      txt(p.implique, 160, at(f, 'implique'))
+      p.gestes = [...list(p.gestes, 0, 3, at(f, 'gestes'))]
+      p.gestes.forEach((x, j) => txt(x, 80, `${f}.gestes[${j}]`))
+      if (p.gestes.length) txt(p.vous, 200, at(f, 'vous')); else if (p.vous !== null) refuse(at(f, 'vous'), 'shape')
+      p.risque = exact(p.risque, ['niveau', 'texte'], at(f, 'risque'))
+      if (!RISKS.includes(p.risque.niveau)) refuse(at(f, 'risque.niveau'), 'list')
+      txt(p.risque.texte, 160, at(f, 'risque.texte'))
+      txt(p.message, 280, at(f, 'message'))
+      if (p.message !== p.message.trim()) refuse(at(f, 'message'), 'shape')
+      p.suite = list(p.suite, 1, 8, at(f, 'suite')).map((y, j) => {
+        const g = `${f}.suite[${j}]`, t = exact(y, ['t', 'vous'], g)
+        txt(t.t, 120, at(g, 't'))
+        if (typeof t.vous !== 'boolean') refuse(at(g, 'vous'), 'type')
+        return t
+      })
+      // The owner's steps in the suite are the option's gestes, as many.
+      if (p.suite.filter((t) => t.vous).length !== p.gestes.length) refuse(at(f, 'suite'), 'shape')
+    }
     return p
   })
+  if (v11) o.options.forEach((p, i) => { if (o.options.findIndex((q) => q.message === p.message) !== i) refuse(`options[${i}].message`, 'shape') })
   const keys = o.options.map((p) => p.key)
   o.recommendation = orNull(o.recommendation, 'recommendation', (v, g) => {
     const r = exact(v, ['by', 'option', 'why', 'costIfWrong'], g)
@@ -734,7 +847,32 @@ function decision(c, s, stored) {
   if (stored && other.allowed !== true) refuse('other.allowed', 'list')
   orNull(other.placeholder, 'other.placeholder', upTo(80))
   o.other = { allowed: true, placeholder: other.placeholder }
-  if (stored) o.answer = orNull(o.answer, 'answer', (v, g) => answerOf(v, g, keys, true))
+  if (v11) {
+    o.hesitation = orNull(o.hesitation, 'hesitation', (v, g) => {
+      const h = exact(v, ['entre', 'question'], g)
+      h.entre = [...list(h.entre, 2, 4, at(g, 'entre'))]
+      h.entre.forEach((k, j) => { if (!keys.includes(k) || h.entre.indexOf(k) !== j) refuse(`${g}.entre[${j}]`, 'option') })
+      txt(h.question, 160, at(g, 'question'))
+      return h
+    })
+    // A recommendation or a hesitation, never both, never neither.
+    if ((o.recommendation === null) === (o.hesitation === null)) refuse('hesitation', 'shape')
+    const r = o.recommendation === null ? null : { option: o.recommendation.option, pourquoi: o.recommendation.why }
+    if (stored && JSON.stringify(o.recommandation) !== JSON.stringify(r)) refuse('recommandation', 'shape')
+    o.recommandation = r
+    if (o.assurance !== null && (typeof o.assurance !== 'number' || !(o.assurance >= 0 && o.assurance <= 1))) refuse('assurance', 'range')
+    orNull(o.doute, 'doute', upTo(200))
+    let essential = 0
+    o.pieces = list(o.pieces, 0, 20, 'pieces').map((p, i) => {
+      const q = piece(p, `pieces[${i}]`)
+      if (q.essentielle && ++essential > 3) refuse(`pieces[${i}].essentielle`, 'range')
+      return q
+    })
+    // The waiting session's id: a lowercase UUID or null; anything else is written null and named
+    // on the writer's line, never a refusal.
+    if (o.session !== null && (typeof o.session !== 'string' || !SESSION.test(o.session))) { dropped = typeof o.session === 'string' ? 'shape' : 'type'; o.session = null }
+  }
+  if (stored) o.answer = orNull(o.answer, 'answer', (v, g) => answerOf(v, g, o.options, true, v11))
   return o
 }
 // The orchestrator's input: at most 64 KiB of UTF-8 JSON on stdin, else undefined. A stdin with
@@ -781,14 +919,14 @@ function cardFile(s, answering) {
       if (old === null) refuse('', 'none')
       c = decision(old, s, true)
       if (c.answer !== null) refuse('answer', 'answered')
-      c.answer = { ...answerOf(given, 'answer', c.options.map((p) => p.key), false), by: 'owner', at: stamp }
+      c.answer = { ...answerOf(given, 'answer', c.options, false, Object.hasOwn(c, 'tldr')), by: 'owner', at: stamp }
     } else {
       const { id, kind: k, moment, ...rest } = decision(given, s, false)
       c = { v: 1, id, kind: k, moment, slug: s, asked: stamp, ...rest, answer: null }
     }
   } catch (e) {
     try { drop() } catch { return no3('the old card could not be deleted') }
-    console.log(JSON.stringify({ written: false, field: e instanceof Refused ? e.field || '.' : '.', why: e instanceof Refused ? e.why : 'error' }))
+    console.log(JSON.stringify({ written: false, field: e instanceof Refused ? e.field || '.' : '.', why: e instanceof Refused ? e.why : 'error', ...(answering ? { option: null } : {}) }))
     return 1
   }
   const tmp = `${file}.${process.pid}.tmp`
@@ -804,7 +942,7 @@ function cardFile(s, answering) {
     try { drop() } catch {}
     return no3(answering ? 'the write failed, the card unchanged' : 'the write failed, the old card deleted')
   }
-  console.log(JSON.stringify({ written: true, field: null, why: null }))
+  console.log(JSON.stringify({ written: true, field: dropped && 'session', why: dropped, ...(answering ? { option: c.answer.option } : {}) }))
   return 0
 }
 // sheet.v1 (the sheet's A3 to A13), an allowlist from decision.v1's pieces: every key required,
