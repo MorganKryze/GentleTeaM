@@ -37,12 +37,12 @@ every `[CHECK]` but `verify.runner`'s (`templates/runner.md`) and verify command
   nothing. A `ui-gate.spec.mjs` already in the project: keep it untouched, only set `verify.ui`.
 
 ## 3. Team settings (one message)
-From the brief, propose `team.md`: priorities weighted low / normal / high (security, data
-integrity, UX and accessibility, performance, delivery speed, usage and cost sensitivity), per role
-model and effort, specialists and their path triggers, correction rounds, the design threshold, dry
-runs of risky tasks, and the companions found as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md`
-says; as a table (priority, role or companion · value · reason) with your recommendation. Write
-what the human approves, with each value's reason and today's date. Derive, do not guess:
+From the brief, propose `team.md`: priorities rated low / normal / high (security, data integrity,
+UX and accessibility, performance, delivery speed, usage and cost sensitivity), per role model and
+effort, the companions found as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says, specialists
+and their path triggers, the review paths, correction rounds, the design threshold and dry runs of
+risky tasks; as a table (priority, role or companion · value · reason) with your recommendation.
+Write what the human approves, with each value's reason and today's date. Derive, do not guess:
 - several accounts, a server or secrets → security high: security-reviewer on, effort high;
 - stored or synced personal records → data integrity high: data-reviewer on, risky tasks dry-run;
 - screens used daily or by many → UX high: ux-qa on, design threshold 8 or more;
