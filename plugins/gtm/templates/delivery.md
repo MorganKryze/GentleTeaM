@@ -48,16 +48,16 @@ path than its `trace.path`, or a reviewer that path calls for missing from its `
 reviewer reviews the range alone (`review: "range"` with git's files, or a direct dispatch on a
 Fix), before the next task, and the heavier path holds for that task.
 
-Tiers (`review cadence` set; not a Fix), on each task's files once it returns: a specialist its
-path calls for on a standard task → Heads-up, `review: "range"` on its range, guarded from then
-on; a specialist its path calls for missing from a guarded task's `reviewers` reviews it alone.
-`GATED`: `verify.gate` on its head, red → `BLOCKED` (deliver §2 step 4's card); a clean deferred
-review with the `reviewer` over its range appends its own line. A wave (a deliver §3 wave, or
-consecutive standard tasks up to a guarded task or the plan's last) gets `review: "range"` on its
-range after its merges; before deliver §4, `review: "branch"` fork point to `HEAD`; each with
-`files` from git. `OPEN`, `BLOCKED`, no review → deliver §2 step 4's card, minors to the ledger (a
-re-run appends none twice). A resume runs each owed review before deliver §4. A Heads-up per
-`Cadence` log.
+Tiers (`review cadence` set; not a Fix), on each task's files once it returns: a per-task
+specialist its path calls for on a standard task → Heads-up, `review: "range"` on its range,
+guarded from then on; a specialist its path calls for missing from a guarded task's `reviewers`
+reviews it alone. `GATED`: `verify.gate` on its head, red → `BLOCKED` (deliver §2 step 4's card);
+a clean deferred review with the `reviewer` over its range appends its own line. A wave (a deliver
+§3 wave, or consecutive standard tasks up to a guarded task or the plan's last) gets `review:
+"range"` on its range after its merges; before deliver §4, `review: "branch"` fork point to
+`HEAD`; each with `files` from git. `OPEN`, `BLOCKED`, no review → deliver §2 step 4's card, minors
+to the ledger (a re-run appends none twice). A resume runs each owed review before deliver §4. A
+Heads-up per `Cadence` log.
 
 ## Re-reviews
 Outside the workflow (a hand fix's re-check, the final review's second pass), only the roles whose
