@@ -8,11 +8,14 @@
 > <choice> (cost if wrong: <one line>)`, one line each, counted in the state's `defaults`),
 > `minor` (a deferred review finding), `resolved` (closes a minor, names it), `run` (one line per
 > delivered branch, `/gtm:tune` reads these), `usage` (a note on cost or limits hit, or a budget
-> passed).
+> passed), `escape` (a defect found after the merge of the branch that brought it, `- <date> ·
+> <slug of the branch that brought it> · escape · <what>, merged in <merge or PR>, found <where
+> and by whom>, path <text|code|full|?>, category <category>`; written by the gtm skill when it
+> records such a bug, and by the retro).
 > A `run` line: `tasks N · correction rounds per task · findings per reviewer (critical /
 > important / minor) · tiers <g>g <s>s · design rounds and score · measured <W>m <T>k <A>a:
 > <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ... · limits <window> +<a>% ...
-> · sheets <name> <passes> <c>/<i>/<m>, ...
+> · paths <path> <n> <w>m <t>k <r>r, ... · sheets <name> <passes> <c>/<i>/<m>, ...
 > · mutations <planted> planted <survived> survived · lenses <role> <method name> <n>, ...`,
 > escalated
 > counts guarded, from every progress line, a task's runs summed (a `GATED` line has no rounds);
@@ -25,7 +28,9 @@
 > role), roles at 5% or more, any `?` → `roles ?`; `limits` the difference from the branch's first
 > `limits at start` usage line, one `<window> +<a>%` per window (`5h`, `7d`) that line and the
 > reading both show, a window either lacks left out, never `+0%`, `?` across a reset or with no
-> reading; `sheets` summed per sheet
+> reading; `paths` from the progress lines' `· path` segment, per path in the order text, code,
+> full: tasks, minutes, tokens and correction rounds, a task's runs summed, `none` and `?` lines
+> left out, a path with no task left out; `sheets` summed per sheet
 > over the progress lines that carry it: passes, then findings by severity, zeros kept, the segment
 > left out when none does; `mutations` summed over the
 > progress lines that carry it, deferred and re-run review lines included, `?` when the task
@@ -35,4 +40,5 @@
 > any other role's in its report files; retro and tune never appear in a run line (tune counts their
 > tags itself). A `run` line without `lenses` (every line before 0.11.0) reads as not measured for
 > lenses, one without `mutations` (every line before 0.12.0) as not measured for mutations, one
-> without `sheets` counts for no sheet, the rest as before.
+> without `sheets` counts for no sheet, one without `paths` (every line before 0.19.0) as not
+> measured for paths, the rest as before.

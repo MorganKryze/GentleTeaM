@@ -133,6 +133,14 @@ const CATEGORY = ['Category: give each finding one of behaviour, security, proof
 const CATEGORY_FIELD = { type: 'string', enum: ['behaviour', 'security', 'proof', 'doc', 'form'] }
 // Names a project could give a specialist or a model, each refused by one clause of the alphabet:
 // a segment separator, a newline, upper case, a leading `; `, and one character past the cap.
+// Review path stubs: team.md's two `review path` lines as /gtm:deliver hands them, and the
+// line a light review request carries instead of the mutation step.
+const PATHS = { text: { paths: ['[.]md$'], reviewer: 'sonnet' }, code: { paths: ['^scripts/', '^plugins/gtm/workflows/'], reviewer: 'sonnet' } }
+// The template's `text` line, read from team.md as /gtm:deliver hands it.
+const TEXT = JSON.parse(`[${(readFileSync(new URL('../plugins/gtm/templates/team.md', import.meta.url), 'utf8').match(/review path: text · paths (.*?) · reviewer/)?.[1] ?? '').split(', ').map((r) => JSON.stringify(r.replace(/`/g, ''))).join(',')}]`)
+const LIGHT = ['plant none, return 0 planted', '`mutations skipped: light path`']
+// The order a reviewer that skipped its mutations on the full path is dispatched again with.
+const MUTATE = 'Mutations: this task is on the full review path, so no light path skip applies. Plant your mutations now, whatever the round, as your Mutations paragraph says, and return their count.'
 const FORGED = ['x · start 2020', 'x\nstart', 'Security', '; rm', 'a'.repeat(61)]
 
 const deliver = [
@@ -1161,9 +1169,9 @@ const deliver = [
     ],
     prompts: {
       reviewer: SCOPE, 'security-reviewer': SCOPE, 'acme-reviewer': SCOPE,
-      'security-reviewer · round 1': [...SCOPE, ...STATUS],
+      'security-reviewer · round 1': [...SCOPE, ...STATUS.filter((p) => !p.includes('fix diff')), 'Re-review the whole task', 'then any new breakage in'],
     },
-    unprompted: { reviewer: STATUS, 'security-reviewer': STATUS },
+    unprompted: { reviewer: STATUS, 'security-reviewer': STATUS, 'security-reviewer · round 1': ['only new breakage in the fix diff'] },
   },
   {
     name: 'worktree: every prompt names it as the directory for every command and read',
@@ -1602,7 +1610,7 @@ const deliver = [
     returns: {
       status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [],
       stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
-      trace: { models: 'implementer opus/low/medium, reviewer opus/medium, security-reviewer opus/xhigh', causes: '1:security-reviewer/important/security' },
+      trace: { models: 'implementer opus/low/medium, reviewer opus/medium, security-reviewer opus/xhigh', causes: '1:security-reviewer/important/security', path: 'full' },
     },
     dispatches: [
       implement('gtm:implementer', { model: 'opus', effort: 'low' }), reviewer('reviewer', { model: 'opus', effort: 'medium' }),
@@ -1619,7 +1627,7 @@ const deliver = [
     returns: {
       status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], minors: [],
       stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
-      trace: { models: 'implementer ?/?/medium/high, reviewer ?/?', causes: '1:reviewer/important/?, 2:reviewer/important/?' },
+      trace: { models: 'implementer ?/?/medium/high, reviewer ?/?', causes: '1:reviewer/important/?, 2:reviewer/important/?', path: 'full' },
     },
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
       { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
@@ -1632,7 +1640,7 @@ const deliver = [
     returns: {
       status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [],
       stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 2, survived: 1 }, 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
-      trace: { models: 'implementer ?/?/medium, reviewer ?/?, security-reviewer ?/?', causes: '1:reviewer/important/proof, 1:security-reviewer/important/?' },
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, security-reviewer ?/?', causes: '1:reviewer/important/proof, 1:security-reviewer/important/?', path: 'full' },
     },
     dispatches: [implement(), reviewer(), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), security('security-reviewer · round 1')],
   },
@@ -1642,7 +1650,7 @@ const deliver = [
     reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...critical, category: 'security' }], summary: 'fix' } : ok)),
     returns: {
       status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], minors: [], stats: { reviewer: { critical: 1, important: 0, minor: 0 } },
-      trace: { models: 'implementer ?/?, reviewer sonnet/low', causes: '1:reviewer/critical/security' },
+      trace: { models: 'implementer ?/?, reviewer sonnet/low', causes: '1:reviewer/critical/security', path: 'full' },
     },
     dispatches: [implement('gtm:implementer', { model: 'opus; rm -rf ~', effort: 'turbo' }), reviewer('reviewer', { model: 'sonnet', effort: 'low' }),
       { agentType: 'gtm:implementer', label: 'fix · round 1', model: 'opus; rm -rf ~', effort: 'turbo' }, reviewer('reviewer · round 1', { model: 'sonnet', effort: 'low' })],
@@ -1652,7 +1660,7 @@ const deliver = [
     name: 'trace: a run that dispatches nothing shows none',
     args: { review: 'range' },
     reply: () => { throw new Error('nothing runs') },
-    returns: { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files', trace: { models: 'none', causes: 'none' } },
+    returns: { status: 'BLOCKED', reason: 'a deferred review needs review range|branch, base, head and files', trace: { models: 'none', causes: 'none', path: 'none' } },
     dispatches: [],
   },
   {
@@ -1666,7 +1674,7 @@ const deliver = [
     returns: {
       status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', ...FORGED], minors: [],
       stats: Object.fromEntries(FORGED.map((r) => [r, { critical: 0, important: 0, minor: 0, ...(r === 'Security' ? { High: null } : { important: 1 }) }])),
-      trace: { models: 'implementer ?/?/medium, reviewer ?/?, ? ?/?', causes: FORGED.map(() => '1:?/important/security').join(', ') },
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, ? ?/?', causes: FORGED.map(() => '1:?/important/security').join(', '), path: 'full' },
     },
     dispatches: [implement(), reviewer(), ...FORGED.map((r) => ({ agentType: r, label: r, model: r })),
       { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, ...FORGED.map((r) => ({ agentType: r, label: `${r} · round 1`, model: r }))],
@@ -1681,7 +1689,7 @@ const deliver = [
       status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [],
       open: [{ severity: 'important', summary: 'reviewer returned no review', by: 'reviewer' }],
       stats: { 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
-      trace: { models: 'implementer ?/?/medium, reviewer ?/?, security-reviewer ?/?', causes: '1:security-reviewer/important/security' },
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, security-reviewer ?/?', causes: '1:security-reviewer/important/security', path: 'full' },
     },
     dispatches: [implement(), reviewer(), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, security('security-reviewer · round 1')],
     categories: { reviewer: CATEGORY_FIELD, 'security-reviewer · round 1': CATEGORY_FIELD },
@@ -1697,7 +1705,7 @@ const deliver = [
     returns: {
       status: 'BLOCKED', head: 'h0', open: [{ ...badFinding, by: 'reviewer' }], minors: [],
       stats: { reviewer: { critical: 0, important: 1, minor: 0 } },
-      trace: { models: 'implementer ?/?/medium, reviewer ?/?', causes: '1:reviewer/important/?' },
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?', causes: '1:reviewer/important/?', path: 'full' },
     },
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }],
   },
@@ -1709,10 +1717,471 @@ const deliver = [
     returns: {
       status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], minors: [{ ...typo, by: 'reviewer' }],
       stats: { reviewer: { critical: 0, important: 2, minor: 1, planted: 2, survived: 1 } },
-      trace: { models: 'implementer ?/?/medium/high, reviewer ?/?', causes: '1:reviewer/important/?, 2:reviewer/important/proof' },
+      trace: { models: 'implementer ?/?/medium/high, reviewer ?/?', causes: '1:reviewer/important/?, 2:reviewer/important/proof', path: 'full' },
     },
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
       { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+  },
+  // Review paths (team.md's `review path` lines): each scenario names its line of the spec.
+  {
+    name: 'review path: every file on text gets the reviewer alone on its model, no mutation (P1)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS, team: TRACED },
+    reply: implementer(['docs/a.md', 'README.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [], trace: { models: 'implementer opus/low, reviewer sonnet/medium', causes: 'none', path: 'text' } },
+    dispatches: [implement(undefined, { model: 'opus', effort: 'low' }), reviewer('reviewer', { model: 'sonnet', effort: 'medium' })],
+    log: ['Review path: text'],
+    prompts: { reviewer: [...LIGHT, 'Mutations: none on the text review path'] },
+  },
+  {
+    name: 'review path: text and code files add the security reviewer alone, on its own model (P2)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS, team: TRACED },
+    reply: implementer(['docs/a.md', 'scripts/a.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [], trace: { models: 'implementer opus/low, reviewer sonnet/medium, security-reviewer opus/high', causes: 'none', path: 'code' } },
+    dispatches: [implement(undefined, { model: 'opus', effort: 'low' }), reviewer('reviewer', { model: 'sonnet', effort: 'medium' }), security('security-reviewer', { model: 'opus', effort: 'high' })],
+    prompts: { reviewer: [...LIGHT, 'Mutations: none on the code review path'] },
+    unprompted: { 'security-reviewer': LIGHT },
+  },
+  {
+    name: 'review path: a file on neither keeps the full path, every trigger, the profile models, mutations (P3)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS, team: TRACED },
+    reply: implementer(['docs/a.md', 'scripts/a.mjs', 'templates/a.md', 'src/a.js'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer', 'data-reviewer'], stats: {}, minors: [], trace: { models: 'implementer opus/low, reviewer opus/medium, security-reviewer opus/high, data-reviewer ?/?', causes: 'none', path: 'full' } },
+    dispatches: [implement(undefined, { model: 'opus', effort: 'low' }), reviewer('reviewer', { model: 'opus', effort: 'medium' }), security('security-reviewer', { model: 'opus', effort: 'high' }), { agentType: 'gtm:data-reviewer', label: 'data-reviewer' }],
+    unprompted: { reviewer: LIGHT },
+  },
+  {
+    name: 'review path: a file on the data reviewer\'s triggers reads full, whatever line covers it (finding 10)',
+    args: { paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md', 'templates/x.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'data-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:data-reviewer', label: 'data-reviewer' }],
+    log: ['Review path: full'],
+    unprompted: { reviewer: LIGHT },
+  },
+  {
+    name: 'review path: a file on a risky path reads full, whatever line covers it (finding 11)',
+    args: { paths: PATHS, risky: ['schema'] },
+    reply: implementer(['scripts/schema.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: full'],
+    unprompted: { reviewer: LIGHT },
+  },
+  // An absolute path left absolute (no worktree and no relative twin listed, or outside the
+  // worktree) misses an anchored data trigger while an unanchored line still covers it.
+  ...[[{}, '/abs/repo/templates/a.md'], [{ worktree: '/tmp/wt/acme-t2' }, '/elsewhere/templates/a.md']].map(([wt, f]) => ({
+    name: `review path: an absolute file left absolute reads full, whatever line covers it (${f})`,
+    args: { ...wt, paths: { text: { paths: ['[.]md$'] } }, triggers: { 'data-reviewer': ['^templates/'] } },
+    reply: implementer([f], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: full'],
+    unprompted: { reviewer: LIGHT },
+  })),
+  {
+    name: 'review path: the template text line takes docs, README and CHANGELOG Markdown, any other .md reads full (finding 13)',
+    args: { paths: { text: { paths: TEXT } } },
+    reply: implementer(['docs/a.md', 'README.md', 'CHANGELOG.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: text'],
+  },
+  // Each file alone beside a docs page: an instruction file, a nested docs folder or README, a
+  // skill, an agent, and one character past the end anchor.
+  ...['plugins/gtm/agents/x.md', 'CLAUDE.md', '.claude/agents/x.md', 'src/docs/a.md', 'x/README.md', 'SKILL.md',
+    'plugins/gtm/skills/x/SKILL.md', 'docs/a.mdx'].map((f) => ({
+    name: `review path: under the template text line ${f} reads full (finding 13)`,
+    args: { paths: { text: { paths: TEXT } } },
+    reply: implementer(['docs/a.md', f], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: full'],
+    unprompted: { reviewer: LIGHT },
+  })),
+  {
+    name: 'review path: a reviewer skipping mutations on the full path is dispatched again at once to plant them, no fix round',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'fine; mutations skipped: light path' }
+      : d.label === 'reviewer · mutations' ? { ...ok, mutations: { planted: 2, survived: 0 } } : ok)),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 0, minor: 0, planted: 2, survived: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · mutations')],
+    prompts: { 'reviewer · mutations': ['Review the task: diff b0..h0', MUTATE] },
+    unprompted: { 'reviewer · mutations': LIGHT },
+  },
+  {
+    name: 'review path: past round 0, a skip in any case and spacing is dispatched again and its plants counted',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad
+      : d.label === 'reviewer · round 1' ? { ...ok, findings: [addressed], summary: 'fine; Mutations  Skipped :  LIGHT path' }
+        : d.label === 'reviewer · round 1 · mutations' ? { ...ok, findings: [addressed], mutations: { planted: 1, survived: 0 } } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 1, survived: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), reviewer('reviewer · round 1 · mutations')],
+    prompts: { 'reviewer · round 1 · mutations': ['Re-review the fix round', MUTATE] },
+  },
+  {
+    name: 'review path: a reviewer that skips again on its second dispatch is no review, never a fix round',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label.startsWith('reviewer') ? { ...ok, summary: 'mutations skipped: light path' } : ok)),
+    returns: { status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [],
+      open: [{ severity: 'important', summary: 'reviewer skipped its mutations on the full path twice: mutations skipped: light path', by: 'reviewer' }] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · mutations')],
+  },
+  {
+    name: 'review path: a second skip that returns 0 planted with the phrase is still no review',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'mutations skipped: light path' }
+      : d.label === 'reviewer · mutations' ? { ...ok, summary: 'mutations skipped: light path', mutations: { planted: 0, survived: 0 } } : ok)),
+    returns: { status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [],
+      open: [{ severity: 'important', summary: 'reviewer skipped its mutations on the full path twice: mutations skipped: light path', by: 'reviewer' }] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · mutations')],
+  },
+  {
+    name: 'review path: past round 0, a second dispatch with no mutations count is no review',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad
+      : d.label === 'reviewer · round 1' ? { ...ok, findings: [addressed], summary: 'mutations skipped: light path' }
+        : d.label === 'reviewer · round 1 · mutations' ? { ...ok, findings: [addressed] } : ok)),
+    returns: { status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+      open: [{ severity: 'important', summary: 'reviewer skipped its mutations on the full path twice: ok', by: 'reviewer' },
+        { ...badFinding, by: 'reviewer' }] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), reviewer('reviewer · round 1 · mutations')],
+  },
+  {
+    name: 'review path: a second dispatch that returns no mutations count is no review',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'mutations skipped: light path' } : ok)),
+    returns: { status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [],
+      open: [{ severity: 'important', summary: 'reviewer skipped its mutations on the full path twice: ok', by: 'reviewer' }] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · mutations')],
+  },
+  {
+    name: 'review path: a second dispatch that plants 0 with a reason is counted, not taken for a skip',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'mutations skipped: light path' }
+      : d.label === 'reviewer · mutations' ? { ...ok, summary: 'nothing to mutate: one comment line', mutations: { planted: 0, survived: 0 } } : ok)),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 0, minor: 0, planted: 0, survived: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · mutations')],
+  },
+  {
+    name: 'review path: a double skip past round 0 hands on the findings its fix had to answer',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad
+      : d.label.startsWith('reviewer · round 1') ? { ...ok, findings: [addressed], summary: 'mutations skipped: light path' } : ok)),
+    returns: { status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+      open: [{ severity: 'important', summary: 'reviewer skipped its mutations on the full path twice: mutations skipped: light path', by: 'reviewer' },
+        { ...badFinding, by: 'reviewer' }] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), reviewer('reviewer · round 1 · mutations')],
+  },
+  ...['text', 'code'].map((p) => ({
+    name: `review path: a ${p} reviewer writing the light path phrase blocks nothing`,
+    args: { paths: PATHS },
+    reply: implementer([p === 'text' ? 'docs/a.md' : 'scripts/a.mjs'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'fine; mutations skipped: light path' } : ok)),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' })],
+    log: [`Review path: ${p}`],
+  })),
+  {
+    name: 'review path: a specialist quoting the light path phrase on the full path blocks nothing',
+    args: { triggers: TRIGGERS },
+    reply: implementer(['scripts/a.mjs'], (d) => (d.label === 'security-reviewer' ? { ...ok, summary: 'Checked the guard on `mutations skipped: light path`; approve' } : ok)),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), security()],
+  },
+  {
+    name: 'review path: a reviewer that planted mutations and quotes the light path phrase blocks nothing',
+    args: {},
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'Planted 2 on the guard `mutations skipped: light path`', mutations: { planted: 2, survived: 0 } } : ok)),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 0, minor: 0, planted: 2, survived: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer()],
+  },
+  {
+    name: 'review path: a file on both lines reads code; one off by a character reads full (P4)',
+    args: { paths: { text: { paths: ['[.]md$'] }, code: { paths: ['^scripts/'] } }, triggers: TRIGGERS },
+    reply: implementer(['scripts/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), security()],
+    log: ['Review path: code'],
+  },
+  {
+    name: 'review path: near misses read full: a .mdx, a /scripts/ not at the start, a .MD (P5)',
+    args: { paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['docs/a.mdx', 'x/scripts/a.mjs', 'README.MD'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: full'],
+    unprompted: { reviewer: LIGHT },
+  },
+  {
+    name: 'review path: a regex that fails and an empty one match nothing, so the task reads full (P6)',
+    args: { paths: { text: { paths: ['[', '', '  '], reviewer: 'sonnet' } } },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Invalid text review path: [. It matches nothing until it is fixed.'],
+    unprompted: { reviewer: LIGHT },
+  },
+  {
+    name: 'review path: no file, no line or a line that is not an object reads full (P7)',
+    args: { paths: { text: 'docs', code: ['^scripts/'] } },
+    reply: implementer([], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: full'],
+  },
+  {
+    name: 'review path: an array for paths reads as no line (P7)',
+    args: { paths: [{ paths: ['[.]md$'] }] },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: full'],
+  },
+  {
+    name: 'review path: code with the security reviewer off keeps the reviewer alone; inherit keeps the profile model (P8)',
+    args: { paths: { code: { paths: ['^scripts/'], reviewer: 'inherit' } }, triggers: { 'ux-qa': ['^scripts/'] }, team: TRACED },
+    reply: implementer(['scripts/a.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(undefined, { model: 'opus', effort: 'low' }), reviewer('reviewer', { model: 'opus', effort: 'medium' })],
+    log: ['Review path code with the security reviewer off: the reviewer alone'],
+  },
+  {
+    name: 'review path: on a light path a fix asked over minors only starts no round, the minors kept (P9)',
+    args: { paths: PATHS },
+    reply: implementer(['docs/a.md'], () => ({ verdict: 'fix', findings: [typo], summary: 'polish' })),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 0, minor: 1 } }, minors: [{ ...typo, by: 'reviewer' }] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' })],
+    log: ['reviewer asked for a fix over minors only: no round on the text path, the minors go to the ledger'],
+  },
+  {
+    name: 'review path: on the full path a fix asked over minors only still starts its round (P9)',
+    args: { paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [typo], summary: 'polish' } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 1 } }, minors: [{ ...typo, by: 'reviewer' }] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+  },
+  {
+    name: 'review path: on a light path a fix asked with no finding at all still starts its round (P10)',
+    args: { paths: PATHS },
+    reply: implementer(['docs/a.md'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [], summary: 'unclear' } : ok), ['docs/a.md']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1', { model: 'sonnet' })],
+  },
+  {
+    name: 'review path: a security or data finding is re-reviewed over the whole task, a behaviour one over the fix (P11)',
+    args: { base: 'b0', triggers: TRIGGERS },
+    reply: implementer(['scripts/a.mjs', 'templates/a.md'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...badFinding, category: 'behaviour' }], summary: 's' }
+      : d.label === 'data-reviewer' ? bad : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer', 'data-reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 }, 'data-reviewer': { critical: 0, important: 1, minor: 0 } },
+    },
+    dispatches: [implement(), reviewer(), security(), { agentType: 'gtm:data-reviewer', label: 'data-reviewer' },
+      { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' }],
+    prompts: { 'reviewer · round 1': ['Re-review the fix round: diff h0..h1', 'only new breakage in the fix diff'],
+      'data-reviewer · round 1': ['Re-review the whole task: diff b0..h1', 'then any new breakage in b0..h1', 'Return each with status'] },
+    unprompted: { 'data-reviewer · round 1': ['only new breakage in the fix diff'] },
+  },
+  {
+    name: 'review path: a reviewer finding of category security is re-reviewed over the whole task (P11)',
+    args: { base: 'b0' },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [hole], summary: 's' } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } } },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'reviewer · round 1': ['Re-review the whole task: diff b0..h1'] },
+  },
+  {
+    name: 'review path: a fix that reaches a script raises text to code; the security reviewer reads the whole task (P12)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], (d) => (d.label === 'reviewer' ? bad : ok), ['docs/a.md', 'scripts/b.mjs']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, trace: { models: 'implementer ?/?/medium, reviewer sonnet/?, security-reviewer ?/?', causes: '1:reviewer/important/?', path: 'code' } },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1', { model: 'sonnet' }), security('security-reviewer · round 1')],
+    log: ['Review path rises from text to code'],
+    prompts: { 'security-reviewer · round 1': ['Review the task: diff b0..h1'] },
+  },
+  {
+    name: 'review path: a fix never lowers it; a text-only fix on a code task asks no security re-check (P12)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md', 'scripts/a.mjs'], (d) => (d.label === 'reviewer' ? bad : ok), ['docs/b.md']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, trace: { models: 'implementer ?/?/medium, reviewer sonnet/?, security-reviewer ?/?', causes: '1:reviewer/important/?', path: 'code' } },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1', { model: 'sonnet' })],
+  },
+  {
+    name: 'review path: the implementer\'s own report never counts, absolute or relative; a bare name or another folder does (P13)',
+    args: { track: 'fix', fixCeiling: 2, paths: PATHS, report: '/r/.gtm/reports/s/task-1.md' },
+    reply: implementer(['docs/a.md', '/r/.gtm/reports/s/task-1.md', '.gtm/reports/s/task-1.md', 'task-1.md', 'b/.gtm/reports/s/task-1.md'], () => ok),
+    returns: { status: 'ESCALATE', reason: '3 files > 2', head: 'h0', files: ['docs/a.md', 'task-1.md', 'b/.gtm/reports/s/task-1.md'] },
+    dispatches: [implement()],
+  },
+  {
+    name: 'review path: a relative report given and its absolute form reported never count (P13)',
+    args: { track: 'fix', fixCeiling: 1, paths: PATHS, report: '.gtm/reports/s/task-1.md' },
+    reply: implementer(['docs/a.md', '/r/.gtm/reports/s/task-1.md', './.gtm/reports/s/task-1.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [], trace: { models: 'implementer ?/?, reviewer sonnet/?', causes: 'none', path: 'text' } },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' })],
+  },
+  {
+    name: 'review path: a deferred range review on text skips a triggered specialist; a standard text task is gated (P14)',
+    args: { review: 'range', base: 'b0', head: 'h9', files: ['ui/a.md'], cadence: CAD, triggers: TRIGGERS, paths: PATHS },
+    reply: () => ok,
+    returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [reviewer('reviewer', { model: 'sonnet' })],
+  },
+  {
+    name: 'review path: a standard task on text has no per-task role, so it is gated (P14)',
+    args: { tier: 'standard', cadence: CAD, triggers: TRIGGERS, paths: PATHS },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'GATED', tier: 'standard', head: 'h0', files: ['docs/a.md'] },
+    dispatches: [implement()],
+  },
+  {
+    name: 'review path: a standard task on code is guarded by the security reviewer (P14)',
+    args: { tier: 'standard', cadence: CAD, triggers: TRIGGERS, paths: PATHS },
+    reply: implementer(['docs/a.md', 'scripts/a.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [], tier: 'guarded' },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security()],
+    log: ['Tier rises to guarded: security-reviewer'],
+  },
+  {
+    name: 'review path: a code task takes the code line\'s model, never the text line\'s (P2)',
+    args: { paths: { text: { paths: ['[.]md$'], reviewer: 'haiku' }, code: { paths: ['^scripts/'], reviewer: 'sonnet' } }, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md', 'scripts/a.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security()],
+  },
+  {
+    name: 'review path: a bare report name drops that name alone, never an absolute file ending in it (P13)',
+    args: { track: 'fix', fixCeiling: 1, paths: PATHS, report: 'task-1.md' },
+    reply: implementer(['docs/a.md', 'task-1.md', '/abs/x/task-1.md'], () => ok),
+    returns: { status: 'ESCALATE', reason: '2 files > 1', head: 'h0', files: ['docs/a.md', '/abs/x/task-1.md'] },
+    dispatches: [implement()],
+  },
+  {
+    name: 'review path: with a relative report, a relative file ending in it still counts (P13)',
+    args: { track: 'fix', fixCeiling: 1, paths: PATHS, report: '.gtm/reports/s/task-1.md' },
+    reply: implementer(['reports/s/task-1.md', 's/task-1.md'], () => ok),
+    returns: { status: 'ESCALATE', reason: '2 files > 1', head: 'h0', files: ['reports/s/task-1.md', 's/task-1.md'] },
+    dispatches: [implement()],
+  },
+  {
+    name: 'review path: on code the security reviewer runs with no file on its triggers (P2)',
+    args: { paths: PATHS, triggers: TRIGGERS },
+    reply: implementer([WF], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'security-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security()],
+    log: ['Review path: code'],
+  },
+  {
+    name: 'review path: on code one reviewer\'s minor never swallows another\'s fix asked with no finding (P10)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['scripts/a.mjs'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [typo], summary: 'polish' }
+      : d.label === 'security-reviewer' ? { verdict: 'fix', findings: [], summary: 'unclear' } : ok), ['scripts/a.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [{ ...typo, by: 'reviewer' }],
+      stats: { reviewer: { critical: 0, important: 0, minor: 1 }, 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
+    },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      security('security-reviewer · round 1')],
+    log: ['reviewer asked for a fix over minors only: no round on the code path'],
+    prompts: { 'security-reviewer · round 1': ['Re-review the whole task: diff b0..h1'] },
+  },
+  {
+    name: 'review path: a fix onto the data ground raises text to full; the data reviewer reads the whole task (P12)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { ...ok, findings: [addressed], mutations: { planted: 2, survived: 0 } } : ok), ['templates/a.md']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'data-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 2, survived: 0 } } },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' }],
+    log: ['Review path rises from text to full'],
+    prompts: { 'data-reviewer · round 1': ['Review the task: diff b0..h1'], 'reviewer · round 1': ['Re-review the whole task: diff b0..h1', MUTATE] },
+    unprompted: { 'reviewer · round 1': LIGHT },
+  },
+  {
+    name: 'review path: on a rise to full, a reviewer re-review that plants nothing and gives no reason is no review',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { ...ok, findings: [addressed] } : ok), ['templates/a.md']),
+    returns: { status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'data-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } },
+      open: [{ severity: 'important', summary: 'reviewer planted no mutation on the rise to full: ok', by: 'reviewer' }, { ...badFinding, by: 'reviewer' }] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' }],
+    log: ['Review path rises from text to full'],
+  },
+  {
+    name: 'review path: on a rise to full, a reviewer re-review that answers the light path skip is no review',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { ...ok, findings: [addressed], summary: 'mutations skipped: light path', mutations: { planted: 0, survived: 0 } } : ok), ['templates/a.md']),
+    returns: { status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'data-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } },
+      open: [{ severity: 'important', summary: 'reviewer planted no mutation on the rise to full: mutations skipped: light path', by: 'reviewer' }, { ...badFinding, by: 'reviewer' }] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' }],
+    log: ['Review path rises from text to full'],
+  },
+  {
+    name: 'review path: on a rise to full, a reviewer that approved re-reviews the whole task with the mutation order',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['scripts/a.mjs'], (d) => (d.label === 'security-reviewer' ? bad : d.label === 'reviewer · round 1' ? { ...ok, summary: 'nothing to mutate: one line', mutations: { planted: 0, survived: 0 } } : ok), ['templates/a.md']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer', 'data-reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 0, minor: 0, planted: 0, survived: 0 }, 'security-reviewer': { critical: 0, important: 1, minor: 0 } } },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      security('security-reviewer · round 1'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' }, reviewer('reviewer · round 1')],
+    log: ['Review path rises from code to full'],
+    prompts: { 'reviewer · round 1': ['Review the task: diff b0..h1', MUTATE] },
+    unprompted: { 'reviewer · round 1': LIGHT },
+  },
+  {
+    name: 'review path: a rise from code to full sends no specialist that already reviewed back over the task (P12)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['scripts/a.mjs'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { ...ok, findings: [addressed], mutations: { planted: 1, survived: 0 } } : ok), ['src/a.js']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 1, survived: 0 } } },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1')],
+    log: ['Review path rises from code to full'],
+  },
+  {
+    name: 'review path: with no worktree, a fix naming an absolute file\'s relative twin never lowers full to code (P12)',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['/abs/repo/scripts/a.mjs'], (d) => (d.label === 'reviewer' ? bad : ok), ['scripts/a.mjs']),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, trace: { models: 'implementer ?/?/medium, reviewer ?/?, security-reviewer ?/?', causes: '1:reviewer/important/?', path: 'full' } },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), security('security-reviewer · round 1')],
+    log: ['Review path: full'],
+    unlogged: ['Review path rises'],
+    unprompted: { 'reviewer · round 1': LIGHT },
+  },
+  {
+    name: 'review path: an entry that is not a string matches nothing, so a file off every trigger reads full (P6)',
+    args: { paths: { text: { paths: [{}, ['.*'], null, 5], reviewer: 'sonnet' } }, triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    logs: ['{}', '[".*"]', 'null', '5'].map((e) => [`Invalid text review path: ${e}. It matches nothing until it is fixed.`]),
+    log: ['Review path: full'],
+    unprompted: { reviewer: LIGHT },
+  },
+  {
+    name: 'review path: a code line over the data reviewer\'s ground reads full, the data reviewer dispatched',
+    args: { paths: { code: { paths: ['^scripts/'], reviewer: 'sonnet' } }, triggers: { 'data-reviewer': ['^scripts/db/'] } },
+    reply: implementer(['scripts/db/m.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'data-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:data-reviewer', label: 'data-reviewer' }],
+    log: ['Review path: full'],
+    unprompted: { reviewer: LIGHT },
+  },
+  {
+    name: 'review path: an object entry never reads every file as text (P7)',
+    args: { paths: { text: { paths: [{}] } }, triggers: TRIGGERS },
+    reply: implementer(['src/core/auth.js'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    log: ['Review path: full'],
+  },
+  {
+    name: 'review path: the branch review stays full, so a per-branch role keeps its files on a light line',
+    args: { review: 'branch', base: 'b0', head: 'h9', files: ['docs/a.md', 'ui/a.css'], cadence: CAD, triggers: TRIGGERS, paths: { text: { paths: ['[.]md$', '[.]css$'], reviewer: 'sonnet' } } },
+    reply: () => ok,
+    returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: ['ux-qa'], stats: {}, minors: [], trace: { models: 'ux-qa ?/?', causes: 'none', path: 'full' } },
+    dispatches: [{ agentType: 'gtm:ux-qa', label: 'ux-qa' }],
+    log: ['Review path: full'],
   },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
@@ -2245,6 +2714,8 @@ for (const s of scenarios) {
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
     // The expected entry is a set of fragments that exactly one log line must hold together.
     if (s.log && logs.filter((line) => s.log.every((part) => line.includes(part))).length !== 1) differs(where, 'log', s.log, logs)
+    // Each entry of `logs` is such a set of fragments too, each held by exactly one line.
+    for (const set of s.logs || []) if (logs.filter((line) => set.every((part) => line.includes(part))).length !== 1) differs(where, 'logs', set, logs)
     // And no log line may hold any of these.
     for (const part of s.unlogged || []) if (logs.some((line) => line.includes(part))) differs(where, `log without "${part}"`, [], logs)
     // A scenario may plant such a field on purpose, as a model adding one; it lists each by path.

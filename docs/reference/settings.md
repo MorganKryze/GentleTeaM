@@ -92,7 +92,7 @@ defaults in the role files.
 | Roles | each role's model (`opus`, `sonnet`, `haiku`, `fable`, a full model id or `inherit`) and effort (`low` to `max`) | `opus`, with the efforts in [Roles](/reference/roles/) | every command that dispatches a role |
 | Specialists | `security-reviewer`, `data-reviewer`, `ux-qa`: `on` or `off`, and the path regexes that call each one in | all `on`, with example triggers to adapt | `/gtm:deliver` |
 | Companions | `impeccable`, `humanize`: `on` or `off`, detected from the skills the session lists, and the roles that use each | none on; `/gtm:init` adds those it finds | the designer, design critic, ux-qa, implementer and `/gtm:ship` |
-| Limits (the `## Gates` section) | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, taste threshold, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky, `budget per task`, `budget per branch`, `tasks per branch` and `review cadence` | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver`, `/gtm:tune` |
+| Limits (the `## Gates` section) | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, taste threshold, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky, `budget per task`, `budget per branch`, `tasks per branch`, `review cadence` and the `review path` lines | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver`, `/gtm:tune` |
 | History | one line per change made by `/gtm:tune`: date, setting, old and new value, why | empty | `/gtm:tune`, `/gtm:retro` |
 
 Risky paths also set effort. Work that touches them raises the security and final reviewers
@@ -115,6 +115,16 @@ on: no budget changes a verdict, a correction round or the order of tasks. After
 runs with no budget, `/gtm:tune` proposes both at the medians of those runs. The
 `tasks per branch` line caps a plan at 8 tasks by default, a release-only task not counted; a
 plan over it goes back to the architect once, then you choose on a card to split or accept.
+
+A `review path` line names regexes on a task's changed files and the reviewer's model, as in
+``- review path: text · paths `^docs/.*[.]md$` · reviewer sonnet · why: docs · <date>``.
+When every file is on a `text` line, the task gets the text path: the reviewer alone, on that
+line's model, planting no mutation, and a fix asked over minor findings only starts no round. When
+every file is on a `text` or `code` line, one `code` at least, the code path adds the security
+reviewer, alone, under the same two rules. Any other file, no file or no line keeps the full path:
+every triggered specialist, with mutations, as before. A file on the data reviewer's triggers or
+on a risky path always reads full, whatever line covers it. A mistake in a line only makes reviews
+heavier: a regex that fails matches nothing, and a line GTM cannot read counts as none.
 
 To change any of them, see [Change your team settings](/guides/team-settings/).
 

@@ -2,7 +2,9 @@
 // The `mutations` run-line segment and the tune switch (spec A9, A11). now-facts.mjs reads a
 // ledger of 3 measured run lines to the same `eta` with and without the segment before `lenses`;
 // the ledger template, deliver's progress line and tune state the segment, the field, the signal,
-// the pinned switch phrases (P6) and the Gates line. Runs now-facts.mjs in a throwaway root,
+// the pinned switch phrases (P6) and the Gates line. The `paths` segment after `limits` (spec
+// A22, A24, A25) leaves the `eta` as it is; the template states it, its old-line reading and the
+// `escape` kind; the retro reads both per path; init proposes the review paths. Runs now-facts.mjs in a throwaway root,
 // removed after the run. Run by scripts/validate.mjs. No dependencies.
 import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs'
 import { join } from 'node:path'
@@ -19,11 +21,11 @@ const line = (d, m) => `- 2026-10-1${d} · run-${d} · run · tasks 4 (one wave)
   + `reviewer 0/0/5 · no design · measured ${m}m 1588k 47a: spec 10.4m 129k 1a, plan 17.8m 190k 1a, `
   + `tasks ${m - 40}m 682k 21a, final 17.5m 211k 2a, fix 1.6m 25k 1a; roles ? · limits 5h +3% 7d +1%`
 
-function eta(withSegment, sheets = '') {
+function eta(withSegment, sheets = '', paths = '') {
   const tmp = mkdtempSync(join(tmpdir(), 'gtm-mutations-'))
   try {
     const lines = [line(1, 61.1), line(2, 72.3), line(3, 80.5)]
-      .map((l) => l + sheets + (withSegment ? MUTATIONS : '') + LENSES)
+      .map((l) => l + paths + sheets + (withSegment ? MUTATIONS : '') + LENSES)
     writeFileSync(join(tmp, 'ledger.md'), `# Ledger\n\n${lines.join('\n')}\n`)
     // Outside a git repository the script prints its facts with `?` and exits 1.
     const r = spawnSync('node', [script, '--root', tmp, '--now', NOW], { encoding: 'utf8' })
@@ -37,6 +39,9 @@ if (!plain || plain.runs !== 3) errors.push(`eta without mutations reads ${JSON.
 if (JSON.stringify(plain) !== JSON.stringify(counted)) errors.push(`eta differs: ${JSON.stringify(plain)} vs ${JSON.stringify(counted)}`)
 const sheeted = eta(true, ' · sheets security 3 0/1/2, nodejs 3 0/0/0')
 if (JSON.stringify(plain) !== JSON.stringify(sheeted)) errors.push(`eta differs with sheets: ${JSON.stringify(plain)} vs ${JSON.stringify(sheeted)}`)
+
+const pathed = eta(true, '', ' · paths text 2 30.5m 200k 1r, full 1 40.0m 300k 2r')
+if (JSON.stringify(plain) !== JSON.stringify(pathed)) errors.push(`eta differs with paths: ${JSON.stringify(plain)} vs ${JSON.stringify(pathed)}`)
 
 const read = (p) => readFileSync(join(root, p), 'utf8').replace(/\n> /g, ' ').replace(/\n(?!\n)/g, ' ').replace(/ {2,}/g, ' ')
 const template = read('plugins/gtm/templates/ledger.md')
@@ -53,6 +58,21 @@ const LEDGER = [
   'one without `mutations` (every line before 0.12.0) as not measured for mutations',
 ]
 for (const p of LEDGER) if (!template.includes(p)) errors.push(`ledger template lacks: ${p}`)
+const PATHS = [
+  '· limits <window> +<a>% ... · paths <path> <n> <w>m <t>k <r>r, ... · sheets',
+  "`paths` from the progress lines' `· path` segment",
+  'a task\'s runs summed, `none` and `?` lines left out, a path with no task left out',
+  'one without `paths` (every line before 0.19.0) as not measured for paths',
+  '`escape` (a defect found after the merge of the branch that brought it, `- <date> · <slug of the branch that brought it> · escape · <what>, merged in <merge or PR>, found <where and by whom>, path <text|code|full|?>, category <category>`; written by the gtm skill when it records such a bug, and by the retro)',
+]
+for (const p of PATHS) if (!template.includes(p)) errors.push(`ledger template lacks: ${p}`)
+const retro = read('plugins/gtm/skills/retro/SKILL.md')
+for (const p of [
+  '**Paths:** per path, from the `paths` segments of the last three run lines that carry it: tasks, and the median minutes, tokens and correction rounds per task; and the `escape` lines per path.',
+  'A defect of this branch found after its merge is one `escape` line.',
+  'one table (path, tasks, minutes, tokens, rounds, escapes)',
+]) if (!retro.includes(p)) errors.push(`retro lacks: ${p}`)
+if (!read('plugins/gtm/skills/init/SKILL.md').includes('the review paths')) errors.push('init does not propose the review paths')
 const deliver = read('plugins/gtm/skills/deliver/SKILL.md')
 // Keyed on `planted`, set only when the review returned `mutations`: `stats.reviewer` alone exists
 // whenever the reviewer reported a finding, and would write a count no review made.

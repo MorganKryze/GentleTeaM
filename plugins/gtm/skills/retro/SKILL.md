@@ -35,6 +35,9 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
   proposed again only after 3 runs that name it, newer than that line.
   A sheet with a standing remove ruling, or with no row in
   `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md`, gets no card.
+- **Paths:** per path, from the `paths` segments of the last three run lines that carry it: tasks,
+  and the median minutes, tokens and correction rounds per task; and the `escape` lines per path.
+  A defect of this branch found after its merge is one `escape` line.
 
 - **Project sheet:** where `config.yml`'s `project.sheet` reads `on`, hand `decisions` and
   `difficulties` as `${CLAUDE_PLUGIN_ROOT}/templates/project-sheet.md` says;
@@ -47,5 +50,6 @@ specialist should have caught; design loops ending at the last round; `usage` no
 
 ## 4. Report
 TL;DR (lessons added, guideline proposals, minors closed), the sheets' counts in one table (sheet,
-runs, passes, findings `c/i/m`) when a line has them, the project sheet's `decisions` and
-`difficulties` as handed, then the decision cards, if any.
+runs, passes, findings `c/i/m`) when a line has them, the paths in one table (path, tasks, minutes,
+tokens, rounds, escapes), the project sheet's `decisions` and `difficulties` as
+handed, then the decision cards, if any.

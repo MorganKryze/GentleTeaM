@@ -17,8 +17,9 @@ The spec's Status ends with `plan kept from the one pass` and the plan exists: d
 architect, go to §2. Otherwise (no one pass, a card answered otherwise, the spec changed),
 dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: the spec path, the
 validated mockup page, the output path `<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, the
-team settings' Gates (replay risky tasks: yes/no; risky paths; `tasks per branch`), and the
-mandate the human's request or an answer gave, verbatim with where and when, or the current plan's
+team settings' Gates (replay risky tasks: yes/no; risky paths; `tasks per branch`; the `review path`
+lines, with the data reviewer's triggers), and the mandate the human's request or an answer gave,
+verbatim with where and when, or the current plan's
 `## Mandate` section with its `> Source:` line (none: none). Template:
 `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. When it returns, append its progress line (`plan`) as
 `/gtm:deliver` §1 says, and one more after each correction round and each revision (§2); a
@@ -39,6 +40,8 @@ phase's lines are summed in the run line.
   guarded); a security-reviewer or data-reviewer is per-task always, an invalid trigger matches
   every file, and a cadence keeping `reviewer` per-task makes every task guarded; a missing or
   wrong one goes back.
+- Every task has `Review path:` from its Files matched as `templates/delivery.md`'s `## Review
+  paths` says (no line: `full`); a missing or wrong one goes back.
 - Every EARS line of the spec maps to at least one task's test.
 - Every row of the spec's Decisions table confirmed by `review:` is named as a requirement in the
   task that implements it, so it reaches the brief; a missing one goes back to the architect:
@@ -52,9 +55,9 @@ phase's lines are summed in the run line.
 - A `## Mandate` section only when the human's request or answer gave one, its lines verbatim under
   a `> Source:` line naming where and when; one without a source goes back. A rewrite carries an
   existing section over verbatim, its `> Source:` line included.
-- The Summary holds the estimate line. Past 1.5× of the spec's (minutes or tokens): a Heads-up
-  and a decision card (go on / revise the plan), with your recommendation; no numeric estimate
-  in the spec: no comparison, no card.
+- The Summary holds the estimate line, each task on its review path. Past 1.5× of the spec's
+  (minutes or tokens): a Heads-up and a decision card (go on / revise the plan), with your
+  recommendation; no numeric estimate in the spec: no comparison, no card.
 - Past 4 hours (W > 240 min): the Summary's proposed split, then a card before any delivery
   (split as proposed / one branch anyway / wait), with your recommendation; under 4 hours, none.
   Split: the human's answer is logged as a `ruling`; the cut is a spec amend made by hand, which

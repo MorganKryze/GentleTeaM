@@ -69,11 +69,11 @@ one learned.
 | `reports/<slug>/waiting.json` | the card waiting or last answered on this branch, one at a time, in the [card file](#card-file) shape: written by GTM's facts script, kept with your answer once you answer, replaced by the next card, or deleted when the script refuses it | the orchestrator, through the facts script |
 | `reports/<slug>/mandate.md` | the file given with `mandate=<file>`, copied byte for byte, its fingerprint in the logbook; any other file there counts as no mandate; it holds for the branch, resumes included, until you delete it | `/gtm:deliver` |
 | `reports/<slug>/landing.json` | the landing `/gtm:ship` records under a standing go: class, head, proofs; deleted when the check refuses | `/gtm:ship` |
-| `reports/<slug>/progress.md` | one line per run of the branch, ending with its start and end, the model and effort of each role it dispatched, and the cause of each [correction round](/reference/glossary/#correction-round), and ship's `ci` line, one per CI red (its check, class, verdict and action); an instant nobody recorded reads `?` | the orchestrator |
+| `reports/<slug>/progress.md` | one line per run of the branch, ending with its start and end, the model and effort of each role it dispatched, and the cause of each [correction round](/reference/glossary/#correction-round), then `path` and the task's [review path](/reference/glossary/#review-path) (`text`, `code`, `full`, `none` on a line with no task, `?` when unknown), and ship's `ci` line, one per CI red (its check, class, verdict and action); an instant nobody recorded reads `?` | the orchestrator |
 | `sheet.json` | the [project sheet](#project-sheet): what the project is for, its plan, decisions, cost and difficulties, for a program that shows the project; kept out of commits like `state.json`, and written only while `project.sheet` is `on` | the orchestrator, through the facts script |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
 | `reports/<slug>/lead/` | the scripts, logs and tool installs the orchestrator makes for a run, kept here rather than in the session scratchpad Claude Code can wipe | the orchestrator, never an agent |
-| `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision | every step |
+| `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision; each `run` line has a `paths` segment with the tasks, minutes, tokens and rounds per review path, and an `escape` line records a defect found after its branch merged, with its task's review path | every step |
 
 ## What does state.json hold?
 
@@ -196,7 +196,7 @@ in your `language.human`, at most the characters given.
 | `showcase` | absent or null in this version; a later version's object, added under `v` 1 | the script |
 
 `cost` adds the seconds and tokens of each line in `reports/<slug>/progress.md`; the tail that
-ends a line (start, end, models, causes) adds nothing. A sum GTM cannot be sure of is `null`,
+ends a line (start, end, models, causes, path) adds nothing. A sum GTM cannot be sure of is `null`,
 never smaller. A `showcase` holding anything but `null` comes from a later GTM: read it as a field
 you do not know.
 

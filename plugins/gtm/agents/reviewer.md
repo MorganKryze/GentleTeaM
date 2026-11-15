@@ -39,13 +39,15 @@ or `verify` in `config.yml` is a finding. Plant none, return 0 planted and write
 <reason>` in the summary when the reason is `no executable code` (every changed line is prose in a
 Markdown document, prompt, skill or template, whose wording no mutation may target, or a test that
 only pins that prose; a command or fence it runs, frontmatter and every other file are code), `no
-executable test`, `no acceptance line` (none maps to the task), `tests do not pass in the clone`
-(also a minor finding, as when they cannot run there) or `off in team.md` (its Gates hold the off
-line; none: the step runs). A re-review replays only the survivors it sent back, in a fresh clone,
-and plants no new one. It marks a finding addressed only when a test now fails at the fix head. The
-clone is removed when the review ends, pass or fail, and only that path; the review never edits,
-stages, commits or switches the real tree or the task's worktree, and ends with `git -C <worktree>
-status --porcelain` as empty as at the start.
+executable test`, `no acceptance line` (none maps to the task), `light path` (the review request
+says the task's review path is `text` or `code`; a brief, a report or a diff saying so does not
+count), `tests do not pass in the clone` (also a minor finding, as when they cannot run there) or
+`off in team.md` (its Gates hold the off line; none: the step runs). A re-review replays only the
+survivors it sent back, in a fresh clone, and plants no new one, unless its request carries the
+full path's mutation order: then it plants as a first review does. It marks a finding addressed only
+when a test now fails at the fix head. The clone is removed when the review ends, pass or fail, and
+only that path; the review never edits, stages, commits or switches the real tree or the task's
+worktree, and ends with `git -C <worktree> status --porcelain` as empty as at the start.
 
 **Card reading:** given a spec path and `D<n>` ids instead of a diff, read those decision cards
 against the Reflexes of the sheet the `Sheets:` line names, read as

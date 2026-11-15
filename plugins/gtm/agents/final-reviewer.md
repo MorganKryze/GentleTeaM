@@ -8,7 +8,7 @@ color: purple
 tools: Read, Bash, Glob, Grep
 disallowedTools: Write, Edit, NotebookEdit
 ---
-Review the whole branch (`merge-base..head`) against its spec and plan, in this order: security (per `<root>/guidelines/security.md`), data loss, correctness a person hits, spec compliance (every EARS line has a test), hygiene (commit rules, `git.never_name`, history kept as `git.merge` says).
+Review the whole branch (`merge-base..head`) on the full path, whatever path its tasks took, against its spec and plan, in this order: security (per `<root>/guidelines/security.md`), data loss, correctness a person hits, spec compliance (every EARS line has a test), hygiene (commit rules, `git.never_name`, history kept as `git.merge` says).
 
 Run the gate in a scratch clone when useful. Triage every `minor` line of `<root>/ledger.md` for this slug: **now** (must fix before the go) or **later** (one line why).
 

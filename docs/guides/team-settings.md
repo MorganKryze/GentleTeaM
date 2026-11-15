@@ -22,8 +22,9 @@ Four parts, read by every command and every role.
 - **Roles:** the model and effort of each of the thirteen roles, each with a reason. The roles keep
   defaults in their own files; GTM passes your values on every call, so your settings win.
 - **Specialists:** the security, data and screen reviewers, each with the paths that call it in.
-  A specialist reviews a task only when a changed path matches one of its triggers; `off`
-  removes it.
+  A specialist reviews a task on the full review path only when a changed path matches one of
+  its triggers; `off` removes it. A `review path` line in the Limits lightens the review of the
+  files it lists.
 - **Limits:** how many [correction rounds](/reference/glossary/#correction-round) a task gets,
   the [file limit for a fix](/reference/glossary/#file-limit-for-a-fix) before it grows into a
   [Feature](/reference/glossary/#feature), how well the [mockups](/reference/glossary/#mockups)

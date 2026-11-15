@@ -18,7 +18,9 @@
 // pass nor `flaky`, the quarantine and the rerun on the human's go, no CI log text in a command,
 // at most 2 CI rounds, a required check that never started never green; the `ci` line, its
 // `runner` cause, retro's counts, the tests template's flaky line, `verify.runner` and ship's
-// pointers.
+// pointers. Review paths: each dispatch's brief brought up to date, a range's files checked
+// against the review path lines once its task returns, a re-review's range, the deliver skill's
+// line cap, and the plan pricing and naming each task by its path.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -300,7 +302,7 @@ const PINS = {
     '`git check-ignore -q <rel>/reports/<slug>/lead/` fails, the folder is not ignored:',
     'A root outside the repository is out of git already.',
     'Read before the first dispatch.',
-    '`· start <S> · end <E> · models <M> · causes <C>`',
+    '`· start <S> · end <E> · models <M> · causes <C> · path <P>`',
     'Never estimated, never written later from memory: an instant you do not have is `?`.',
     '`trace.models`, copied as it is.',
     '`trace.causes`, copied as it is.',
@@ -420,6 +422,71 @@ const ABSENT = {
   'plugins/gtm/skills/ship/SKILL.md': ['merge card'],
   'plugins/gtm/templates/runner.md': ['merge card', 'the runs and the round', 'written once its action has ended'],
 }
+// Review paths: what keeps, skips or lightens a review, held before any review reads it.
+const add = (file, pins) => { PINS[file] = [...(PINS[file] ?? []), ...pins] }
+const addAbsent = (file, words) => { ABSENT[file] = [...(ABSENT[file] ?? []), ...words] }
+add('plugins/gtm/templates/delivery.md', [
+  w("A path that rose to `full` sends the reviewer the full path's mutation order, as `## Review paths` says."),
+  w('ends with five segments, in this order'),
+  w("`<P>`: a workflow run's `trace.path`; a task's re-run, deferred or hand line, its task's path; any other line `none`; unknown `?`."),
+  '## Before each dispatch',
+  w("Before a task's or a Fix's workflow, a re-run review, a re-review, a hand fix's brief, a fix wave and the final review, read the slug's ledger `ruling` lines and the human's answers newer than the brief."),
+  w('Write each one that changes its scope, its files or a decision into the brief, quoted with its date.'),
+  w('End the brief with `> Ledger read to line <n> (<date>).`'),
+  '## Review paths',
+  w("The `review path` lines read as the workflow reads them: a file on the data reviewer's triggers, on a risky path or given as an absolute path reads `full`, whatever line covers it;"),
+  w("a file on a `code` regex reads `code`, else on a `text` one `text`, else `full`; a task takes its heaviest file; no file reads `full`; a regex that fails or is empty matches nothing; anything but a map of objects reads as no line."),
+  w("Once a task returns, its range's files from git (deliver §1) are matched against them."),
+  w('A heavier path than its `trace.path`, or a reviewer that path calls for missing from its `reviewers`: each reviewer it calls for reviews the range (`review: "range"` with git\'s files, or a direct dispatch on a Fix) before the next task, the reviewer with the full path\'s mutation order when the path rose to `full`; the heavier path holds for that task once that review is clean.'),
+  w("A `trace.path` of `none` or `?`, or none at all, reads lighter than any path, so git's path holds."),
+  w('a per-task specialist its path calls for on a standard task → Heads-up'),
+  w("a specialist its path calls for missing from a guarded task's `reviewers` reviews it alone."),
+  w('`GATED`: `verify.gate` on its head, red → `BLOCKED`'),
+  '## Re-reviews',
+  w("Outside the workflow (a hand fix's re-check, the final review's second pass), only the roles whose blocking findings the fix answers re-review, with each specialist its path calls for whose ground the fix touches, on the range since the review they answer;"),
+  w("Its path: the task's, or the one the fix's own files from git read when heavier, never lighter (the final review's: `full`)."),
+  w("the whole task's range, or the branch for the final review, when one of those findings is category `security` or comes from the security or data reviewer."),
+])
+// A31: the final review stays on the full path and replays two planted mutations; A14's override.
+add('plugins/gtm/agents/final-reviewer.md', [
+  w('Review the whole branch (`merge-base..head`) on the full path, whatever path its tasks took,'),
+  w('replay two in a scratch clone, those that move or drop a pinned threshold, plan order on a tie (all of them when two or fewer).'),
+  w('one that survives is a must-fix.'),
+])
+add('plugins/gtm/templates/team.md', [
+  '- review path: code · paths `^(scripts|hooks|[.]github/workflows)/` · reviewer sonnet · why: CI · YYYY-MM-DD',
+  w("A line overrides the other specialists' triggers on the files it covers, never data or risky ground: a file on the data reviewer's triggers or a risky path reads full, whatever line covers it."),
+])
+add('plugins/gtm/skills/deliver/SKILL.md', [
+  w('then checked as `templates/delivery.md` says.'),
+  w("as `templates/delivery.md`'s `## Review paths` says"),
+  w('every task ran on the `full` path (raised to it after the fact: once that re-review is clean), each reviewer it calls for on its files (§1) in its `reviewers`'),
+  w('on the range `## Re-reviews` gives'),
+])
+addAbsent('plugins/gtm/skills/deliver/SKILL.md', ['whose trigger matches its files', 'on the fix range only'])
+add('plugins/gtm/skills/gtm/SKILL.md', [
+  w("implementer + the reviewers team.md's review paths call for"),
+  w('checked as `templates/delivery.md` says'),
+  w('A bug whose defect came in through merged work also gets its `escape` line (`templates/ledger.md`).'),
+])
+add('plugins/gtm/skills/gtm/SKILL.md', [w("naming the reviewers its files' review path calls for.")])
+addAbsent('plugins/gtm/skills/gtm/SKILL.md', ['plus the specialist on security or data ground', 'triggers match its'])
+add('plugins/gtm/agents/architect.md', [
+  w('each task priced on its review path'),
+  w('marked `no <path> run yet`'),
+  w('a wave counted at its longest task'),
+  w('A `text` task plants no mutation and is never replayed.'),
+  w('each task names its `Review path` as that check says'),
+])
+add('plugins/gtm/skills/plan/SKILL.md', [
+  w("`tasks per branch`; the `review path` lines, with the data reviewer's triggers)"),
+  w("Every task has `Review path:` from its Files matched as `templates/delivery.md`'s `## Review paths` says (no line: `full`); a missing or wrong one goes back."),
+  w('The Summary holds the estimate line, each task on its review path.'),
+])
+add('plugins/gtm/templates/plan.md', [
+  '**Tier:** <guarded | standard>\n**Review path:** <text | code | full>\n',
+  w('each task on its review path'),
+])
 const errors = []
 for (const [file, pins] of Object.entries(PINS)) {
   const text = readFileSync(join(root, file), 'utf8')
@@ -453,5 +520,8 @@ if (hits('src/async.ts') || !must.every(hits)) {
 if (risky.some((r) => r.includes('\\'))) errors.push('team.md risky paths: a backslash breaks JSON')
 const deliver = readFileSync(join(root, 'plugins/gtm/skills/deliver/SKILL.md'), 'utf8')
 if (/`risky`[^\n]*\(`yes` or `no`\)/.test(deliver)) errors.push('deliver: `risky` as yes or no')
+// A cap with no check is no cap: the deliver skill holds at most 128 lines.
+const deliverLines = deliver.split('\n').length - (deliver.endsWith('\n') ? 1 : 0)
+if (deliverLines > 128) errors.push(`deliver: ${deliverLines} lines, at most 128`)
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('guards: the promised lines hold')
