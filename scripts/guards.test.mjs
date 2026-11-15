@@ -22,9 +22,9 @@
 // against the review path lines once its task returns, a re-review's range, the deliver skill's
 // line cap, and the plan pricing and naming each task by its path. Decision v1.1: which cards
 // are v1.1, the suite, opposing data in a table, the keys the script alone writes, the owner's
-// words whole up to 2000 characters and the characters refused in them, a piece with no file, a
-// piece's file left as it is until the answer, the session id never shown, the
-// next message handed as the answer first, also on a resume, and the folder reference's
+// words whole up to 2000 characters, their line feeds escaped, and the characters refused in them,
+// a piece with no file, a piece's file left as it is until the answer, the session id never shown,
+// the next message handed as the answer first, also on a resume, and the folder reference's
 // re-check, copy and never-displayed sentences, its v1.1 key table named apart from decision.v1's.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
@@ -220,6 +220,7 @@ const PINS = {
     w('`session`: read `$CLAUDE_CODE_SESSION_ID` in your own shell; when it is set, hand it as `session`, else leave the key out. Never show it in a card, NOW.md, a briefing or a summary.'),
     w("On a v1.1 card the owner's words go in whole as `other`, line breaks included, at most 2000 characters"),
     w("and the script records the option whose `message`, or `key` in any case, they equal once trimmed"),
+    w('Each line feed goes as `\\n` inside the JSON string, never a raw line break: a raw one is refused'),
     w("for anything else, a reworked option included; on decision.v1, one line of at most 280 characters."),
     w('Leave each piece\'s file as it is until the card is answered: the script checks the pieces again when it records the answer'),
     w('Line feeds aside, the script refuses words holding a control character (a tab or a carriage return among them)'),

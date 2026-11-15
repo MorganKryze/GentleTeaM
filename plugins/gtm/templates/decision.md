@@ -126,6 +126,8 @@ Longer, or on several lines, the script refuses it: never shorten or reword the 
 fit, as `templates/now.md` says.
 On a v1.1 card the owner's words go in whole as `other`, line breaks included, at most 2000
 characters, and the script records the option whose `message`, or `key` in any case, they equal
-once trimmed; the limit of one line of 280 is decision.v1's alone.
+once trimmed; the limit of one line of 280 is decision.v1's alone. Each line feed goes as `\n`
+inside the JSON string, never a raw line break: a raw one is refused, and a raw line reading
+`GTM_CARD` would end the heredoc early.
 Line feeds aside, the script refuses words holding a control character (a tab or a carriage
 return among them), an invisible format character or a line or paragraph separator.
