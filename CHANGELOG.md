@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.19.0] - 2026-11-15
+
 ### Added
 - A ledger kind `escape` for a defect found after the merge; run lines carry a `paths` segment,
   and `/gtm:retro` sets each path's time, tokens and rounds against its escapes.
