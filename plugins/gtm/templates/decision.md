@@ -120,12 +120,12 @@ Each option adds:
 
 ## The answer you record
 `{"option": "<key>", "other": null}` for an option of the card, or `{"option": null, "other":
-"<the owner's words>"}` for anything else, a reworked option included: one line, at most 280
-characters. The script adds `by` and `at`; an answered card is never answered again.
+"<the owner's words>"}` for anything else, a reworked option included; on decision.v1, one line
+of at most 280 characters. The script adds `by` and `at`; an answered card is never answered again.
 Longer, or on several lines, the script refuses it: never shorten or reword the owner's words to
 fit, as `templates/now.md` says.
 On a v1.1 card the owner's words go in whole as `other`, line breaks included, at most 2000
-characters, and the script records the option whose `message` they equal; one line of 280 stays
-decision.v1's.
+characters, and the script records the option whose `message`, or `key` in any case, they equal
+once trimmed; the limit of one line of 280 is decision.v1's alone.
 Line feeds aside, the script refuses words holding a control character (a tab or a carriage
 return among them), an invisible format character or a line or paragraph separator.

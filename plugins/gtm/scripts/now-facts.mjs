@@ -43,8 +43,8 @@
 // steps that follow; a recommendation or a hesitation, never both; pieces under the project's top
 // (the repository the root sits in) or https links. The script sets `summary` from `tldr` and
 // `recommandation` from `recommendation`. --answer on such a card takes the owner's words, line
-// breaks included, at most 2000 characters, and records an option whose `message` they equal once
-// trimmed as that option; its line adds `option`, the key recorded or null. A piece with no file
+// breaks included, at most 2000 characters, and records an option whose `message`, or `key` in any
+// case, they equal once trimmed as that option; its line adds `option`, the key recorded or null. A piece with no file
 // (`chemin` null) carries its lines in `apercu`. `session`, optional, is the waiting session's id:
 // a lowercase UUID, else written null with the card, never refused and never printed.
 // The project sheet <root>/sheet.json (sheet.v1), only while config.yml's `project.sheet` reads
@@ -675,8 +675,8 @@ function moduleOf(m, f) {
 }
 // The answer (A11, A12): exactly one of an option key of the card or the owner's words; the full
 // shape, as stored, adds `by` (always owner) and `at`. On a v1.1 card the words may hold line
-// breaks, 2000 characters at most, and words equal to an option's `message` once trimmed are
-// recorded as that option.
+// breaks, 2000 characters at most, and words equal to an option's `message`, or to its `key` in
+// any case, once trimmed are recorded as that option.
 const WORDS = /[\x00-\x09\x0b-\x1f\x7f-\x9f\p{Cf}\p{Cs}\u2028\u2029]/u
 function answerOf(v, f, options, stored, v11) {
   const keys = options.map((p) => p.key)
@@ -689,7 +689,7 @@ function answerOf(v, f, options, stored, v11) {
     if (typeof a.other !== 'string') refuse(g, 'type')
     if (!a.other.trim() || WORDS.test(a.other)) refuse(g, 'text')
     if ([...a.other].length > 2000) refuse(g, 'length')
-    const m = stored ? undefined : options.find((p) => p.message === a.other.trim())
+    const w = a.other.trim(), m = stored ? undefined : options.find((p) => p.message === w || p.key.toLowerCase() === w.toLowerCase())
     if (m) { a.option = m.key; a.other = null }
   }
   if (stored) { if (a.by !== 'owner') refuse(at(f, 'by'), 'list'); iso(a.at, at(f, 'at')) }

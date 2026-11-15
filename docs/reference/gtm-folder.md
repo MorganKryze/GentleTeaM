@@ -204,7 +204,8 @@ file's lines to copy, never to open.
 
 `summary` and `recommandation` are copies GTM's facts script writes, so a program may read either
 key. To answer, a program sends back to the session the chosen option's `message`, or your own
-words: words equal to an option's `message` are recorded as that option, any others as `other`.
+words: words equal to an option's `message`, or to its `key` in any case, once trimmed, are
+recorded as that option, any others as `other`.
 The script's answer line names the option recorded, `option`, on every card, or null.
 `session` lets a program send the answer back to the session that waits; it is never displayed.
 A malformed id is written null and the card still written, its line naming `session`.

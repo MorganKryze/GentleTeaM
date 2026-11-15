@@ -62,8 +62,11 @@
   answer before the run view's rewrite: the same command with `--answer <slug>` and the answer
   `templates/decision.md` describes. The file stays, answered, until the slug's next card.
   While the slug's card file holds an unanswered v1.1 card, the owner's next message, typed or
-  brought by a resume, is its answer: hand it whole as `other` before anything else, then act on
-  the line's `option`, or on the words. A resumed session does this first.
+  brought by a resume, is its answer when it answers the card (a key, an option's message, or
+  words meant as the other way): hand it whole as `other` before anything else, then act on the
+  line's `option`, or on the words. A question or "continue" is answered in the conversation; the
+  card stays waiting. One reply for two cards answers the first; the second is handed again. A
+  resumed session does this first.
   An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one
   Heads-up; never shorten or reword the owner's words to fit.
 
