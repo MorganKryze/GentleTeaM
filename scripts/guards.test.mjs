@@ -447,7 +447,7 @@ add('plugins/gtm/templates/delivery.md', [
 add('plugins/gtm/skills/deliver/SKILL.md', [
   w('then checked as `templates/delivery.md` says.'),
   w("as `templates/delivery.md`'s `## Review paths` says"),
-  w('each reviewer its review path calls for on its files (§1) is in its `reviewers`'),
+  w('every task ran on the `full` path, and each reviewer that path calls for on its files (§1) is in its `reviewers`'),
   w('on the range `## Re-reviews` gives'),
 ])
 addAbsent('plugins/gtm/skills/deliver/SKILL.md', ['whose trigger matches its files', 'on the fix range only'])
