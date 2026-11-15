@@ -68,7 +68,8 @@
   card stays waiting. One reply for two cards answers the first; the second is handed again. A
   resumed session does this first.
   An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one
-  Heads-up; never shorten or reword the owner's words to fit.
+  Heads-up; never shorten or reword the owner's words to fit. The same words refused a second
+  time: say why in one line and ask the owner to send the answer again; never reword them.
 
 ## Example
 

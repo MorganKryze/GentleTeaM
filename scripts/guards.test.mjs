@@ -194,6 +194,7 @@ const PINS = {
     "and the file still holds that card's `id`,",
     'An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one',
     "Heads-up; never shorten or reword the owner's words to fit.",
+    w('The same words refused a second time: say why in one line and ask the owner to send the answer again; never reword them.'),
     'The file stays, answered, until the slug\'s next card.',
     "--sheet '<root>/sheet.json' <<'GTM_SHEET'`",
     'never write `<root>/sheet.json` yourself',
