@@ -9,9 +9,9 @@
 > `minor` (a deferred review finding), `resolved` (closes a minor, names it), `run` (one line per
 > delivered branch, `/gtm:tune` reads these), `usage` (a note on cost or limits hit, or a budget
 > passed), `escape` (a defect found after the merge of the branch that brought it, `- <date> ·
-> <slug> · escape · <what>, merged in <merge or PR>, found <where and by whom>, path
-> <text|code|full|?>, category <category>`; written by the gtm skill when it records such a bug,
-> and by the retro).
+> <slug of the branch that brought it> · escape · <what>, merged in <merge or PR>, found <where
+> and by whom>, path <text|code|full|?>, category <category>`; written by the gtm skill when it
+> records such a bug, and by the retro).
 > A `run` line: `tasks N · correction rounds per task · findings per reviewer (critical /
 > important / minor) · tiers <g>g <s>s · design rounds and score · measured <W>m <T>k <A>a:
 > <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ... · limits <window> +<a>% ...

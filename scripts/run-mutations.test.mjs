@@ -63,7 +63,7 @@ const PATHS = [
   "`paths` from the progress lines' `· path` segment",
   'a task\'s runs summed, `none` and `?` lines left out, a path with no task left out',
   'one without `paths` (every line before 0.19.0) as not measured for paths',
-  '`escape` (a defect found after the merge of the branch that brought it, `- <date> · <slug> · escape · <what>, merged in <merge or PR>, found <where and by whom>, path <text|code|full|?>, category <category>`; written by the gtm skill when it records such a bug, and by the retro)',
+  '`escape` (a defect found after the merge of the branch that brought it, `- <date> · <slug of the branch that brought it> · escape · <what>, merged in <merge or PR>, found <where and by whom>, path <text|code|full|?>, category <category>`; written by the gtm skill when it records such a bug, and by the retro)',
 ]
 for (const p of PATHS) if (!template.includes(p)) errors.push(`ledger template lacks: ${p}`)
 const retro = read('plugins/gtm/skills/retro/SKILL.md')
