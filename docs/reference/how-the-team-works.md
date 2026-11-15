@@ -297,8 +297,8 @@ survived; a branch with no measure has no segment, and older lines count as not 
 rounds, as in `paths text 3 12.0m 140k 0r, full 1 9.5m 210k 1r`; a line without it is not
 measured for paths. An `escape` line records a defect found after its branch merged: what it was,
 the merge, who found it where, the review path its task took and its category, as in
-`- <date> · <slug> · escape · <what>, merged in <PR>, found <where and by whom>, path text,
-category <category>`.
+`- <date> · <slug of the branch that brought it> · escape · <what>, merged in <PR>, found
+<where and by whom>, path text, category <category>`.
 
 ## Where does the team track larger work?
 
