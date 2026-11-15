@@ -1827,6 +1827,26 @@ const deliver = [
     dispatches: [implement(), reviewer(), reviewer('reviewer · mutations')],
   },
   {
+    name: 'review path: a second skip that returns 0 planted with the phrase is still no review',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'mutations skipped: light path' }
+      : d.label === 'reviewer · mutations' ? { ...ok, summary: 'mutations skipped: light path', mutations: { planted: 0, survived: 0 } } : ok)),
+    returns: { status: 'OPEN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [],
+      open: [{ severity: 'important', summary: 'reviewer skipped its mutations on the full path twice: mutations skipped: light path', by: 'reviewer' }] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · mutations')],
+  },
+  {
+    name: 'review path: past round 0, a second dispatch with no mutations count is no review',
+    args: { base: 'b0', paths: PATHS },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad
+      : d.label === 'reviewer · round 1' ? { ...ok, findings: [addressed], summary: 'mutations skipped: light path' }
+        : d.label === 'reviewer · round 1 · mutations' ? { ...ok, findings: [addressed] } : ok)),
+    returns: { status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [],
+      open: [{ severity: 'important', summary: 'reviewer skipped its mutations on the full path twice: ok', by: 'reviewer' },
+        { ...badFinding, by: 'reviewer' }] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'), reviewer('reviewer · round 1 · mutations')],
+  },
+  {
     name: 'review path: a second dispatch that returns no mutations count is no review',
     args: { base: 'b0', paths: PATHS },
     reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, summary: 'mutations skipped: light path' } : ok)),
