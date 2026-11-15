@@ -75,7 +75,7 @@ brainstorm note, its path, read only: tell the analyst never to write it.
 
 | Track | When | Flow | Human checkpoints |
 | --- | --- | --- | --- |
-| **Fix** | ≤ the file limit for a fix (team settings, 3 by default), no schema, migration or auth change | 3-line design in chat → implementer + reviewer, plus the specialist on security or data ground | approve the 3-line design, then the go |
+| **Fix** | ≤ the file limit for a fix (team settings, 3 by default), no schema, migration or auth change | 3-line design in chat → implementer + the reviewers team.md's review paths call for | approve the 3-line design, then the go |
 | **Feature** | one capability, one branch | design-loop if screens change → spec → plan → deliver per task → final review | mockups, spec summary, go |
 | **Milestone** | several branches, a new surface | decomposition into sub-features, then the Feature flow per branch, final review per branch | decomposition, then per branch: mockups, spec, go |
 
@@ -92,20 +92,20 @@ A Feature whose screens use only `design.kit`'s patterns (the analyst says so), 
 the track message says "design in code" and why, and the route skips `/gtm:design`. A new
 pattern or direction, the human's ask, no kit or ux-qa off: the design loop as today.
 
-A Fix that grows past its file limit becomes a Feature on its own, one way only (say so in
-a Heads-up). Nothing downgrades mid-task.
+A Fix past its file limit becomes a Feature, one way only, in a Heads-up; none downgrades mid-task.
 
 Record the work in `<root>/backlog.md`: add or update its story (type, priority P0-P3 per
-`guidelines/work.md`, status doing, track). A Milestone is an epic.
+`guidelines/work.md`, status doing, track). A Milestone is an epic. A bug whose defect came in
+through merged work also gets its `escape` line (`templates/ledger.md`).
 
 ## 2. Route
 - **Fix:** write `<root>/reports/<slug>/brief.md` (the approved 3 lines plus the test that proves
-  it), create the branch as `git` says, run the workflow `gtm:deliver-task` with `track: "fix"`
-  (args as `/gtm:deliver` builds them). `ESCALATE` → read it as `/gtm:deliver` §2 says; the commits
-  stay. `OPEN` or `BLOCKED` → stop, and read it as `/gtm:deliver` §2 says. Any result: its progress
-  line and measure as `/gtm:deliver` §1 and §2 step 3 say. `CLEAN` → append each minor to the ledger
-  (`minor`) as `/gtm:deliver` §2 does, one `run` line as its §5 says (its phase `tasks`, one task),
-  holding `Fix: CLEAN, no final review`; then present the result and ask the go (`/gtm:ship`).
+  it), checked as `templates/delivery.md` says, create the branch as `git` says, run the workflow
+  `gtm:deliver-task` with `track: "fix"` (args as `/gtm:deliver` builds them). `ESCALATE` (the
+  commits stay), `OPEN` or `BLOCKED` (stop): read it as `/gtm:deliver` §2 says. Any result: its
+  progress line and measure as `/gtm:deliver` §1 and §2 step 3 say. `CLEAN` → each minor to the
+  ledger (`minor`) and one `run` line (phase `tasks`, one task, holding `Fix: CLEAN, no final
+  review`) as `/gtm:deliver` §2 and §5 say; then the result and the go (`/gtm:ship`).
 - **Feature:** `/gtm:design` (only if screens change and `design.screens` is true) → `/gtm:spec` →
   `/gtm:plan` → `/gtm:deliver` → `/gtm:ship`. Invoke each skill in turn; stop only at a checkpoint.
 - **Milestone:** dispatch `gtm:architect` to write `<root>/specs/<date>-<slug>-milestone.md`: the

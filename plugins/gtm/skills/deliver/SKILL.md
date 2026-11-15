@@ -45,7 +45,8 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
 ## 2. Each task, in plan order
 1. Write `<root>/reports/<slug>/task-<n>-brief.md`: the task verbatim,
    the global constraints it names, by number (none named: all the plan's), and paths to the plan,
-   the spec, `<root>/team.md`, the validated mockup and the guidelines it touches; nothing else.
+   the spec, `<root>/team.md`, the validated mockup and the guidelines it touches; nothing else;
+   then checked as `templates/delivery.md` says.
 2. Run the workflow `gtm:deliver-task` with args `{ brief, report: "<root>/reports/<slug>/task-<n>.md",
    branch, base: <head before this task>, worktree (in a wave only), mockup, triggers, risky, team,
    fixRounds, fixCeiling, track, tier, cadence, standardRounds, sheets, paths, review, head, files
@@ -72,15 +73,8 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
      from `/gtm:spec`; the spec states each `open` finding (from a correction round that grew the
      Fix past the ceiling, not re-reviewed) as a requirement with its test, and each `<role>
      returned no review` as a review owed, so the final review checks them.
-5. Tiers (`review cadence` set; not a Fix), on each task's files (§1) once it returns: a per-task
-   specialist's trigger on a standard task → Heads-up, `review: "range"` on its range, guarded from
-   then on; a triggered specialist missing from a guarded task's `reviewers` reviews it alone.
-   `GATED`: `verify.gate` on its head, red → `BLOCKED` (step 4's card); a clean deferred review with
-   the `reviewer` over its range appends its own line. A wave (a §3 wave, or consecutive standard
-   tasks up to a guarded task or the plan's last) gets `review: "range"` on its range after its
-   merges; before §4, `review: "branch"` fork point to `HEAD`; each with `files` from git. `OPEN`,
-   `BLOCKED`, no review → step 4's card, minors to the ledger (a re-run appends none twice). A
-   resume runs each owed review before §4. A Heads-up per `Cadence` log.
+5. Review paths and tiers, once each task returns: as `templates/delivery.md`'s `## Review paths`
+   says.
 
 ## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
 1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
@@ -109,7 +103,7 @@ Skip it only when all hold; then leave this slug's minors for `/gtm:retro`, disp
   <git.base> HEAD`, each next base the previous task's head, `HEAD` the last task's head (no hand
   commit or escalated Fix's commit outside a task); a wave is one link: its tasks share its base,
   the next base is the head after its merges, which stay in range;
-- in every task, each specialist whose trigger matches its files (§1) is in its `reviewers`;
+- in every task, each reviewer its review path calls for on its files (§1) is in its `reviewers`;
 - a standard task counts if a clean `review: "range"` with `reviewer` covers it and deferred reviews
   span fork point to `HEAD`, each clean at 0 rounds, none owed; else the final review (of
   merge-base..`HEAD`) reads in full what no task review saw: standard ranges, commits in no task or
@@ -117,9 +111,10 @@ Skip it only when all hold; then leave this slug's minors for `/gtm:retro`, disp
 
 Otherwise dispatch `gtm:final-reviewer` with the spec, the plan, the branch range, the ledger and
 the report path `<root>/reports/<slug>/final.md`. `fix-first` → one fix wave: `gtm:implementer` with
-the must-fix list at a correction round's effort on the branch range, then `gtm:final-reviewer` on
-the fix range only. Still not ready → a Heads-up and a card. `resolved` lines for the minors fixed,
-the rest kept. Each dispatch: its progress line, budget as §2 step 3, roles via `--also`.
+the must-fix list at a correction round's effort on the branch range, then `gtm:final-reviewer`
+on the range `## Re-reviews` gives (`templates/delivery.md`). Still not ready → a Heads-up and a
+card. `resolved` lines for the minors fixed, the rest kept. Each dispatch: its progress line,
+budget as §2 step 3, roles via `--also`.
 
 ## 5. Record and report
 - Ledger: one `run` line as `${CLAUDE_PLUGIN_ROOT}/templates/ledger.md` says (the plugin's template,
