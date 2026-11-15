@@ -20,7 +20,11 @@
 // `runner` cause, retro's counts, the tests template's flaky line, `verify.runner` and ship's
 // pointers. Review paths: each dispatch's brief brought up to date, a range's files checked
 // against the review path lines once its task returns, a re-review's range, the deliver skill's
-// line cap, and the plan pricing and naming each task by its path.
+// line cap, and the plan pricing and naming each task by its path. Decision v1.1: which cards
+// are v1.1, the suite, opposing data in a table, the keys the script alone writes, the owner's
+// words whole up to 2000 characters, a piece with no file, the session id never shown, the
+// next message handed as the answer first, also on a resume, and the folder reference's
+// re-check, copy and never-displayed sentences.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -193,6 +197,8 @@ const PINS = {
     "--sheet '<root>/sheet.json' <<'GTM_SHEET'`",
     'never write `<root>/sheet.json` yourself',
     '`/<rel>/sheet.json` goes to the exclude file',
+    w("While the slug's card file holds an unanswered v1.1 card, the owner's next message, typed or brought by a resume, is its answer: hand it whole as `other` before anything else, then act on the line's `option`, or on the words."),
+    w('A resumed session does this first.'),
   ],
   'plugins/gtm/templates/decision.md': [
     'You never write the card',
@@ -201,6 +207,14 @@ const PINS = {
     'holds `gtm`; else `option` names one option whose `recommendedBy` holds `by`.',
     'characters. The script adds `by` and `at`; an answered card is never answered again.',
     "Longer, or on several lines, the script refuses it: never shorten or reword the owner's words to",
+    '## decision.v1.1',
+    w('Every card of 2 to 4 options is handed as v1.1, every other card as decision.v1.'),
+    w('Never hand `summary` or `recommandation`: the script writes them'),
+    w('`suite`: the steps the plan, the delivery or ship run after that choice, in order, up to the next point where the owner is asked;'),
+    w('Opposing data (versions, measures, comparisons) go in a `tableau` piece whose file you write under `reports/<slug>/`, never in the prose of a text.'),
+    w('A piece with no file (an error from the conversation) has `chemin` `null` and its lines in `apercu`'),
+    w('`session`: read `$CLAUDE_CODE_SESSION_ID` in your own shell; when it is set, hand it as `session`, else leave the key out. Never show it in a card, NOW.md, a briefing or a summary.'),
+    w("On a v1.1 card the owner's words go in whole as `other`, line breaks included, at most 2000 characters"),
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
     '--base <git.base> --pr <root>/reports/<slug>/pr.md`',
