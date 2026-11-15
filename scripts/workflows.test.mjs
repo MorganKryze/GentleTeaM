@@ -2071,12 +2071,13 @@ const deliver = [
     unprompted: { 'reviewer · round 1': LIGHT },
   },
   {
-    name: 'review path: an entry that is not a string matches nothing, so the task reads full (P6)',
-    args: { paths: { text: { paths: [{}, ['.*'], null, 5], reviewer: 'sonnet' } }, triggers: TRIGGERS },
-    reply: implementer(['templates/a.md'], () => ok),
-    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'data-reviewer'], stats: {}, minors: [] },
-    dispatches: [implement(), reviewer(), { agentType: 'gtm:data-reviewer', label: 'data-reviewer' }],
-    log: ['Invalid text review path: {}. It matches nothing until it is fixed.'],
+    name: 'review path: an entry that is not a string matches nothing, so a file off every trigger reads full (P6)',
+    args: { paths: { text: { paths: [{}, ['.*'], null, 5], reviewer: 'sonnet' } }, triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['docs/a.md'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer()],
+    logs: ['{}', '[".*"]', 'null', '5'].map((e) => [`Invalid text review path: ${e}. It matches nothing until it is fixed.`]),
+    log: ['Review path: full'],
     unprompted: { reviewer: LIGHT },
   },
   {
@@ -2626,6 +2627,8 @@ for (const s of scenarios) {
     if (canon(dispatches) !== canon(s.dispatches)) differs(where, 'dispatches', s.dispatches, dispatches)
     // The expected entry is a set of fragments that exactly one log line must hold together.
     if (s.log && logs.filter((line) => s.log.every((part) => line.includes(part))).length !== 1) differs(where, 'log', s.log, logs)
+    // Each entry of `logs` is such a set of fragments too, each held by exactly one line.
+    for (const set of s.logs || []) if (logs.filter((line) => set.every((part) => line.includes(part))).length !== 1) differs(where, 'logs', set, logs)
     // And no log line may hold any of these.
     for (const part of s.unlogged || []) if (logs.some((line) => line.includes(part))) differs(where, `log without "${part}"`, [], logs)
     // A scenario may plant such a field on purpose, as a model adding one; it lists each by path.
