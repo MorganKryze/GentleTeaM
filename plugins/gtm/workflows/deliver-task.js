@@ -197,8 +197,8 @@ const on = (p, f) => (PATHS[p]?.res || []).some((re) => re.test(f))
 // reviewer's ground or a risky path: such a file reads full, whatever line covers it. So does a
 // path `relative` left absolute, which an anchored trigger cannot read.
 const DATA = 'data-reviewer'
-const held = (f) => f.startsWith('/') || ground([f]).includes(DATA) || risky([f])
-const pathOf = (files) => (files.length ? LADDER[Math.max(...files.map((f) => (held(f) ? 2 : on('code', f) ? 1 : on('text', f) ? 0 : 2)))] : 'full')
+const pinned = (f) => f.startsWith('/') || ground([f]).includes(DATA) || risky([f])
+const pathOf = (files) => (files.length ? LADDER[Math.max(...files.map((f) => (pinned(f) ? 2 : on('code', f) ? 1 : on('text', f) ? 0 : 2)))] : 'full')
 const SEC = 'security-reviewer'
 // The specialists a path calls for: none on `text`, the security reviewer when on for `code`.
 const specialists = (files, p) => (p === 'text' ? [] : p === 'code' ? (triggers[SEC] ? [SEC] : []) : ground(files))
