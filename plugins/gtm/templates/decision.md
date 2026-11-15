@@ -111,6 +111,8 @@ Each option adds:
   `apercu`, 1 to 10 texts of 200; `tableau`, `texte`, `diff` or `doc` only.
 - A piece the script refuses is fixed or dropped, never its file changed to pass: no `chmod`, no
   rename.
+- Leave each piece's file as it is until the card is answered: the script checks the pieces again
+  when it records the answer, and refuses the answer when a file changed or moved.
 - `session`: read `$CLAUDE_CODE_SESSION_ID` in your own shell; when it is set, hand it as
   `session`, else leave the key out. Never show it in a card, NOW.md, a briefing or a summary.
   The script writes a malformed id as `null` and still writes the card (`written: true`, `field:
@@ -125,3 +127,5 @@ fit, as `templates/now.md` says.
 On a v1.1 card the owner's words go in whole as `other`, line breaks included, at most 2000
 characters, and the script records the option whose `message` they equal; one line of 280 stays
 decision.v1's.
+Line feeds aside, the script refuses words holding a control character (a tab or a carriage
+return among them), an invisible format character or a line or paragraph separator.
