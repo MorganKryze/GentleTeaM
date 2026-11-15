@@ -2694,6 +2694,42 @@
           "https://jeton@example.org/pr/1"
         ]
       ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "file"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "commits": [
+        {
+          "write": {
+            "docs/notes.txt": "Des notes sur le tri.\n",
+            "docs/notes.md": "# Notes\n",
+            "docs/dir.md/x.txt": "x\n",
+            ".git/x.md": "# x\n"
+          }
+        }
+      ],
+      "links": {
+        "reports/tri/git.md": "../../../.GIT/x.md"
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root/reports/tri/git.md"
+        ],
+        [
+          "pieces.0.apercu",
+          null
+        ]
+      ]
     }
   ]
 }
