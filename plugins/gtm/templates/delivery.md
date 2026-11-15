@@ -48,7 +48,8 @@ objects reads as no line.
 Once a task returns, its range's files from git (deliver §1) are matched against them. A heavier
 path than its `trace.path`, or a reviewer that path calls for missing from its `reviewers`: that
 reviewer reviews the range alone (`review: "range"` with git's files, or a direct dispatch on a
-Fix), before the next task, and the heavier path holds for that task.
+Fix), before the next task, and the heavier path holds for that task. A `trace.path` of `none` or
+`?`, or none at all, reads lighter than any path, so git's path holds.
 
 Tiers (`review cadence` set; not a Fix), on each task's files once it returns: a per-task
 specialist its path calls for on a standard task → Heads-up, `review: "range"` on its range,

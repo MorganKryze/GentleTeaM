@@ -437,6 +437,7 @@ add('plugins/gtm/templates/delivery.md', [
   w("a file on a `code` regex reads `code`, else on a `text` one `text`, else `full`; a task takes its heaviest file; no file reads `full`; a regex that fails or is empty matches nothing; anything but a map of objects reads as no line."),
   w("Once a task returns, its range's files from git (deliver §1) are matched against them."),
   w('A heavier path than its `trace.path`, or a reviewer that path calls for missing from its `reviewers`: that reviewer reviews the range alone (`review: "range"` with git\'s files, or a direct dispatch on a Fix), before the next task, and the heavier path holds for that task.'),
+  w("A `trace.path` of `none` or `?`, or none at all, reads lighter than any path, so git's path holds."),
   w('a per-task specialist its path calls for on a standard task → Heads-up'),
   w("a specialist its path calls for missing from a guarded task's `reviewers` reviews it alone."),
   w('`GATED`: `verify.gate` on its head, red → `BLOCKED`'),
