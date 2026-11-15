@@ -40,9 +40,11 @@ brief. Write each one that changes its scope, its files or a decision into the b
 its date. End the brief with `> Ledger read to line <n> (<date>).`
 
 ## Review paths
-The `review path` lines read as the workflow reads them: a file on a `code` regex reads `code`,
-else on a `text` one `text`, else `full`; a task takes its heaviest file; no file reads `full`; a
-regex that fails or is empty matches nothing; anything but a map of objects reads as no line.
+The `review path` lines read as the workflow reads them: a file on the data reviewer's triggers, on
+a risky path or given as an absolute path reads `full`, whatever line covers it; else a file on a
+`code` regex reads `code`, else on a `text` one `text`, else `full`; a task takes its heaviest
+file; no file reads `full`; a regex that fails or is empty matches nothing; anything but a map of
+objects reads as no line.
 Once a task returns, its range's files from git (deliver §1) are matched against them. A heavier
 path than its `trace.path`, or a reviewer that path calls for missing from its `reviewers`: that
 reviewer reviews the range alone (`review: "range"` with git's files, or a direct dispatch on a

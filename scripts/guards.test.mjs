@@ -433,6 +433,7 @@ add('plugins/gtm/templates/delivery.md', [
   w('Write each one that changes its scope, its files or a decision into the brief, quoted with its date.'),
   w('End the brief with `> Ledger read to line <n> (<date>).`'),
   '## Review paths',
+  w("The `review path` lines read as the workflow reads them: a file on the data reviewer's triggers, on a risky path or given as an absolute path reads `full`, whatever line covers it;"),
   w("a file on a `code` regex reads `code`, else on a `text` one `text`, else `full`; a task takes its heaviest file; no file reads `full`; a regex that fails or is empty matches nothing; anything but a map of objects reads as no line."),
   w("Once a task returns, its range's files from git (deliver §1) are matched against them."),
   w('A heavier path than its `trace.path`, or a reviewer that path calls for missing from its `reviewers`: that reviewer reviews the range alone (`review: "range"` with git\'s files, or a direct dispatch on a Fix), before the next task, and the heavier path holds for that task.'),
@@ -464,7 +465,7 @@ add('plugins/gtm/agents/architect.md', [
   w('each task names its `Review path` as that check says'),
 ])
 add('plugins/gtm/skills/plan/SKILL.md', [
-  w('`tasks per branch`; the `review path` lines)'),
+  w("`tasks per branch`; the `review path` lines, with the data reviewer's triggers)"),
   w("Every task has `Review path:` from its Files matched as `templates/delivery.md`'s `## Review paths` says (no line: `full`); a missing or wrong one goes back."),
   w('The Summary holds the estimate line, each task on its review path.'),
 ])

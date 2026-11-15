@@ -18,8 +18,9 @@ architect, go to §2. Otherwise (no one pass, a card answered otherwise, the spe
 dispatch `gtm:architect` (plan mode), which writes or rewrites the plan, with: the spec path, the
 validated mockup page, the output path `<root>/plans/<YYYY-MM-DD>-<slug>.md`, the ledger path, the
 team settings' Gates (replay risky tasks: yes/no; risky paths; `tasks per branch`; the `review path`
-lines), and the mandate the human's request or an answer gave, verbatim with where and when, or the
-current plan's `## Mandate` section with its `> Source:` line (none: none). Template:
+lines, with the data reviewer's triggers), and the mandate the human's request or an answer gave,
+verbatim with where and when, or the current plan's
+`## Mandate` section with its `> Source:` line (none: none). Template:
 `${CLAUDE_PLUGIN_ROOT}/templates/plan.md`. When it returns, append its progress line (`plan`) as
 `/gtm:deliver` §1 says, and one more after each correction round and each revision (§2); a
 phase's lines are summed in the run line.
