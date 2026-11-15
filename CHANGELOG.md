@@ -5,6 +5,25 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Reviews follow the risk of the files a task changes. `review path` lines in the team settings
+  class each file `text` or `code`; a task takes its heaviest file. On `text`, the reviewer
+  alone on its line's model, with no mutations planted; on `code`, the reviewer and the security
+  reviewer. Any other file, a file on the data reviewer's triggers or a risky path, or no line at
+  all: the full path, every triggered specialist with mutations, as before. A fix round only ever
+  makes the path heavier, and a light-path skip of mutations on a full task sends the reviewer back
+  to plant them.
+- On a light path, minor findings start no correction round: they go to the ledger.
+- A re-review outside the workflow reads only the new diff, unless a blocking finding is about
+  security or data; a task raised to the full path after the fact is re-reviewed with mutations.
+- Before each dispatch, the brief is read against the ledger's newer rulings and the human's
+  answers, so no round runs against a decision.
+- Plans price each task on its own review path's history instead of one per-task median.
+
+### Added
+- A ledger kind `escape` for a defect found after the merge; run lines carry a `paths` segment,
+  and `/gtm:retro` sets each path's time, tokens and rounds against its escapes.
+
 ## [0.18.0] - 2026-11-13
 
 ### Added
