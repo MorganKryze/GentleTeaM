@@ -72,9 +72,12 @@
   An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one
   Heads-up; never shorten or reword the owner's words to fit. The same words refused a second
   time under `answer`: say why in one line and ask the owner to send the answer again; never
-  reword them. A refusal whose `field` is not under `answer` (a piece's file changed): hand the
-  card again with that piece fixed or dropped, then record the same answer on the new card, with
-  its `id`; the owner is not asked again.
+  reword them. The one exception: a refusal whose `field` is under `pieces[` (a piece's file
+  changed): hand the card again with that piece fixed or dropped, then record the same answer on
+  the new card, with its `id`; the owner is not asked again. Refused `id`, the file holds a newer
+  card: never hand the old card again; say the card moved on, keep the answer in the ledger line,
+  show the newer card and ask the owner which card the answer is for. Refused with field `.`
+  (`json` or `none`) or any other field: the first rule holds, one Heads-up, nothing handed again.
 
 ## Example
 
