@@ -24,7 +24,7 @@
 // are v1.1, the suite, opposing data in a table, the keys the script alone writes, the owner's
 // words whole up to 2000 characters, a piece with no file, the session id never shown, the
 // next message handed as the answer first, also on a resume, and the folder reference's
-// re-check, copy and never-displayed sentences.
+// re-check, copy and never-displayed sentences, its v1.1 key table named apart from decision.v1's.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -244,6 +244,7 @@ const PINS = {
     w("A program re-checks a piece under the project's top before it opens it, and opens only https links."),
     w("A program offers a piece with no file's lines to copy, never to open."),
     w('it is never displayed'),
+    '| v1.1 key | What it holds |',
     'its fingerprint in the logbook; any other file there counts as no mandate',
     '`pass` when GTM or `/gtm:ship` held it, `due` when your program must check it; `null` without one, and after the next commit |',
     '`clock` the writer\'s local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`',

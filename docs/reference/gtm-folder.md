@@ -159,7 +159,7 @@ pieces to open and, per option, what it implies, your own steps, its risk and th
 that answers it. `v` stays 1: a card holding `tldr` is v1.1. It has every key above, plus these,
 in this order after `modules` and `other`; each option adds the keys of the second table.
 
-| Key | What it holds |
+| v1.1 key | What it holds |
 | --- | --- |
 | `tldr` | text, 280, at most two sentences; `summary` holds the same text |
 | `recommandation` | `{option, pourquoi}`, copied from `recommendation`'s `option` and `why`, or null |
