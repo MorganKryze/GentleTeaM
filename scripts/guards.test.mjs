@@ -456,6 +456,22 @@ add('plugins/gtm/skills/gtm/SKILL.md', [
   w('A bug whose defect came in through merged work also gets its `escape` line (`templates/ledger.md`).'),
 ])
 addAbsent('plugins/gtm/skills/gtm/SKILL.md', ['plus the specialist on security or data ground'])
+add('plugins/gtm/agents/architect.md', [
+  w('each task priced on its review path'),
+  w('marked `no <path> run yet`'),
+  w('a wave counted at its longest task'),
+  w('A `text` task plants no mutation and is never replayed.'),
+  w('each task names its `Review path` as that check says'),
+])
+add('plugins/gtm/skills/plan/SKILL.md', [
+  w('`tasks per branch`; the `review path` lines)'),
+  w("Every task has `Review path:` from its Files matched as `templates/delivery.md`'s `## Review paths` says (no line: `full`); a missing or wrong one goes back."),
+  w('The Summary holds the estimate line, each task on its review path.'),
+])
+add('plugins/gtm/templates/plan.md', [
+  '**Tier:** <guarded | standard>\n**Review path:** <text | code | full>\n',
+  w('each task on its review path'),
+])
 const errors = []
 for (const [file, pins] of Object.entries(PINS)) {
   const text = readFileSync(join(root, file), 'utf8')
