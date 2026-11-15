@@ -2108,6 +2108,16 @@ const deliver = [
     log: ['Review path rises from text to full'],
   },
   {
+    name: 'review path: on a rise to full, a reviewer re-review that answers the light path skip is no review',
+    args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
+    reply: implementer(['docs/a.md'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { ...ok, findings: [addressed], summary: 'mutations skipped: light path', mutations: { planted: 0, survived: 0 } } : ok), ['templates/a.md']),
+    returns: { status: 'OPEN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'data-reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 1, minor: 0 } },
+      open: [{ severity: 'important', summary: 'reviewer planted no mutation on the rise to full: mutations skipped: light path', by: 'reviewer' }, { ...badFinding, by: 'reviewer' }] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'), { agentType: 'gtm:data-reviewer', label: 'data-reviewer · round 1' }],
+    log: ['Review path rises from text to full'],
+  },
+  {
     name: 'review path: on a rise to full, a reviewer that approved re-reviews the whole task with the mutation order',
     args: { base: 'b0', paths: PATHS, triggers: TRIGGERS },
     reply: implementer(['scripts/a.mjs'], (d) => (d.label === 'security-reviewer' ? bad : d.label === 'reviewer · round 1' ? { ...ok, summary: 'nothing to mutate: one line', mutations: { planted: 0, survived: 0 } } : ok), ['templates/a.md']),
