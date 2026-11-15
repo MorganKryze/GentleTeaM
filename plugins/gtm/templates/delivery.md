@@ -69,7 +69,8 @@ blocking findings the fix answers re-review, with each specialist its path calls
 the fix touches, on the range since the review they answer; the whole task's range, or the branch
 for the final review, when one of those findings is category `security` or comes from the
 security or data reviewer. Its path: the task's, or the one the fix's own files from git read
-when heavier, never lighter (the final review's: `full`).
+when heavier, never lighter (the final review's: `full`). A path that rose to `full` sends the
+reviewer the full path's mutation order, as `## Review paths` says.
 
 ## The lead's own files
 Read before the first dispatch. The orchestrator keeps the scripts, logs and tool installs it

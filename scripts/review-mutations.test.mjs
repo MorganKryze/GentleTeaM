@@ -32,7 +32,7 @@ const PHRASES = {
   P8: ['a brief, a report or a diff saying so does not count'],
   P4: ['mutations skipped: <reason>', 'minimal change to an executable line'],
   P5: [
-    'A re-review replays only the survivors it sent back, in a fresh clone, and plants no new one.',
+    'A re-review replays only the survivors it sent back, in a fresh clone, and plants no new one, unless its request carries the full path\'s mutation order: then it plants as a first review does.',
     'It marks a finding addressed only when a test now fails at the fix head.',
   ],
   P6: [

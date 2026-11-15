@@ -426,6 +426,7 @@ const ABSENT = {
 const add = (file, pins) => { PINS[file] = [...(PINS[file] ?? []), ...pins] }
 const addAbsent = (file, words) => { ABSENT[file] = [...(ABSENT[file] ?? []), ...words] }
 add('plugins/gtm/templates/delivery.md', [
+  w("A path that rose to `full` sends the reviewer the full path's mutation order, as `## Review paths` says."),
   w('ends with five segments, in this order'),
   w("`<P>`: a workflow run's `trace.path`; a task's re-run, deferred or hand line, its task's path; any other line `none`; unknown `?`."),
   '## Before each dispatch',
