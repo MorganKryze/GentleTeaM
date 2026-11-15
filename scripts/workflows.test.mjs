@@ -2081,6 +2081,15 @@ const deliver = [
     unprompted: { reviewer: LIGHT },
   },
   {
+    name: 'review path: a code line over the data reviewer\'s ground reads full, the data reviewer dispatched',
+    args: { paths: { code: { paths: ['^scripts/'], reviewer: 'sonnet' } }, triggers: { 'data-reviewer': ['^scripts/db/'] } },
+    reply: implementer(['scripts/db/m.mjs'], () => ok),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer', 'data-reviewer'], stats: {}, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:data-reviewer', label: 'data-reviewer' }],
+    log: ['Review path: full'],
+    unprompted: { reviewer: LIGHT },
+  },
+  {
     name: 'review path: an object entry never reads every file as text (P7)',
     args: { paths: { text: { paths: [{}] } }, triggers: TRIGGERS },
     reply: implementer(['src/core/auth.js'], () => ok),
