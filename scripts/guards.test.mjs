@@ -25,9 +25,9 @@
 // words whole up to 2000 characters, their line feeds escaped, and the characters refused in them,
 // a piece with no file, a piece's file left as it is until the answer, the session id never shown,
 // the next message handed as the answer first, also on a resume, a card handed again only for a
-// refused piece, never for a newer card, and the folder reference's re-check, every rule on the
-// resolved file, copy and never-displayed sentences, its v1.1 key table named apart from
-// decision.v1's.
+// refused piece, never for a newer card, shown as stored and not handed, and the folder
+// reference's re-check, every rule on the resolved file, copy and never-displayed sentences, its
+// v1.1 key table named apart from decision.v1's.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -198,7 +198,7 @@ const PINS = {
     "Heads-up; never shorten or reword the owner's words to fit.",
     w('The same words refused a second time under `answer`: say why in one line and ask the owner to send the answer again; never reword them.'),
     w("The one exception: a refusal whose `field` is under `pieces[` (a piece's file changed): hand the card again with that piece fixed or dropped, then record the same answer on the new card, with its `id`; the owner is not asked again."),
-    w("Refused `id`, the file holds a newer card: never hand the old card again; say the card moved on, keep the answer in the ledger line, show the newer card and ask the owner which card the answer is for."),
+    w("Refused `id`, the file holds a newer card: never hand the old card again; say the card moved on, keep the answer in the ledger line, show the newer card as the file holds it, without handing it to the script, and ask the owner which card the answer is for."),
     w("Refused with field `.` (`json` or `none`) or any other field: the first rule holds, one Heads-up, nothing handed again."),
     w("The file stays, answered, until the slug's next card."),
     "--sheet '<root>/sheet.json' <<'GTM_SHEET'`",
