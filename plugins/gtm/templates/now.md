@@ -71,7 +71,10 @@
   resumed session does this first.
   An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one
   Heads-up; never shorten or reword the owner's words to fit. The same words refused a second
-  time: say why in one line and ask the owner to send the answer again; never reword them.
+  time under `answer`: say why in one line and ask the owner to send the answer again; never
+  reword them. A refusal whose `field` is not under `answer` (a piece's file changed): hand the
+  card again with that piece fixed or dropped, then record the same answer on the new card, with
+  its `id`; the owner is not asked again.
 
 ## Example
 
