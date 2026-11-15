@@ -468,7 +468,8 @@ add('plugins/gtm/skills/gtm/SKILL.md', [
   w('checked as `templates/delivery.md` says'),
   w('A bug whose defect came in through merged work also gets its `escape` line (`templates/ledger.md`).'),
 ])
-addAbsent('plugins/gtm/skills/gtm/SKILL.md', ['plus the specialist on security or data ground'])
+add('plugins/gtm/skills/gtm/SKILL.md', [w("naming the reviewers its files' review path calls for.")])
+addAbsent('plugins/gtm/skills/gtm/SKILL.md', ['plus the specialist on security or data ground', 'triggers match its'])
 add('plugins/gtm/agents/architect.md', [
   w('each task priced on its review path'),
   w('marked `no <path> run yet`'),

@@ -85,8 +85,8 @@ write the spec and the plan.
 
 Present the track with its reason and at most two decision cards in **one** message. For a Fix,
 include the 3-line design (what changes, where, how it is proven; for a threshold, the mutation its
-test catches) in that same message, naming the specialists whose `team.md` triggers match its
-files. For a Feature, say small or not, with the file count ("Feature, small, ~4 files").
+test catches) in that same message, naming the reviewers its files' review path calls for. For a
+Feature, say small or not, with the file count ("Feature, small, ~4 files").
 
 A Feature whose screens use only `design.kit`'s patterns (the analyst says so), with ux-qa on:
 the track message says "design in code" and why, and the route skips `/gtm:design`. A new
