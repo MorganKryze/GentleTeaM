@@ -723,10 +723,10 @@ function opened(p, exts, f, asked) {
     try { return new TextDecoder('utf-8', { fatal: true }).decode(readFileSync(fd)) } catch { return null }
   } catch (e) { if (e instanceof Refused) throw e; refuse(f, 'file') } finally { if (fd !== null) try { closeSync(fd) } catch {} }
 }
-// A piece: its type, a title, its path (`lien`: an https link with no user or password), whether
-// it is essential, and `apercu`, null or 1 to 10 lines copied word for word from a text file. A
-// text piece with no file (`chemin` null, as an error from the conversation) carries its lines in
-// `apercu`, required then and quoted from nothing.
+// A piece: its type, a title, its path (`lien`: an https link with no backslash, user or password),
+// whether it is essential, and `apercu`, null or 1 to 10 lines copied word for word from a text
+// file. A text piece with no file (`chemin` null, as an error from the conversation) carries its
+// lines in `apercu`, required then and quoted from nothing.
 function piece(v, f) {
   const q = exact(v, ['type', 'titre', 'chemin', 'essentielle', 'apercu'], f)
   if (typeof q.type !== 'string' || !Object.hasOwn(PIECES, q.type)) refuse(at(f, 'type'), 'list')
@@ -744,7 +744,7 @@ function piece(v, f) {
     txt(q.chemin, 500, g)
     let u = null
     try { u = new URL(q.chemin) } catch {}
-    if (!q.chemin.startsWith('https://') || /\s/.test(q.chemin) || !u || u.protocol !== 'https:' || !u.hostname || u.username || u.password) refuse(g, 'shape')
+    if (!q.chemin.startsWith('https://') || /[\s\\]/.test(q.chemin) || !u || u.protocol !== 'https:' || !u.hostname || u.username || u.password) refuse(g, 'shape')
     return q
   }
   const body = opened(q.chemin, PIECES[q.type], g, q.apercu !== null)
