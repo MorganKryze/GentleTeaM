@@ -207,6 +207,8 @@ key. To answer, a program sends back to the session the chosen option's `message
 words: words equal to an option's `message`, or to its `key` in any case, once trimmed, are
 recorded as that option, any others as `other`.
 The script's answer line names the option recorded, `option`, on every card, or null.
+An answer names the card it answers by its `id`: when the file holds another card, it is refused
+`id` and nothing changes. A card and an answer are written one at a time.
 `session` lets a program send the answer back to the session that waits; it is never displayed.
 A malformed id is written null and the card still written, its line naming `session`.
 

@@ -122,6 +122,8 @@ Each option adds:
 `{"option": "<key>", "other": null}` for an option of the card, or `{"option": null, "other":
 "<the owner's words>"}` for anything else, a reworked option included; on decision.v1, one line
 of at most 280 characters. The script adds `by` and `at`; an answered card is never answered again.
+`--id` names the card answered: the script refuses the answer, `id`, when the file holds another
+card's `id`, a newer card written first.
 Longer, or on several lines, the script refuses it: never shorten or reword the owner's words to
 fit, as `templates/now.md` says.
 On a v1.1 card the owner's words go in whole as `other`, line breaks included, at most 2000

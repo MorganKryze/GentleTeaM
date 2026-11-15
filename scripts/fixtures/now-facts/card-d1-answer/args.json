@@ -3,6 +3,8 @@
   "stdin": "answer.json",
   "args": [
     "--answer",
-    "mandate"
+    "mandate",
+    "--id",
+    "mandate-D1"
   ]
 }

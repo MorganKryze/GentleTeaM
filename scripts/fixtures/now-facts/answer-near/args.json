@@ -3,7 +3,9 @@
   "stdin": "answer.json",
   "args": [
     "--answer",
-    "where-am-i"
+    "where-am-i",
+    "--id",
+    "where-am-i-D1"
   ],
   "variants": [
     {

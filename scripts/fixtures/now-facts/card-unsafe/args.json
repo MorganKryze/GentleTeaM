@@ -33,7 +33,9 @@
     {
       "args": [
         "--answer",
-        "where-am-i"
+        "where-am-i",
+        "--id",
+        "where-am-i-D1"
       ],
       "links": {
         "reports/where-am-i/waiting.json": "../../ledger.md"

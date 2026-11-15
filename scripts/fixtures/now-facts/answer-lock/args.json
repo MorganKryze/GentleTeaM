@@ -3,7 +3,9 @@
   "stdin": "answer.json",
   "args": [
     "--answer",
-    "tri"
+    "tri",
+    "--id",
+    "tri-D1"
   ],
   "commits": [
     {
