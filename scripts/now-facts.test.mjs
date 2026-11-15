@@ -33,7 +33,7 @@
 // file holds reached the state, stdout or stderr; that no owner text of the project
 // sheet, before or after the run, reached stdout or stderr; that the sheet step, waiting on its
 // input, holds no sheet.json.lock and killed there leaves none; that the lock a step holds names its
-// pid and its pid namespace. Run by scripts/validate.mjs. No dependencies.
+// pid and its pid namespace; that of two answers at once the second is refused `answered`. Run by scripts/validate.mjs. No dependencies.
 import { existsSync, readFileSync, readdirSync, mkdtempSync, cpSync, writeFileSync, utimesSync, appendFileSync, rmSync, mkdirSync, statSync, lstatSync, chmodSync, symlinkSync, readlinkSync } from 'node:fs'
 import { join, relative, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
@@ -377,5 +377,39 @@ function named() {
   }
 }
 named()
+// Two answers at once: the first pauses before its rename (a preload marks the moment and waits
+// 500 ms), the second starts then; it waits on reports/<slug>/waiting.json.lock, reads the card
+// the first answered and is refused `answered`, the first's answer kept.
+async function raced() {
+  const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-race-'))
+  try {
+    const r = join(tmp, 'root'), card = join(r, 'reports/tri/waiting.json'), mark = join(tmp, 'mark'), pre = join(tmp, 'pre.mjs')
+    cpSync(join(fixtures, 'answer-v11/root'), r, { recursive: true })
+    git(tmp, ['init', '-q', '-b', 'feat/tri'])
+    appendFileSync(join(tmp, '.git/info/exclude'), '/root/\n/mark\n/pre.mjs\n')
+    mkdirSync(join(tmp, 'docs'))
+    writeFileSync(join(tmp, 'docs/notes.txt'), 'Des notes sur le tri.\n')
+    git(tmp, ['add', 'docs'])
+    git(tmp, ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'notes'])
+    writeFileSync(pre, `import fs from 'node:fs'\nimport { syncBuiltinESMExports } from 'node:module'\nconst rename = fs.renameSync\nfs.renameSync = (a, b) => { if (b.endsWith('/waiting.json')) { fs.writeFileSync(${JSON.stringify(mark)}, ''); Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 500) } return rename(a, b) }\nsyncBuiltinESMExports()\n`)
+    const go = (pre, option) => {
+      const p = spawn(process.execPath, [...pre, script, '--root', r, '--now', new Date(NOW).toISOString(), '--answer', 'tri'], { cwd: tmp, env: { ...env, TZ: 'UTC' }, stdio: ['pipe', 'pipe', 'ignore'] })
+      let out = ''
+      p.stdout.on('data', (d) => { out += d })
+      p.stdin.end(JSON.stringify({ option, other: null }))
+      return new Promise((done) => p.on('close', (code) => done({ code, out: out.trim() })))
+    }
+    const first = go(['--import', pathToFileURL(pre).href], 'A')
+    for (let i = 0; i < 200 && !existsSync(mark); i++) await new Promise((done) => setTimeout(done, 10))
+    const [a, b] = await Promise.all([first, go([], 'B')])
+    const want = JSON.stringify({ written: false, field: 'answer', why: 'answered', option: null })
+    if (a.code !== 0 || b.code !== 1 || b.out !== want) errors.push(`--answer race: the second printed ${b.out} (exit ${b.code}), want ${want}; the first exit ${a.code}`)
+    if (JSON.parse(readFileSync(card, 'utf8')).answer?.option !== 'A') errors.push('--answer race: the first answer was not kept')
+    if (existsSync(`${card}.lock`)) errors.push('--answer race: waiting.json.lock left behind')
+  } finally {
+    rmSync(tmp, { recursive: true, force: true })
+  }
+}
+await raced()
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`now-facts: ${readdirSync(fixtures).length} scenarios and the delivery tail OK`)

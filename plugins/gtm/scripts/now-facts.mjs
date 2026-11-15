@@ -34,8 +34,8 @@
 // JSON), checked whole against decision.v1 (an allowlist: every key required, nothing else, each
 // text, length, number and list checked); it writes reports/<slug>/waiting.json by a rename with
 // `v`, `slug`, `asked`, `other.allowed` and `answer` set, or refuses, deleting that file. With
-// --answer <slug> it records the owner's answer ({option, other} on stdin) in that card, or
-// changes nothing. Both print one line {written, field, why}: a refused field's path, built from
+// --answer <slug> it records the owner's answer ({option, other} on stdin) in that card, holding
+// reports/<slug>/waiting.json.lock from the read to the rename, or changes nothing. Both print one line {written, field, why}: a refused field's path, built from
 // the shape's own keys, and a reason from a closed list; never a card's text. Exit 1 refused; 3
 // nothing written in a linked worktree or over a tracked file, a link or a non-file.
 // decision.v1.1 is a decision.v1 card that holds `tldr`, `v` still 1: 2 to 4 options, each with
@@ -908,10 +908,24 @@ function cardFile(s, answering) {
   for (const [d, k] of [[join(root, 'reports'), 'dir'], [dir, 'dir'], [file, 'file']]) if (![null, k].includes(kind(d))) return no3(`${relative(root, d)} is not a ${k === 'dir' ? 'folder' : 'file'}`)
   if (git(root, ['ls-files', '--error-unmatch', '--', relative(root, file)]) !== null) return no3('tracked by git')
   const drop = () => { if (!answering && kind(file) === 'file') unlinkSync(file) }
-  const stamp = new Date(now).toISOString()
+  const stamp = new Date(now).toISOString(), given = input(), lock = `${file}.lock`
+  // An answer holds waiting.json.lock, made exclusively, from the read of the card to the rename,
+  // as the sheet step holds sheet.json.lock (the same wait, the same stale reclaim): of two answers
+  // at once the second reads the card the first answered and is refused `answered`.
+  let ino = null
+  if (answering && kind(dir) === 'dir') {
+    for (let tries = 20, reclaims = 1; ; ) {
+      try { if ((ino = lockTake(lock)) !== null) break } catch { return no3('the write failed, the card unchanged') }
+      if (reclaims && lockFree(lock)) { reclaims--; continue }
+      if (--tries === 0) return no3(`waiting.json.lock is held; reclaimed once ${LOCK / 1000} s old, or remove it by hand when no answer is being written`)
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50)
+    }
+  }
+  try { return written(s, answering, given, stamp, dir, file, drop, no3) } finally { if (ino !== null) try { if (lstatSync(lock).ino === ino) unlinkSync(lock) } catch {} }
+}
+function written(s, answering, given, stamp, dir, file, drop, no3) {
   let c
   try {
-    const given = input()
     if (given === undefined) refuse('', 'json')
     if (answering) {
       let old = null
