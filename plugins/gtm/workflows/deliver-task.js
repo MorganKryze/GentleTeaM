@@ -333,13 +333,14 @@ for (; round <= limit; round++) {
   const results = await parallel(asks.map((q) => () => retried(q.prompt, q.opts, q.pass)))
   // Skipping mutations is for a light path only: the reviewer saying so on the full path, with
   // nothing planted, is no review. It is dispatched again at once, on any round, with the full
-  // path's mutation order, and those plants count; never a fix round. A second skip is no review.
+  // path's mutation order, and those plants count; never a fix round. A second skip, or a second
+  // dispatch with no `mutations` at all, is no review; 0 planted with a reason is its count.
   // A specialist, or a review that planted, may quote the phrase.
   const fresh = new Set()
   for (const [i, res] of results.entries()) {
     if (!(res && path === 'full' && pending[i].r === 'reviewer' && skipped(res))) continue
     const again = await retried(asks[i].prompt + MUTATE, { ...asks[i].opts, label: `${asks[i].opts.label} · mutations` })
-    results[i] = again && skipped(again) ? { ...again, twice: true } : again
+    results[i] = again && (skipped(again) || !again.mutations) ? { ...again, twice: true } : again
     fresh.add(i)
   }
   open = []
