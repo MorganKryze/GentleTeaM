@@ -436,7 +436,7 @@ add('plugins/gtm/templates/delivery.md', [
   w("The `review path` lines read as the workflow reads them: a file on the data reviewer's triggers, on a risky path or given as an absolute path reads `full`, whatever line covers it;"),
   w("a file on a `code` regex reads `code`, else on a `text` one `text`, else `full`; a task takes its heaviest file; no file reads `full`; a regex that fails or is empty matches nothing; anything but a map of objects reads as no line."),
   w("Once a task returns, its range's files from git (deliver §1) are matched against them."),
-  w('A heavier path than its `trace.path`, or a reviewer that path calls for missing from its `reviewers`: that reviewer reviews the range alone (`review: "range"` with git\'s files, or a direct dispatch on a Fix), before the next task, and the heavier path holds for that task.'),
+  w('A heavier path than its `trace.path`, or a reviewer that path calls for missing from its `reviewers`: each reviewer it calls for reviews the range (`review: "range"` with git\'s files, or a direct dispatch on a Fix) before the next task, the reviewer with the full path\'s mutation order when the path rose to `full`; the heavier path holds for that task once that review is clean.'),
   w("A `trace.path` of `none` or `?`, or none at all, reads lighter than any path, so git's path holds."),
   w('a per-task specialist its path calls for on a standard task → Heads-up'),
   w("a specialist its path calls for missing from a guarded task's `reviewers` reviews it alone."),
@@ -448,7 +448,7 @@ add('plugins/gtm/templates/delivery.md', [
 add('plugins/gtm/skills/deliver/SKILL.md', [
   w('then checked as `templates/delivery.md` says.'),
   w("as `templates/delivery.md`'s `## Review paths` says"),
-  w('every task ran on the `full` path, and each reviewer that path calls for on its files (§1) is in its `reviewers`'),
+  w('every task ran on the `full` path (raised to it after the fact: once that re-review is clean), each reviewer it calls for on its files (§1) in its `reviewers`'),
   w('on the range `## Re-reviews` gives'),
 ])
 addAbsent('plugins/gtm/skills/deliver/SKILL.md', ['whose trigger matches its files', 'on the fix range only'])

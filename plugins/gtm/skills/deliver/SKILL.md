@@ -103,8 +103,8 @@ Skip it only when all hold; then leave this slug's minors for `/gtm:retro`, disp
   <git.base> HEAD`, each next base the previous task's head, `HEAD` the last task's head (no hand
   commit or escalated Fix's commit outside a task); a wave is one link: its tasks share its base,
   the next base is the head after its merges, which stay in range;
-- every task ran on the `full` path, and each reviewer that path calls for on its files (§1) is in
-  its `reviewers` (a light path never skips it: the final review is its backstop);
+- every task ran on the `full` path (raised to it after the fact: once that re-review is clean),
+  each reviewer it calls for on its files (§1) in its `reviewers` (the final review backstops it);
 - a standard task counts if a clean `review: "range"` with `reviewer` covers it and deferred reviews
   span fork point to `HEAD`, each clean at 0 rounds, none owed; else the final review (of
   merge-base..`HEAD`) reads in full what no task review saw: standard ranges, commits in no task or
