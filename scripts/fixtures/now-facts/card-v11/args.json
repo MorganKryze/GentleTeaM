@@ -2675,6 +2675,25 @@
         ]
       ],
       "rootName": ".gtm"
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          "https://jeton@example.org/pr/1"
+        ]
+      ]
     }
   ]
 }
