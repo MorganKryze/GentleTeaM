@@ -446,6 +446,16 @@ add('plugins/gtm/templates/delivery.md', [
   w("Its path: the task's, or the one the fix's own files from git read when heavier, never lighter (the final review's: `full`)."),
   w("the whole task's range, or the branch for the final review, when one of those findings is category `security` or comes from the security or data reviewer."),
 ])
+// A31: the final review stays on the full path and replays two planted mutations; A14's override.
+add('plugins/gtm/agents/final-reviewer.md', [
+  w('Review the whole branch (`merge-base..head`) on the full path, whatever path its tasks took,'),
+  w('replay two in a scratch clone, those that move or drop a pinned threshold, plan order on a tie (all of them when two or fewer).'),
+  w('one that survives is a must-fix.'),
+])
+add('plugins/gtm/templates/team.md', [
+  '- review path: code · paths `^(scripts|hooks|[.]github/workflows)/` · reviewer sonnet · why: CI · YYYY-MM-DD',
+  w("A line overrides the other specialists' triggers on the files it covers, never data or risky ground: a file on the data reviewer's triggers or a risky path reads full, whatever line covers it."),
+])
 add('plugins/gtm/skills/deliver/SKILL.md', [
   w('then checked as `templates/delivery.md` says.'),
   w("as `templates/delivery.md`'s `## Review paths` says"),
