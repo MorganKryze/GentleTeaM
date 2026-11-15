@@ -195,7 +195,7 @@ const PINS = {
     'An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one',
     "Heads-up; never shorten or reword the owner's words to fit.",
     w('The same words refused a second time: say why in one line and ask the owner to send the answer again; never reword them.'),
-    'The file stays, answered, until the slug\'s next card.',
+    w("The file stays, answered, until the slug's next card."),
     "--sheet '<root>/sheet.json' <<'GTM_SHEET'`",
     'never write `<root>/sheet.json` yourself',
     '`/<rel>/sheet.json` goes to the exclude file',
@@ -203,6 +203,7 @@ const PINS = {
     w('A question or "continue" is answered in the conversation; the card stays waiting.'),
     w('One reply for two cards answers the first; the second is handed again.'),
     w('A resumed session does this first.'),
+    w('In the JSON handed to `--answer`, each line feed of the words is `\\n` inside the string, never a raw line break.'),
   ],
   'plugins/gtm/templates/decision.md': [
     'You never write the card',
@@ -279,8 +280,7 @@ const PINS = {
     'remote). It never diffs in this repository or a plain local clone, which shares its objects and',
   ],
   'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:',
-    '> An answer quoted that holds several lines goes in as its first line plus `(+<n> lines,',
-    '> reports/<slug>/waiting.json)`; the card file holds the words whole.'],
+    w('> An answer quoted goes in whole on one line, each of its line feeds written as `\\n`.')],
   'plugins/gtm/skills/plan/SKILL.md': [
     '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',
     '(split as proposed / one branch anyway / wait), with your recommendation;',
