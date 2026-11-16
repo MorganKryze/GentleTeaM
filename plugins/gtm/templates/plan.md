@@ -21,6 +21,9 @@ Each one numbered, so a task names the ones it touches.
 - C1 Gate before every commit: <commands from config, with prefix>.
 - C2 Commits: <rules from config>. Tests in the same commit as their code.
 - C3 <Budgets, copy rules, a11y rules that bind every task.>
+- C4 With `stealth: on` only, named by every task: no id from a spec or plan (`A1`, `D2`, `R3`,
+  `C7`, `T4`) in a tracked file, comments and test names included; a test's name says what it
+  checks.
 
 ## Runner differences
 <One row per check, of the gate or the CI, whose behaviour can differ between the local OS and the

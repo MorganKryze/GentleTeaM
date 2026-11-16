@@ -189,6 +189,9 @@ const TWINS = [
   { test: 'guards', file: 'docs/reference/commands.md', from: ' --permission-mode dontAsk', to: '', says: 'permission-mode dontAsk' },
   { test: 'guards', file: 'docs/reference/commands.md', from: 'even when they are offered.\n', to: 'even when they are offered.\nclaude -p --allowedTools Read,Bash\n', says: 'offers Bash or Write' },
   { test: 'guards', file: 'docs/reference/commands.md', from: 'even when they are offered.\n', to: 'even when they are offered.\nclaude -p --dangerously-skip-permissions\n', says: 'skips the permission checks' },
+  { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: 'named by every task', to: 'named by the tasks that write tests', says: 'named\\s+by\\s+every\\s+task' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'never paraphrased', to: 'in substance', says: 'never\\s+paraphrased' },
+  { test: 'guards', file: 'plugins/gtm/agents/implementer.md', from: 'comments and test names included, whatever', to: 'comments included, whatever', says: 'test\\s+names\\s+included,\\s+whatever' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []

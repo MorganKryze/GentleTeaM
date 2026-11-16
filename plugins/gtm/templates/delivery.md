@@ -36,8 +36,10 @@ today's lines reads them as before. A run's line without this tail lacks its tra
 ## Before each dispatch
 Before a task's or a Fix's workflow, a re-run review, a re-review, a hand fix's brief, a fix wave
 and the final review, read the slug's ledger `ruling` lines and the human's answers newer than the
-brief. Write each one that changes its scope, its files or a decision into the brief, quoted with
-its date. End the brief with `> Ledger read to line <n> (<date>).`
+brief. Write each one that changes its scope, its files or a decision into the brief, quoted word
+for word with its date, never paraphrased; a brief that applies a ruling, an answer or a spec line,
+whatever its age, quotes it the same way, with its date or its id. End the brief with
+`> Ledger read to line <n> (<date>).`
 
 ## Review paths
 The `review path` lines read as the workflow reads them: a file on the data reviewer's triggers, on

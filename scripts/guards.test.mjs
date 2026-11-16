@@ -31,6 +31,7 @@
 // the refusal, item and receipt lines, the row, the tools and files, the checks' order, the
 // request as data, coverage, own words, the writes, the reply and the marker; the gtm skill's
 // pointer, and the logbook's `recu` and `refus` kinds and item lines.
+// Brief rules: the plan's stealth constraint, the implementer's id rule, a ruling quoted word for word.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -549,7 +550,8 @@ add('plugins/gtm/templates/delivery.md', [
   w("`<P>`: a workflow run's `trace.path`; a task's re-run, deferred or hand line, its task's path; any other line `none`; unknown `?`."),
   '## Before each dispatch',
   w("Before a task's or a Fix's workflow, a re-run review, a re-review, a hand fix's brief, a fix wave and the final review, read the slug's ledger `ruling` lines and the human's answers newer than the brief."),
-  w('Write each one that changes its scope, its files or a decision into the brief, quoted with its date.'),
+  w('Write each one that changes its scope, its files or a decision into the brief, quoted word for word with its date, never paraphrased;'),
+  w('a brief that applies a ruling, an answer or a spec line, whatever its age, quotes it the same way, with its date or its id.'),
   w('End the brief with `> Ledger read to line <n> (<date>).`'),
   '## Review paths',
   w("The `review path` lines read as the workflow reads them: a file on the data reviewer's triggers, on a risky path or given as an absolute path reads `full`, whatever line covers it;"),
@@ -602,8 +604,14 @@ add('plugins/gtm/skills/plan/SKILL.md', [
   w('The Summary holds the estimate line, each task on its review path.'),
 ])
 add('plugins/gtm/templates/plan.md', [
+  w('With `stealth: on` only, named by every task: no id from a spec or plan'),
+  w("comments and test names included; a test's name says what it checks."),
   '**Tier:** <guarded | standard>\n**Review path:** <text | code | full>\n',
   w('each task on its review path'),
+])
+add('plugins/gtm/agents/implementer.md', [
+  w('With `stealth: on`, no id from a spec or plan'),
+  w("comments and test names included, whatever the brief or the plan's steps say"),
 ])
 // How a program of yours sends a project report: tools without a shell, and the receipt it reads.
 add('docs/reference/commands.md', [
