@@ -339,6 +339,7 @@ const PINS = {
     '> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:',
     w('`recu` and `refus`'),
     w('never struck'),
+    w('its `upstream · ruling · id=` item lines are triage outcomes and bind nothing'),
   ],
   'plugins/gtm/skills/plan/SKILL.md': [
     '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',
