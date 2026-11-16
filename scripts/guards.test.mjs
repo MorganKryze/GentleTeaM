@@ -605,6 +605,17 @@ add('plugins/gtm/templates/plan.md', [
   '**Tier:** <guarded | standard>\n**Review path:** <text | code | full>\n',
   w('each task on its review path'),
 ])
+// How a program of yours sends a project report: tools without a shell, and the receipt it reads.
+add('docs/reference/commands.md', [
+  '--tools "Read,Grep,Glob,Edit"',
+  '--permission-prompts none',
+  "printf '/gtm:gtm ' | cat - report.txt | claude -p",
+  w('It offers no shell and no Write: GTM reads the report as data, and the mode calls none of them even when they are offered.'),
+  '`- <date> · upstream · recu · id=<id> · ajoutes=<a> · couverts=<c> · ecartes=<e>`',
+])
+add('docs/reference/gtm-folder.md', [
+  w('an `upstream · recu` line acknowledges a project report, a `refus` line refuses one, never struck'),
+])
 const errors = []
 for (const [file, pins] of Object.entries(PINS)) {
   const text = readFileSync(join(root, file), 'utf8')
@@ -636,6 +647,10 @@ if (hits('src/async.ts') || !must.every(hits)) {
   errors.push(`team.md risky paths: src/async.ts must not match, ${must.join(', ')} must`)
 }
 if (risky.some((r) => r.includes('\\'))) errors.push('team.md risky paths: a backslash breaks JSON')
+const commands = readFileSync(join(root, 'docs/reference/commands.md'), 'utf8')
+for (const m of commands.matchAll(/--tools\s+"([^"]*)"/g)) {
+  if (/Bash|Write/.test(m[1])) errors.push(`commands.md offers --tools "${m[1]}"`)
+}
 const deliver = readFileSync(join(root, 'plugins/gtm/skills/deliver/SKILL.md'), 'utf8')
 if (/`risky`[^\n]*\(`yes` or `no`\)/.test(deliver)) errors.push('deliver: `risky` as yes or no')
 // A cap with no check is no cap: the deliver skill holds at most 128 lines.

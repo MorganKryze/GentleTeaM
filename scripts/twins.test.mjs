@@ -183,6 +183,7 @@ const TWINS = [
   { test: 'guards', file: LEDGER, from: 'and bind nothing', to: 'and bind as rulings', says: 'bind\\s+nothing' },
   { test: 'guards', file: LEDGER, from: 'never struck', to: 'struck when superseded', says: 'never\\s+struck' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: "a backlog story's title", to: 'the backlog row as `backlog.md:<n>`', says: "a\\s+backlog\\s+story's\\s+title" },
+  { test: 'guards', file: 'docs/reference/commands.md', from: '--tools "Read,Grep,Glob,Edit"', to: '--tools "Read,Grep,Glob,Edit,Bash"', says: 'offers --tools "Read,Grep,Glob,Edit,Bash"' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []
