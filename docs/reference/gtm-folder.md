@@ -208,6 +208,8 @@ file's lines to copy, never to open.
 key. To answer, a program sends back to the session the chosen option's `message`, or your own
 words: words equal to an option's `message`, or to its `key` in any case, once trimmed, are
 recorded as that option, any others as `other`.
+The owner's words travel as a JSON string everywhere: in the answer handed to the script and on
+the ledger line that quotes them (a backslash `\\`, a quote `\"`, a line feed `\n`).
 The script's answer line names the option recorded, `option`, on every card, or null.
 An answer names the card it answers by its `id` and its `asked`: when the file holds another
 card, even one with the same `id`, it is refused `id` and nothing changes.

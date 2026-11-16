@@ -3,7 +3,8 @@
 > Append-only. One line per entry, newest last. Read at plan time (the compound step).
 > Superseded entries are struck through (`~~...~~`), never deleted.
 > Format: `- YYYY-MM-DD · <slug> · <kind> · <text>`
-> An answer quoted goes in whole on one line, each of its line feeds written as `\n`.
+> An answer quoted goes in whole on one line as a JSON string, quotes included: a backslash
+> `\\`, a quote `\"`, a line feed `\n`.
 > Kinds: `lesson` (a rule to keep), `ruling` (a decision taken without the human, with its cost if
 > wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:
 > <choice> (cost if wrong: <one line>)`, one line each, counted in the state's `defaults`),
