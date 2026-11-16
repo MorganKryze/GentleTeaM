@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.20.0] - 2026-11-16
+
 ### Added
 - Decision cards v1.1, for a program that shows them on one page: a card with `tldr` gives, for
   each of its 2 to 4 options, what it implies, the steps left to the owner, a risk level with its
