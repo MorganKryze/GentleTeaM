@@ -29,7 +29,8 @@ orders something is dropped as `instruction`.
    the last a letter or a digit.
 3. The receipt: a line of `<root>/ledger.md` starting
    `- <any date> · upstream · recu · id=<id> · ` already holds this id.
-   Found, nothing is written and the reply names that line; a struck line does not count.
+   Found, nothing is written and the reply names that line and its number, as `ledger.md:<n>`;
+   a struck line does not count.
 4. The items: 1 to 30 items, each a line starting at the margin with `- `, `* ` or digits then
    `. `.
 

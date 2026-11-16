@@ -627,6 +627,9 @@ add('plugins/gtm/templates/upstream.md', [
   w('A run that adds no row makes no backlog Edit.'),
   w('in one Edit, after reading it, no existing line changed:'),
 ])
+// A9: a found receipt is given with its line number.
+add('plugins/gtm/templates/upstream.md', [w('the reply names that line and its number, as `ledger.md:<n>`')])
+add('docs/reference/commands.md', [w('the reply names the receipt already there and its number, as `ledger.md:<n>`')])
 add('docs/reference/gtm-folder.md', [
   w('an `upstream · recu` line acknowledges a project report, a `refus` line refuses one, never struck'),
 ])

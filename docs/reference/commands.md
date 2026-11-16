@@ -162,5 +162,5 @@ gets a refusal instead, `balises` for the tags, `vide` for no item, `trop` for o
 `- <date> · upstream · refus · id=<id> · raison=<balises|vide|trop>`
 
 Your program marks a report received only once it finds its receipt line. A received id sent
-again changes nothing: the reply names the receipt already there. A `refus` line means fix the
-report and send it again.
+again changes nothing: the reply names the receipt already there and its number, as
+`ledger.md:<n>`. A `refus` line means fix the report and send it again.
