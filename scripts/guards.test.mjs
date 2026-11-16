@@ -330,6 +330,8 @@ const PINS = {
     w('at most 160 characters'),
     w('`backlog.md` first, in one Edit'),
     w('read it again and redo that Edit once'),
+    w('after running check 3 again (the receipt found: stop and reply with that line)'),
+    w('rows carrying `(upstream <id>)` counted as covered'),
     w('a row carrying `(upstream <id>)` covers the item it was added for'),
     w("a backlog story's title, `ledger.md:<n>` or `CHANGELOG.md:<n>`"),
   ],

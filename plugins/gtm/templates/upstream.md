@@ -65,7 +65,9 @@ changed: the item lines in the report's order, then the receipt last.
 - `- <date> · upstream · recu · id=<id> · ajoutes=<a> · couverts=<c> · ecartes=<e>`
 
 `<date>` is today's date as Claude Code gives it. An Edit refused because the file changed since
-it was read: read it again and redo that Edit once; refused again, stop, with no receipt.
+it was read: read it again and redo that Edit once, after running check 3 again (the receipt
+found: stop and reply with that line) and the triage again, rows carrying `(upstream <id>)`
+counted as covered; refused again, stop, with no receipt.
 
 ## Reply
 At most three lines in `language.human`: the line written or found, then the counts or the
