@@ -633,9 +633,11 @@ add('plugins/gtm/templates/upstream.md', [w('the reply names that line and its n
 add('docs/reference/commands.md', [w('the reply names the receipt already there and its number, as `ledger.md:<n>`')])
 // What the reader parses: the tags, the id rule, the item count, the refus line and its reasons.
 add('docs/reference/commands.md', [
-  '`<retours_projets id="<id>">` and `</retours_projets>`',
+  '\n<retours_projets id="<id>">\n</retours_projets>\n',
+  w('The report sits between two tags, the word `retours_projets` appearing exactly twice:'),
   w('word `retours_projets` appearing exactly twice'),
-  w('The id is 1 to 64 characters, each a lowercase letter a-z, a digit 0-9 or `-`, the first and the last a letter or a digit.'),
+  '- 1 to 64 characters, each a lowercase letter a-z, a digit 0-9 or `-`;',
+  '- the first and the last a letter or a digit.',
   w('1 to 30 items'),
   '`- <date> · upstream · refus · id=<id> · raison=<balises|vide|trop>`',
   w('`balises` for the tags, `vide` for no item, `trop` for over 30'),

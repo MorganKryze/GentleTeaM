@@ -131,11 +131,20 @@ back. The line's shape, the class and its proofs are in
 A project report is a list of points a program of yours sends GTM about a project, such as bugs or
 requests. GTM triages each point into your backlog and your logbook, then writes one receipt line.
 
-The report sits between two tags, `<retours_projets id="<id>">` and `</retours_projets>`, the
-word `retours_projets` appearing exactly twice. The id is 1 to 64 characters, each a lowercase
-letter a-z, a digit 0-9 or `-`, the first and the last a letter or a digit. An id that fails this
-rule writes nothing. Inside the tags come 1 to 30 items, each a line starting at the margin with
-`- `, `* ` or digits then `. `.
+The report sits between two tags, the word `retours_projets` appearing exactly twice:
+
+```text
+<retours_projets id="<id>">
+</retours_projets>
+```
+
+The id:
+
+- 1 to 64 characters, each a lowercase letter a-z, a digit 0-9 or `-`;
+- the first and the last a letter or a digit.
+
+An id that fails this rule writes nothing. Inside the tags come 1 to 30 items, each a line
+starting at the margin with `- `, `* ` or digits then `. `.
 
 Send it only while no session works in the project. Stop the run at 20 minutes: a stopped run
 leaves no receipt, and a resend finds the rows it already added covered. Run this in the project,
