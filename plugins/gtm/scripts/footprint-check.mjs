@@ -2,8 +2,8 @@
 // Footprint check: scans a branch for traces of GTM before it ships with stealth on.
 // Looks at the branch name, its commit messages, the PR text, the lines its diff adds and the
 // files it creates, for GTM's vocabulary, excluded-path names, attribution trailers and the
-// writing tells of guidelines/voice.md. A spec or plan id (A1, C7, T12) in an added comment or test
-// name is a note, never a hit. No dependencies.
+// writing tells of guidelines/voice.md. A spec or plan id (A1, C7, T12) in an added comment, or in
+// the label or name of a test an added line opens, is a note, never a hit. No dependencies.
 //
 // node footprint-check.mjs [--config <root>/config.yml] [--base <ref>] [--pr <file>] [--repo <dir>] [--json]
 // Exit 0: no hit (notes may remain). Exit 1: at least one hit. Exit 2: usage or git error.
@@ -39,10 +39,13 @@ const TELLS = {
 }
 const DOC_FILE = /\.(?:md|mdx|markdown|txt|rst|adoc)$/i
 // A spec or plan id standing alone (A1, D2, R3, C7, T12), in a comment or a test name of a code
-// file: a note only, since a cell, a note or a code can look the same.
+// file: a note only, since a cell, a note or a code can look the same. On a code line only the
+// label or name of the test is read, never its body, a method call (`/x/.test('D2')`) or a chain
+// other than a test's own modifiers (`context.get('C7')`).
 const PLAN_ID = /(?<![A-Za-z0-9])[ACDRT]\d{1,2}(?![A-Za-z0-9])/
 const TEST_NAME = /\b(?:it|test|describe|context|specify)(?:\.\w+)*\s*\(?\s*['"`]|\.Run\(\s*"|\bdef test_|\bfunc Test/
 const COMMENT_LINE = /^\s*(?:\/\/|\/\*|\*|#(?!!)|<!--|--|;)/
+const MODIFIERS = new Set(['only', 'skip', 'todo', 'each', 'concurrent', 'failing', 'fails', 'sequential', 'serial', 'parallel', 'fixme', 'slow', 'step', 'describe'])
 
 function parseArgs(argv) {
   const a = { json: false }
@@ -179,9 +182,23 @@ function bulletNotes(lines, whereOf, ctx) {
   })
   flush()
 }
+// The part of a code file's line an id is looked for in: a comment line whole, else the quoted
+// label or the name of the first test the line opens; null when it opens none.
+function idText(text) {
+  if (COMMENT_LINE.test(text)) return text
+  for (const m of text.matchAll(new RegExp(TEST_NAME, 'g'))) {
+    if (m[0][0] !== '.' && text[m.index - 1] === '.') continue
+    const chain = m[0].match(/^\w+((?:\.\w+)*)/)?.[1]
+    if (chain && !chain.slice(1).split('.').every((w) => MODIFIERS.has(w))) continue
+    const rest = text.slice(m.index + m[0].length)
+    const q = m[0].at(-1)
+    return `'"\``.includes(q) ? rest.split(new RegExp(`(?<!\\\\)${q}`))[0] : m[0].replace(/^\w+ /, '') + rest.match(/^\w*/)[0]
+  }
+  return null
+}
 function idNote(text, where, ctx) {
   if (ctx.skip.has('plan-id') || ctx.allow.some((a) => a.test(text))) return
-  const m = text.match(PLAN_ID)
+  const m = idText(text)?.match(PLAN_ID)
   if (m) ctx.notes.push({ kind: 'plan-id', where, match: m[0], line: text.trim().slice(0, 100) })
 }
 function scanMessage(text, whereOf, ctx) {
@@ -237,7 +254,7 @@ export function check({ repo = '.', config, base, pr } = {}) {
       else if (!fenced) scope = 'prose'
     } else if (COMMENT_LINE.test(text)) scope = 'prose'
     scanLine(text, `${file}:${n}`, scope, ctx)
-    if (!DOC_FILE.test(file) && (COMMENT_LINE.test(text) || TEST_NAME.test(text))) idNote(text, `${file}:${n}`, ctx)
+    if (!DOC_FILE.test(file)) idNote(text, `${file}:${n}`, ctx)
     n++
   }
   return { branch, base: baseRef, hits: ctx.hits, notes: ctx.notes }
