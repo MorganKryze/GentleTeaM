@@ -3,10 +3,16 @@
   "hits": [],
   "notes": [
     "plan-id | spec/rules_spec.rb:2 | C9",
+    "plan-id | spec/rules_spec.rb:4 | C8",
+    "plan-id | spec/rules_spec.rb:5 | R2",
     "plan-id | src/rules.js:1 | A1",
     "plan-id | src/rules.test.js:1 | T12",
     "plan-id | src/rules.test.js:3 | R3",
     "plan-id | src/rules.test.js:4 | D10",
+    "plan-id | src/rules.test.js:10 | D3",
+    "plan-id | src/rules.test.js:11 | T6",
+    "plan-id | src/rules_test.go:2 | A3",
+    "plan-id | src/rules_test.go:3 | T5",
     "plan-id | tests/test_rules.py:1 | D2",
     "plan-id | tests/test_rules.py:2 | A1"
   ]
