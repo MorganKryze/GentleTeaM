@@ -16,8 +16,8 @@ versions follow [SemVer](https://semver.org/).
 ### Changed
 - With `stealth: on`, every task of a plan names a constraint that keeps spec and plan ids out of
   tracked files, comments and test names included, and the implementer holds to it over the brief.
-- A brief quotes each ruling, answer or spec line it applies word for word, with its date, never
-  paraphrased.
+- A brief quotes each ruling, answer or spec line it applies word for word, with its date or its
+  id, never paraphrased.
 
 ## [0.21.0] - 2026-11-16
 
