@@ -198,7 +198,8 @@ const PINS = {
     'An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one',
     "Heads-up; never shorten or reword the owner's words to fit.",
     w('The same words refused a second time under `answer`: say why in one line and ask the owner to send the answer again; never reword them.'),
-    w("The one exception: a refusal whose `field` is under `pieces[` (a piece's file changed): hand the card again with that piece fixed or dropped, then record the same answer on the new card, with its `id`; the owner is not asked again."),
+    w("The one exception: a refusal whose `field` is under `pieces[` (a piece's file changed): hand the card again with that piece fixed or dropped, then record the same answer on the new card, with its `id` and the `asked` its `--card` line printed; the owner is not asked again."),
+    w("keep each card's `asked` from its `--card` line, or read it with the card when you show one from the file; never read it again when the answer comes."),
     w("Refused `id`, the file holds a newer card: never hand the old card again; say the card moved on, keep the answer in the ledger line, show the newer card as the file holds it, without handing it to the script, and ask the owner which card the answer is for."),
     w("Refused with field `.` (`json` or `none`) or any other field: the first rule holds, one Heads-up, nothing handed again."),
     w("The file stays, answered, until the slug's next card."),
@@ -293,7 +294,7 @@ const PINS = {
   ],
   'plugins/gtm/templates/ledger.md': [
     '> An answer quoted goes in whole on one line as a JSON string, quotes included: a backslash',
-    '> `\\\\`, a quote `\\"`, a line feed `\\n`.',
+    '> `\\\\`, a quote `\\"`, a line feed `\\n`, a line or paragraph separator `\\u2028`, `\\u2029`.',
     '> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
   'plugins/gtm/skills/plan/SKILL.md': [
     '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',

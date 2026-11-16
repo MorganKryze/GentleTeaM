@@ -61,7 +61,8 @@
   card is answered, and the file still holds that card's `id`, record the answer before the run
   view's rewrite: the same command with `--answer <slug> --id <id> --asked <instant>`, that card's
   `id` and the `asked` its `--card` line printed, and the answer `templates/decision.md`
-  describes: keep each card's `asked` from its `--card` line. In the JSON handed to `--answer`,
+  describes: keep each card's `asked` from its `--card` line, or read it with the card when you show
+  one from the file; never read it again when the answer comes. In the JSON handed to `--answer`,
   the words are one JSON string: a backslash `\\`, a quote `\"`, a line feed `\n`, never a raw line
   break. The ledger line quotes them as that same JSON string. The file stays, answered, until the
   slug's next card.
@@ -76,8 +77,9 @@
   time under `answer`: say why in one line and ask the owner to send the answer again; never
   reword them. The one exception: a refusal whose `field` is under `pieces[` (a piece's file
   changed): hand the card again with that piece fixed or dropped, then record the same answer on
-  the new card, with its `id`; the owner is not asked again. Refused `id`, the file holds a newer
-  card: never hand the old card again; say the card moved on, keep the answer in the ledger line,
+  the new card, with its `id` and the `asked` its `--card` line printed; the owner is not asked
+  again. Refused `id`, the file holds a newer card: never hand the old card again; say the card
+  moved on, keep the answer in the ledger line,
   show the newer card as the file holds it, without handing it to the script, and ask the owner
   which card the answer is for. Refused with field `.` (`json` or `none`) or any other field: the
   first rule holds, one Heads-up, nothing handed again.

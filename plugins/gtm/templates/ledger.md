@@ -4,7 +4,7 @@
 > Superseded entries are struck through (`~~...~~`), never deleted.
 > Format: `- YYYY-MM-DD · <slug> · <kind> · <text>`
 > An answer quoted goes in whole on one line as a JSON string, quotes included: a backslash
-> `\\`, a quote `\"`, a line feed `\n`.
+> `\\`, a quote `\"`, a line feed `\n`, a line or paragraph separator `\u2028`, `\u2029`.
 > Kinds: `lesson` (a rule to keep), `ruling` (a decision taken without the human, with its cost if
 > wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:
 > <choice> (cost if wrong: <one line>)`, one line each, counted in the state's `defaults`),
