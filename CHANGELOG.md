@@ -5,6 +5,20 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- A `wave width` line in the team settings caps how many tasks of a parallel wave run at once (2
+  in a new project; without it a wave runs whole): a longer wave runs in parts, each merged and
+  gated before the next starts.
+- With `stealth: on`, the ship's footprint check shows a `plan-id` note for a spec or plan id
+  (`A1`, `D2`, `T4`) left in a comment or a test name; a note never stops the ship, and
+  `footprint.skip` can turn it off.
+
+### Changed
+- With `stealth: on`, every task of a plan names a constraint that keeps spec and plan ids out of
+  tracked files, comments and test names included, and the implementer holds to it over the brief.
+- A brief quotes each ruling, answer or spec line it applies word for word, with its date, never
+  paraphrased.
+
 ## [0.21.0] - 2026-11-16
 
 ### Added
