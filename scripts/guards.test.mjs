@@ -604,14 +604,14 @@ add('plugins/gtm/skills/plan/SKILL.md', [
   w('The Summary holds the estimate line, each task on its review path.'),
 ])
 add('plugins/gtm/templates/plan.md', [
-  w('With `stealth: on` only, named by every task: no id from a spec or plan'),
+  w('With `stealth: on` only, named by every task: no id from a spec or plan (`A1`, `D2`, `R3`, `C7`, `T4`) in a tracked file,'),
   w("comments and test names included; a test's name says what it checks."),
   '**Tier:** <guarded | standard>\n**Review path:** <text | code | full>\n',
   w('each task on its review path'),
 ])
 add('plugins/gtm/agents/implementer.md', [
-  w('With `stealth: on`, no id from a spec or plan'),
-  w("comments and test names included, whatever the brief or the plan's steps say"),
+  w('With `stealth: on`, no id from a spec or plan (`A1`, `D2`, `R3`, `C7`, `T4`) in a tracked file,'),
+  w("comments and test names included, whatever the brief or the plan's steps say: a test's name says what it checks."),
 ])
 // How a program of yours sends a project report: tools without a shell, and the receipt it reads.
 add('docs/reference/commands.md', [

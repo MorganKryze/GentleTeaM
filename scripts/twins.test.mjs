@@ -192,6 +192,10 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: 'named by every task', to: 'named by the tasks that write tests', says: 'named\\s+by\\s+every\\s+task' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'never paraphrased', to: 'in substance', says: 'never\\s+paraphrased' },
   { test: 'guards', file: 'plugins/gtm/agents/implementer.md', from: 'comments and test names included, whatever', to: 'comments included, whatever', says: 'test\\s+names\\s+included,\\s+whatever' },
+  { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: ') in a tracked file, comments', to: ') comments', says: 'in\\s+a\\s+tracked\\s+file' },
+  { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: '(`A1`, `D2`, `R3`,\n  `C7`, `T4`)', to: '(`A1`)', says: '`T4`' },
+  { test: 'guards', file: 'plugins/gtm/agents/implementer.md', from: 'in a tracked file', to: 'in a test file', says: 'in\\s+a\\s+tracked\\s+file' },
+  { test: 'guards', file: 'plugins/gtm/agents/implementer.md', from: ": a test's name says", to: ': a name says', says: "a\\s+test's\\s+name\\s+says" },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []
