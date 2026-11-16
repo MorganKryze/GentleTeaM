@@ -43,7 +43,7 @@ const DOC_FILE = /\.(?:md|mdx|markdown|txt|rst|adoc)$/i
 // label or name of the test is read, never its body, a method call (`/x/.test('D2')`) or a chain
 // other than a test's own modifiers (`context.get('C7')`).
 const PLAN_ID = /(?<![A-Za-z0-9])[ACDRT]\d{1,2}(?![A-Za-z0-9])/
-const TEST_NAME = /\b(?:it|test|describe|context|specify)(?:\.\w+)*\s*(?:\(\s*)?['"`]|\.Run\(\s*"|\bdef test_|\bfunc Test/
+const TEST_NAME = /\b(?:it|test|describe|context|specify)(?:\.\w+){0,4}\s*(?:\(\s*)?['"`]|\.Run\(\s*"|\bdef test_|\bfunc Test/
 const COMMENT_LINE = /^\s*(?:\/\/|\/\*|\*|#(?!!)|<!--|--|;)/
 const MODIFIERS = new Set(['only', 'skip', 'todo', 'each', 'concurrent', 'failing', 'fails', 'sequential', 'serial', 'parallel', 'fixme', 'slow', 'step', 'describe'])
 
