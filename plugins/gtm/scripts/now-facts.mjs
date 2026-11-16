@@ -937,9 +937,11 @@ function written(s, answering, given, stamp, dir, file, drop, no3) {
       let old = null
       try { old = JSON.parse(small(file)) } catch {}
       if (old === null) refuse('', 'none')
-      if (old.id !== opt.id) refuse('id', 'id')
+      // The card is matched by id and asked before its pieces are checked: a newer card whose piece
+      // changed is refused `id`, never handed again over by a stale answer.
+      if (old.id !== opt.id || (typeof old.asked === 'string' && !Number.isNaN(Date.parse(old.asked)) && new Date(old.asked).toISOString() === old.asked && old.asked !== opt.asked)) refuse('id', 'id')
+      // A malformed stored `asked` is left to the shape check below.
       c = decision(old, s, true)
-      if (c.asked !== opt.asked) refuse('asked', 'id')
       if (c.answer !== null) refuse('answer', 'answered')
       c.answer = { ...answerOf(given, 'answer', c.options, false, Object.hasOwn(c, 'tldr')), by: 'owner', at: stamp }
     } else {

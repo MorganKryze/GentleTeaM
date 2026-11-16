@@ -415,7 +415,7 @@ await raced()
 // preload), the other starts then and waits on waiting.json.lock. An answer first: the card
 // written after it, the new card unanswered in the file. A card first: the answer, given tri-D1
 // and the old card's `asked`, reads the new card and is refused `id`, the new card kept, also when
-// the new card has the same id (`asked` then differs, the field refused). No lock is left.
+// the new card has the same id (`asked` then differs, refused `id` too). No lock is left.
 async function crossed(first, same = false) {
   const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-cross-'))
   try {
@@ -443,7 +443,7 @@ async function crossed(first, same = false) {
     for (let i = 0; i < 200 && !existsSync(mark); i++) await new Promise((done) => setTimeout(done, 10))
     const [a, c] = first === 'answer' ? await Promise.all([one, write([])]) : (await Promise.all([one, answer([])])).reverse()
     const held = JSON.parse(readFileSync(card, 'utf8'))
-    const refused = JSON.stringify({ written: false, field: same ? 'asked' : 'id', why: 'id', option: null })
+    const refused = JSON.stringify({ written: false, field: 'id', why: 'id', option: null })
     if (c.code !== 0 || JSON.parse(c.out).asked !== later) errors.push(`card against answer (${first} first): the card printed ${c.out} (exit ${c.code}), want asked ${later}`)
     if (held.id !== next.id || held.asked !== later || held.answer !== null) errors.push(`card against answer (${first} first): the file holds ${held.id} asked ${held.asked}, answer ${JSON.stringify(held.answer)}; want ${next.id} asked ${later} unanswered`)
     if (first === 'answer' && a.code !== 0) errors.push(`card against answer (answer first): the answer exit ${a.code}`)
