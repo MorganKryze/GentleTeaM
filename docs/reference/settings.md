@@ -44,7 +44,7 @@ JavaScript syntax, matched against repository-relative paths.
 | `git.push` | `ask`: nothing pushed, merged, tagged or released without your go; `standing`: GTM still pushes nothing, and `/gtm:ship` records a landing for a class you signed ahead (below) | `ask` | `/gtm:ship` |
 | `footprint.words` | more regexes to flag in stealth mode | `[]` | `/gtm:ship` |
 | `footprint.allow` | regexes; a flagged line matching one is ignored | `[]` | `/gtm:ship` |
-| `footprint.skip` | writing habits the project's own voice uses, not flagged | `[]` | `/gtm:ship` |
+| `footprint.skip` | writing habits the project's own voice uses, not flagged: `em-dash`, `emoji`, `stock`, `filler`, `triad`, `bullets` or `plan-id` (the id note) | `[]` | `/gtm:ship` |
 | `design.screens` | `false` when the project has no screens; the design loop never runs | `true` | `/gtm:gtm`, `/gtm:design` |
 | `design.mockups` | where the mockups are kept, HTML and PNG | `.gtm/mockups` | the designer, the design critic |
 | `design.render` | `"<cmd> {html} {png} {width}"`; empty uses a Playwright screenshot | `""` | the designer |
@@ -92,7 +92,7 @@ defaults in the role files.
 | Roles | each role's model (`opus`, `sonnet`, `haiku`, `fable`, a full model id or `inherit`) and effort (`low` to `max`) | `opus`, with the efforts in [Roles](/reference/roles/) | every command that dispatches a role |
 | Specialists | `security-reviewer`, `data-reviewer`, `ux-qa`: `on` or `off`, and the path regexes that call each one in | all `on`, with example triggers to adapt | `/gtm:deliver` |
 | Companions | `impeccable`, `humanize`: `on` or `off`, detected from the skills the session lists, and the roles that use each | none on; `/gtm:init` adds those it finds | the designer, design critic, ux-qa, implementer and `/gtm:ship` |
-| Limits (the `## Gates` section) | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, taste threshold, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky, `budget per task`, `budget per branch`, `tasks per branch`, `review cadence` and the `review path` lines | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver`, `/gtm:tune` |
+| Limits (the `## Gates` section) | [correction rounds](/reference/glossary/#correction-round), [file limit for a fix](/reference/glossary/#file-limit-for-a-fix), mockup threshold and rounds, taste threshold, [dry runs](/reference/glossary/#dry-run) of risky tasks and which paths are risky, `budget per task`, `budget per branch`, `tasks per branch`, `wave width`, `review cadence` and the `review path` lines | see below | `/gtm:gtm`, `/gtm:design`, `/gtm:plan`, `/gtm:deliver`, `/gtm:tune` |
 | History | one line per change made by `/gtm:tune`: date, setting, old and new value, why | empty | `/gtm:tune`, `/gtm:retro` |
 
 Risky paths also set effort. Work that touches them raises the security and final reviewers
@@ -115,6 +115,8 @@ on: no budget changes a verdict, a correction round or the order of tasks. After
 runs with no budget, `/gtm:tune` proposes both at the medians of those runs. The
 `tasks per branch` line caps a plan at 8 tasks by default, a release-only task not counted; a
 plan over it goes back to the architect once, then you choose on a card to split or accept.
+The `wave width` line, 2 in a new project, caps how many tasks of a parallel wave run at once;
+without it a wave runs whole.
 
 A `review path` line names regexes on a task's changed files and the reviewer's model, as in
 ``- review path: text · paths `^docs/.*[.]md$` · reviewer sonnet · why: docs · <date>``.

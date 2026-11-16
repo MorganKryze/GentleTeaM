@@ -21,7 +21,7 @@ wrote it.
 | --- | --- | --- |
 | GTM's files | `.gtm/` may be committed, reports and [mockups](/reference/glossary/#mockups) excluded | the whole folder excluded through `.git/info/exclude`, or kept outside the repository |
 | Tracked files | a line in `CLAUDE.md` when GTM's folder moves | nothing: no README badge, no `CLAUDE.md` or `AGENTS.md` line, no committed `.claude/settings.json`; GTM is installed at user scope |
-| Commits, PRs, docs, comments, changelogs, branch names | plain writing | no GTM name (GTM, `.gtm`, its roles, commands, plans, [logbook](/reference/glossary/#logbook) or workflows), no attribution trailer, branches in the project's pattern |
+| Commits, PRs, docs, comments, changelogs, branch names | plain writing | no GTM name (GTM, `.gtm`, its roles, commands, plans, [logbook](/reference/glossary/#logbook) or workflows), no spec or plan id (`A1`, `C7`) in a comment or a test name, no attribution trailer, branches in the project's pattern |
 | Voice | `guidelines/voice.md` is read | `guidelines/voice.md` is mandatory |
 | Shipping | the project's checks | the project's checks, then a scan of everything that would leave; a hit stops the ship |
 
@@ -47,8 +47,9 @@ with its place:
 - in prose, em dashes, emoji, stock phrases, filler and hedging.
 
 Lists of three and runs of short bullets come back as notes, since a pattern cannot tell them from
-honest lists. A hit stops the ship until you fix it. How the scan works, and how to allow a known
-false positive, is in [How the team works](/reference/how-the-team-works/).
+honest lists. A spec or plan id in an added comment or test name comes back as a note too, and a
+note never stops the ship. A hit stops the ship until you fix it. How the scan works, and how to
+allow a known false positive, is in [How the team works](/reference/how-the-team-works/).
 
 ## What does stealth mode not change?
 
