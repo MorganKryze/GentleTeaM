@@ -58,11 +58,31 @@
   field and why: fix that field and hand the card once more; refused again, or exit 2 or 3, show the
   card as is with one Heads-up per session, never a hold-up. The file holds one card: with two
   cards in one message, hand only the first, and the second once the first is answered. When the
-  card is answered, and the file still holds that card's `id`, record the
-  answer before the run view's rewrite: the same command with `--answer <slug>` and the answer
-  `templates/decision.md` describes. The file stays, answered, until the slug's next card.
+  card is answered, and the file still holds that card's `id`, record the answer before the run
+  view's rewrite: the same command with `--answer <slug> --id <id> --asked <instant>`, that card's
+  `id` and the `asked` its `--card` line printed, and the answer `templates/decision.md`
+  describes: keep each card's `asked` from its `--card` line, or read it with the card when you show
+  one from the file; never read it again when the answer comes. In the JSON handed to `--answer`,
+  the words are one JSON string: a backslash `\\`, a quote `\"`, a line feed `\n`, never a raw line
+  break. The ledger line quotes them as that same JSON string. The file stays, answered, until the
+  slug's next card.
+  While the slug's card file holds an unanswered v1.1 card, the owner's next message, typed or
+  brought by a resume, is its answer when it answers the card (a key, an option's message, or
+  words meant as the other way): hand it whole as `other` before anything else, then act on the
+  line's `option`, or on the words. A question or "continue" is answered in the conversation; the
+  card stays waiting. One reply for two cards answers the first; the second is handed again. A
+  resumed session does this first.
   An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one
-  Heads-up; never shorten or reword the owner's words to fit.
+  Heads-up; never shorten or reword the owner's words to fit. The same words refused a second
+  time under `answer`: say why in one line and ask the owner to send the answer again; never
+  reword them. The one exception: a refusal whose `field` is under `pieces[` (a piece's file
+  changed): hand the card again with that piece fixed or dropped, then record the same answer on
+  the new card, with its `id` and the `asked` its `--card` line printed; the owner is not asked
+  again. Refused `id`, the file holds a newer card: never hand the old card again; say the card
+  moved on, keep the answer in the ledger line,
+  show the newer card as the file holds it, without handing it to the script, and ask the owner
+  which card the answer is for. Refused with field `.` (`json` or `none`) or any other field: the
+  first rule holds, one Heads-up, nothing handed again.
 
 ## Example
 

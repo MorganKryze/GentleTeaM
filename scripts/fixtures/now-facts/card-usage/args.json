@@ -45,6 +45,52 @@
         "--landing",
         "x"
       ]
+    },
+    {
+      "args": [
+        "--answer",
+        "a"
+      ]
+    },
+    {
+      "args": [
+        "--card",
+        "a",
+        "--id",
+        "a-D1"
+      ]
+    },
+    {
+      "args": [
+        "--id",
+        "a-D1"
+      ]
+    },
+    {
+      "args": [
+        "--answer",
+        "a",
+        "--id",
+        "a-D1"
+      ]
+    },
+    {
+      "args": [
+        "--card",
+        "a",
+        "--asked",
+        "2026-10-15T10:00:00.000Z"
+      ]
+    },
+    {
+      "args": [
+        "--answer",
+        "a",
+        "--id",
+        "a-D1",
+        "--asked",
+        "yesterday"
+      ]
     }
   ]
 }

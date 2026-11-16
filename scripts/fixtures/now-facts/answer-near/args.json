@@ -3,7 +3,11 @@
   "stdin": "answer.json",
   "args": [
     "--answer",
-    "where-am-i"
+    "where-am-i",
+    "--id",
+    "where-am-i-D1",
+    "--asked",
+    "2026-10-15T09:00:00.000Z"
   ],
   "variants": [
     {

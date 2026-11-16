@@ -20,7 +20,14 @@
 // `runner` cause, retro's counts, the tests template's flaky line, `verify.runner` and ship's
 // pointers. Review paths: each dispatch's brief brought up to date, a range's files checked
 // against the review path lines once its task returns, a re-review's range, the deliver skill's
-// line cap, and the plan pricing and naming each task by its path.
+// line cap, and the plan pricing and naming each task by its path. Decision v1.1: which cards
+// are v1.1, the suite, opposing data in a table, the keys the script alone writes, the owner's
+// words whole up to 2000 characters, their line feeds escaped, and the characters refused in them,
+// a piece with no file, a piece's file left as it is until the answer, the session id never shown,
+// the next message handed as the answer first, also on a resume, a card handed again only for a
+// refused piece, never for a newer card, shown as stored and not handed, and the folder
+// reference's re-check, every rule on the resolved file, copy and never-displayed sentences, its
+// v1.1 key table named apart from decision.v1's.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -183,16 +190,28 @@ const PINS = {
     'when a card is shown, never write `<root>/reports/<slug>/waiting.json` yourself:',
     '--card <slug> <<\'GTM_CARD\'`, then one JSON object shaped as `templates/decision.md` says, then',
     'card as is with one Heads-up per session, never a hold-up.',
-    "answer before the run view's rewrite:",
-    '`--answer <slug>`',
+    w("answer before the run view's rewrite:"),
+    w("the same command with `--answer <slug> --id <id> --asked <instant>`, that card's `id` and the `asked` its `--card` line printed,"),
     'cards in one message, hand only the first, and the second once the first is answered.',
     "and the file still holds that card's `id`,",
+    w("keep each card's `asked` from its `--card` line"),
     'An answer refused, any exit but 0: change nothing, keep the ledger line quoting it, add one',
     "Heads-up; never shorten or reword the owner's words to fit.",
-    'The file stays, answered, until the slug\'s next card.',
+    w('The same words refused a second time under `answer`: say why in one line and ask the owner to send the answer again; never reword them.'),
+    w("The one exception: a refusal whose `field` is under `pieces[` (a piece's file changed): hand the card again with that piece fixed or dropped, then record the same answer on the new card, with its `id` and the `asked` its `--card` line printed; the owner is not asked again."),
+    w("keep each card's `asked` from its `--card` line, or read it with the card when you show one from the file; never read it again when the answer comes."),
+    w("Refused `id`, the file holds a newer card: never hand the old card again; say the card moved on, keep the answer in the ledger line, show the newer card as the file holds it, without handing it to the script, and ask the owner which card the answer is for."),
+    w("Refused with field `.` (`json` or `none`) or any other field: the first rule holds, one Heads-up, nothing handed again."),
+    w("The file stays, answered, until the slug's next card."),
     "--sheet '<root>/sheet.json' <<'GTM_SHEET'`",
     'never write `<root>/sheet.json` yourself',
     '`/<rel>/sheet.json` goes to the exclude file',
+    w("While the slug's card file holds an unanswered v1.1 card, the owner's next message, typed or brought by a resume, is its answer when it answers the card (a key, an option's message, or words meant as the other way): hand it whole as `other` before anything else, then act on the line's `option`, or on the words."),
+    w('A question or "continue" is answered in the conversation; the card stays waiting.'),
+    w('One reply for two cards answers the first; the second is handed again.'),
+    w('A resumed session does this first.'),
+    w('In the JSON handed to `--answer`, the words are one JSON string: a backslash `\\\\`, a quote `\\"`, a line feed `\\n`, never a raw line break.'),
+    w("The ledger line quotes them as that same JSON string."),
   ],
   'plugins/gtm/templates/decision.md': [
     'You never write the card',
@@ -201,6 +220,21 @@ const PINS = {
     'holds `gtm`; else `option` names one option whose `recommendedBy` holds `by`.',
     'characters. The script adds `by` and `at`; an answered card is never answered again.',
     "Longer, or on several lines, the script refuses it: never shorten or reword the owner's words to",
+    '## decision.v1.1',
+    w('Every card of 2 to 4 options is handed as v1.1, every other card as decision.v1.'),
+    w('Never hand `summary` or `recommandation`: the script writes them'),
+    w('`suite`: the steps the plan, the delivery or ship run after that choice, in order, up to the next point where the owner is asked;'),
+    w('Opposing data (versions, measures, comparisons) go in a `tableau` piece whose file you write under `reports/<slug>/`, never in the prose of a text.'),
+    w('A piece with no file (an error from the conversation) has `chemin` `null` and its lines in `apercu`'),
+    w('`session`: read `$CLAUDE_CODE_SESSION_ID` in your own shell; when it is set, hand it as `session`, else leave the key out. Never show it in a card, NOW.md, a briefing or a summary.'),
+    w("On a v1.1 card the owner's words go in whole as `other`, line breaks included, at most 2000 characters"),
+    w("and the script records the option whose `message`, or `key` in any case, they equal once trimmed"),
+    w("`--id` and `--asked` name the card answered, its `id` and the `asked` the `--card` line printed: the script refuses the answer, `id`, when the file holds another card, another `id` or the same `id` asked at another instant"),
+    w('The words go as one JSON string, escaped as JSON escapes them: a backslash `\\\\`, a quote `\\"`, a line feed `\\n`; never a raw line break: a raw one is refused'),
+    w('the ledger line quotes the words as that same JSON string, so they read back exactly'),
+    w("for anything else, a reworked option included; on decision.v1, one line of at most 280 characters."),
+    w('Leave each piece\'s file as it is until the card is answered: the script checks the pieces again when it records the answer'),
+    w('Line feeds aside, the script refuses words holding a control character (a tab or a carriage return among them)'),
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
     '--base <git.base> --pr <root>/reports/<slug>/pr.md`',
@@ -226,6 +260,14 @@ const PINS = {
     'Under `v` 1 fields are only added: `v` changes when a field is removed, renamed or retyped, and a',
     'reader ignores the fields it does not know.',
     "GTM's facts script sets `v`, `slug`, `asked` and `other.allowed`, and `answer` when it records",
+    '### decision.v1.1',
+    w('The owner\'s words travel as a JSON string everywhere: in the answer handed to the script and on the ledger line that quotes them (a backslash `\\\\`, a quote `\\"`, a line feed `\\n`).'),
+    w("An answer names the card it answers by its `id` and its `asked`: when the file holds another card, even one with the same `id`, it is refused `id` and nothing changes."),
+    w("A program re-checks a piece under the project's top before it opens it, and opens only https links."),
+    w("The re-check applies every rule above to the resolved file: under the top, outside `.git`, a regular file with no execute bit, its type's extension on the resolved file as well as on `chemin`."),
+    w("A program offers a piece with no file's lines to copy, never to open."),
+    w('it is never displayed'),
+    '| v1.1 key | What it holds |',
     'its fingerprint in the logbook; any other file there counts as no mandate',
     '`pass` when GTM or `/gtm:ship` held it, `due` when your program must check it; `null` without one, and after the next commit |',
     '`clock` the writer\'s local `HH:MM`, for display, `null` while a card waits, while paused or with no estimate; the end is `updated` plus `minutes`',
@@ -250,7 +292,10 @@ const PINS = {
     'clone that fetched the branch over a transport (`git clone --no-local`, or a fetch from your',
     'remote). It never diffs in this repository or a plain local clone, which shares its objects and',
   ],
-  'plugins/gtm/templates/ledger.md': ['> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
+  'plugins/gtm/templates/ledger.md': [
+    '> An answer quoted goes in whole on one line as a JSON string, quotes included: a backslash',
+    '> `\\\\`, a quote `\\"`, a line feed `\\n`, a line or paragraph separator `\\u2028`, `\\u2029`.',
+    '> wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:'],
   'plugins/gtm/skills/plan/SKILL.md': [
     '- Past 4 hours (W > 240 min): the Summary\'s proposed split, then a card before any delivery',
     '(split as proposed / one branch anyway / wait), with your recommendation;',

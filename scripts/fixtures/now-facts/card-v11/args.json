@@ -1,0 +1,2754 @@
+{
+  "branch": "feat/tri",
+  "stdin": "in.json",
+  "args": [
+    "--card",
+    "tri"
+  ],
+  "commits": [
+    {
+      "write": {
+        "docs/notes.txt": "Des notes sur le tri.\n",
+        "docs/notes.md": "# Notes\n",
+        "docs/dir.md/x.txt": "x\n"
+      }
+    }
+  ],
+  "variants": [
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": \"0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b\",\n  \"answer\": null\n}\n"
+        }
+      }
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options",
+          [
+            {
+              "key": "A",
+              "label": "Merge de main",
+              "proves": null,
+              "cost": {
+                "tokens": 40000,
+                "minutes": 10,
+                "text": "≈ 40 k"
+              },
+              "reversible": true,
+              "recommendedBy": [
+                "gtm"
+              ],
+              "implique": "Un commit de merge garde les deux historiques tels quels.",
+              "gestes": [],
+              "vous": null,
+              "risque": {
+                "niveau": "faible",
+                "texte": "Un conflit mal résolu se voit à la gate."
+              },
+              "message": "Option A : merge de main, puis la revue finale.",
+              "suite": [
+                {
+                  "t": "Merge de main et résolution des trois conflits",
+                  "vous": false
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                },
+                {
+                  "t": "Carte de go pour le push",
+                  "vous": false
+                }
+              ]
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "options",
+          [
+            {
+              "key": "A",
+              "label": "Merge de main",
+              "proves": null,
+              "cost": {
+                "tokens": 40000,
+                "minutes": 10,
+                "text": "≈ 40 k"
+              },
+              "reversible": true,
+              "recommendedBy": [
+                "gtm"
+              ],
+              "implique": "Un commit de merge garde les deux historiques tels quels.",
+              "gestes": [],
+              "vous": null,
+              "risque": {
+                "niveau": "faible",
+                "texte": "Un conflit mal résolu se voit à la gate."
+              },
+              "message": "Option A : merge de main, puis la revue finale.",
+              "suite": [
+                {
+                  "t": "Merge de main et résolution des trois conflits",
+                  "vous": false
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                },
+                {
+                  "t": "Carte de go pour le push",
+                  "vous": false
+                }
+              ]
+            },
+            {
+              "key": "B",
+              "label": "Rebase sur main",
+              "proves": null,
+              "cost": null,
+              "reversible": false,
+              "recommendedBy": [
+                "second-reader"
+              ],
+              "implique": "L'historique reste linéaire ; les commits livrés sont réécrits.",
+              "gestes": [
+                "Relire le diff réécrit"
+              ],
+              "vous": "Tu relis le diff après le rebase, avant la revue finale.",
+              "risque": {
+                "niveau": "moyen",
+                "texte": "Les commits relus changent de sha."
+              },
+              "message": "Option B : rebase sur main, je relis le diff.",
+              "suite": [
+                {
+                  "t": "Rebase sur main",
+                  "vous": false
+                },
+                {
+                  "t": "Relire le diff réécrit",
+                  "vous": true
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                }
+              ]
+            },
+            {
+              "key": "C",
+              "label": "Merge de main",
+              "proves": null,
+              "cost": {
+                "tokens": 40000,
+                "minutes": 10,
+                "text": "≈ 40 k"
+              },
+              "reversible": true,
+              "recommendedBy": [],
+              "implique": "Un commit de merge garde les deux historiques tels quels.",
+              "gestes": [],
+              "vous": null,
+              "risque": {
+                "niveau": "faible",
+                "texte": "Un conflit mal résolu se voit à la gate."
+              },
+              "message": "Option C : une autre voie.",
+              "suite": [
+                {
+                  "t": "Merge de main et résolution des trois conflits",
+                  "vous": false
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                },
+                {
+                  "t": "Carte de go pour le push",
+                  "vous": false
+                }
+              ]
+            },
+            {
+              "key": "D",
+              "label": "Merge de main",
+              "proves": null,
+              "cost": {
+                "tokens": 40000,
+                "minutes": 10,
+                "text": "≈ 40 k"
+              },
+              "reversible": true,
+              "recommendedBy": [],
+              "implique": "Un commit de merge garde les deux historiques tels quels.",
+              "gestes": [],
+              "vous": null,
+              "risque": {
+                "niveau": "faible",
+                "texte": "Un conflit mal résolu se voit à la gate."
+              },
+              "message": "Option D : une autre voie.",
+              "suite": [
+                {
+                  "t": "Merge de main et résolution des trois conflits",
+                  "vous": false
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                },
+                {
+                  "t": "Carte de go pour le push",
+                  "vous": false
+                }
+              ]
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options",
+          [
+            {
+              "key": "A",
+              "label": "Merge de main",
+              "proves": null,
+              "cost": {
+                "tokens": 40000,
+                "minutes": 10,
+                "text": "≈ 40 k"
+              },
+              "reversible": true,
+              "recommendedBy": [
+                "gtm"
+              ],
+              "implique": "Un commit de merge garde les deux historiques tels quels.",
+              "gestes": [],
+              "vous": null,
+              "risque": {
+                "niveau": "faible",
+                "texte": "Un conflit mal résolu se voit à la gate."
+              },
+              "message": "Option A : merge de main, puis la revue finale.",
+              "suite": [
+                {
+                  "t": "Merge de main et résolution des trois conflits",
+                  "vous": false
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                },
+                {
+                  "t": "Carte de go pour le push",
+                  "vous": false
+                }
+              ]
+            },
+            {
+              "key": "B",
+              "label": "Rebase sur main",
+              "proves": null,
+              "cost": null,
+              "reversible": false,
+              "recommendedBy": [
+                "second-reader"
+              ],
+              "implique": "L'historique reste linéaire ; les commits livrés sont réécrits.",
+              "gestes": [
+                "Relire le diff réécrit"
+              ],
+              "vous": "Tu relis le diff après le rebase, avant la revue finale.",
+              "risque": {
+                "niveau": "moyen",
+                "texte": "Les commits relus changent de sha."
+              },
+              "message": "Option B : rebase sur main, je relis le diff.",
+              "suite": [
+                {
+                  "t": "Rebase sur main",
+                  "vous": false
+                },
+                {
+                  "t": "Relire le diff réécrit",
+                  "vous": true
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                }
+              ]
+            },
+            {
+              "key": "C",
+              "label": "Merge de main",
+              "proves": null,
+              "cost": {
+                "tokens": 40000,
+                "minutes": 10,
+                "text": "≈ 40 k"
+              },
+              "reversible": true,
+              "recommendedBy": [],
+              "implique": "Un commit de merge garde les deux historiques tels quels.",
+              "gestes": [],
+              "vous": null,
+              "risque": {
+                "niveau": "faible",
+                "texte": "Un conflit mal résolu se voit à la gate."
+              },
+              "message": "Option C : une autre voie.",
+              "suite": [
+                {
+                  "t": "Merge de main et résolution des trois conflits",
+                  "vous": false
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                },
+                {
+                  "t": "Carte de go pour le push",
+                  "vous": false
+                }
+              ]
+            },
+            {
+              "key": "D",
+              "label": "Merge de main",
+              "proves": null,
+              "cost": {
+                "tokens": 40000,
+                "minutes": 10,
+                "text": "≈ 40 k"
+              },
+              "reversible": true,
+              "recommendedBy": [],
+              "implique": "Un commit de merge garde les deux historiques tels quels.",
+              "gestes": [],
+              "vous": null,
+              "risque": {
+                "niveau": "faible",
+                "texte": "Un conflit mal résolu se voit à la gate."
+              },
+              "message": "Option D : une autre voie.",
+              "suite": [
+                {
+                  "t": "Merge de main et résolution des trois conflits",
+                  "vous": false
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                },
+                {
+                  "t": "Carte de go pour le push",
+                  "vous": false
+                }
+              ]
+            },
+            {
+              "key": "E",
+              "label": "Merge de main",
+              "proves": null,
+              "cost": {
+                "tokens": 40000,
+                "minutes": 10,
+                "text": "≈ 40 k"
+              },
+              "reversible": true,
+              "recommendedBy": [],
+              "implique": "Un commit de merge garde les deux historiques tels quels.",
+              "gestes": [],
+              "vous": null,
+              "risque": {
+                "niveau": "faible",
+                "texte": "Un conflit mal résolu se voit à la gate."
+              },
+              "message": "Option E : une autre voie.",
+              "suite": [
+                {
+                  "t": "Merge de main et résolution des trois conflits",
+                  "vous": false
+                },
+                {
+                  "t": "Gate locale, puis revue finale",
+                  "vous": false
+                },
+                {
+                  "t": "Carte de go pour le push",
+                  "vous": false
+                }
+              ]
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "tldr",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "tldr",
+          "Un. Deux. Trois."
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "tldr",
+          "La v1.1 garde v à 1. Elle ajoute des clés."
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "tldr",
+          {
+            "$x": 280
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "tldr",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "tldr",
+          {
+            "$x": 281
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": ".",
+          "why": "unknown"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "tldr",
+          "$drop"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "summary",
+          "why": "set"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "summary",
+          "Un résumé."
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "recommandation",
+          "why": "set"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "recommandation",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "hesitation",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "hesitation",
+          {
+            "entre": [
+              "A",
+              "B"
+            ],
+            "question": "Lequel ?"
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "hesitation",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "recommendation",
+          null
+        ],
+        [
+          "options.0.recommendedBy",
+          []
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "recommendation",
+          null
+        ],
+        [
+          "options.0.recommendedBy",
+          []
+        ],
+        [
+          "hesitation",
+          {
+            "entre": [
+              "A",
+              "B"
+            ],
+            "question": "Lequel ?"
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "hesitation.entre",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "recommendation",
+          null
+        ],
+        [
+          "options.0.recommendedBy",
+          []
+        ],
+        [
+          "hesitation",
+          {
+            "entre": [
+              "A"
+            ],
+            "question": "Lequel ?"
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "hesitation.entre[1]",
+          "why": "option"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "recommendation",
+          null
+        ],
+        [
+          "options.0.recommendedBy",
+          []
+        ],
+        [
+          "hesitation",
+          {
+            "entre": [
+              "A",
+              "A"
+            ],
+            "question": "Lequel ?"
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "hesitation.entre[1]",
+          "why": "option"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "recommendation",
+          null
+        ],
+        [
+          "options.0.recommendedBy",
+          []
+        ],
+        [
+          "hesitation",
+          {
+            "entre": [
+              "A",
+              "E"
+            ],
+            "question": "Lequel ?"
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "options.1.gestes",
+          [
+            "Un",
+            "Deux",
+            "Trois"
+          ]
+        ],
+        [
+          "options.1.suite",
+          [
+            {
+              "t": "Un",
+              "vous": true
+            },
+            {
+              "t": "Deux",
+              "vous": true
+            },
+            {
+              "t": "Trois",
+              "vous": true
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[1].gestes",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.1.gestes",
+          [
+            "Un",
+            "Deux",
+            "Trois",
+            "Quatre"
+          ]
+        ],
+        [
+          "options.1.suite",
+          [
+            {
+              "t": "Un",
+              "vous": true
+            },
+            {
+              "t": "Deux",
+              "vous": true
+            },
+            {
+              "t": "Trois",
+              "vous": true
+            },
+            {
+              "t": "Quatre",
+              "vous": true
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[0].vous",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.0.vous",
+          "Rien à faire."
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[1].vous",
+          "why": "type"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.1.vous",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[1].suite",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.1.suite.1.vous",
+          false
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[0].suite",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.0.suite.0.vous",
+          true
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[0].suite",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.0.suite",
+          []
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[0].suite",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.0.suite",
+          [
+            {
+              "t": "Étape 0",
+              "vous": false
+            },
+            {
+              "t": "Étape 1",
+              "vous": false
+            },
+            {
+              "t": "Étape 2",
+              "vous": false
+            },
+            {
+              "t": "Étape 3",
+              "vous": false
+            },
+            {
+              "t": "Étape 4",
+              "vous": false
+            },
+            {
+              "t": "Étape 5",
+              "vous": false
+            },
+            {
+              "t": "Étape 6",
+              "vous": false
+            },
+            {
+              "t": "Étape 7",
+              "vous": false
+            },
+            {
+              "t": "Étape 8",
+              "vous": false
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[0].risque.niveau",
+          "why": "list"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.0.risque.niveau",
+          "élevé"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[0].risque.niveau",
+          "why": "list"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.0.risque.niveau",
+          "Faible"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "options.0.risque.niveau",
+          "eleve"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[0].reversible",
+          "why": "type"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.0.reversible",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[0].message",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.0.message",
+          "Option A : merge de main, puis la revue finale. "
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[1].message",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.1.message",
+          "Option A : merge de main, puis la revue finale."
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "options.0.message",
+          {
+            "$x": 280
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "options[0].message",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "options.0.message",
+          {
+            "$x": 281
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "assurance",
+          0
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "assurance",
+          1
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "assurance",
+          "why": "range"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "assurance",
+          1.01
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "assurance",
+          "why": "range"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "assurance",
+          -0.01
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "assurance",
+          "why": "range"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "assurance",
+          "0.5"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "doute",
+          {
+            "$x": 200
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "doute",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "doute",
+          {
+            "$x": 201
+          }
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.essentielle",
+          true
+        ],
+        [
+          "pieces.2.essentielle",
+          true
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].essentielle",
+          "why": "range"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.essentielle",
+          true
+        ],
+        [
+          "pieces.2.essentielle",
+          true
+        ],
+        [
+          "pieces.3.essentielle",
+          true
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "pieces",
+          [
+            {
+              "type": "lien",
+              "titre": "L0",
+              "chemin": "https://example.org/0",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L1",
+              "chemin": "https://example.org/1",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L2",
+              "chemin": "https://example.org/2",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L3",
+              "chemin": "https://example.org/3",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L4",
+              "chemin": "https://example.org/4",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L5",
+              "chemin": "https://example.org/5",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L6",
+              "chemin": "https://example.org/6",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L7",
+              "chemin": "https://example.org/7",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L8",
+              "chemin": "https://example.org/8",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L9",
+              "chemin": "https://example.org/9",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L10",
+              "chemin": "https://example.org/10",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L11",
+              "chemin": "https://example.org/11",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L12",
+              "chemin": "https://example.org/12",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L13",
+              "chemin": "https://example.org/13",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L14",
+              "chemin": "https://example.org/14",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L15",
+              "chemin": "https://example.org/15",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L16",
+              "chemin": "https://example.org/16",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L17",
+              "chemin": "https://example.org/17",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L18",
+              "chemin": "https://example.org/18",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L19",
+              "chemin": "https://example.org/19",
+              "essentielle": false,
+              "apercu": null
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces",
+          [
+            {
+              "type": "lien",
+              "titre": "L0",
+              "chemin": "https://example.org/0",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L1",
+              "chemin": "https://example.org/1",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L2",
+              "chemin": "https://example.org/2",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L3",
+              "chemin": "https://example.org/3",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L4",
+              "chemin": "https://example.org/4",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L5",
+              "chemin": "https://example.org/5",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L6",
+              "chemin": "https://example.org/6",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L7",
+              "chemin": "https://example.org/7",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L8",
+              "chemin": "https://example.org/8",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L9",
+              "chemin": "https://example.org/9",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L10",
+              "chemin": "https://example.org/10",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L11",
+              "chemin": "https://example.org/11",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L12",
+              "chemin": "https://example.org/12",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L13",
+              "chemin": "https://example.org/13",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L14",
+              "chemin": "https://example.org/14",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L15",
+              "chemin": "https://example.org/15",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L16",
+              "chemin": "https://example.org/16",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L17",
+              "chemin": "https://example.org/17",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L18",
+              "chemin": "https://example.org/18",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L19",
+              "chemin": "https://example.org/19",
+              "essentielle": false,
+              "apercu": null
+            },
+            {
+              "type": "lien",
+              "titre": "L20",
+              "chemin": "https://example.org/20",
+              "essentielle": false,
+              "apercu": null
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].type",
+          "why": "list"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.type",
+          "Tableau"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "../root/reports/tri/choix.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root/../root/reports/tri/choix.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "./root/reports/tri/choix.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root//reports/tri/choix.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "/root/reports/tri/choix.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root\\reports\\tri\\choix.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          ".git/info/x.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          ".GIT/info/x.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "-root/x.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[1].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.chemin",
+          "root/reports/tri/capture.png"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[2].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.2.chemin",
+          "root/reports/tri/choix.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[2].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.2.chemin",
+          "root/reports/tri/capture.png.command"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/a/abc.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "file"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root/reports/tri/absent.md"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[1].chemin",
+          "why": "file"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.chemin",
+          "docs/dir.md"
+        ],
+        [
+          "pieces.1.type",
+          "doc"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "file"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "modes": {
+        "reports/tri/choix.md": "755"
+      }
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "modes": {
+        "reports/tri/choix.md": "600"
+      }
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "file"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "fifos": [
+        "reports/tri/f.md"
+      ],
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root/reports/tri/f.md"
+        ],
+        [
+          "pieces.0.apercu",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "links": {
+        "reports/tri/in.md": "../../../docs/notes.md"
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root/reports/tri/in.md"
+        ],
+        [
+          "pieces.0.apercu",
+          [
+            "# Notes"
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "file"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "links": {
+        "reports/tri/png.md": "capture.png"
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root/reports/tri/png.md"
+        ],
+        [
+          "pieces.0.apercu",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "file"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "commits": [
+        {
+          "write": {
+            "docs/notes.txt": "Des notes sur le tri.\n",
+            "docs/notes.md": "# Notes\n",
+            "docs/dir.md/x.txt": "x\n",
+            ".git/x.md": "# x\n"
+          }
+        }
+      ],
+      "links": {
+        "reports/tri/git.md": "../../../.git/x.md"
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root/reports/tri/git.md"
+        ],
+        [
+          "pieces.0.apercu",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "file"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "worktrees": [
+        {
+          "name": "wt",
+          "branch": "other"
+        }
+      ],
+      "links": {
+        "reports/tri/out.md": "../../../../wt/README.md"
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root/reports/tri/out.md"
+        ],
+        [
+          "pieces.0.apercu",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].apercu[0]",
+          "why": "quote"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.apercu",
+          [
+            "| Merge | garde les sha | deux commits |"
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.apercu",
+          [
+            "Des notes sur le tri."
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[2].apercu",
+          "why": "type"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.2.apercu",
+          [
+            "not really a png"
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].apercu",
+          "why": "type"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.apercu",
+          [
+            "x"
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].apercu",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.apercu",
+          [
+            "| Merge",
+            "| Merge",
+            "| Merge",
+            "| Merge",
+            "| Merge",
+            "| Merge",
+            "| Merge",
+            "| Merge",
+            "| Merge",
+            "| Merge",
+            "| Merge"
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          "http://example.org/pr/1"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          "HTTPS://example.org/pr/1"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          "https:example.org/pr/1"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          "https://user:pw@example.org/pr/1"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          "https://example.org/pr 1"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          "javascript:alert(1)//https://x"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.chemin",
+          null
+        ],
+        [
+          "pieces.1.apercu",
+          [
+            "TypeError: trier is not a function"
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[1].apercu",
+          "why": "missing"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.chemin",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[2].chemin",
+          "why": "type"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.2.chemin",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "type"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[1].apercu",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.chemin",
+          null
+        ],
+        [
+          "pieces.1.apercu",
+          [
+            "x",
+            "x",
+            "x",
+            "x",
+            "x",
+            "x",
+            "x",
+            "x",
+            "x",
+            "x",
+            "x"
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[1].apercu[0]",
+          "why": "length"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.chemin",
+          null
+        ],
+        [
+          "pieces.1.apercu",
+          [
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "pieces.1.chemin",
+          null
+        ],
+        [
+          "pieces.1.apercu",
+          [
+            "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+          ]
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "session",
+          "$drop"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "session",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": "session",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": null,\n  \"answer\": null\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "session",
+          "0F8E2A4C-1B3D-4E5F-8A9B-0C1D2E3F4A5B"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": "session",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": null,\n  \"answer\": null\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "session",
+          "{0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b}"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": "session",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": null,\n  \"answer\": null\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "session",
+          "0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": "session",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": null,\n  \"answer\": null\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "session",
+          "0f8e2a4c-1b3d-4e5f-8a9b-0c1d2e3f4a5b "
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": "session",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": null,\n  \"answer\": null\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "session",
+          "0f8e2a4c1b3d4e5f8a9b0c1d2e3f4a5b"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": "session",
+          "why": "type"
+        },
+        "files": {
+          "reports/tri/waiting.json": "{\n  \"v\": 1,\n  \"id\": \"tri-D1\",\n  \"kind\": \"decision\",\n  \"moment\": null,\n  \"slug\": \"tri\",\n  \"asked\": \"2026-10-15T10:00:00.000Z\",\n  \"question\": \"Comment intégrer main avant le push ?\",\n  \"summary\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"why\": \"main a bougé pendant la livraison ; trois fichiers sont en conflit.\",\n  \"criteria\": \"Un historique lisible, sans rien perdre du tri livré.\",\n  \"options\": [\n    {\n      \"key\": \"A\",\n      \"label\": \"Merge de main\",\n      \"proves\": null,\n      \"cost\": {\n        \"tokens\": 40000,\n        \"minutes\": 10,\n        \"text\": \"≈ 40 k\"\n      },\n      \"reversible\": true,\n      \"recommendedBy\": [\n        \"gtm\"\n      ],\n      \"implique\": \"Un commit de merge garde les deux historiques tels quels.\",\n      \"gestes\": [],\n      \"vous\": null,\n      \"risque\": {\n        \"niveau\": \"faible\",\n        \"texte\": \"Un conflit mal résolu se voit à la gate.\"\n      },\n      \"message\": \"Option A : merge de main, puis la revue finale.\",\n      \"suite\": [\n        {\n          \"t\": \"Merge de main et résolution des trois conflits\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Carte de go pour le push\",\n          \"vous\": false\n        }\n      ]\n    },\n    {\n      \"key\": \"B\",\n      \"label\": \"Rebase sur main\",\n      \"proves\": null,\n      \"cost\": null,\n      \"reversible\": false,\n      \"recommendedBy\": [\n        \"second-reader\"\n      ],\n      \"implique\": \"L'historique reste linéaire ; les commits livrés sont réécrits.\",\n      \"gestes\": [\n        \"Relire le diff réécrit\"\n      ],\n      \"vous\": \"Tu relis le diff après le rebase, avant la revue finale.\",\n      \"risque\": {\n        \"niveau\": \"moyen\",\n        \"texte\": \"Les commits relus changent de sha.\"\n      },\n      \"message\": \"Option B : rebase sur main, je relis le diff.\",\n      \"suite\": [\n        {\n          \"t\": \"Rebase sur main\",\n          \"vous\": false\n        },\n        {\n          \"t\": \"Relire le diff réécrit\",\n          \"vous\": true\n        },\n        {\n          \"t\": \"Gate locale, puis revue finale\",\n          \"vous\": false\n        }\n      ]\n    }\n  ],\n  \"recommendation\": {\n    \"by\": \"gtm\",\n    \"option\": \"A\",\n    \"why\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\",\n    \"costIfWrong\": \"Un commit de merge de plus dans l'historique.\"\n  },\n  \"objection\": {\n    \"by\": \"second-reader\",\n    \"prefers\": \"B\",\n    \"text\": \"Un historique linéaire se relit mieux.\"\n  },\n  \"modules\": [],\n  \"other\": {\n    \"allowed\": true,\n    \"placeholder\": \"Une autre voie, en vos mots.\"\n  },\n  \"tldr\": \"main a bougé et trois fichiers sont en conflit. Je propose un merge, sans réécrire ce qui est livré.\",\n  \"recommandation\": {\n    \"option\": \"A\",\n    \"pourquoi\": \"Rien de livré n'est réécrit, et la gate voit le résultat.\"\n  },\n  \"hesitation\": null,\n  \"assurance\": null,\n  \"doute\": null,\n  \"pieces\": [\n    {\n      \"type\": \"tableau\",\n      \"titre\": \"Merge ou rebase\",\n      \"chemin\": \"root/reports/tri/choix.md\",\n      \"essentielle\": true,\n      \"apercu\": [\n        \"| Merge | garde les sha | un commit de plus |\"\n      ]\n    },\n    {\n      \"type\": \"texte\",\n      \"titre\": \"Notes\",\n      \"chemin\": \"docs/notes.txt\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"image\",\n      \"titre\": \"Capture\",\n      \"chemin\": \"root/reports/tri/capture.png\",\n      \"essentielle\": false,\n      \"apercu\": null\n    },\n    {\n      \"type\": \"lien\",\n      \"titre\": \"La PR\",\n      \"chemin\": \"https://example.org/pr/1\",\n      \"essentielle\": false,\n      \"apercu\": null\n    }\n  ],\n  \"session\": null,\n  \"answer\": null\n}\n"
+        }
+      },
+      "patch": [
+        [
+          "session",
+          12
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true
+        },
+        "files": {
+          "reports/tri/waiting.json": true
+        }
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          ".gtm/reports/tri/choix.md"
+        ],
+        [
+          "pieces.2.chemin",
+          ".gtm/reports/tri/capture.png"
+        ]
+      ],
+      "rootName": ".gtm"
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          "https://jeton@example.org/pr/1"
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[0].chemin",
+          "why": "file"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "commits": [
+        {
+          "write": {
+            "docs/notes.txt": "Des notes sur le tri.\n",
+            "docs/notes.md": "# Notes\n",
+            "docs/dir.md/x.txt": "x\n",
+            ".git/x.md": "# x\n"
+          }
+        }
+      ],
+      "links": {
+        "reports/tri/git.md": "../../../.GIT/x.md"
+      },
+      "patch": [
+        [
+          "pieces.0.chemin",
+          "root/reports/tri/git.md"
+        ],
+        [
+          "pieces.0.apercu",
+          null
+        ]
+      ]
+    },
+    {
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "pieces[3].chemin",
+          "why": "shape"
+        },
+        "files": {
+          "reports/tri/waiting.json": null
+        }
+      },
+      "patch": [
+        [
+          "pieces.3.chemin",
+          "https://good.example\\@evil.example/"
+        ]
+      ]
+    }
+  ]
+}

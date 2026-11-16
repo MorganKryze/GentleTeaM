@@ -152,6 +152,71 @@ yours; every other key comes from the card GTM showed you.
 | `list` | `items`: 1 to 8 `{k (40), v (120, or null)}` |
 | `pending` | none |
 
+### decision.v1.1
+
+A card of 2 to 4 options carries more, so you can decide from the page alone: a short TL;DR, the
+pieces to open and, per option, what it implies, your own steps, its risk and the exact message
+that answers it. `v` stays 1: a card holding `tldr` is v1.1. It has every key above, plus these,
+in this order after `modules` and `other`; each option adds the keys of the second table.
+
+| v1.1 key | What it holds |
+| --- | --- |
+| `tldr` | text, 280, at most two sentences; `summary` holds the same text |
+| `recommandation` | `{option, pourquoi}`, copied from `recommendation`'s `option` and `why`, or null |
+| `hesitation` | `{entre, question}` or null: 2 to 4 option keys GTM hesitates between; question, 160. Exactly one of `recommendation` and `hesitation` is not null |
+| `assurance` | null, read as high, or a number from 0 to 1 when GTM's confidence is low |
+| `doute` | text, 200, or null: the precise doubt behind a low `assurance` |
+| `pieces` | 0 to 20 `{type, titre, chemin, essentielle, apercu}`, at most 3 with `essentielle` `true`: show those, fold the rest |
+| `session` | the waiting session's id, a lowercase UUID, or null |
+| `answer` | as above; on a v1.1 card, your own words are up to 2000 characters, line feeds included |
+
+| Option key | What it holds |
+| --- | --- |
+| `implique` | text, 160: what choosing it implies |
+| `gestes` | 0 to 3 texts of 80: what you do by hand |
+| `vous` | text, 200, or null with no geste: what you must know before doing them |
+| `risque` | `{niveau, texte}`: `faible`, `moyen` or `eleve`; text, 160 |
+| `reversible` | `true` or `false` on a v1.1 card |
+| `message` | text, 280: the exact words that answer this option, distinct among the options |
+| `suite` | 1 to 8 `{t, vous}`: the steps that follow this choice, in order, up to the next question; text, 120; `vous` `true` for a step of yours, one per geste |
+
+| Piece `type` | `chemin` ends in | `apercu` |
+| --- | --- | --- |
+| `tableau` | `.md`, `.csv`, `.tsv` | allowed |
+| `texte` | `.md`, `.txt` | allowed |
+| `diff` | `.diff`, `.patch` | allowed |
+| `doc` | `.md`, `.txt`, `.rtf`, `.docx`, `.odt` | allowed |
+| `image` | `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.heic` | null |
+| `video` | `.mp4`, `.mov`, `.m4v`, `.webm` | null |
+| `pdf` | `.pdf` | null |
+| `lien` | an https URL, 500 at most | null |
+
+Extensions match in any case. A `chemin` is a path from the project's top (the git repository
+your GTM folder sits in) to a regular file under it once links are resolved, outside `.git`, with
+no execute bit. A `lien` holds no whitespace, no backslash, no user name and no password. An
+`apercu` is 1 to 10 texts of 200, word for word from the piece's file.
+GTM checked each piece when it wrote the card, but the file may have changed since. A program
+re-checks a piece under the project's top before it opens it, and opens only https links.
+The re-check applies every rule above to the resolved file: under the top, outside `.git`, a
+regular file with no execute bit, its type's extension on the resolved file as well as on `chemin`.
+
+A piece with no file, as an error pasted in the conversation, has `chemin` null, a type of
+`tableau`, `texte`, `diff` or `doc`, and its lines in `apercu`. A program offers a piece with no
+file's lines to copy, never to open.
+
+`summary` and `recommandation` are copies GTM's facts script writes, so a program may read either
+key. To answer, a program sends back to the session the chosen option's `message`, or your own
+words: words equal to an option's `message`, or to its `key` in any case, once trimmed, are
+recorded as that option, any others as `other`.
+The owner's words travel as a JSON string everywhere: in the answer handed to the script and on
+the ledger line that quotes them (a backslash `\\`, a quote `\"`, a line feed `\n`).
+The script's answer line names the option recorded, `option`, on every card, or null.
+An answer names the card it answers by its `id` and its `asked`: when the file holds another
+card, even one with the same `id`, it is refused `id` and nothing changes.
+A card and an answer are written one at a time.
+`session` lets a program send the answer back to the session that waits; it is never displayed.
+A malformed id is written null and the card still written, its line naming `session`.
+
 ## What does the project sheet hold? {#project-sheet}
 
 `sheet.json` is the [project sheet](/reference/glossary/#project-sheet): one page of the project

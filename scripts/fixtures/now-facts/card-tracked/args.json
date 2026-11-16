@@ -13,7 +13,11 @@
     {
       "args": [
         "--answer",
-        "where-am-i"
+        "where-am-i",
+        "--id",
+        "where-am-i-D0",
+        "--asked",
+        "2026-10-15T09:00:00.000Z"
       ]
     }
   ]
