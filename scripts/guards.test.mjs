@@ -617,6 +617,11 @@ add('docs/reference/commands.md', [
   w('It offers no shell and no Write: GTM reads the report as data, and the mode calls none of them even when they are offered.'),
   '`- <date> · upstream · recu · id=<id> · ajoutes=<a> · couverts=<c> · ecartes=<e>`',
 ])
+// The report's text stays out of the backlog later agents read: own words, no name or link.
+add('plugins/gtm/templates/upstream.md', [
+  w('Titles, places and reasons are in own words:'),
+  w('naming no project, person, file path, address or link taken from the report'),
+])
 add('docs/reference/gtm-folder.md', [
   w('an `upstream · recu` line acknowledges a project report, a `refus` line refuses one, never struck'),
 ])

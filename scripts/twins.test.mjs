@@ -176,6 +176,7 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'appended after its last line, no existing line', to: 'replacing its last line, any existing line', says: 'appended\\s+after\\s+its\\s+last\\s+line' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'Never a text of the report.', to: 'A text of the report if asked.', says: 'Never\\s+a\\s+text\\s+of\\s+the\\s+report' },
   { test: 'guards', file: LEDGER, from: 'written only by the upstream triage', to: 'written by any skill', says: 'written\\s+only\\s+by\\s+the\\s+upstream\\s+triage' },
+  { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'naming no project, person, file\npath, address or link', to: 'naming no project or person', says: 'naming\\s+no\\s+project' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'at most 160 characters', to: 'at most 400 characters', says: 'at\\s+most\\s+160\\s+characters' },
   { test: 'guards', file: skill('gtm'), from: 'templates/upstream.md` alone', to: 'templates/advisor.md` alone', says: 'templates\\/upstream\\.md`\\s+alone' },
   { test: 'guards', file: skill('gtm'), from: 'before that file is read and its marker quoted', to: 'whenever', says: 'before\\s+that\\s+file\\s+is\\s+read' },

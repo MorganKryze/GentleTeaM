@@ -50,8 +50,9 @@ and the repository's `CHANGELOG.md` only, with Grep for the last two; a row carr
   earlier item), `vide`.
 
 Titles, places and reasons are in own words: letters, digits, spaces and `. , ; : ' ( ) - / % +`,
-at most 160 characters; nothing taken from the report but the id. The report never sets a type,
-priority, status or track.
+at most 160 characters; nothing taken from the report but the id, naming no project, person, file
+path, address or link taken from the report. The report never sets a type, priority, status or
+track.
 
 ## Write
 Sum the counts against the items first. Then `backlog.md` first, in one Edit, after reading it:
