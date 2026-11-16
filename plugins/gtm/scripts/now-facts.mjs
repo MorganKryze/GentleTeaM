@@ -33,12 +33,14 @@
 // With --card <slug> it is the card writer: the card's content on stdin (at most 64 KiB of UTF-8
 // JSON), checked whole against decision.v1 (an allowlist: every key required, nothing else, each
 // text, length, number and list checked); it writes reports/<slug>/waiting.json by a rename with
-// `v`, `slug`, `asked`, `other.allowed` and `answer` set, or refuses, deleting that file. With
-// --answer <slug> --id <card id> it records the owner's answer ({option, other} on stdin) in that
-// card, refused `id` when the file holds another card's id, or changes nothing. Both hold
-// reports/<slug>/waiting.json.lock from the read, or the check, to the rename or the delete.
-// Both print one line {written, field, why}: a refused field's path, built from the shape's own keys, and a reason from a closed list; never a card's text. Exit 1 refused; 3
-// nothing written in a linked worktree or over a tracked file, a link or a non-file.
+// `v`, `slug`, `asked`, `other.allowed` and `answer` set, or refuses, deleting that file; its line
+// adds `asked`, the instant written (null when refused). With --answer <slug> --id <card id>
+// --asked <instant> it records the owner's answer ({option, other} on stdin) in that card, refused
+// `id` when the file holds another card: another `id`, or the same `id` with another `asked`; or
+// changes nothing. Both hold reports/<slug>/waiting.json.lock from the read, or the check, to the
+// rename or the delete. Both print one line {written, field, why}: a refused field's path, built
+// from the shape's own keys, and a reason from a closed list; never a card's text. Exit 1
+// refused; 3 nothing written in a linked worktree or over a tracked file, a link or a non-file.
 // decision.v1.1 is a decision.v1 card that holds `tldr`, `v` still 1: 2 to 4 options, each with
 // what it implies, the owner's own steps, its risk, the exact message that answers it and the
 // steps that follow; a recommendation or a hesitation, never both; pieces under the project's top
@@ -87,8 +89,8 @@ const median = (xs) => { const s = [...xs].sort((a, b) => a - b), m = s.length >
 
 // Usage errors exit 2: an unknown flag, a flag without its value, no --root, a --now or --since
 // that is not a date-time.
-const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate', 'copy', 'landing', 'proofs', 'card', 'answer', 'id', 'sheet']
-const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug> [--copy <file>]] [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug> --id <card id>] [--sheet <root>/sheet.json]'); process.exit(2) }
+const FLAGS = ['root', 'slug', 'now', 'waiting', 'running', 'since', 'state', 'mandate', 'copy', 'landing', 'proofs', 'card', 'answer', 'id', 'asked', 'sheet']
+const usage = () => { console.error('usage: now-facts.mjs --root <dir> [--slug <s>] [--now <ISO>] [--waiting <kind>[,<task>]] [--running <kind>,<name>,<ISO>[,<worktree>]]... [--since <ISO>] [--state <root>/state.json] [--mandate <slug> [--copy <file>]] [--landing <slug> [--proofs <names>]] [--card <slug> | --answer <slug> --id <card id> --asked <instant>] [--sheet <root>/sheet.json]'); process.exit(2) }
 const argv = process.argv.slice(2), opt = { running: [] }
 for (let i = 0; i < argv.length; i += 2) {
   const k = argv[i].slice(2), v = argv[i + 1]
@@ -111,7 +113,7 @@ if (opt.landing !== undefined && (!/^[a-z0-9-]+$/.test(opt.landing) || opt.state
 if (opt.proofs !== undefined && (opt.landing === undefined || passed.some((p, i) => HOLDS[p] !== 'ship' || passed.indexOf(p) !== i))) { console.error('now-facts.mjs: --proofs takes --landing and the proofs ship holds, each once'); process.exit(2) }
 const cardSlug = opt.card ?? opt.answer
 if (cardSlug !== undefined && (!/^[a-z0-9-]+$/.test(cardSlug) || (opt.card !== undefined && opt.answer !== undefined) || opt.state !== undefined || opt.mandate !== undefined || opt.landing !== undefined)) { console.error('now-facts.mjs: --card or --answer takes [a-z0-9-] only, alone, and no --state, --mandate or --landing'); process.exit(2) }
-if ((opt.answer === undefined) !== (opt.id === undefined)) { console.error('now-facts.mjs: --answer takes --id, the id of the card answered, and --id takes --answer'); process.exit(2) }
+if ((opt.answer === undefined) !== (opt.id === undefined) || (opt.answer === undefined) !== (opt.asked === undefined) || (opt.asked !== undefined && !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(opt.asked))) { console.error('now-facts.mjs: --answer takes --id and --asked, the id and the instant its --card line printed, and each takes --answer'); process.exit(2) }
 const root = resolve(opt.root)
 if (opt.state !== undefined && resolve(opt.state) !== join(root, 'state.json')) { console.error('now-facts.mjs: --state takes <root>/state.json only'); process.exit(2) }
 if (opt.sheet !== undefined && (resolve(opt.sheet) !== join(root, 'sheet.json') || opt.state !== undefined || opt.mandate !== undefined || opt.landing !== undefined || cardSlug !== undefined)) { console.error('now-facts.mjs: --sheet takes <root>/sheet.json only, and no --state, --mandate, --landing, --card or --answer'); process.exit(2) }
@@ -914,7 +916,8 @@ function cardFile(s, answering) {
   // A card or an answer holds waiting.json.lock, made exclusively, from the read or the check to
   // the rename or the delete, as the sheet step holds sheet.json.lock (the same wait, the same
   // stale reclaim): of two answers at once the second reads the card the first answered and is
-  // refused `answered`; an answer after a new card reads that card's id and is refused `id`.
+  // refused `answered`; an answer after a new card reads that card's id and `asked` and is refused
+// `id`, also when the new card keeps the id.
   let ino = null
   if (kind(dir) === 'dir') {
     for (let tries = 20, reclaims = 1; ; ) {
@@ -936,6 +939,7 @@ function written(s, answering, given, stamp, dir, file, drop, no3) {
       if (old === null) refuse('', 'none')
       if (old.id !== opt.id) refuse('id', 'id')
       c = decision(old, s, true)
+      if (c.asked !== opt.asked) refuse('asked', 'id')
       if (c.answer !== null) refuse('answer', 'answered')
       c.answer = { ...answerOf(given, 'answer', c.options, false, Object.hasOwn(c, 'tldr')), by: 'owner', at: stamp }
     } else {
@@ -944,7 +948,7 @@ function written(s, answering, given, stamp, dir, file, drop, no3) {
     }
   } catch (e) {
     try { drop() } catch { return no3('the old card could not be deleted') }
-    console.log(JSON.stringify({ written: false, field: e instanceof Refused ? e.field || '.' : '.', why: e instanceof Refused ? e.why : 'error', ...(answering ? { option: null } : {}) }))
+    console.log(JSON.stringify({ written: false, field: e instanceof Refused ? e.field || '.' : '.', why: e instanceof Refused ? e.why : 'error', ...(answering ? { option: null } : { asked: null }) }))
     return 1
   }
   const tmp = `${file}.${process.pid}.tmp`
@@ -960,7 +964,7 @@ function written(s, answering, given, stamp, dir, file, drop, no3) {
     try { drop() } catch {}
     return no3(answering ? 'the write failed, the card unchanged' : 'the write failed, the old card deleted')
   }
-  console.log(JSON.stringify({ written: true, field: dropped && 'session', why: dropped, ...(answering ? { option: c.answer.option } : {}) }))
+  console.log(JSON.stringify({ written: true, field: dropped && 'session', why: dropped, ...(answering ? { option: c.answer.option } : { asked: c.asked }) }))
   return 0
 }
 // sheet.v1 (the sheet's A3 to A13), an allowlist from decision.v1's pieces: every key required,

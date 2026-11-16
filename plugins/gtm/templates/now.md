@@ -59,10 +59,11 @@
   card as is with one Heads-up per session, never a hold-up. The file holds one card: with two
   cards in one message, hand only the first, and the second once the first is answered. When the
   card is answered, and the file still holds that card's `id`, record the answer before the run
-  view's rewrite: the same command with `--answer <slug> --id <id>`, that card's `id`, and the
-  answer `templates/decision.md` describes. In the JSON handed to `--answer`, each line feed of
-  the words is `\n` inside the string, never a raw line break. The file stays, answered, until
-  the slug's next card.
+  view's rewrite: the same command with `--answer <slug> --id <id> --asked <instant>`, that card's
+  `id` and the `asked` its `--card` line printed, and the answer `templates/decision.md`
+  describes: keep each card's `asked` from its `--card` line. In the JSON handed to `--answer`,
+  each line feed of the words is `\n` inside the string, never a raw line break. The file stays,
+  answered, until the slug's next card.
   While the slug's card file holds an unanswered v1.1 card, the owner's next message, typed or
   brought by a resume, is its answer when it answers the card (a key, an option's message, or
   words meant as the other way): hand it whole as `other` before anything else, then act on the

@@ -45,7 +45,7 @@ import { JOBS, pool, run } from './pool.mjs'
 const root = new URL('..', import.meta.url).pathname
 const fixtures = join(root, 'scripts/fixtures/now-facts')
 const script = join(root, 'plugins/gtm/scripts/now-facts.mjs')
-const NOW = Date.parse('2026-10-15T10:00:00Z')
+const NOW = Date.parse('2026-10-15T10:00:00Z'), ASKED = '2026-10-15T10:00:00.000Z'
 const ago = (min) => new Date(NOW - min * 60000)
 const errors = []
 const env = { ...process.env, GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1' }
@@ -393,7 +393,7 @@ async function raced() {
     git(tmp, ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'notes'])
     writeFileSync(pre, `import fs from 'node:fs'\nimport { syncBuiltinESMExports } from 'node:module'\nconst rename = fs.renameSync\nfs.renameSync = (a, b) => { if (b.endsWith('/waiting.json')) { fs.writeFileSync(${JSON.stringify(mark)}, ''); Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 500) } return rename(a, b) }\nsyncBuiltinESMExports()\n`)
     const go = (pre, option) => {
-      const p = spawn(process.execPath, [...pre, script, '--root', r, '--now', new Date(NOW).toISOString(), '--answer', 'tri', '--id', 'tri-D1'], { cwd: tmp, env: { ...env, TZ: 'UTC' }, stdio: ['pipe', 'pipe', 'ignore'] })
+      const p = spawn(process.execPath, [...pre, script, '--root', r, '--now', new Date(NOW).toISOString(), '--answer', 'tri', '--id', 'tri-D1', '--asked', ASKED], { cwd: tmp, env: { ...env, TZ: 'UTC' }, stdio: ['pipe', 'pipe', 'ignore'] })
       let out = ''
       p.stdout.on('data', (d) => { out += d })
       p.stdin.end(JSON.stringify({ option, other: null }))
@@ -413,9 +413,10 @@ async function raced() {
 await raced()
 // A card against an answer, each way: the one started first pauses before its rename (the same
 // preload), the other starts then and waits on waiting.json.lock. An answer first: the card
-// written after it, tri-D2 unanswered in the file. A card first: the answer, given tri-D1, reads
-// tri-D2 and is refused `id`, the new card kept. No lock is left either way.
-async function crossed(first) {
+// written after it, the new card unanswered in the file. A card first: the answer, given tri-D1
+// and the old card's `asked`, reads the new card and is refused `id`, the new card kept, also when
+// the new card has the same id (`asked` then differs, the field refused). No lock is left.
+async function crossed(first, same = false) {
   const tmp = mkdtempSync(join(tmpdir(), 'gtm-now-facts-cross-'))
   try {
     const r = join(tmp, 'root'), card = join(r, 'reports/tri/waiting.json'), mark = join(tmp, 'mark'), pre = join(tmp, 'pre.mjs')
@@ -427,24 +428,24 @@ async function crossed(first) {
     git(tmp, ['add', 'docs'])
     git(tmp, ['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', 'notes'])
     writeFileSync(pre, `import fs from 'node:fs'\nimport { syncBuiltinESMExports } from 'node:module'\nconst rename = fs.renameSync\nfs.renameSync = (a, b) => { if (b.endsWith('/waiting.json')) { fs.writeFileSync(${JSON.stringify(mark)}, ''); Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 500) } return rename(a, b) }\nsyncBuiltinESMExports()\n`)
-    const next = { ...JSON.parse(readFileSync(join(fixtures, 'card-v11/in.json'), 'utf8')), id: 'tri-D2' }
-    const go = (pre, args, input) => {
-      const p = spawn(process.execPath, [...pre, script, '--root', r, '--now', new Date(NOW).toISOString(), ...args], { cwd: tmp, env: { ...env, TZ: 'UTC' }, stdio: ['pipe', 'pipe', 'ignore'] })
+    const next = { ...JSON.parse(readFileSync(join(fixtures, 'card-v11/in.json'), 'utf8')), id: same ? 'tri-D1' : 'tri-D2' }, later = new Date(NOW + 60000).toISOString()
+    const go = (pre, args, input, at = new Date(NOW).toISOString()) => {
+      const p = spawn(process.execPath, [...pre, script, '--root', r, '--now', at, ...args], { cwd: tmp, env: { ...env, TZ: 'UTC' }, stdio: ['pipe', 'pipe', 'ignore'] })
       let out = ''
       p.stdout.on('data', (d) => { out += d })
       p.stdin.end(JSON.stringify(input))
       return new Promise((done) => p.on('close', (code) => done({ code, out: out.trim() })))
     }
-    const answer = (pre) => go(pre, ['--answer', 'tri', '--id', 'tri-D1'], { option: 'A', other: null })
-    const write = (pre) => go(pre, ['--card', 'tri'], next)
+    const answer = (pre) => go(pre, ['--answer', 'tri', '--id', 'tri-D1', '--asked', ASKED], { option: 'A', other: null })
+    const write = (pre) => go(pre, ['--card', 'tri'], next, later)
     const hook = ['--import', pathToFileURL(pre).href]
     const one = first === 'answer' ? answer(hook) : write(hook)
     for (let i = 0; i < 200 && !existsSync(mark); i++) await new Promise((done) => setTimeout(done, 10))
     const [a, c] = first === 'answer' ? await Promise.all([one, write([])]) : (await Promise.all([one, answer([])])).reverse()
     const held = JSON.parse(readFileSync(card, 'utf8'))
-    const refused = JSON.stringify({ written: false, field: 'id', why: 'id', option: null })
-    if (c.code !== 0) errors.push(`card against answer (${first} first): the card exit ${c.code}`)
-    if (held.id !== 'tri-D2' || held.answer !== null) errors.push(`card against answer (${first} first): the file holds ${held.id}, answer ${JSON.stringify(held.answer)}; want tri-D2 unanswered`)
+    const refused = JSON.stringify({ written: false, field: same ? 'asked' : 'id', why: 'id', option: null })
+    if (c.code !== 0 || JSON.parse(c.out).asked !== later) errors.push(`card against answer (${first} first): the card printed ${c.out} (exit ${c.code}), want asked ${later}`)
+    if (held.id !== next.id || held.asked !== later || held.answer !== null) errors.push(`card against answer (${first} first): the file holds ${held.id} asked ${held.asked}, answer ${JSON.stringify(held.answer)}; want ${next.id} asked ${later} unanswered`)
     if (first === 'answer' && a.code !== 0) errors.push(`card against answer (answer first): the answer exit ${a.code}`)
     if (first === 'card' && (a.code !== 1 || a.out !== refused)) errors.push(`card against answer (card first): the answer printed ${a.out} (exit ${a.code}), want ${refused}`)
     if (existsSync(`${card}.lock`)) errors.push(`card against answer (${first} first): waiting.json.lock left behind`)
@@ -454,5 +455,6 @@ async function crossed(first) {
 }
 await crossed('answer')
 await crossed('card')
+await crossed('card', true)
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log(`now-facts: ${readdirSync(fixtures).length} scenarios and the delivery tail OK`)

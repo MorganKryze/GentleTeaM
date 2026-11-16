@@ -5,6 +5,8 @@
     "--answer",
     "mandate",
     "--id",
-    "mandate-D1"
+    "mandate-D1",
+    "--asked",
+    "2026-10-15T10:00:00.000Z"
   ]
 }
