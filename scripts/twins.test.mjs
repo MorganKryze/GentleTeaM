@@ -162,6 +162,14 @@ const TWINS = [
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'const MAX_SHEETS = 2', to: 'const MAX_SHEETS = 3', says: 'a third entry in bound' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: "category: 'proof', summary: `${r} reported", to: "category: 'behaviour', summary: `${r} reported", says: 'trace: a surviving mutation' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '· models <M> · causes <C> · path <P>`', to: '· models <M> · path <P>`', says: 'causes <C>' },
+  { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'only Read, Grep, Glob and Edit', to: 'only Read, Grep, Glob, Edit and Bash', says: 'only\\s+Read,\\s+Grep,\\s+Glob\\s+and\\s+Edit' },
+  { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'exactly twice', to: 'at least twice', says: 'exactly\\s+twice' },
+  { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'raison=<balises|vide|trop>', to: 'raison=<code>', says: 'raison=<balises|vide|trop>' },
+  { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'a struck line does not count', to: 'a struck line counts', says: 'a\\s+struck\\s+line\\s+does\\s+not\\s+count' },
+  { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'read it again and redo that Edit once', to: 'redo that Edit', says: 'read\\s+it\\s+again\\s+and\\s+redo\\s+that\\s+Edit\\s+once' },
+  { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'at most 160 characters', to: 'at most 400 characters', says: 'at\\s+most\\s+160\\s+characters' },
+  { test: 'guards', file: skill('gtm'), from: 'templates/upstream.md` alone', to: 'templates/advisor.md` alone', says: 'templates/upstream.md` alone' },
+  { test: 'guards', file: LEDGER, from: 'never struck', to: 'struck when superseded', says: 'never\\s+struck' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []
