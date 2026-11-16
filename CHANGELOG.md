@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.22.0] - 2026-11-16
+
 ### Added
 - A `wave width` line in the team settings caps how many tasks of a parallel wave run at once (2
   in a new project; without it a wave runs whole): a longer wave runs in parts, each merged and
