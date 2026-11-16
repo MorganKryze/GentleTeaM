@@ -680,8 +680,12 @@ const commands = readFileSync(join(root, 'docs/reference/commands.md'), 'utf8')
 // Any line naming a tool flag, quoted or not: none offers or allows Bash or Write.
 for (const line of commands.split('\n').filter((l) => /--(tools|allowedTools|allowed-tools)\b/.test(l))) {
   if (/\b(Bash|Write)\b/.test(line)) errors.push(`commands.md offers Bash or Write: ${line}`)
-  // A Read rule stays scoped to the plugin cache: a bare Read would open every file to the report.
-  if (/--allowedTools/.test(line) && /"Read(\(\*\*\))?"/.test(line)) errors.push(`commands.md allows Read unscoped: ${line}`)
+  // A Read rule stays scoped to the plugin cache: once the --tools list is set aside, every Read
+  // left on the line, quoted or not, is exactly the plugin cache rule; any other opens files to the report.
+  const rules = line.replace(/--tools[ =]("[^"]*"|'[^']*'|\S+)/g, '')
+  for (const r of rules.match(/\bRead\b(\([^)]*\))?/g) || []) {
+    if (r !== 'Read(~/.claude/plugins/cache/gentleteam/**)') errors.push(`commands.md allows Read unscoped: ${line}`)
+  }
 }
 if (/dangerously-skip-permissions|bypassPermissions/.test(commands)) errors.push('commands.md skips the permission checks')
 const deliver = readFileSync(join(root, 'plugins/gtm/skills/deliver/SKILL.md'), 'utf8')

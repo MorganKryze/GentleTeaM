@@ -146,7 +146,8 @@ printf '/gtm:gtm ' | cat - report.txt | claude -p --tools "Read,Grep,Glob,Edit" 
 ```
 
 The `Read` rule lets the mode read its own rules in the installed plugin, outside the project;
-without it the mode reads nothing there and writes nothing.
+without it the mode reads nothing there and writes nothing. With `CLAUDE_CONFIG_DIR` set, write
+that folder in place of `~/.claude`.
 It offers no shell and no Write: GTM reads the report as data, and the mode calls none of them
 even when they are offered.
 The `dontAsk` mode denies any tool the line does not allow, whatever mode your settings set.
