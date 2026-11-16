@@ -196,6 +196,10 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: '(`A1`, `D2`, `R3`,\n  `C7`, `T4`)', to: '(`A1`)', says: '`T4`' },
   { test: 'guards', file: 'plugins/gtm/agents/implementer.md', from: 'in a tracked file', to: 'in a test file', says: 'in\\s+a\\s+tracked\\s+file' },
   { test: 'guards', file: 'plugins/gtm/agents/implementer.md', from: ": a test's name says", to: ': a name says', says: "a\\s+test's\\s+name\\s+says" },
+  { test: 'guards', file: 'plugins/gtm/templates/team.md', from: '- wave width: 2 · why:', to: '- wave width: 8 · why:', says: 'lacks - wave width: 2' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'in plan order, each', to: 'in any order, each', says: 'in\\s+plan\\s+order' },
+  { test: 'guards', file: 'plugins/gtm/skills/deliver/SKILL.md', from: 'sized by `templates/delivery.md`', to: 'sized by hand', says: 'sized\\s+by' },
+  { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: 'no wider than the Gates `wave width`', to: 'as wide as the plan wants', says: 'no\\s+wider' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []

@@ -6,9 +6,10 @@
 ## Summary
 <At most ten lines: how many tasks, which are risky and had a dry run, what the human must know.
 Usually nothing to decide here: the spec settled it. Then the estimate line, as in the spec, each
-task on its review path: `<n> tasks × <m> min + <phase> <m> min, ... ≈ <W> min, <T>k tokens (medians
-of the last <k> measured runs)`, or `no measured run yet` with your own rough `≈ <W> min, <T>k
-tokens`.
+task on its review path, a wave of `[P]` tasks no wider than the Gates `wave width` (absent: whole)
+counted at its longest task: `<n> tasks × <m> min + <phase> <m> min, ... ≈ <W> min, <T>k tokens
+(medians of the last <k> measured runs)`, or `no measured run yet` with your own rough `≈ <W> min,
+<T>k tokens`.
 Past 4 hours (W > 240): one more line, the split you propose (which tasks first, own branch).>
 
 ## Mandate
