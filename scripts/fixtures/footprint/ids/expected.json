@@ -25,6 +25,8 @@
     "plan-id | src/rules.test.js:25 | R5",
     "plan-id | src/rules.test.js:26 | R6",
     "plan-id | src/rules.test.js:27 | R8",
+    "plan-id | src/rules.test.js:30 | T8",
+    "plan-id | src/rules.test.js:31 | T9",
     "plan-id | src/rules_test.go:2 | A3",
     "plan-id | src/rules_test.go:3 | T5",
     "plan-id | tests/test_rules.py:1 | D2",

@@ -183,7 +183,8 @@ function bulletNotes(lines, whereOf, ctx) {
   flush()
 }
 // The part of a code file's line an id is looked for in: a comment line whole, else the quoted
-// label or the name of the first test the line opens; null when it opens none.
+// label or the name of the first test the line opens; null when it opens none. An each test
+// opens on its table, a code value: its label is the quoted text after the table.
 function idText(text) {
   if (COMMENT_LINE.test(text)) return text
   for (const m of text.matchAll(new RegExp(TEST_NAME, 'g'))) {
@@ -192,9 +193,16 @@ function idText(text) {
     if (chain && !chain.slice(1).split('.').every((w) => MODIFIERS.has(w))) continue
     const rest = text.slice(m.index + m[0].length)
     const q = m[0].at(-1)
-    return `'"\``.includes(q) ? rest.split(new RegExp(`(?<!\\\\)${q}`))[0] : m[0].replace(/^\w+ /, '') + rest.match(/^\w*/)[0]
+    if (!`'"\``.includes(q)) return m[0].replace(/^\w+ /, '') + rest.match(/^\w*/)[0]
+    if (!chain?.split('.').includes('each')) return quoted(rest, q)
+    const label = rest.slice(quoted(rest, q).length + 1).match(/^\s*\(\s*(['"`])(.*)/)
+    return label ? quoted(label[2], label[1]) : null
   }
   return null
+}
+// The text of a quoted string, up to its first closing quote q that no backslash escapes.
+function quoted(s, q) {
+  return s.split(new RegExp(`(?<!\\\\)${q}`))[0]
 }
 function idNote(text, where, ctx) {
   if (ctx.skip.has('plan-id') || ctx.allow.some((a) => a.test(text))) return
