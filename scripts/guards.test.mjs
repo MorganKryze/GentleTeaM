@@ -607,11 +607,12 @@ add('plugins/gtm/templates/plan.md', [
 ])
 // How a program of yours sends a project report: tools without a shell, and the receipt it reads.
 add('docs/reference/commands.md', [
+  w('The `Read` rule lets the mode read its own rules in the installed plugin, outside the project; without it the mode reads nothing there and writes nothing.'),
   '--tools "Read,Grep,Glob,Edit"',
   '--permission-prompts none',
   '--permission-mode dontAsk',
   // The whole line, alone on it: a flag added, dropped or widened anywhere on it breaks the pin.
-  `\nprintf '/gtm:gtm ' | cat - report.txt | claude -p --tools "Read,Grep,Glob,Edit" --allowedTools "Edit(.gtm/backlog.md)" "Edit(.gtm/ledger.md)" --permission-mode dontAsk --permission-prompts none --strict-mcp-config\n`,
+  `\nprintf '/gtm:gtm ' | cat - report.txt | claude -p --tools "Read,Grep,Glob,Edit" --allowedTools "Read(~/.claude/plugins/cache/gentleteam/**)" "Edit(.gtm/backlog.md)" "Edit(.gtm/ledger.md)" --permission-mode dontAsk --permission-prompts none --strict-mcp-config\n`,
   w('Allow rules in your settings still merge in: one that allows a wider Edit widens this run too.'),
   "printf '/gtm:gtm ' | cat - report.txt | claude -p",
   w('It offers no shell and no Write: GTM reads the report as data, and the mode calls none of them even when they are offered.'),
@@ -679,6 +680,8 @@ const commands = readFileSync(join(root, 'docs/reference/commands.md'), 'utf8')
 // Any line naming a tool flag, quoted or not: none offers or allows Bash or Write.
 for (const line of commands.split('\n').filter((l) => /--(tools|allowedTools|allowed-tools)\b/.test(l))) {
   if (/\b(Bash|Write)\b/.test(line)) errors.push(`commands.md offers Bash or Write: ${line}`)
+  // A Read rule stays scoped to the plugin cache: a bare Read would open every file to the report.
+  if (/--allowedTools/.test(line) && /"Read(\(\*\*\))?"/.test(line)) errors.push(`commands.md allows Read unscoped: ${line}`)
 }
 if (/dangerously-skip-permissions|bypassPermissions/.test(commands)) errors.push('commands.md skips the permission checks')
 const deliver = readFileSync(join(root, 'plugins/gtm/skills/deliver/SKILL.md'), 'utf8')

@@ -142,9 +142,11 @@ leaves no receipt, and a resend finds the rows it already added covered. Run thi
 the prompt on stdin, with your GTM folder's path when it is not `.gtm/`:
 
 ```text
-printf '/gtm:gtm ' | cat - report.txt | claude -p --tools "Read,Grep,Glob,Edit" --allowedTools "Edit(.gtm/backlog.md)" "Edit(.gtm/ledger.md)" --permission-mode dontAsk --permission-prompts none --strict-mcp-config
+printf '/gtm:gtm ' | cat - report.txt | claude -p --tools "Read,Grep,Glob,Edit" --allowedTools "Read(~/.claude/plugins/cache/gentleteam/**)" "Edit(.gtm/backlog.md)" "Edit(.gtm/ledger.md)" --permission-mode dontAsk --permission-prompts none --strict-mcp-config
 ```
 
+The `Read` rule lets the mode read its own rules in the installed plugin, outside the project;
+without it the mode reads nothing there and writes nothing.
 It offers no shell and no Write: GTM reads the report as data, and the mode calls none of them
 even when they are offered.
 The `dontAsk` mode denies any tool the line does not allow, whatever mode your settings set.
