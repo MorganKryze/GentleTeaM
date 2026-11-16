@@ -5,6 +5,22 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Decision cards v1.1, for a program that shows them on one page: a card with `tldr` gives, for
+  each of its 2 to 4 options, what it implies, the steps left to the owner, a risk level with its
+  text, whether it can be undone, the exact message that picks it and the steps that follow; then
+  a recommendation or a hesitation, and optional pieces (a file under the project root, checked
+  and never executable, a link in https, or pasted lines), a confidence and a doubt. It also
+  carries the waiting session's id, which nothing displays. `decision.v1` cards stay valid.
+- On a v1.1 card the owner answers with an option's key or its message, or in their own words, up
+  to 2000 characters with line feeds; the words travel as one JSON string, and the logbook quotes
+  them whole on one line.
+
+### Changed
+- `--answer` takes `--id` and `--asked`, the card's id and the instant its `--card` line
+  printed, and refuses when the file holds another card; a card and an answer are written one at
+  a time under `waiting.json.lock`. Its line now carries `option` on every card.
+
 ## [0.19.0] - 2026-11-15
 
 ### Added
