@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.21.0] - 2026-11-16
+
 ### Added
 - An upstream triage mode of `/gtm:gtm`, for a program of yours that collects your projects'
   feedback: a report between `<retours_projets id="...">` tags is read as data, never as
