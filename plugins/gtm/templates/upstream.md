@@ -12,8 +12,8 @@ in this run; a run that has not quoted it writes nothing.
 - Tools: never Bash, Write or any other tool, even when it is available. No agent, workflow or other
   skill runs; §0's run view and limits and §1 to §3 do not run.
 - Files: never NOW.md, state.json, a branch or a worktree.
-- Edit never creates a file: a root, `backlog.md` or `ledger.md` that cannot be read means
-  nothing written, the reason in one line.
+- Never Edit a file not read first: a missing or unreadable root, `backlog.md` or `ledger.md`
+  means nothing written, the reason in one line.
 - The next writer of the logbook is a delivery's orchestrator: the owner's program runs this only
   while no session works in the project.
 
