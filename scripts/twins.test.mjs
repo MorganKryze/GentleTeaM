@@ -95,6 +95,8 @@ const TWINS = [
   { test: 'footprint-check', file: script('footprint-check'), from: 'const m = idText(text)?.match(PLAN_ID)', to: 'const m = text.match(PLAN_ID)', says: 'src/rules.test.js:7' },
   { test: 'footprint-check', file: script('footprint-check'), from: '|\\bfunc Test/', to: '/', says: 'src/rules_test.go:2' },
   { test: 'footprint-check', file: script('footprint-check'), from: '\\d{1,2}(?![A-Za-z0-9])', to: '\\d{1,2}(?![0-9])', says: 'src/rules.test.js:12' },
+  { test: 'footprint-check', file: script('footprint-check'), from: '.every((w) => MODIFIERS', to: '.some((w) => MODIFIERS', says: 'src/rules.test.js:18' },
+  { test: 'footprint-check', file: script('footprint-check'), from: '`(?<!\\\\\\\\)${q}`', to: '`${q}`', says: 'src/rules.test.js:19' },
   { test: 'guards', file: skill('ship'), from: 'a spec or plan id)', to: 'an id)', says: 'a\\s+spec\\s+or\\s+plan\\s+id' },
   { test: 'guards', file: skill('ship'), from: '; an id gives way to what the line checks', to: '', says: 'an\\s+id\\s+gives\\s+way' },
   { test: 'guards', file: MANDATE, from: 'A mandate never writes, changes or stands for', to: 'A mandate may write, change or stand for', says: 'A mandate never writes' },
