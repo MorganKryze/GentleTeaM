@@ -609,6 +609,8 @@ add('plugins/gtm/templates/plan.md', [
 add('docs/reference/commands.md', [
   '--tools "Read,Grep,Glob,Edit"',
   '--permission-prompts none',
+  '--permission-mode dontAsk',
+  w('Allow rules in your settings still merge in: one that allows a wider Edit widens this run too.'),
   "printf '/gtm:gtm ' | cat - report.txt | claude -p",
   w('It offers no shell and no Write: GTM reads the report as data, and the mode calls none of them even when they are offered.'),
   '`- <date> · upstream · recu · id=<id> · ajoutes=<a> · couverts=<c> · ecartes=<e>`',

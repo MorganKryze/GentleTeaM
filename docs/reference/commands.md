@@ -141,11 +141,13 @@ leaves no receipt, and a resend finds the rows it already added covered. Run thi
 the prompt on stdin, with your GTM folder's path when it is not `.gtm/`:
 
 ```text
-printf '/gtm:gtm ' | cat - report.txt | claude -p --tools "Read,Grep,Glob,Edit" --allowedTools "Edit(.gtm/backlog.md)" "Edit(.gtm/ledger.md)" --permission-prompts none --strict-mcp-config
+printf '/gtm:gtm ' | cat - report.txt | claude -p --tools "Read,Grep,Glob,Edit" --allowedTools "Edit(.gtm/backlog.md)" "Edit(.gtm/ledger.md)" --permission-mode dontAsk --permission-prompts none --strict-mcp-config
 ```
 
 It offers no shell and no Write: GTM reads the report as data, and the mode calls none of them
 even when they are offered.
+The `dontAsk` mode denies any tool the line does not allow, whatever mode your settings set.
+Allow rules in your settings still merge in: one that allows a wider Edit widens this run too.
 
 Each item gets one of three outcomes: `ajoute "<title>"`, a new backlog row under
 `## Upstream (P2)`; `couvert <where>`, already held in the backlog, the logbook or the
