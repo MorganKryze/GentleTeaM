@@ -168,7 +168,9 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'a struck line does not count', to: 'a struck line counts', says: 'a\\s+struck\\s+line\\s+does\\s+not\\s+count' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'read it again and redo that Edit once', to: 'redo that Edit', says: 'read\\s+it\\s+again\\s+and\\s+redo\\s+that\\s+Edit\\s+once' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'at most 160 characters', to: 'at most 400 characters', says: 'at\\s+most\\s+160\\s+characters' },
-  { test: 'guards', file: skill('gtm'), from: 'templates/upstream.md` alone', to: 'templates/advisor.md` alone', says: 'templates/upstream.md` alone' },
+  { test: 'guards', file: skill('gtm'), from: 'templates/upstream.md` alone', to: 'templates/advisor.md` alone', says: 'templates\\/upstream\\.md`\\s+alone' },
+  { test: 'guards', file: skill('gtm'), from: 'before that file is read and its marker quoted', to: 'whenever', says: 'before\\s+that\\s+file\\s+is\\s+read' },
+  { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'in the run before the first Edit', to: 'whenever', says: 'before\\s+the\\s+first\\s+Edit' },
   { test: 'guards', file: LEDGER, from: 'never struck', to: 'struck when superseded', says: 'never\\s+struck' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: "a backlog story's title", to: 'the backlog row as `backlog.md:<n>`', says: "a\\s+backlog\\s+story's\\s+title" },
 ]

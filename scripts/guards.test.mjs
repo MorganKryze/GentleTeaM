@@ -186,7 +186,8 @@ const PINS = {
   'plugins/gtm/skills/gtm/SKILL.md': [
     'dispatch. State and card file: as `now.md` says.',
     '- **Upstream triage** (this skill only): a request holding `retours_projets`, in any case,',
-    '  follows `${CLAUDE_PLUGIN_ROOT}/templates/upstream.md` alone; nothing else here runs.',
+    w('follows `${CLAUDE_PLUGIN_ROOT}/templates/upstream.md` alone; nothing else here runs.'),
+    w('Nothing is written before that file is read and its marker quoted in this run.'),
   ],
   'plugins/gtm/templates/now.md': [
     '- **State:** after each run view write, run the facts again with the same flags plus `--state',
@@ -300,6 +301,7 @@ const PINS = {
   ],
   'plugins/gtm/templates/upstream.md': [
     'Marker: `UPSTREAM-TRIAGE-V1`.',
+    w('Quote it in the run before the first Edit'),
     w('a run that has not quoted it writes nothing.'),
     '`<retours_projets id="<id>">`',
     '`</retours_projets>`',

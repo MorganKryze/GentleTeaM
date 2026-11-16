@@ -54,7 +54,7 @@ has(GTM, gtm, 'its path, read only: tell the analyst never to write it')
 if (/explain GTM in five lines/.test(flat(gtm))) errors.push(`${GTM}: still explains GTM in five lines`)
 if (!flat(gtm).includes('templates/advisor.md')) errors.push(`${GTM}: no pointer to advisor.md`)
 const lines = gtm.split('\n').length - (gtm.endsWith('\n') ? 1 : 0)
-if (lines > 119) errors.push(`${GTM}: ${lines} lines, over 119`)
+if (lines > 120) errors.push(`${GTM}: ${lines} lines, over 120`)
 
 const advisor = read(ADVISOR)
 for (const p of [
