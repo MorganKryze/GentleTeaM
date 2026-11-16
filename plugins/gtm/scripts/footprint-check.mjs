@@ -2,7 +2,8 @@
 // Footprint check: scans a branch for traces of GTM before it ships with stealth on.
 // Looks at the branch name, its commit messages, the PR text, the lines its diff adds and the
 // files it creates, for GTM's vocabulary, excluded-path names, attribution trailers and the
-// writing tells of guidelines/voice.md. No dependencies.
+// writing tells of guidelines/voice.md. A spec or plan id (A1, C7, T12) in an added comment or test
+// name is a note, never a hit. No dependencies.
 //
 // node footprint-check.mjs [--config <root>/config.yml] [--base <ref>] [--pr <file>] [--repo <dir>] [--json]
 // Exit 0: no hit (notes may remain). Exit 1: at least one hit. Exit 2: usage or git error.
@@ -16,7 +17,7 @@
 //   footprint.words          more regexes to flag (case-insensitive), e.g. an internal codename
 //   footprint.allow          regexes; a hit or note on a line matching one is dropped
 //   footprint.skip           writing tells the project's own voice uses: em-dash, emoji, stock,
-//                            filler, triad, bullets
+//                            filler, triad, bullets, plan-id
 import { readFileSync, existsSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -37,6 +38,10 @@ const TELLS = {
   filler: String.raw`\b(?:basically|essentially|actually|arguably|needless to say|it should be noted|it is important to note|in order to|(?:might|could|may) potentially|it seems that)\b`,
 }
 const DOC_FILE = /\.(?:md|mdx|markdown|txt|rst|adoc)$/i
+// A spec or plan id standing alone (A1, D2, R3, C7, T12), in a comment or a test name of a code
+// file: a note only, since a cell, a note or a code can look the same.
+const PLAN_ID = /(?<![A-Za-z0-9])[ACDRT]\d{1,2}(?![A-Za-z0-9])/
+const TEST_NAME = /\b(?:it|test|describe|context|specify)(?:\.\w+)*\s*\(?\s*['"`]|\.Run\(\s*"|\bdef test_|\bfunc Test/
 const COMMENT_LINE = /^\s*(?:\/\/|\/\*|\*|#(?!!)|<!--|--|;)/
 
 function parseArgs(argv) {
@@ -174,6 +179,11 @@ function bulletNotes(lines, whereOf, ctx) {
   })
   flush()
 }
+function idNote(text, where, ctx) {
+  if (ctx.skip.has('plan-id') || ctx.allow.some((a) => a.test(text))) return
+  const m = text.match(PLAN_ID)
+  if (m) ctx.notes.push({ kind: 'plan-id', where, match: m[0], line: text.trim().slice(0, 100) })
+}
 function scanMessage(text, whereOf, ctx) {
   const lines = text.split('\n')
   let fenced = false
@@ -227,6 +237,7 @@ export function check({ repo = '.', config, base, pr } = {}) {
       else if (!fenced) scope = 'prose'
     } else if (COMMENT_LINE.test(text)) scope = 'prose'
     scanLine(text, `${file}:${n}`, scope, ctx)
+    if (!DOC_FILE.test(file) && (COMMENT_LINE.test(text) || TEST_NAME.test(text))) idNote(text, `${file}:${n}`, ctx)
     n++
   }
   return { branch, base: baseRef, hits: ctx.hits, notes: ctx.notes }

@@ -90,6 +90,8 @@ const TWINS = [
   { test: 'guards', file: skill('ship'), from: 'run · landing: <class> at <short head>,', to: 'run · landed,', says: 'landing: <class> at <short head>' },
   { test: 'guards', file: skill('ship'), from: 'check and merge. No card.', to: 'check and merge. Then show the card.', says: 'No card.' },
   { test: 'guards', file: skill('ship'), from: 'why (`why`, `file`, `proof`).', to: 'why.', says: 'why (`why`, `file`, `proof`).' },
+  { test: 'footprint-check', file: script('footprint-check'), from: '[ACDRT]\\d{1,2}', to: '[ACDR]\\d{1,2}', says: 'T12' },
+  { test: 'guards', file: skill('ship'), from: 'a spec or plan id)', to: 'an id)', says: 'a\\s+spec\\s+or\\s+plan\\s+id' },
   { test: 'guards', file: MANDATE, from: 'A mandate never writes, changes or stands for', to: 'A mandate may write, change or stand for', says: 'A mandate never writes' },
   { test: 'guards', file: 'docs/reference/commands.md', from: 'never applies one alone', to: 'may apply one alone', says: 'never applies one alone' },
   { test: 'guards', file: 'docs/why/positions.md', from: 'A tag or a release always asks.', to: 'A tag or a release asks.', says: 'A tag or a release always asks.' },

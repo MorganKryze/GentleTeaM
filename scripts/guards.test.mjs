@@ -248,6 +248,7 @@ const PINS = {
     w('Line feeds aside, the script refuses words holding a control character (a tab or a carriage return among them)'),
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
+    w('Notes (lists of three, short bullet runs, a spec or plan id) do not stop it'),
     '--base <git.base> --pr <root>/reports/<slug>/pr.md`',
     'Under a standing go (`git.push: standing`), first run and quote',
     '`node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root> --landing <slug> --proofs gate`',

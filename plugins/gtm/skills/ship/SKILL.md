@@ -32,8 +32,8 @@ Run, and quote the result:
 Any hit stops the ship. Show each hit with its location, then fix: files in a new commit, the PR
 text in place, commit messages by rewording the unpushed commits (a decision card: it rewrites
 local history). A false positive goes to `footprint.allow` only with the human's answer. Rerun
-until it reports no hit. Notes (lists of three, short bullet runs) do not stop it: reread those
-lines against `guidelines/voice.md`.
+until it reports no hit. Notes (lists of three, short bullet runs, a spec or plan id) do not stop
+it: reread those lines against `guidelines/voice.md`; an id gives way to what the line checks.
 
 ## 3. Ask the go (one decision card)
 Under a standing go (`git.push: standing`), first run and quote

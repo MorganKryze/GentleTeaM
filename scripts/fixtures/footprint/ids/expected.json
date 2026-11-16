@@ -1,0 +1,13 @@
+{
+  "exit": 0,
+  "hits": [],
+  "notes": [
+    "plan-id | spec/rules_spec.rb:2 | C9",
+    "plan-id | src/rules.js:1 | A1",
+    "plan-id | src/rules.test.js:1 | T12",
+    "plan-id | src/rules.test.js:3 | R3",
+    "plan-id | src/rules.test.js:4 | D10",
+    "plan-id | tests/test_rules.py:1 | D2",
+    "plan-id | tests/test_rules.py:2 | A1"
+  ]
+}
