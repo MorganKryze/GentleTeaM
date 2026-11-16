@@ -13,7 +13,10 @@
 > passed), `escape` (a defect found after the merge of the branch that brought it, `- <date> ·
 > <slug of the branch that brought it> · escape · <what>, merged in <merge or PR>, found <where
 > and by whom>, path <text|code|full|?>, category <category>`; written by the gtm skill when it
-> records such a bug, and by the retro).
+> records such a bug, and by the retro), `recu` and `refus` (a project report's receipt and
+> refusal, slug `upstream`, written only by the upstream triage in the shapes
+> `templates/upstream.md` gives; never struck;
+> its `upstream · ruling · id=` item lines are triage outcomes and bind nothing).
 > A `run` line: `tasks N · correction rounds per task · findings per reviewer (critical /
 > important / minor) · tiers <g>g <s>s · design rounds and score · measured <W>m <T>k <A>a:
 > <phase> <w>m <t>k <a>a, ...; roles <role> <p>%, ... · limits <window> +<a>% ...

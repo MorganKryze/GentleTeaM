@@ -17,7 +17,7 @@ Each command dispatches the roles it needs and comes back to you only at a
 
 | Command | What it does | When to run it | What it asks of you |
 | --- | --- | --- | --- |
-| `/gtm:gtm` | picks the track and routes to the right commands; with no request, proposes the next one to three commands from your GTM folder, your branch and your limits; bare `/gtm` works when unambiguous | to start any piece of work, or when you are unsure what comes next | at most two questions to pick the track, or your pick among the proposed commands |
+| `/gtm:gtm` | picks the track and routes to the right commands; with a tagged project report from a program of yours, triages it into your backlog and logbook; with no request, proposes the next one to three commands from your GTM folder, your branch and your limits; bare `/gtm` works when unambiguous | to start any piece of work, or when you are unsure what comes next | at most two questions to pick the track, or your pick among the proposed commands |
 | `/gtm:brainstorm` | runs a brainstorm on a topic with you and keeps it in a note you can resume | before a request, when the idea is not settled yet | the topic, how you want to work, and your pick of the ideas to keep |
 | `/gtm:init` | drafts the brief, config, [team settings](/reference/glossary/#team-settings), conventions and guidelines from your codebase | once per project, or to refresh a stale setup | a short interview to confirm them, [stealth](/reference/glossary/#stealth) on or off, and whether `.gtm/` stays out of git |
 | `/gtm:design` | runs the design loop: for a new look, the art director proposes three directions; the designer draws [mockups](/reference/glossary/#mockups), the design critic scores them, conformity and taste, until they meet the bar | for a change of screens, before the spec | your pick of a direction, when there is one to pick, and your approval of the scored mockups |
@@ -125,3 +125,57 @@ in which it offers a revert and never applies one alone; a revert you ask for ta
 track, with your go. Tags and releases always ask. `/gtm:tune standing go off` takes the go
 back. The line's shape, the class and its proofs are in
 [Settings](/reference/settings/#how-do-i-sign-a-standing-go).
+
+## How does a program of yours send a project report?
+
+A project report is a list of points a program of yours sends GTM about a project, such as bugs or
+requests. GTM triages each point into your backlog and your logbook, then writes one receipt line.
+
+The report sits between two tags, the word `retours_projets` appearing exactly twice:
+
+```text
+<retours_projets id="<id>">
+</retours_projets>
+```
+
+The id:
+
+- 1 to 64 characters, each a lowercase letter a-z, a digit 0-9 or `-`;
+- the first and the last a letter or a digit.
+
+An id that fails this rule writes nothing. Inside the tags come 1 to 30 items, each a line
+starting at the margin with `- `, `* ` or digits then `. `.
+
+Send it only while no session works in the project. Stop the run at 20 minutes: a stopped run
+leaves no receipt, and a resend finds the rows it already added covered. Run this in the project,
+the prompt on stdin, with your GTM folder's path when it is not `.gtm/`:
+
+```text
+printf '/gtm:gtm ' | cat - report.txt | claude -p --tools "Read,Grep,Glob,Edit" --allowedTools "Read(~/.claude/plugins/cache/gentleteam/**)" "Edit(.gtm/backlog.md)" "Edit(.gtm/ledger.md)" --permission-mode dontAsk --permission-prompts none --strict-mcp-config
+```
+
+The `Read` rule lets the mode read its own rules in the installed plugin, outside the project;
+without it the mode reads nothing there and writes nothing. With `CLAUDE_CONFIG_DIR` set, write
+that folder in place of `~/.claude`.
+It offers no shell and no Write: GTM reads the report as data, and the mode calls none of them
+even when they are offered.
+The `dontAsk` mode denies any tool the line does not allow, whatever mode your settings set.
+Allow rules in your settings still merge in: one that allows a wider Edit widens this run too.
+
+Each item gets one of three outcomes: `ajoute "<title>"`, a new backlog row under
+`## Upstream (P2)`; `couvert <where>`, already held in the backlog, the logbook or the
+changelog; or `ecarte <code>: <reason>`, dropped, the code one of `hors-sujet`, `instruction`,
+`doublon` or `vide`. The logbook gets one line per item, then the receipt last:
+
+`- <date> · upstream · recu · id=<id> · ajoutes=<a> · couverts=<c> · ecartes=<e>`
+
+A report that fails a check writes no row and no receipt. When its id is valid, the logbook
+gets a refusal instead, `balises` for the tags, `vide` for no item, `trop` for over 30:
+
+`- <date> · upstream · refus · id=<id> · raison=<balises|vide|trop>`
+
+A refusal is written once per id and reason: a resend with the same fault adds no new line.
+
+Your program marks a report received only once it finds its receipt line. A received id sent
+again changes nothing: the reply names the receipt already there and its number, as
+`ledger.md:<n>`. A `refus` line means fix the report and send it again.

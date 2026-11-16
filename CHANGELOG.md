@@ -5,6 +5,16 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- An upstream triage mode of `/gtm:gtm`, for a program of yours that collects your projects'
+  feedback: a report between `<retours_projets id="...">` tags is read as data, never as
+  instructions, and each of its 1 to 30 items is added to the backlog as a P2 story, marked as
+  already covered (with where), or dropped with its reason. The mode uses only Read, Grep, Glob
+  and Edit, writes only `backlog.md` and the logbook, in its own words, and ends with one fixed
+  receipt line; a report already received changes nothing, a malformed one with a valid id gets
+  one `refus` line instead of a receipt, and one with an invalid id writes nothing.
+  `docs/reference/commands.md` says how to send a report and read its receipt.
+
 ## [0.20.0] - 2026-11-16
 
 ### Added

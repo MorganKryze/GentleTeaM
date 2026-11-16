@@ -73,7 +73,7 @@ one learned.
 | `sheet.json` | the [project sheet](#project-sheet): what the project is for, its plan, decisions, cost and difficulties, for a program that shows the project; kept out of commits like `state.json`, and written only while `project.sheet` is `on` | the orchestrator, through the facts script |
 | `reports/<slug>/handoff.md` | the stopped run: what was stopped, what waited, the worktrees kept and the command that resumes | `/gtm:pause` |
 | `reports/<slug>/lead/` | the scripts, logs and tool installs the orchestrator makes for a run, kept here rather than in the session scratchpad Claude Code can wipe | the orchestrator, never an agent |
-| `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision; each `run` line has a `paths` segment with the tasks, minutes, tokens and rounds per review path, and an `escape` line records a defect found after its branch merged, with its task's review path | every step |
+| `ledger.md` | the [logbook](/reference/glossary/#logbook): one line per lesson or decision; each `run` line has a `paths` segment with the tasks, minutes, tokens and rounds per review path, and an `escape` line records a defect found after its branch merged, with its task's review path; an `upstream · recu` line acknowledges a project report, a `refus` line refuses one, never struck | every step |
 
 ## What does state.json hold?
 
