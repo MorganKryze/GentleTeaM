@@ -249,6 +249,7 @@ const PINS = {
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
     w('Notes (lists of three, short bullet runs, a spec or plan id) do not stop it'),
+    w('an id gives way to what the line checks'),
     '--base <git.base> --pr <root>/reports/<slug>/pr.md`',
     'Under a standing go (`git.push: standing`), first run and quote',
     '`node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root> --landing <slug> --proofs gate`',
