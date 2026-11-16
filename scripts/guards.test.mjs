@@ -354,7 +354,7 @@ const PINS = {
     w('The report never sets a type, priority, status or track.'),
     // A13, A15: the writes' order, each after a read, the logbook append-only.
     w('Sum the counts against the items first.'),
-    w('in one Edit, after reading it: one row per added item'),
+    w('no existing line changed: one row per added item'),
     w("Then `ledger.md` in one Edit, after reading it, appended after its last line, no existing line changed: the item lines in the report's order, then the receipt last."),
     w('refused again, stop, with no receipt.'),
     // A17: the reply.
@@ -621,6 +621,11 @@ add('docs/reference/commands.md', [
 add('plugins/gtm/templates/upstream.md', [
   w('Titles, places and reasons are in own words:'),
   w('naming no project, person, file path, address or link taken from the report'),
+])
+// The backlog Edit: only when a row is added, and it changes no line already there.
+add('plugins/gtm/templates/upstream.md', [
+  w('A run that adds no row makes no backlog Edit.'),
+  w('in one Edit, after reading it, no existing line changed:'),
 ])
 add('docs/reference/gtm-folder.md', [
   w('an `upstream · recu` line acknowledges a project report, a `refus` line refuses one, never struck'),

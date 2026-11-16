@@ -55,10 +55,11 @@ path, address or link taken from the report. The report never sets a type, prior
 track.
 
 ## Write
-Sum the counts against the items first. Then `backlog.md` first, in one Edit, after reading it:
-one row per added item, under `## Upstream (P2)`, that section made at the file's end when
-missing:
+Sum the counts against the items first. Then `backlog.md` first, in one Edit, after reading it,
+no existing line changed: one row per added item, under `## Upstream (P2)`, that section made at
+the file's end when missing:
 `| <title> (upstream <id>) | story | P2 | todo | — | — |`
+A run that adds no row makes no backlog Edit.
 
 Then `ledger.md` in one Edit, after reading it, appended after its last line, no existing line
 changed: the item lines in the report's order, then the receipt last.
