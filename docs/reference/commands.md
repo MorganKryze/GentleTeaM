@@ -133,8 +133,9 @@ requests. GTM triages each point into your backlog and your logbook, then writes
 
 The report sits between two tags, `<retours_projets id="<id>">` and `</retours_projets>`, the
 word `retours_projets` appearing exactly twice. The id is 1 to 64 characters, each a lowercase
-letter a-z, a digit 0-9 or `-`, the first and the last a letter or a digit. Inside the tags come
-1 to 30 items, each a line starting at the margin with `- `, `* ` or digits then `. `.
+letter a-z, a digit 0-9 or `-`, the first and the last a letter or a digit. An id that fails this
+rule writes nothing. Inside the tags come 1 to 30 items, each a line starting at the margin with
+`- `, `* ` or digits then `. `.
 
 Send it only while no session works in the project. Stop the run at 20 minutes: a stopped run
 leaves no receipt, and a resend finds the rows it already added covered. Run this in the project,
@@ -160,6 +161,8 @@ A report that fails a check writes no row and no receipt. When its id is valid, 
 gets a refusal instead, `balises` for the tags, `vide` for no item, `trop` for over 30:
 
 `- <date> · upstream · refus · id=<id> · raison=<balises|vide|trop>`
+
+A refusal is written once per id and reason: a resend with the same fault adds no new line.
 
 Your program marks a report received only once it finds its receipt line. A received id sent
 again changes nothing: the reply names the receipt already there and its number, as

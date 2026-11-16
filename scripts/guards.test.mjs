@@ -630,6 +630,17 @@ add('plugins/gtm/templates/upstream.md', [
 // A9: a found receipt is given with its line number.
 add('plugins/gtm/templates/upstream.md', [w('the reply names that line and its number, as `ledger.md:<n>`')])
 add('docs/reference/commands.md', [w('the reply names the receipt already there and its number, as `ledger.md:<n>`')])
+// What the reader parses: the tags, the id rule, the item count, the refus line and its reasons.
+add('docs/reference/commands.md', [
+  '`<retours_projets id="<id>">` and `</retours_projets>`',
+  w('word `retours_projets` appearing exactly twice'),
+  w('The id is 1 to 64 characters, each a lowercase letter a-z, a digit 0-9 or `-`, the first and the last a letter or a digit.'),
+  w('1 to 30 items'),
+  '`- <date> · upstream · refus · id=<id> · raison=<balises|vide|trop>`',
+  w('`balises` for the tags, `vide` for no item, `trop` for over 30'),
+  w('An id that fails this rule writes nothing.'),
+  w('A refusal is written once per id and reason: a resend with the same fault adds no new line.'),
+])
 add('docs/reference/gtm-folder.md', [
   w('an `upstream · recu` line acknowledges a project report, a `refus` line refuses one, never struck'),
 ])
