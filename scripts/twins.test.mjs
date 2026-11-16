@@ -170,6 +170,7 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'at most 160 characters', to: 'at most 400 characters', says: 'at\\s+most\\s+160\\s+characters' },
   { test: 'guards', file: skill('gtm'), from: 'templates/upstream.md` alone', to: 'templates/advisor.md` alone', says: 'templates/upstream.md` alone' },
   { test: 'guards', file: LEDGER, from: 'never struck', to: 'struck when superseded', says: 'never\\s+struck' },
+  { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: "a backlog story's title", to: 'the backlog row as `backlog.md:<n>`', says: "a\\s+backlog\\s+story's\\s+title" },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []

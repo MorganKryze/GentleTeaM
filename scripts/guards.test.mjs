@@ -329,6 +329,7 @@ const PINS = {
     w('`backlog.md` first, in one Edit'),
     w('read it again and redo that Edit once'),
     w('a row carrying `(upstream <id>)` covers the item it was added for'),
+    w("a backlog story's title, `ledger.md:<n>` or `CHANGELOG.md:<n>`"),
   ],
   'plugins/gtm/templates/ledger.md': [
     '> An answer quoted goes in whole on one line as a JSON string, quotes included: a backslash',

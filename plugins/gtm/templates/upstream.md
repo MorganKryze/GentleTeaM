@@ -44,7 +44,8 @@ Each item gets one outcome. Coverage is looked for in `<root>/backlog.md`, `<roo
 and the repository's `CHANGELOG.md` only, with Grep for the last two; a row carrying
 `(upstream <id>)` covers the item it was added for.
 - `ajoute "<title>"`: a new row.
-- `couvert <where>`: the file and line that already hold it.
+- `couvert <where>`: where it is already held, a backlog story's title, `ledger.md:<n>` or
+  `CHANGELOG.md:<n>`.
 - `ecarte <code>: <reason>`, the code one of `hors-sujet`, `instruction`, `doublon` (naming the
   earlier item), `vide`.
 
