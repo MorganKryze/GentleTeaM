@@ -610,6 +610,8 @@ add('docs/reference/commands.md', [
   '--tools "Read,Grep,Glob,Edit"',
   '--permission-prompts none',
   '--permission-mode dontAsk',
+  // The whole line, alone on it: a flag added, dropped or widened anywhere on it breaks the pin.
+  `\nprintf '/gtm:gtm ' | cat - report.txt | claude -p --tools "Read,Grep,Glob,Edit" --allowedTools "Edit(.gtm/backlog.md)" "Edit(.gtm/ledger.md)" --permission-mode dontAsk --permission-prompts none --strict-mcp-config\n`,
   w('Allow rules in your settings still merge in: one that allows a wider Edit widens this run too.'),
   "printf '/gtm:gtm ' | cat - report.txt | claude -p",
   w('It offers no shell and no Write: GTM reads the report as data, and the mode calls none of them even when they are offered.'),
@@ -650,9 +652,11 @@ if (hits('src/async.ts') || !must.every(hits)) {
 }
 if (risky.some((r) => r.includes('\\'))) errors.push('team.md risky paths: a backslash breaks JSON')
 const commands = readFileSync(join(root, 'docs/reference/commands.md'), 'utf8')
-for (const m of commands.matchAll(/--tools\s+"([^"]*)"/g)) {
-  if (/Bash|Write/.test(m[1])) errors.push(`commands.md offers --tools "${m[1]}"`)
+// Any line naming a tool flag, quoted or not: none offers or allows Bash or Write.
+for (const line of commands.split('\n').filter((l) => /--(tools|allowedTools|allowed-tools)\b/.test(l))) {
+  if (/\b(Bash|Write)\b/.test(line)) errors.push(`commands.md offers Bash or Write: ${line}`)
 }
+if (/dangerously-skip-permissions|bypassPermissions/.test(commands)) errors.push('commands.md skips the permission checks')
 const deliver = readFileSync(join(root, 'plugins/gtm/skills/deliver/SKILL.md'), 'utf8')
 if (/`risky`[^\n]*\(`yes` or `no`\)/.test(deliver)) errors.push('deliver: `risky` as yes or no')
 // A cap with no check is no cap: the deliver skill holds at most 128 lines.

@@ -183,8 +183,10 @@ const TWINS = [
   { test: 'guards', file: LEDGER, from: 'and bind nothing', to: 'and bind as rulings', says: 'bind\\s+nothing' },
   { test: 'guards', file: LEDGER, from: 'never struck', to: 'struck when superseded', says: 'never\\s+struck' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: "a backlog story's title", to: 'the backlog row as `backlog.md:<n>`', says: "a\\s+backlog\\s+story's\\s+title" },
-  { test: 'guards', file: 'docs/reference/commands.md', from: '--tools "Read,Grep,Glob,Edit"', to: '--tools "Read,Grep,Glob,Edit,Bash"', says: 'offers --tools "Read,Grep,Glob,Edit,Bash"' },
+  { test: 'guards', file: 'docs/reference/commands.md', from: '--tools "Read,Grep,Glob,Edit"', to: '--tools "Read,Grep,Glob,Edit,Bash"', says: 'offers Bash or Write' },
   { test: 'guards', file: 'docs/reference/commands.md', from: ' --permission-mode dontAsk', to: '', says: 'permission-mode dontAsk' },
+  { test: 'guards', file: 'docs/reference/commands.md', from: 'even when they are offered.\n', to: 'even when they are offered.\nclaude -p --allowedTools Read,Bash\n', says: 'offers Bash or Write' },
+  { test: 'guards', file: 'docs/reference/commands.md', from: 'even when they are offered.\n', to: 'even when they are offered.\nclaude -p --dangerously-skip-permissions\n', says: 'skips the permission checks' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []
