@@ -66,6 +66,7 @@ section has none on: nothing to migrate.
 - fix rounds per standard review: 1 · why: one correction, minors to the ledger · YYYY-MM-DD
 - review cadence: reviewer per-wave, ux-qa per-branch, security-reviewer per-task, data-reviewer per-task · why: a role left out reviews per task; security and data reviewers never lighter · YYYY-MM-DD
 - tasks per branch: 8 · why: each task costs a fixed ceremony; slices, not layers, keep a branch at 8 or fewer · YYYY-MM-DD
+- wave width: 2 · why: more tasks at once can load a laptop past its cores · YYYY-MM-DD
 - Fix track ceiling: 3 files · why: above it, the change deserves a spec · YYYY-MM-DD
 - design threshold: 8/10, zero must-fix · why: <reason> · YYYY-MM-DD
 - taste threshold: 7/10 · why: the lowest of the five grades, so a bland board fails · YYYY-MM-DD
@@ -79,7 +80,9 @@ section has none on: nothing to migrate.
 A budget is `none` or `<minutes> min, <tokens>k tokens`. Past 1.5× of one, `/gtm:deliver` raises a
 Heads-up and goes on; no budget changes a verdict, a correction round or the order of tasks.
 A profile without the budget lines reads as `none`. A profile without `review cadence` runs every
-task guarded, as before 0.7.0; without `tasks per branch`, the cap is 8. Nothing to migrate.
+task guarded, as before 0.7.0; without `tasks per branch`, the cap is 8; without `wave width`, a
+wave runs whole, as before. Nothing to migrate. `wave width` caps the tasks of a parallel wave that
+run at once.
 
 A `review path` line is an allowlist of regexes on a task's changed files. Every file on `text`:
 the reviewer alone, on the line's model, planting no mutation, and a fix asked over minors only

@@ -149,6 +149,10 @@ included, are disjoint. They run at once, each in its own worktree outside the r
 its own branch. When all have returned, the clean ones merge into the delivery branch with merge
 commits in plan order, then the gate runs once.
 
+At most `wave width` tasks run at once: 2 in a new project, the whole wave without the line. The
+rest run in later parts, in plan order, each part merged and gated before the next starts. A
+standard wave is still reviewed once, after its last part has merged.
+
 A branch name with a character other than letters, digits and `._/-`, a moved branch or head, an
 overlap of files, a conflict, a red gate, a failed check or files left in a worktree's GTM folder
 stops the merges, and nothing is undone without you. A task left open or blocked does not hold back
@@ -250,8 +254,9 @@ review. A plan over the limit goes back once, then you choose on a card to split
 Each task names the numbered global constraints of the plan it touches. Its brief holds the task
 word for word, those constraints, and paths to the rest: the implementer reads less, and the rule
 stays in one place. Before each dispatch, the brief is read against the logbook: each
-decision made for you or answer of yours newer than the brief goes into it, quoted with its date,
-and the brief ends with the logbook line it was read to.
+decision made for you or answer of yours newer than the brief goes into it, quoted word for word
+with its date, never paraphrased, and the brief ends with the logbook line it was read to. A brief
+that applies a decision quotes it the same way, however old it is.
 
 ## When is a screen designed in code?
 
@@ -342,6 +347,7 @@ It reports each hit with its location:
   filler and hedging.
 
 Lists of three and runs of short bullets come back as notes, since a pattern cannot tell them from
-honest lists. The `footprint` block of `config.yml` adds words, allows known false positives and
-skips tells the project's own voice uses. Sentence length and passive voice are left to
+honest lists. A spec or plan id (`A1`, `C7`) in an added comment or test name comes back as a
+note, never a hit. The `footprint` block of `config.yml` adds words, allows known false positives
+and skips tells the project's own voice uses. Sentence length and passive voice are left to
 `guidelines/voice.md`.

@@ -36,8 +36,18 @@ today's lines reads them as before. A run's line without this tail lacks its tra
 ## Before each dispatch
 Before a task's or a Fix's workflow, a re-run review, a re-review, a hand fix's brief, a fix wave
 and the final review, read the slug's ledger `ruling` lines and the human's answers newer than the
-brief. Write each one that changes its scope, its files or a decision into the brief, quoted with
-its date. End the brief with `> Ledger read to line <n> (<date>).`
+brief. Write each one that changes its scope, its files or a decision into the brief, quoted word
+for word with its date, never paraphrased; a brief that applies a ruling, an answer or a spec line,
+whatever its age, quotes it the same way, with its date or its id. End the brief with
+`> Ledger read to line <n> (<date>).`
+
+## Wave width
+Before each parallel wave (deliver §3), a resume's too, its width `n` is the Gates line
+`wave width: <n>` of `<root>/team.md`: absent, the wave's length; not a whole number of 1 or more,
+1 with a Heads-up. A wave longer than `n` runs in parts of at most `n` tasks, in plan order, each
+merged and gated (deliver §3 step 2) before the next starts; at `n` = 1 a task with no worktree yet
+runs alone as deliver §2 says. The order of tasks, their briefs and tiers do not change, and the
+wave's range review covers the whole wave once its last part has merged.
 
 ## Review paths
 The `review path` lines read as the workflow reads them: a file on the data reviewer's triggers, on

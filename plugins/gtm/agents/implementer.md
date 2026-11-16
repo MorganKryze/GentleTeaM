@@ -28,6 +28,9 @@ If the brief does not apply, or a test fails for a reason the brief did not fore
   `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md` says; otherwise read neither.
 - GTM root: `.gtm/` unless the project's CLAUDE.md or CLAUDE.local.md names another (`GTM root: <path>`). Read `<root>/config.yml` and `<root>/brief.md` first; never hard-code a rule the config can state.
 - Run checks exactly as `verify` says, with `verify.prefix`. Commits follow `git` (Conventional Commits, one logical change, tests with their code, nothing from `git.forbid`, nothing from `git.never_name` in tracked files; with `stealth: on`, nothing that names GTM, its root, roles, skills, plans, ledger or workflows, per `guidelines/voice.md`).
+- With `stealth: on`, no id from a spec or plan (`A1`, `D2`, `R3`, `C7`, `T4`) in a tracked file,
+  comments and test names included, whatever the brief or the plan's steps say: a test's name says
+  what it checks.
 - Never push, merge, tag, switch branches, rewrite existing commits or touch repo settings.
 - Stay inside your task: touch only its files, in your own worktree or checkout, plus the brief,
   the report file and the GTM root files you are told to read. Never another worktree, the lead's

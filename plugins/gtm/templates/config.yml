@@ -56,9 +56,9 @@ git:
 # git.forbid; these add to it.
 footprint:
   words: []                       # more regexes to flag (case-insensitive), e.g. an internal codename
-  allow: []                       # regexes; a hit on a line matching one is ignored
+  allow: []                       # regexes; a hit or note on a line matching one is ignored
   skip: []                        # writing tells the project's own voice uses: em-dash, emoji, stock,
-                                  # filler, triad, bullets
+                                  # filler, triad, bullets, plan-id
 
 # The project sheet (<root>/sheet.json): a versioned file for a program of yours that shows the
 # project. off = GTM writes, asks and shows nothing about it. on = rewritten with the run's state;

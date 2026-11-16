@@ -31,6 +31,9 @@
 // the refusal, item and receipt lines, the row, the tools and files, the checks' order, the
 // request as data, coverage, own words, the writes, the reply and the marker; the gtm skill's
 // pointer, and the logbook's `recu` and `refus` kinds and item lines.
+// Brief rules: the plan's stealth constraint, the implementer's id rule, a ruling quoted word for word.
+// Wave width: the Gates line and its default, a wave cut to it in plan order, no load reading, and
+// the plan's estimate counting waves no wider.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -245,6 +248,8 @@ const PINS = {
     w('Line feeds aside, the script refuses words holding a control character (a tab or a carriage return among them)'),
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
+    w('Notes (lists of three, short bullet runs, a spec or plan id) do not stop it'),
+    w('an id gives way to what the line checks'),
     '--base <git.base> --pr <root>/reports/<slug>/pr.md`',
     'Under a standing go (`git.push: standing`), first run and quote',
     '`node ${CLAUDE_PLUGIN_ROOT}/scripts/now-facts.mjs --root <root> --landing <slug> --proofs gate`',
@@ -549,7 +554,8 @@ add('plugins/gtm/templates/delivery.md', [
   w("`<P>`: a workflow run's `trace.path`; a task's re-run, deferred or hand line, its task's path; any other line `none`; unknown `?`."),
   '## Before each dispatch',
   w("Before a task's or a Fix's workflow, a re-run review, a re-review, a hand fix's brief, a fix wave and the final review, read the slug's ledger `ruling` lines and the human's answers newer than the brief."),
-  w('Write each one that changes its scope, its files or a decision into the brief, quoted with its date.'),
+  w('Write each one that changes its scope, its files or a decision into the brief, quoted word for word with its date, never paraphrased;'),
+  w('a brief that applies a ruling, an answer or a spec line, whatever its age, quotes it the same way, with its date or its id.'),
   w('End the brief with `> Ledger read to line <n> (<date>).`'),
   '## Review paths',
   w("The `review path` lines read as the workflow reads them: a file on the data reviewer's triggers, on a risky path or given as an absolute path reads `full`, whatever line covers it;"),
@@ -602,8 +608,33 @@ add('plugins/gtm/skills/plan/SKILL.md', [
   w('The Summary holds the estimate line, each task on its review path.'),
 ])
 add('plugins/gtm/templates/plan.md', [
+  w('With `stealth: on` only, named by every task: no id from a spec or plan (`A1`, `D2`, `R3`, `C7`, `T4`) in a tracked file,'),
+  w("comments and test names included; a test's name says what it checks."),
   '**Tier:** <guarded | standard>\n**Review path:** <text | code | full>\n',
   w('each task on its review path'),
+])
+add('plugins/gtm/agents/implementer.md', [
+  w('With `stealth: on`, no id from a spec or plan (`A1`, `D2`, `R3`, `C7`, `T4`) in a tracked file,'),
+  w("comments and test names included, whatever the brief or the plan's steps say: a test's name says what it checks."),
+])
+// A parallel wave runs no wider than its Gates line, cut in plan order, with no load reading.
+add('plugins/gtm/templates/team.md', [
+  '- wave width: 2 · why:',
+  w('without `wave width`, a wave runs whole, as before.'),
+  w('`wave width` caps the tasks of a parallel wave that run at once.'),
+])
+add('plugins/gtm/templates/delivery.md', [
+  '## Wave width',
+  w("Before each parallel wave (deliver §3), a resume's too, its width `n` is the Gates line `wave width: <n>` of `<root>/team.md`:"),
+  w("absent, the wave's length; not a whole number of 1 or more, 1 with a Heads-up."),
+  w('in parts of at most `n` tasks, in plan order, each merged and gated (deliver §3 step 2) before the next starts'),
+  w('at `n` = 1 a task with no worktree yet runs alone as deliver §2 says.'),
+  w("The order of tasks, their briefs and tiers do not change, and the wave's range review covers the whole wave once its last part has merged."),
+])
+addAbsent('plugins/gtm/templates/delivery.md', ['loadavg'])
+add('plugins/gtm/skills/deliver/SKILL.md', [w('sized by `templates/delivery.md`')])
+add('plugins/gtm/templates/plan.md', [
+  w('a wave of `[P]` tasks no wider than the Gates `wave width` (absent: whole) counted at its longest task'),
 ])
 // How a program of yours sends a project report: tools without a shell, and the receipt it reads.
 add('docs/reference/commands.md', [

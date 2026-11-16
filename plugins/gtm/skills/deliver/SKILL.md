@@ -76,7 +76,7 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
 5. Review paths and tiers, once each task returns: as `templates/delivery.md`'s `## Review paths`
    says.
 
-## 3. Parallel waves (two or more consecutive `[P]` tasks; a lone one runs as in §2)
+## 3. Parallel waves (consecutive `[P]` tasks, sized by `templates/delivery.md`; a lone one: §2)
 1. Record the checked-out branch and its head `<base>`. Per task, `git worktree add -b
    "<branch>-t<n>" "<wt>" <base>`, `<wt>` = `<repo's parent>/<repo name>-wt-<slug>-t<n>` (an
    existing path or branch stops the wave), absolute `<root>` paths in brief and args. Run their

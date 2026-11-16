@@ -2,7 +2,8 @@
 // Footprint check: scans a branch for traces of GTM before it ships with stealth on.
 // Looks at the branch name, its commit messages, the PR text, the lines its diff adds and the
 // files it creates, for GTM's vocabulary, excluded-path names, attribution trailers and the
-// writing tells of guidelines/voice.md. No dependencies.
+// writing tells of guidelines/voice.md. A spec or plan id (A1, C7, T12) in an added comment, or in
+// the label or name of a test an added line opens, is a note, never a hit. No dependencies.
 //
 // node footprint-check.mjs [--config <root>/config.yml] [--base <ref>] [--pr <file>] [--repo <dir>] [--json]
 // Exit 0: no hit (notes may remain). Exit 1: at least one hit. Exit 2: usage or git error.
@@ -16,7 +17,7 @@
 //   footprint.words          more regexes to flag (case-insensitive), e.g. an internal codename
 //   footprint.allow          regexes; a hit or note on a line matching one is dropped
 //   footprint.skip           writing tells the project's own voice uses: em-dash, emoji, stock,
-//                            filler, triad, bullets
+//                            filler, triad, bullets, plan-id
 import { readFileSync, existsSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { execFileSync } from 'node:child_process'
@@ -37,7 +38,14 @@ const TELLS = {
   filler: String.raw`\b(?:basically|essentially|actually|arguably|needless to say|it should be noted|it is important to note|in order to|(?:might|could|may) potentially|it seems that)\b`,
 }
 const DOC_FILE = /\.(?:md|mdx|markdown|txt|rst|adoc)$/i
+// A spec or plan id standing alone (A1, D2, R3, C7, T12), in a comment or a test name of a code
+// file: a note only, since a cell, a note or a code can look the same. On a code line only the
+// label or name of the test is read, never its body, a method call (`/x/.test('D2')`) or a chain
+// other than a test's own modifiers (`context.get('C7')`).
+const PLAN_ID = /(?<![A-Za-z0-9])[ACDRT]\d{1,2}(?![A-Za-z0-9])/
+const TEST_NAME = /\b(?:it|test|describe|context|specify)(?:\.\w+){0,4}\s*(?:\(\s*)?['"`]|\.Run\(\s*"|\bdef test_|\bfunc Test/
 const COMMENT_LINE = /^\s*(?:\/\/|\/\*|\*|#(?!!)|<!--|--|;)/
+const MODIFIERS = new Set(['only', 'skip', 'todo', 'each', 'concurrent', 'failing', 'fails', 'sequential', 'serial', 'parallel', 'fixme', 'slow', 'step', 'describe'])
 
 function parseArgs(argv) {
   const a = { json: false }
@@ -174,6 +182,33 @@ function bulletNotes(lines, whereOf, ctx) {
   })
   flush()
 }
+// The part of a code file's line an id is looked for in: a comment line whole, else the quoted
+// label or the name of the first test the line opens; null when it opens none. An each test
+// opens on its table, a code value: its label is the quoted text after the table.
+function idText(text) {
+  if (COMMENT_LINE.test(text)) return text
+  for (const m of text.matchAll(new RegExp(TEST_NAME, 'g'))) {
+    if (m[0][0] !== '.' && text[m.index - 1] === '.') continue
+    const chain = m[0].match(/^\w+((?:\.\w+)*)/)?.[1]
+    if (chain && !chain.slice(1).split('.').every((w) => MODIFIERS.has(w))) continue
+    const rest = text.slice(m.index + m[0].length)
+    const q = m[0].at(-1)
+    if (!`'"\``.includes(q)) return m[0].replace(/^\w+ /, '') + rest.match(/^\w*/)[0]
+    if (!chain?.split('.').includes('each')) return quoted(rest, q)
+    const label = rest.slice(quoted(rest, q).length + 1).match(/^\s*\(\s*(['"`])(.*)/)
+    return label ? quoted(label[2], label[1]) : null
+  }
+  return null
+}
+// The text of a quoted string, up to its first closing quote q that no backslash escapes.
+function quoted(s, q) {
+  return s.split(new RegExp(`(?<!\\\\)${q}`))[0]
+}
+function idNote(text, where, ctx) {
+  if (ctx.skip.has('plan-id') || ctx.allow.some((a) => a.test(text))) return
+  const m = idText(text)?.match(PLAN_ID)
+  if (m) ctx.notes.push({ kind: 'plan-id', where, match: m[0], line: text.trim().slice(0, 100) })
+}
 function scanMessage(text, whereOf, ctx) {
   const lines = text.split('\n')
   let fenced = false
@@ -227,6 +262,7 @@ export function check({ repo = '.', config, base, pr } = {}) {
       else if (!fenced) scope = 'prose'
     } else if (COMMENT_LINE.test(text)) scope = 'prose'
     scanLine(text, `${file}:${n}`, scope, ctx)
+    if (!DOC_FILE.test(file)) idNote(text, `${file}:${n}`, ctx)
     n++
   }
   return { branch, base: baseRef, hits: ctx.hits, notes: ctx.notes }
