@@ -12,8 +12,8 @@ versions follow [SemVer](https://semver.org/).
   already covered (with where), or dropped with its reason. The mode uses only Read, Grep, Glob
   and Edit, writes only `backlog.md` and the logbook, in its own words, and ends with one fixed
   receipt line; a report already received changes nothing, a malformed one with a valid id gets
-  one `refus` line instead of a receipt, and one with an invalid id writes nothing. `docs/reference/commands.md` says how to send a report
-  and read its receipt.
+  one `refus` line instead of a receipt, and one with an invalid id writes nothing.
+  `docs/reference/commands.md` says how to send a report and read its receipt.
 
 ## [0.20.0] - 2026-11-16
 
