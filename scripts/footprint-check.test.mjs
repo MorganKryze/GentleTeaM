@@ -2,9 +2,10 @@
 // Fixture test for plugins/gtm/scripts/footprint-check.mjs. Each scenario under
 // scripts/fixtures/footprint/ becomes a throwaway git repo (a base commit on main, then a branch
 // with the scenario's files and commit messages); the check's hits and notes must equal
-// expected.json, with commit hashes replaced by c1, c2... Run by scripts/validate.mjs.
+// expected.json, with commit hashes replaced by c1, c2... A scenario with its own config.yml
+// reads it instead of the shared one. Run by scripts/validate.mjs.
 // `--update` rewrites expected.json from the current output.
-import { readFileSync, writeFileSync, readdirSync, mkdtempSync, mkdirSync, cpSync, rmSync, appendFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync, readdirSync, mkdtempSync, mkdirSync, cpSync, rmSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync } from 'node:child_process'
@@ -39,10 +40,11 @@ for (const name of readdirSync(fixtures, { withFileTypes: true }).filter((d) => 
     commits.forEach((c, i) => git('commit', '-q', ...(i ? ['--allow-empty'] : []), '-F', join(dir, 'commits', c)))
     const shas = git('rev-list', '--reverse', '--abbrev-commit', 'main..HEAD').trim().split('\n')
 
+    const own = join(dir, 'config.yml')
     let out
     let code = 0
     try {
-      out = execFileSync(process.execPath, [script, '--repo', repo, '--config', join(fixtures, 'config.yml'), '--pr', join(dir, 'pr.md'), '--json'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+      out = execFileSync(process.execPath, [script, '--repo', repo, '--config', existsSync(own) ? own : join(fixtures, 'config.yml'), '--pr', join(dir, 'pr.md'), '--json'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
     } catch (e) { out = e.stdout; code = e.status }
     const result = JSON.parse(out)
     const label = (h) => `${h.kind} | ${h.where.replace(/commit ([0-9a-f]+)/, (_, s) => `commit c${shas.indexOf(s) + 1}`)} | ${h.match}`

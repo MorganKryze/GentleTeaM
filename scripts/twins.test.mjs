@@ -91,6 +91,7 @@ const TWINS = [
   { test: 'guards', file: skill('ship'), from: 'check and merge. No card.', to: 'check and merge. Then show the card.', says: 'No card.' },
   { test: 'guards', file: skill('ship'), from: 'why (`why`, `file`, `proof`).', to: 'why.', says: 'why (`why`, `file`, `proof`).' },
   { test: 'footprint-check', file: script('footprint-check'), from: '[ACDRT]\\d{1,2}', to: '[ACDR]\\d{1,2}', says: 'T12' },
+  { test: 'footprint-check', file: script('footprint-check'), from: "ctx.skip.has('plan-id')", to: "ctx.skip.has('plan-ids')", says: 'ids-skipped' },
   { test: 'guards', file: skill('ship'), from: 'a spec or plan id)', to: 'an id)', says: 'a\\s+spec\\s+or\\s+plan\\s+id' },
   { test: 'guards', file: MANDATE, from: 'A mandate never writes, changes or stands for', to: 'A mandate may write, change or stand for', says: 'A mandate never writes' },
   { test: 'guards', file: 'docs/reference/commands.md', from: 'never applies one alone', to: 'may apply one alone', says: 'never applies one alone' },
