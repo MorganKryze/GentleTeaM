@@ -1,7 +1,8 @@
 # Ledger
 
 > Append-only. One line per entry, newest last. Read at plan time (the compound step).
-> Superseded entries are struck through (`~~...~~`), never deleted.
+> Superseded entries are struck through (`~~...~~`), never deleted; a `ruling` line starting
+> `judge lowering off` is struck by the human alone (`templates/delivery.md`, `## Judge`).
 > Format: `- YYYY-MM-DD · <slug> · <kind> · <text>`
 > An answer quoted goes in whole on one line as a JSON string, quotes included: a backslash
 > `\\`, a quote `\"`, a line feed `\n`, a line or paragraph separator `\u2028`, `\u2029`.

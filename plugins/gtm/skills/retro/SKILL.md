@@ -25,7 +25,8 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
 - **Guidelines:** a lesson seen in two branches or more belongs in a guideline. Propose the edit
   (file, the line to add) as a decision card; apply on the human's answer.
 - **Minors:** strike through (`~~ ~~`) the ones fixed since, with a `resolved` line naming them.
-- **Superseded:** strike entries a newer one contradicts; never delete.
+- **Superseded:** strike entries a newer one contradicts, never a `judge lowering off` ruling:
+  the human strikes it (`templates/delivery.md`); never delete.
 - **Sheets:** count, per sheet, across the `sheets` segments of every `run` line not struck through:
   runs, passes, findings by severity. A line without the segment counts for no sheet. A sheet with
   0 findings of any severity over the last 3 runs that name it gets one decision card: remove it or

@@ -36,7 +36,8 @@
 // the plan's estimate counting waves no wider.
 // Lowered findings: the section, the ledger mark, the final review never skipped and its first
 // reading, the reviewer's out-of-task work as security.
-// Judge: the user's list alone turns it on, the mark, the measure's line and the switch GTM never strikes.
+// Judge: the user's list alone turns it on, the mark, the measure's line and the switch GTM never strikes,
+// read from the whole project ledger; retro and the ledger template leave it to the human too.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -719,6 +720,8 @@ add('plugins/gtm/templates/delivery.md', [
   w('`judge: <asked> asked, <lowered> lowered, <unavailable> unavailable, <back> came back, <tokens> input tokens`'),
   w('GTM never strikes that line: the human does, to reopen lowering.'),
 ])
+add('plugins/gtm/templates/ledger.md', ['`judge lowering off` is struck by the human alone'])
+add('plugins/gtm/skills/retro/SKILL.md', [w('never a `judge lowering off` ruling: the human strikes it')])
 addAbsent('plugins/gtm/templates/team.md', ['judge:'])
 addAbsent('plugins/gtm/templates/config.yml', ['judge:'])
 for (const [file, pins] of Object.entries(PINS)) {

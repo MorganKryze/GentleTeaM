@@ -241,6 +241,8 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '--project "<top>" --check', to: '--check', says: '--project' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'GTM never strikes that line', to: 'GTM may strike that line', says: 'never\\s+strikes' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'ledger, any slug, holds', to: 'ledger holds', says: 'any\\s+slug' },
+  { test: 'guards', file: LEDGER, from: '`judge lowering off` is struck by the human alone', to: '`judge lowering off` is struck as any other', says: 'struck by the human alone' },
+  { test: 'guards', file: skill('retro'), from: 'never a `judge lowering off` ruling', to: 'a `judge lowering off` ruling too', says: 'judge\\s+lowering\\s+off`\\s+ruling:' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []
