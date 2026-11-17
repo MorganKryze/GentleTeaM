@@ -12,6 +12,10 @@ Review the whole branch (`merge-base..head`) on the full path, whatever path its
 
 Run the gate in a scratch clone when useful. Triage every `minor` line of `<root>/ledger.md` for this slug: **now** (must fix before the go) or **later** (one line why).
 
+**Lowered minors:** a minor line ending `lowered from <severity>, <category>)` was graded blocking
+by its reviewer and started no round, its task off security and data ground: read those first,
+against the branch, then triage each as any other.
+
 **Mutations:** when the task reports list planted mutations, replay two in a scratch clone, those that move or drop a pinned threshold, plan order on a tie (all of them when two or fewer). Name each in your review with the failure it caused; one that survives is a must-fix.
 
 **Decisions:** for each row of the spec's Decisions table confirmed by `review:`, state what you

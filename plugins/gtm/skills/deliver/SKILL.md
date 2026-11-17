@@ -62,7 +62,7 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
    skip or the order of tasks; past 1.5× a budget (a task's minutes or tokens; the branch's total so
    far): one Heads-up per crossing (task or phase, measure, budget, largest role),
    a ledger `usage` line `over budget: <the same>` unless that slug and crossing has one; go on.
-4. Read the result (a minor already in the ledger for this slug is not appended again):
+4. Read the result (minors as `templates/delivery.md` says, none appended twice for this slug):
    - `CLEAN`: append each minor to the ledger (`minor`), one progress line, go on.
    - `OPEN` (correction rounds exhausted, or a reviewer gave no review) or `BLOCKED`: each minor to
      the ledger (`minor`), its progress line, then stop the loop. A Heads-up and one decision card
@@ -98,7 +98,7 @@ Ground rules: as in the `gtm` skill §0. A mandate (the argument, the plan's sec
 Skip it only when all hold; then leave this slug's minors for `/gtm:retro`, dispatch no reviewer, no
 `resolved` line, `final review skipped: one task, clean at 0 fix rounds` in run line and report:
 - the plan has one task (a release-only one aside: its files the version and CHANGELOG alone);
-- every task, the release one included, returned `CLEAN` at 0 correction rounds (`GATED`: below);
+- every task, the release one included, returned `CLEAN` at 0 rounds, none lowered (`GATED`: below);
 - the tasks' ranges chain from the branch's fork point to `HEAD`: first base `git merge-base
   <git.base> HEAD`, each next base the previous task's head, `HEAD` the last task's head (no hand
   commit or escalated Fix's commit outside a task); a wave is one link: its tasks share its base,

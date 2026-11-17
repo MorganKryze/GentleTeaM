@@ -82,6 +82,15 @@ security or data reviewer. Its path: the task's, or the one the fix's own files 
 when heavier, never lighter (the final review's: `full`). A path that rose to `full` sends the
 reviewer the full path's mutation order, as `## Review paths` says.
 
+## Lowered findings
+The workflow lowers an `important` finding of category `proof`, `form` or `doc` to a minor, with
+`was` keeping its severity, when its task is off security and data ground: no file the task has
+changed so far is on the security or data reviewer's triggers, on a risky path or given as an
+absolute path, and the security reviewer did not raise it. Such a finding starts no round. Its
+ledger line, as any minor's, ends `(<role>; lowered from <was>, <category>)`. A task that lowered
+one brings the final review back (deliver §4), whose reviewer reads those lines first; a Fix, with
+no final review, lists them under a Heads-up with the go.
+
 ## The lead's own files
 Read before the first dispatch. The orchestrator keeps the scripts, logs and tool installs it
 makes for a run in `<root>/reports/<slug>/lead/`, never in the session scratchpad, which Claude

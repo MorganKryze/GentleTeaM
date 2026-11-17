@@ -34,6 +34,8 @@
 // Brief rules: the plan's stealth constraint, the implementer's id rule, a ruling quoted word for word.
 // Wave width: the Gates line and its default, a wave cut to it in plan order, no load reading, and
 // the plan's estimate counting waves no wider.
+// Lowered findings: the section, the ledger mark, the final review never skipped and its first
+// reading, the reviewer's out-of-task work as security.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -408,10 +410,9 @@ const PINS = {
   ],
   'plugins/gtm/agents/reviewer.md': [
     '- Scope: a changed file the brief does not name is a finding, important, category `form`;',
-    'any sign of the implementer working outside its task (another worktree,',
+    w('any sign of the implementer working outside its task (another worktree,'),
     'logs, a file outside the repository, a process it did not start)',
-    'and GTM root files it was told to read. A secret or token read, printed or written:',
-    'category `security`.',
+    w('and GTM root files it was told to read, is important, category `security`, as is a secret or token read, printed or written.'),
   ],
   'plugins/gtm/agents/final-reviewer.md': [/^effort: high$/m, 'Each must-fix names one category: `behaviour`, `security`, `proof`'],
   'plugins/gtm/templates/delivery.md': [
@@ -679,6 +680,23 @@ add('docs/reference/gtm-folder.md', [
   w('an `upstream · recu` line acknowledges a project report, a `refus` line refuses one, never struck'),
 ])
 const errors = []
+// A lowered finding: marked in the ledger, read first by the final review, which it never skips.
+add('plugins/gtm/templates/delivery.md', [
+  '## Lowered findings',
+  w('Such a finding starts no round.'),
+  w("on the security or data reviewer's triggers, on a risky path or given as an absolute path, and the security reviewer did not raise it."),
+  w('ends `(<role>; lowered from <was>, <category>)`.'),
+  w('A task that lowered one brings the final review back (deliver §4), whose reviewer reads those lines first;'),
+  w('a Fix, with no final review, lists them under a Heads-up with the go.'),
+])
+add('plugins/gtm/skills/deliver/SKILL.md', [
+  'returned `CLEAN` at 0 rounds, none lowered (`GATED`: below);',
+  '(minors as `templates/delivery.md` says, none appended twice for this slug)',
+])
+add('plugins/gtm/agents/final-reviewer.md', [
+  w('**Lowered minors:** a minor line ending `lowered from <severity>, <category>)`'),
+  w('read those first, against the branch, then triage each as any other.'),
+])
 for (const [file, pins] of Object.entries(PINS)) {
   const text = readFileSync(join(root, file), 'utf8')
   for (const pin of pins) if (!(pin instanceof RegExp ? pin.test(text) : text.includes(pin))) errors.push(`${file} lacks ${pin}`)

@@ -215,6 +215,8 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'in plan order, each', to: 'in any order, each', says: 'in\\s+plan\\s+order' },
   { test: 'guards', file: 'plugins/gtm/skills/deliver/SKILL.md', from: 'sized by `templates/delivery.md`', to: 'sized by hand', says: 'sized\\s+by' },
   { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: 'no wider than the Gates `wave width`', to: 'as wide as the plan wants', says: 'no\\s+wider' },
+  { test: 'guards', file: skill('deliver'), from: 'at 0 rounds, none lowered', to: 'at 0 rounds', says: 'none lowered' },
+  { test: 'guards', file: agent('reviewer'), from: 'is important, category `security`, as is', to: 'is important, category `form`, as is', says: 'category\\s+`security`,\\s+as\\s+is' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []
