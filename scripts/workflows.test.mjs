@@ -2507,7 +2507,7 @@ const deliver = [
     },
     dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
       { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
-    log: ['judge: 1 finding(s) on a point it lowered came back: they keep their round'],
+    log: ['judge: 1 finding(s) on a point it lowered came back: they keep their round, lowering goes off: src/a.js, behaviour, round 1'],
     prompts: { 'fix · round 2': ['still drops a row'] },
   },
   {

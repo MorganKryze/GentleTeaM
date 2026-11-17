@@ -517,7 +517,8 @@ for (; round <= limit; round++) {
   verdicts.lowered += gone.size
   verdicts.back = backed.size
   if (gone.size) log(`judge: ${gone.size} behaviour finding(s) off security and data ground judged minor (under ${JUDGED}), no round: to the ledger as minors`)
-  if (backs.length) log(`judge: ${backs.length} finding(s) on a point it lowered came back: they keep their round, lowering goes off`)
+  // Each point by its file and category, so the lead's `judge lowering off` ruling can name it.
+  if (backs.length) log(`judge: ${backs.length} finding(s) on a point it lowered came back: they keep their round, lowering goes off: ${backs.map((f) => `${f.file || '?'}, ${f.category}, round ${round}`).join('; ')}`)
   for (const { r, blocking, held, found, summary } of blocked) {
     const left = blocking.filter((f) => !gone.has(f))
     // A survivor the reviewer covered only with a finding the judge lowered is unreported after all.
