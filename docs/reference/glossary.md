@@ -70,6 +70,11 @@ paths are set in `team.md`, and work on them raises the security and final revie
 A defect found after the merge of the branch that brought it; the logbook keeps one `escape` line
 each, with the review path its task took.
 
+### External judge {#external-judge}
+An outside service GTM may ask, in a project you listed on your own machine, with your key,
+whether fixing a finding changes what a user gets; it can only lower such a finding to `minor`,
+never raise one. See [the external judge](/reference/settings/#the-external-judge).
+
 ### Feature {#feature}
 One capability on one branch, with three checkpoints, started with `/gtm:gtm`.
 
