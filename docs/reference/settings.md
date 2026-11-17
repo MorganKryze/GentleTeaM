@@ -188,10 +188,10 @@ commit-graph: a session can rewrite either to hide a change from the diff.
 
 ## The external judge {#the-external-judge}
 
-It is off unless you list the project's repository in your own file
-`${CLAUDE_CONFIG_DIR:-$HOME/.claude}/gtm/judge.projects`: one absolute path a line, `#` lines
-for comments, readable by you alone and outside any repository. No project file can turn it on,
-so cloning a repository never does.
+It is off unless you list the project's repository in your own file `~/.claude/gtm/judge.projects`
+(under `CLAUDE_CONFIG_DIR` when you set it): one absolute path a line, `#` lines for comments,
+readable by you alone and outside any repository. No project file can turn it on, so cloning a
+repository never does.
 
 With the project listed and your key in place, before a correction round, each `important`
 finding of category `behaviour` off security and data ground goes to the judge, an outside
