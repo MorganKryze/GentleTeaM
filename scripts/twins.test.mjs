@@ -172,6 +172,7 @@ const TWINS = [
   { test: 'workflows', file: 'plugins/gtm/workflows/design-loop.js', from: 'taste >= TASTE_BAR', to: 'taste >= 0', says: 'design-loop' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'const MAX_SHEETS = 2', to: 'const MAX_SHEETS = 3', says: 'a third entry in bound' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: "category: 'proof', summary: `${r} reported", to: "category: 'behaviour', summary: `${r} reported", says: 'trace: a surviving mutation' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'pinned(x) || ground([x]).includes(SEC)', to: 'pinned(x)', says: 'reviewer\'s triggers still starts its round' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '· models <M> · causes <C> · path <P>`', to: '· models <M> · path <P>`', says: 'causes <C>' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'only Read, Grep, Glob and Edit', to: 'only Read, Grep, Glob, Edit and Bash', says: 'only\\s+Read,\\s+Grep,\\s+Glob\\s+and\\s+Edit' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'exactly twice', to: 'at least twice', says: 'exactly\\s+twice' },
