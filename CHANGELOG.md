@@ -5,6 +5,14 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- An external judge, off by default: once you list a project's repository in your own file
+  `~/.claude/gtm/judge.projects` and place your key beside it, an important `behaviour` finding
+  off security and data ground is asked, before its correction round, whether fixing it changes
+  what a user gets; below 0.3 it goes to the ledger as a judged minor, which the final review reads
+  first. A failed call lowers nothing. A lowered point that comes back switches lowering off for the
+  project until you strike the ledger line that says so.
+
 ## [0.23.0] - 2026-11-17
 
 ### Changed
