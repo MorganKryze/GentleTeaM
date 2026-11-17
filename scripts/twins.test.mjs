@@ -243,6 +243,7 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'ledger, any slug, holds', to: 'ledger holds', says: 'any\\s+slug' },
   { test: 'guards', file: LEDGER, from: '`judge lowering off` is struck by the human alone', to: '`judge lowering off` is struck as any other', says: 'struck by the human alone' },
   { test: 'guards', file: skill('retro'), from: 'never a `judge lowering off` ruling', to: 'a `judge lowering off` ruling too', says: 'judge\\s+lowering\\s+off`\\s+ruling:' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'ledger gets no `judge` arg', to: 'ledger gets the `judge` arg', says: 'ledger\\s+gets\\s+no' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []

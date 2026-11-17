@@ -717,6 +717,7 @@ add('plugins/gtm/templates/delivery.md', [
   w('otherwise no `judge` arg, and nothing leaves the machine.'),
   w('ending `(<role>; judge <p>; lowered from important, behaviour)`'),
   w('is never skipped for it'),
+  w("A task run again (a resume, or after its card) whose earlier run left a minor carrying `judge` in this slug's ledger gets no `judge` arg:"),
   w('`judge: <asked> asked, <lowered> lowered, <unavailable> unavailable, <back> came back, <tokens> input tokens`'),
   w('GTM never strikes that line: the human does, to reopen lowering.'),
 ])

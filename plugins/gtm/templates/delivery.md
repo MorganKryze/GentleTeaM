@@ -108,7 +108,9 @@ A minor that carries `judge` gets the ledger line of a lowered minor, ending `(<
 lowered from important, behaviour)`, `<p>` as given; the final review reads it first and is never
 skipped for it (`## Lowered findings`). Within a task, the workflow stops lowering once a point it
 lowered comes back, counts each such point once in `back`, and turns a surviving mutation covered
-only by a judged minor into a proof finding.
+only by a judged minor into a proof finding. A task run again (a resume, or after its card) whose
+earlier run left a minor carrying `judge` in this slug's ledger gets no `judge` arg: that run cannot
+tell such a point come back, so it never lowers it a second time.
 
 At the run line, one `usage` line: `judge: <asked> asked, <lowered> lowered, <unavailable>
 unavailable, <back> came back, <tokens> input tokens`, the tasks' `judge` counts summed.
