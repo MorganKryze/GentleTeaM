@@ -6,8 +6,8 @@
 // error unavailable at once, an error's body never read), where the key may come from, which
 // projects it asks for (only those the user listed in a file of their own), and the allowlist of
 // its input, each near miss refused. Run by scripts/validate.mjs. No dependencies.
-import { spawnSync } from 'node:child_process'
-import { chmodSync, mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
+import { execFileSync, spawnSync } from 'node:child_process'
+import { chmodSync, mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { HOST, MODEL, ask, decode, keyFile, listed, main, mask, projectsFile, readKey } from '../plugins/gtm/scripts/judge.mjs'
@@ -182,6 +182,13 @@ for (const [what, text, project] of [
   ['a project that does not resolve', `${proj}\n`, join(dir, 'gone')],
   ['a relative project', `${proj}\n`, 'proj'],
 ]) check(`projects: ${what} is not listed`, yes(text, project), { off: 'project not listed' })
+{
+  // Run from the folder holding it, the relative project resolves to the listed one: still refused.
+  const cwd = process.cwd()
+  process.chdir(dir)
+  check('projects: a relative project that resolves to a listed one is not listed', yes(`${proj}\n`, 'proj'), { off: 'project not listed' })
+  process.chdir(cwd)
+}
 for (const [what, text] of [
   ['a relative line', 'proj\n'],
   ['a line with a tab', `${proj}\t\n`],
@@ -192,6 +199,37 @@ for (const [what, text] of [
 check('projects: readable by the group', yes(`${proj}\n`, proj, 0o640), { off: 'projects mode' })
 check('projects: inside a repository', yes(`${proj}\n`, proj, 0o600, () => true), { off: 'projects in a repository' })
 yes(`${proj}\n`)
+
+// Whose file: one another user owns is refused, whatever its mode.
+{
+  const uid = process.getuid
+  process.getuid = () => uid() + 1
+  check('key: owned by another user', readKey(file, () => false), { off: 'key mode' })
+  check('projects: owned by another user', listed(list, proj, () => false), { off: 'projects mode' })
+  process.getuid = uid
+}
+
+// Which repository: the folder the file resolves to, by git itself; a link from outside into a
+// work tree is refused, a file outside any is read.
+{
+  const repo = join(dir, 'repo')
+  mkdirSync(repo)
+  execFileSync('git', ['init', '-q', repo])
+  const top = realpathSync(repo)
+  const inside = { key: join(repo, 'judge.key'), projects: join(repo, 'judge.projects') }
+  writeFileSync(inside.key, `${KEY}\n`, { mode: 0o600 })
+  writeFileSync(inside.projects, `${proj}\n`, { mode: 0o600 })
+  const linked = { key: join(dir, 'in-repo.key'), projects: join(dir, 'in-repo.projects') }
+  symlinkSync(inside.key, linked.key)
+  symlinkSync(inside.projects, linked.projects)
+  const onlyRepo = (d) => d === top
+  check('key: a link into a repository, checked where it resolves', readKey(linked.key, onlyRepo), { off: 'key in a repository' })
+  check('projects: a link into a repository, checked where it resolves', listed(linked.projects, proj, onlyRepo), { off: 'projects in a repository' })
+  check('key: in a git work tree, by git', [readKey(inside.key), readKey(linked.key)], [{ off: 'key in a repository' }, { off: 'key in a repository' }])
+  check('projects: in a git work tree, by git', [listed(inside.projects, proj), listed(linked.projects, proj)], [{ off: 'projects in a repository' }, { off: 'projects in a repository' }])
+  check('key: outside any work tree, by git', readKey(file), { key: KEY })
+  check('projects: outside any work tree, by git', listed(list, proj), { on: true })
+}
 
 // The whole run: a project not listed, an input refused or a key refused asks nothing.
 {

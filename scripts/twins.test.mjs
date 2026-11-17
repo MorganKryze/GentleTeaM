@@ -181,6 +181,8 @@ const TWINS = [
   { test: 'judge', file: script('judge'), from: '(st.mode & 0o077) !== 0 || ', to: '', says: 'key: readable by the group' },
   { test: 'judge', file: script('judge'), from: 'json.model !== MODEL)', to: 'false)', says: 'ask: another model is unavailable' },
   { test: 'judge', file: script('judge'), from: 'here && lines.some((l) => real(l) === here) ?', to: 'here ?', says: 'projects: another project is not listed' },
+  { test: 'judge', file: script('judge'), from: '(process.getuid && st.uid !== process.getuid())', to: '(false)', says: 'key: owned by another user' },
+  { test: 'judge', file: script('judge'), from: 'inRepo(dirname(real))', to: 'inRepo(dirname(file))', says: 'checked where it resolves' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '· models <M> · causes <C> · path <P>`', to: '· models <M> · path <P>`', says: 'causes <C>' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'only Read, Grep, Glob and Edit', to: 'only Read, Grep, Glob, Edit and Bash', says: 'only\\s+Read,\\s+Grep,\\s+Glob\\s+and\\s+Edit' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'exactly twice', to: 'at least twice', says: 'exactly\\s+twice' },
