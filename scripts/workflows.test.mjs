@@ -2231,6 +2231,7 @@ const deliver = [
     returns: {
       status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
       minors: [{ ...PROOF, severity: 'minor', was: 'important', by: 'reviewer' }],
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?', causes: '1:reviewer/important/behaviour', path: 'full' },
     },
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
     unprompted: { 'fix · round 1': ['"summary": "unpinned"'] },
