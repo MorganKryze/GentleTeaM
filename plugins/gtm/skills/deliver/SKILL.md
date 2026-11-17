@@ -106,9 +106,9 @@ Skip it only when all hold; then leave this slug's minors for `/gtm:retro`, disp
 - every task ran on the `full` path (raised to it after the fact: once that re-review is clean),
   each reviewer it calls for on its files (§1) in its `reviewers` (the final review backstops it);
 - a standard task counts if a clean `review: "range"` with `reviewer` covers it and deferred reviews
-  span fork point to `HEAD`, each clean at 0 rounds, none owed; else the final review (of
-  merge-base..`HEAD`) reads in full what no task review saw: standard ranges, commits in no task or
-  wave.
+  span fork point to `HEAD`, each clean at 0 rounds, none owed, none lowered (tasks too: read off
+  this slug's ledger lines marked `lowered from`); else the final review (of merge-base..`HEAD`)
+  reads in full what no task review saw: standard ranges, commits in no task or wave.
 
 Otherwise dispatch `gtm:final-reviewer` with the spec, the plan, the branch range, the ledger and
 the report path `<root>/reports/<slug>/final.md`. `fix-first` → one fix wave: `gtm:implementer` with

@@ -694,6 +694,7 @@ add('plugins/gtm/templates/delivery.md', [
 add('plugins/gtm/skills/deliver/SKILL.md', [
   'returned `CLEAN` at 0 rounds, none lowered (`GATED`: below);',
   '(minors as `templates/delivery.md` says, none appended twice for this slug)',
+  w("each clean at 0 rounds, none owed, none lowered (tasks too: read off this slug's ledger lines marked `lowered from`);"),
 ])
 add('plugins/gtm/agents/final-reviewer.md', [
   w('**Lowered minors:** a minor line ending `lowered from <severity>, <category>)`'),
