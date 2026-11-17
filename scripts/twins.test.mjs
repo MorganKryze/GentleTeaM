@@ -240,6 +240,7 @@ const TWINS = [
   { test: 'guards', file: agent('reviewer'), from: 'is important, category `security`, as is', to: 'is important, category `form`, as is', says: 'category\\s+`security`,\\s+as\\s+is' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '--project "<top>" --check', to: '--check', says: '--project' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'GTM never strikes that line', to: 'GTM may strike that line', says: 'never\\s+strikes' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'ledger, any slug, holds', to: 'ledger holds', says: 'any\\s+slug' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []

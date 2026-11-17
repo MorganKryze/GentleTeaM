@@ -711,6 +711,7 @@ add('plugins/gtm/templates/delivery.md', [
   w('--project "<top>" --check'),
   w('prints `{"v":1,"on":true}`'),
   w('holds no unstruck `ruling` line starting `judge lowering off`.'),
+  w('the project ledger, any slug, holds no unstruck'),
   w('no line in `<root>` or the repository does, and GTM never writes that list.'),
   w('otherwise no `judge` arg, and nothing leaves the machine.'),
   w('ending `(<role>; judge <p>; lowered from important, behaviour)`'),
