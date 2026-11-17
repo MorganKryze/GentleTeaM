@@ -270,6 +270,11 @@ yes(`${proj}\n`)
   check('command: the key is never printed', [bad.status, `${bad.stdout}${bad.stderr}`.includes(KEY)], [0, false])
 }
 check('mask: an empty home masks nothing of the path', mask('/a/b', ''), '/a/b')
+for (const prefix of ['sk-ant-', 'ghp_', 'gho_', 'ghs_', 'ghu_', 'github_pat_', 'AKIA', 'xoxb-', 'xoxp-', 'xoxa-', 'xoxs-']) {
+  check(`mask: a ${prefix} token`, mask(`uses ${prefix}Ab3_x-9Z here`, '/home/me'), `uses ${prefix}[redacted] here`)
+}
+check('mask: a private key', mask('key -----BEGIN RSA PRIVATE KEY-----\nMIIabc\n-----END RSA PRIVATE KEY----- end', '/home/me'), 'key [redacted key] end')
+check('mask: a private key cut off before its end', mask('key -----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXk', '/home/me'), 'key [redacted key]')
 
 rmSync(dir, { recursive: true, force: true })
 if (errors.length) {
