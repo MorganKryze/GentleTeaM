@@ -2452,6 +2452,32 @@ const deliver = [
     log: [`judge unavailable (${why}): 2 finding(s) keep their round`],
   })),
   {
+    name: 'judge: a survivor covered only by a finding the judge lowered is a finding, and its round starts',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.1 })
+      : d.label === 'reviewer' ? { verdict: 'fix', findings: [BEHAV], summary: 's', mutations: { planted: 3, survived: 1 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0, planted: 3, survived: 1 } },
+      minors: [lowJ(BEHAV, 0.1)], judge: verdict({ lowered: 1, tokens: 600 }),
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, general-purpose haiku/?', causes: '1:reviewer/important/proof', path: 'full' },
+    },
+    dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': ['reviewer reported 1 surviving mutations and 0 findings the judge did not lower: s'] },
+    unprompted: { 'fix · round 1': ['drops the last row'] },
+  },
+  {
+    name: 'judge: a survivor still covered by a finding the judge kept adds no finding',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.1, f1: 0.9 })
+      : d.label === 'reviewer' ? { verdict: 'fix', findings: [BEHAV, KEPT], summary: 's', mutations: { planted: 3, survived: 1 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0, planted: 3, survived: 1 } },
+      minors: [lowJ(BEHAV, 0.1)], judge: verdict({ asked: 2, lowered: 1, tokens: 1200 }),
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, general-purpose haiku/?', causes: '1:reviewer/important/behaviour', path: 'full' },
+    },
+    dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+  },
+  {
     name: 'judge: nothing from a retry is asked',
     args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
     reply: implementer(['src/a.js'], (d) => {

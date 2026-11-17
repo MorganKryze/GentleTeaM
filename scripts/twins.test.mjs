@@ -179,6 +179,7 @@ const TWINS = [
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'const JUDGED = 0.3', to: 'const JUDGED = 0.31', says: 'a probability of 0.3 is not under the threshold' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: "f.severity === 'important' && r !== SEC && offGround(f)\nconst point", to: "f.severity === 'important' && r !== SEC\nconst point", says: 'is never asked and starts its round' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'verdicts.unavailable += asks.length - p.size', to: 'verdicts.unavailable += 1', says: 'each counted unavailable' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'if (held && held.survived > n) {', to: 'if (false) {', says: 'a survivor covered only by a finding the judge lowered' },
   { test: 'judge', file: script('judge'), from: '(st.mode & 0o077) !== 0 || ', to: '', says: 'key: readable by the group' },
   { test: 'judge', file: script('judge'), from: 'json.model !== MODEL)', to: 'false)', says: 'ask: another model is unavailable' },
   { test: 'judge', file: script('judge'), from: 'here && lines.some((l) => real(l) === here) ?', to: 'here ?', says: 'projects: another project is not listed' },

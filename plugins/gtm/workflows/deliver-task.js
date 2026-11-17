@@ -269,6 +269,7 @@ async function judge(asks, label) {
   }
   return p
 }
+const survivors = (r, m, n, summary) => ({ severity: 'important', category: 'proof', summary: `${r} reported ${m.survived} surviving mutations and ${n}: ${summary}` })
 const UNPLANTED = () => `\nMutations: none on the ${path} review path; plant none, return 0 planted and write \`mutations skipped: light path\` in the summary.`
 
 // A reviewer whose dispatch throws (its structured result lost) gets one more dispatch on a
@@ -471,14 +472,17 @@ for (; round <= limit; round++) {
     }
     // The guards read the reviewer alone: a specialist's own plants are counted and never block.
     const held = r === 'reviewer' ? m : null
+    let survivor = false
     if (held && held.survived > found) {
       count('important')
-      blocking.push({ severity: 'important', category: 'proof', summary: `${r} reported ${m.survived} surviving mutations and ${found} findings: ${res.summary}` })
+      blocking.push(survivors(r, m, `${found} findings`, res.summary))
+      survivor = true
     } else if (held && held.survived && pending[i].findings && !res.findings.some((f) => f.status === 'open' && f.severity !== 'minor')) {
       // A re-review that leaves no blocking finding open while a survivor still survives: the
       // survivor it replayed was not addressed after all.
       count('important')
       blocking.push({ severity: 'important', category: 'proof', summary: `${r} addressed every finding sent yet ${m.survived} mutations survive: ${res.summary}` })
+      survivor = true
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
     // then the only reason given, so the fix round and the re-review get it, and it counts as one.
@@ -491,7 +495,7 @@ for (; round <= limit; round++) {
       count('important')
       blocking.push({ severity: 'important', summary: `${r} asked for a fix without a blocking finding: ${res.summary}` })
     }
-    if (blocking.length) blocked.push({ r, blocking })
+    if (blocking.length) blocked.push({ r, blocking, ...(held && !survivor ? { held, found, summary: res.summary } : {}) })
   })
   // The judge weighs this round's candidates at once, before any round starts; one under the
   // threshold joins the minors, and its reviewer's verdict over it alone starts no round.
@@ -506,8 +510,14 @@ for (; round <= limit; round++) {
   verdicts.back += backs.length
   if (gone.size) log(`judge: ${gone.size} behaviour finding(s) off security and data ground judged minor (under ${JUDGED}), no round: to the ledger as minors`)
   if (backs.length) log(`judge: ${backs.length} finding(s) on a point it lowered came back: they keep their round, lowering goes off`)
-  for (const { r, blocking } of blocked) {
+  for (const { r, blocking, held, found, summary } of blocked) {
     const left = blocking.filter((f) => !gone.has(f))
+    // A survivor the reviewer covered only with a finding the judge lowered is unreported after all.
+    const n = found - (blocking.length - left.length)
+    if (held && held.survived > n) {
+      stats[r].important++
+      left.push(survivors(r, held, `${n} findings the judge did not lower`, summary))
+    }
     if (!left.length) continue
     open.push(...left.map((f) => ({ ...f, by: r })))
     // A finding on security or data is re-reviewed over the whole range, never the fix alone.
