@@ -2290,6 +2290,22 @@ const deliver = [
     prompts: { 'fix · round 1': ['could not check the error path'] },
     unlogged: ['off security and data ground'],
   },
+  // The workflow's own finding sent back, returned open as sent: it keeps its round, whatever the
+  // label the re-review gives it.
+  ...[
+    ['a surviving mutation', { mutations: { planted: 3, survived: 1 } }, { severity: 'important', category: 'proof', summary: 'reviewer reported 1 surviving mutations and 0 findings: s' }, { planted: 3, survived: 1 }],
+    ['a fix verdict with nothing blocking', {}, { severity: 'important', summary: 'reviewer asked for a fix without a blocking finding: s', category: 'doc' }, {}],
+  ].map(([what, first, sent, counted]) => ({
+    name: `lowered: the workflow's own finding for ${what}, returned open by a re-review, keeps its round`,
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [], summary: 's', ...first }
+      : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ ...sent, status: 'open' }], summary: 'still', mutations: { planted: 0, survived: first.mutations ? 1 : 0 } } : ok)),
+    returns: { status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 2, minor: 0, ...counted } } },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+    prompts: { 'fix · round 2': [sent.summary] },
+    unlogged: ['off security and data ground', 'no round on the full path'],
+  })),
   {
     name: 'lowered: once a fix reaches a risky path, a re-review\'s proof finding starts a round again',
     args: { triggers: TRIGGERS, risky: RISKY },

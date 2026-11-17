@@ -216,6 +216,8 @@ const skipped = (res) => !(res.mutations?.planted > 0) && /mutations\s+skipped\s
 // keeps a round. A security reviewer's finding keeps its round anywhere; the data reviewer runs on
 // its ground only. A finding the workflow adds itself (a surviving mutation) is never lowered,
 // nor one a retry returns: what its budget left unchecked is a finding, whatever its category.
+// Nor is a finding a re-review returns open: one sent back keeps its severity until it is
+// addressed, whoever added it and whatever label it comes back with.
 const MILD = ['proof', 'form', 'doc']
 const lowered = (f, r) => MILD.includes(f.category) && f.severity === 'important' && r !== SEC
   && ![...changed, ...relative(f.file ? [f.file] : [])].some((x) => pinned(x) || ground([x]).includes(SEC))
@@ -397,7 +399,7 @@ for (; round <= limit; round++) {
       if (f.severity === 'minor') {
         minors.push({ ...kept, by: r })
         small++
-      } else if (!res.retry && lowered(f, r)) {
+      } else if (!(pending[i].findings && f.status === 'open') && !res.retry && lowered(f, r)) {
         minors.push({ ...kept, severity: 'minor', was: f.severity, by: r })
         low++
       } else blocking.push(kept)
