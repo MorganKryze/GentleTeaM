@@ -36,7 +36,8 @@
 // the plan's estimate counting waves no wider.
 // Lowered findings: the section, the ledger mark, the final review never skipped and its first
 // reading, the reviewer's out-of-task work as security.
-// Judge: the user's list alone turns it on, the mark, the measure's line and the switch GTM never strikes,
+// Judge: the user's list alone turns it on, any other answer off, the mark, the measure's line summed,
+// and the switch: its trigger, its line, no judge after it, GTM never striking it,
 // read from the whole project ledger; retro and the ledger template leave it to the human too.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
@@ -720,6 +721,12 @@ add('plugins/gtm/templates/delivery.md', [
   w("A task run again (a resume, or after its card) whose earlier run left a minor carrying `judge` in this slug's ledger gets no `judge` arg:"),
   w('`judge: <asked> asked, <lowered> lowered, <unavailable> unavailable, <back> came back, <tokens> input tokens`'),
   w('GTM never strikes that line: the human does, to reopen lowering.'),
+  w('(anything else, a `why` included, or another exit: off, the `why` in a Heads-up);'),
+  w("Only the user's own list, `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/gtm/judge.projects`, beside the key, turns it on;"),
+  w('counts each such point once in `back`,'),
+  w("the tasks' `judge` counts summed."),
+  w('A task whose `judge.back` is above 0, or a final-review must-fix on the file and category of a minor the judge lowered in this slug:'),
+  w('one `ruling` line `judge lowering off: <file>, <category>, <where it came back>` and a Heads-up; from then on no `judge` arg.'),
 ])
 add('plugins/gtm/templates/ledger.md', ['`judge lowering off` is struck by the human alone'])
 add('plugins/gtm/skills/retro/SKILL.md', [w('never a `judge lowering off` ruling: the human strikes it')])

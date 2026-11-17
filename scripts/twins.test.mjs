@@ -244,6 +244,10 @@ const TWINS = [
   { test: 'guards', file: LEDGER, from: '`judge lowering off` is struck by the human alone', to: '`judge lowering off` is struck as any other', says: 'struck by the human alone' },
   { test: 'guards', file: skill('retro'), from: 'never a `judge lowering off` ruling', to: 'a `judge lowering off` ruling too', says: 'judge\\s+lowering\\s+off`\\s+ruling:' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'ledger gets no `judge` arg', to: 'ledger gets the `judge` arg', says: 'ledger\\s+gets\\s+no' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'is above 0, or', to: 'is above 1, or', says: 'above\\s+0,\\s+or' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'or another exit: off', to: 'or another exit: on', says: 'another\\s+exit:\\s+off' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'beside the key, turns it on', to: 'turns it on', says: 'beside\\s+the\\s+key' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'from then on no `judge` arg', to: 'from the next branch on', says: 'from\\s+then\\s+on\\s+no' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []
