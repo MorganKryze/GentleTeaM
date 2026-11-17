@@ -98,9 +98,9 @@ The external judge is on for a delivery only when both hold at its Prepare (deli
 `node "${CLAUDE_PLUGIN_ROOT}/scripts/judge.mjs" --project "<top>" --check`, `<top>` the main
 checkout's `git rev-parse --path-format=absolute --show-toplevel`, prints `{"v":1,"on":true}`
 (anything else, a `why` included, or another exit: off, the `why` in a Heads-up); the project
-ledger, any slug, holds no unstruck `ruling` line starting `judge lowering off`. Only the user's
-own list, `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/gtm/judge.projects`, beside the key, turns it on;
-no line in `<root>` or the repository does, and GTM never writes that list. Then every task's
+ledger, any slug, holds no unstruck `ruling` line whose text starts `judge lowering off`. Only the
+user's own list, `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/gtm/judge.projects`, beside the key, turns it
+on; no line in `<root>` or the repository does, and GTM never writes that list. Then every task's
 workflow gets `judge: { script, project }`, the client's absolute path and `<top>`; otherwise no
 `judge` arg, and nothing leaves the machine.
 
@@ -117,7 +117,8 @@ unavailable, <back> came back, <tokens> input tokens`, the tasks' `judge` counts
 
 A task whose `judge.back` is above 0, or a final-review must-fix on the file and category of a
 minor the judge lowered in this slug: one `ruling` line `judge lowering off: <file>, <category>,
-<where it came back>` and a Heads-up; from then on no `judge` arg. GTM never strikes that line:
+<where it came back>` per point the log names, or `judge lowering off: <n> came back` when it
+names none, and a Heads-up; from then on no `judge` arg. GTM never strikes that line:
 the human does, to reopen lowering.
 
 ## The lead's own files

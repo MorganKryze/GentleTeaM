@@ -553,6 +553,11 @@ const ABSENT = {
 const add = (file, pins) => { PINS[file] = [...(PINS[file] ?? []), ...pins] }
 const addAbsent = (file, words) => { ABSENT[file] = [...(ABSENT[file] ?? []), ...words] }
 add('plugins/gtm/templates/delivery.md', [
+  w("one `ruling` line `judge lowering off: <file>, <category>, <where it came back>` per point the log names, or `judge lowering off: <n> came back` when it names none, and a Heads-up;"),
+  w("holds no unstruck `ruling` line whose text starts `judge lowering off`."),
+  w("Within a task, the workflow stops lowering once a point it lowered comes back, counts each such point once in `back`,"),
+  w("turns a surviving mutation covered only by a judged minor into a proof finding."),
+  w("the final review reads it first and is never skipped for it"),
   w("The workflow lowers an `important` finding of category `proof`, `form` or `doc` to a minor,"),
   w("no file the task has changed so far, nor the finding's own file, is on the security or data reviewer's triggers,"),
   w("Each lowered finding gets a ledger line of its own, never batched, never taken for a duplicate,"),
@@ -712,7 +717,6 @@ add('plugins/gtm/templates/delivery.md', [
   '## Judge',
   w('--project "<top>" --check'),
   w('prints `{"v":1,"on":true}`'),
-  w('holds no unstruck `ruling` line starting `judge lowering off`.'),
   w('the project ledger, any slug, holds no unstruck'),
   w('no line in `<root>` or the repository does, and GTM never writes that list.'),
   w('otherwise no `judge` arg, and nothing leaves the machine.'),
@@ -726,7 +730,6 @@ add('plugins/gtm/templates/delivery.md', [
   w('counts each such point once in `back`,'),
   w("the tasks' `judge` counts summed."),
   w('A task whose `judge.back` is above 0, or a final-review must-fix on the file and category of a minor the judge lowered in this slug:'),
-  w('one `ruling` line `judge lowering off: <file>, <category>, <where it came back>` and a Heads-up; from then on no `judge` arg.'),
 ])
 add('plugins/gtm/templates/ledger.md', ['`judge lowering off` is struck by the human alone'])
 add('plugins/gtm/skills/retro/SKILL.md', [w('never a `judge lowering off` ruling: the human strikes it')])
