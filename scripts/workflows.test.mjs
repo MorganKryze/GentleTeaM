@@ -2436,6 +2436,21 @@ const deliver = [
     log: [`judge unavailable (${why}): 1 finding(s) keep their round`],
     prompts: { 'fix · round 1': ['drops the last row'] },
   })),
+  ...[
+    ['a step with no result leaves both findings asked unanswered', [BEHAV, KEPT], null, 'step', 0],
+    ['a call left unanswered after one answer leaves the other two unanswered', [BEHAV, KEPT, { ...BEHAV, file: 'src/c.js', summary: 'skips a page' }],
+      said({ f0: 0.9 }, { unavailable: 'timeout' }), 'timeout', 600],
+  ].map(([what, fs, step, why, tokens]) => ({
+    name: `judge: ${what}, each counted unavailable`,
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? step : d.label === 'reviewer' ? { verdict: 'fix', findings: fs, summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: fs.length, minor: 0 } }, minors: [],
+      judge: verdict({ asked: fs.length, unavailable: 2, tokens }),
+    },
+    dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    log: [`judge unavailable (${why}): 2 finding(s) keep their round`],
+  })),
   {
     name: 'judge: nothing from a retry is asked',
     args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
