@@ -2538,6 +2538,27 @@ const deliver = [
     prompts: { 'fix · round 2': ['skips a page'], 'fix · round 3': ['loses a word'] },
   },
   {
+    name: 'judge: a behaviour finding whose file, given with a line and column, ends on a trigger is never asked',
+    args: { triggers: { ...TRIGGERS, 'security-reviewer': ['[.]mjs$'] }, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.1 }) : d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...BEHAV, file: 'lib/a.mjs:12:3' }], summary: 's' } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [], judge: verdict({ asked: 0 }) },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+  },
+  {
+    name: 'judge: a finding on the file of one it lowered comes back whatever line it names',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.1, f1: 0.9 }) : d.label.startsWith('judge') ? said({ f0: 0.1 })
+      : d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...BEHAV, file: 'src/a.js:12' }, KEPT], summary: 's' }
+        : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ ...KEPT, status: 'addressed' }, { ...BEHAV, file: 'src/a.js:40', summary: 'still drops a row' }], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 3, minor: 0 } },
+      minors: [lowJ({ ...BEHAV, file: 'src/a.js:12' }, 0.1)], judge: verdict({ asked: 2, lowered: 1, back: 1, tokens: 1200 }),
+    },
+    dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+    log: ['judge: 1 finding(s) on a point it lowered came back'],
+  },
+  {
     name: 'judge: at most 10 findings are asked in a round, the eleventh keeps its round',
     args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
     reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said(Object.fromEntries(Array.from({ length: 10 }, (_, i) => [`f${i}`, 0.1])))

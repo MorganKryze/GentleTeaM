@@ -219,7 +219,9 @@ const skipped = (res) => !(res.mutations?.planted > 0) && /mutations\s+skipped\s
 // Nor is a finding a re-review returns open: one sent back keeps its severity until it is
 // addressed, whoever added it and whatever label it comes back with.
 const MILD = ['proof', 'form', 'doc']
-const offGround = (f) => ![...changed, ...relative(f.file ? [f.file] : [])].some((x) => pinned(x) || ground([x]).includes(SEC))
+// A finding's file as a reviewer gives it, `path:line` or `path:line:col` read as the path alone.
+const where = (f) => String(f.file || '').replace(/:\d+(?::\d+)?$/, '')
+const offGround = (f) => ![...changed, ...relative(where(f) ? [where(f)] : [])].some((x) => pinned(x) || ground([x]).includes(SEC))
 const lowered = (f, r) => MILD.includes(f.category) && f.severity === 'important' && r !== SEC && offGround(f)
 // The external judge, where /gtm:deliver passes it: its script, an absolute path ending in the
 // plugin's scripts/judge.mjs, and the project, the absolute path the user listed; neither holding
@@ -235,7 +237,7 @@ const JUDGED = 0.3
 const JUDGE_MAX = 10
 const PIN = 'jev-1.14.0'
 const judged = (f, r) => JUDGE && f.category === 'behaviour' && f.severity === 'important' && r !== SEC && offGround(f)
-const point = (f) => `${relative([f.file || '?'])[0]}\n${f.category}`
+const point = (f) => `${relative([where(f) || '?'])[0]}\n${f.category}`
 const verdicts = { asked: 0, lowered: 0, unavailable: 0, back: 0, tokens: 0 }
 const points = new Set()
 const backed = new Set()
