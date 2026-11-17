@@ -685,6 +685,8 @@ add('plugins/gtm/templates/delivery.md', [
   '## Lowered findings',
   w('Such a finding starts no round.'),
   w("on the security or data reviewer's triggers, on a risky path or given as an absolute path, and the security reviewer did not raise it."),
+  w("no file the task has changed so far, nor the finding's own file, is on"),
+  w('A finding a retry returns, one a re-review returns open and one the workflow adds itself (a surviving mutation) are never lowered.'),
   w('ends `(<role>; lowered from <was>, <category>)`.'),
   w('A task that lowered one brings the final review back (deliver §4), whose reviewer reads those lines first;'),
   w('a Fix, with no final review, lists them under a Heads-up with the go.'),
