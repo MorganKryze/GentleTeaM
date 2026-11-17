@@ -550,6 +550,9 @@ const ABSENT = {
 const add = (file, pins) => { PINS[file] = [...(PINS[file] ?? []), ...pins] }
 const addAbsent = (file, words) => { ABSENT[file] = [...(ABSENT[file] ?? []), ...words] }
 add('plugins/gtm/templates/delivery.md', [
+  w("The workflow lowers an `important` finding of category `proof`, `form` or `doc` to a minor,"),
+  w("no file the task has changed so far, nor the finding's own file, is on the security or data reviewer's triggers,"),
+  w("Each lowered finding gets a ledger line of its own, never batched, never taken for a duplicate,"),
   w("A path that rose to `full` sends the reviewer the full path's mutation order, as `## Review paths` says."),
   w('ends with five segments, in this order'),
   w("`<P>`: a workflow run's `trace.path`; a task's re-run, deferred or hand line, its task's path; any other line `none`; unknown `?`."),
@@ -574,6 +577,7 @@ add('plugins/gtm/templates/delivery.md', [
 ])
 // A31: the final review stays on the full path and replays two planted mutations; A14's override.
 add('plugins/gtm/agents/final-reviewer.md', [
+  w("its task off security and data ground: read those first,\nagainst the branch, then triage each as any other."),
   w('Review the whole branch (`merge-base..head`) on the full path, whatever path its tasks took,'),
   w('replay two in a scratch clone, those that move or drop a pinned threshold, plan order on a tie (all of them when two or fewer).'),
   w('one that survives is a must-fix.'),
@@ -687,7 +691,7 @@ add('plugins/gtm/templates/delivery.md', [
   w("on the security or data reviewer's triggers, on a risky path or given as an absolute path, and the security reviewer did not raise it."),
   w("no file the task has changed so far, nor the finding's own file, is on"),
   w('A finding a retry returns, one a re-review returns open and one the workflow adds itself (a surviving mutation) are never lowered.'),
-  w('ends `(<role>; lowered from <was>, <category>)`.'),
+  w('that ends `(<role>; lowered from <was>, <category>)`.'),
   w('A task that lowered one brings the final review back (deliver §4), whose reviewer reads those lines first;'),
   w('a Fix, with no final review, lists them under a Heads-up with the go.'),
 ])

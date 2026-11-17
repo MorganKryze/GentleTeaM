@@ -88,10 +88,10 @@ The workflow lowers an `important` finding of category `proof`, `form` or `doc` 
 changed so far, nor the finding's own file, is on the security or data reviewer's triggers, on a
 risky path or given as an absolute path, and the security reviewer did not raise it. Such a finding
 starts no round. A finding a retry returns, one a re-review returns open and one the workflow adds
-itself (a surviving mutation) are never lowered. Its ledger line, as any minor's, ends `(<role>;
-lowered from <was>, <category>)`. A task that lowered one brings the final review back (deliver §4),
-whose reviewer reads those lines first; a Fix, with no final review, lists them under a Heads-up
-with the go.
+itself (a surviving mutation) are never lowered. Each lowered finding gets a ledger line of its
+own, never batched, never taken for a duplicate, that ends `(<role>; lowered from <was>,
+<category>)`. A task that lowered one brings the final review back (deliver §4), whose reviewer
+reads those lines first; a Fix, with no final review, lists them under a Heads-up with the go.
 
 ## The lead's own files
 Read before the first dispatch. The orchestrator keeps the scripts, logs and tool installs it
