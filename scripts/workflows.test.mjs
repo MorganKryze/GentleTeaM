@@ -139,6 +139,15 @@ const DOC = { severity: 'important', file: 'docs/a.md', summary: 'false sentence
 // a segment separator, a newline, upper case, a leading `; `, and one character past the cap.
 // Review path stubs: team.md's two `review path` lines as /gtm:deliver hands them, and the
 // line a light review request carries instead of the mutation step.
+// Judge stubs: the script and project /gtm:deliver hands over, behaviour findings, the step's line.
+const JUDGE = { script: '/p/gtm/scripts/judge.mjs', project: '/home/me/acme repo' }
+const BEHAV = { severity: 'important', file: 'src/a.js', summary: 'drops the last row, é ✓', category: 'behaviour' }
+const KEPT = { ...BEHAV, file: 'src/b.js', summary: 'loses the lock' }
+const said = (p, extra = {}) => ({ out: JSON.stringify({ v: 1, model: 'jev-1.14.0', p, tokens: 600 * Object.keys(p).length, ...extra }) })
+const judgeStep = (label = 'judge') => ({ agentType: 'general-purpose', label, model: 'haiku' })
+const asked = (...fs) => Buffer.from(JSON.stringify(fs.map((f, i) => ({ id: `f${i}`, severity: f.severity, category: f.category, file: f.file, summary: f.summary }))), 'utf8').toString('hex')
+const verdict = (over = {}) => ({ asked: 1, lowered: 0, unavailable: 0, back: 0, tokens: 0, ...over })
+const lowJ = (f, judge) => ({ ...f, severity: 'minor', was: 'important', judge, by: 'reviewer' })
 const PATHS = { text: { paths: ['[.]md$'], reviewer: 'sonnet' }, code: { paths: ['^scripts/', '^plugins/gtm/workflows/'], reviewer: 'sonnet' } }
 // The template's `text` line, read from team.md as /gtm:deliver hands it.
 const TEXT = JSON.parse(`[${(readFileSync(new URL('../plugins/gtm/templates/team.md', import.meta.url), 'utf8').match(/review path: text · paths (.*?) · reviewer/)?.[1] ?? '').split(', ').map((r) => JSON.stringify(r.replace(/`/g, ''))).join(',')}]`)
@@ -2319,6 +2328,172 @@ const deliver = [
       { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
     unlogged: ['off security and data ground'],
   },
+  // The external judge, on the same ground: an important behaviour finding a reviewer returns, judged
+  // under 0.3, joins the minors with its probability; what it cannot answer keeps its round.
+  {
+    name: 'judge: off every ground an important behaviour finding judged under 0.3 starts no round, its probability kept',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.12 }) : { verdict: 'fix', findings: [BEHAV], summary: 's' })),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } },
+      minors: [lowJ(BEHAV, 0.12)], judge: verdict({ lowered: 1, tokens: 600 }),
+      trace: { models: 'implementer ?/?, reviewer ?/?, general-purpose haiku/?', causes: 'none', path: 'full' },
+    },
+    dispatches: [implement(), reviewer(), judgeStep()],
+    log: ['judge: 1 behaviour finding(s) off security and data ground judged minor (under 0.3), no round'],
+    prompts: { judge: [`\nnode "${JUDGE.script}" --project "${JUDGE.project}" ${asked(BEHAV)}`, 'Run nothing else, read no file and change nothing'] },
+    unprompted: { judge: ['drops the last row', 'src/a.js'] },
+    unlogged: ['asked for a fix without a blocking finding'],
+  },
+  ...[[0.29, true], [0.3, false]].map(([p, low]) => ({
+    name: `judge: a probability of ${p} ${low ? 'is under the threshold' : 'is not under the threshold, so the round starts'}`,
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: p }) : d.label === 'reviewer' ? { verdict: 'fix', findings: [BEHAV], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: low ? 'h0' : 'h1', fixRounds: low ? 0 : 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } },
+      minors: low ? [lowJ(BEHAV, p)] : [], judge: verdict({ lowered: low ? 1 : 0, tokens: 600 }),
+    },
+    dispatches: [implement(), reviewer(), judgeStep(), ...(low ? [] : [{ agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')])],
+  })),
+  {
+    name: 'judge: of two behaviour findings the one judged under 0.3 goes to the minors, the other alone reaches the fix round',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.1, f1: 0.9 }) : d.label === 'reviewer' ? { verdict: 'fix', findings: [BEHAV, KEPT], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
+      minors: [lowJ(BEHAV, 0.1)], judge: verdict({ asked: 2, lowered: 1, tokens: 1200 }),
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?, general-purpose haiku/?', causes: '1:reviewer/important/behaviour', path: 'full' },
+    },
+    dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { judge: [asked(BEHAV, KEPT)], 'fix · round 1': ['"summary": "loses the lock"'] },
+    unprompted: { 'fix · round 1': ['drops the last row'] },
+  },
+  ...[
+    ['a task with a file on a risky path', [WF, 'src/a.js'], [], BEHAV],
+    ['a task with a file on the data reviewer\'s triggers', ['templates/a.md'], ['data-reviewer'], BEHAV],
+    ['a task with a file on the security reviewer\'s triggers', ['scripts/a.mjs'], ['security-reviewer'], BEHAV],
+    ['a task with a path left absolute', ['/abs/repo/src/a.js'], [], BEHAV],
+    ['its own file on the security reviewer\'s triggers', ['src/a.js'], [], { ...BEHAV, file: 'scripts/a.mjs' }],
+    ['its own file on a risky path', ['src/a.js'], [], { ...BEHAV, file: WF }],
+  ].map(([where, files, also, f]) => ({
+    name: `judge: a behaviour finding on ${where} is never asked and starts its round`,
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(files, (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [f], summary: 's' } : ok), files),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', ...also], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [], judge: verdict({ asked: 0 }) },
+    dispatches: [implement(), reviewer(), ...also.map((r) => ({ agentType: `gtm:${r}`, label: r })), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'), ...also.map((r) => ({ agentType: `gtm:${r}`, label: `${r} · round 1` }))],
+    unlogged: ['judge'],
+  })),
+  {
+    name: 'judge: the security reviewer\'s behaviour finding is never asked, the reviewer\'s own is',
+    args: { paths: PATHS, triggers: { 'security-reviewer': ['^plugins/'] }, risky: RISKY, judge: JUDGE },
+    reply: implementer(['scripts/a.test.mjs'], (d) => (d.label === 'judge' ? said({ f0: 0.1 })
+      : d.label === 'reviewer' || d.label === 'security-reviewer' ? { verdict: 'fix', findings: [{ ...BEHAV, file: 'scripts/a.test.mjs' }], summary: 's' } : ok), ['scripts/a.test.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 }, 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
+      minors: [lowJ({ ...BEHAV, file: 'scripts/a.test.mjs' }, 0.1)], judge: verdict({ lowered: 1, tokens: 600 }),
+    },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, security('security-reviewer · round 1')],
+    prompts: { judge: [asked({ ...BEHAV, file: 'scripts/a.test.mjs' })] },
+  },
+  ...[
+    ['a critical behaviour finding', { ...BEHAV, severity: 'critical' }, { critical: 1, important: 0, minor: 0 }],
+    ['an important security finding', { ...BEHAV, category: 'security' }, { critical: 0, important: 1, minor: 0 }],
+    ['an important finding with no category', badFinding, { critical: 0, important: 1, minor: 0 }],
+  ].map(([what, f, counted]) => ({
+    name: `judge: ${what} off every ground is never asked and starts its round`,
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [f], summary: 's' } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: counted }, minors: [], judge: verdict({ asked: 0 }) },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+  })),
+  ...[
+    ['no result', null, 'step', 0],
+    ['a step that throws', 'throw', 'step', 0],
+    ['a line that is not JSON', { out: 'sure, here it is' }, 'step', 0],
+    ['the key refused', { out: '{"v":1,"unavailable":"key missing"}' }, 'key missing', 0],
+    ['another model', said({ f0: 0.1 }, { model: 'jev-1.13.0' }), 'step', 0],
+    ['another version of the line', said({ f0: 0.1 }, { v: 2 }), 'step', 0],
+    ['a probability under 0', said({ f0: -0.01 }), 'step', 600],
+    ['a probability over 1', said({ f0: 1.01 }), 'step', 600],
+    ['a probability as text', said({ f0: '0.1' }), 'step', 600],
+    ['no probability for the finding asked', said({ f1: 0.1 }), 'step', 600],
+    ['a call the service left unanswered', said({}, { unavailable: 'timeout' }), 'timeout', 0],
+    ['an unavailable kind off its alphabet', { out: '{"v":1,"unavailable":"Key: abc"}' }, 'step', 0],
+  ].map(([what, step, why, tokens]) => ({
+    name: `judge: ${what} lowers nothing and the round starts`,
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'judge') {
+        if (step === 'throw') throw new Error('subagent completed without calling StructuredOutput')
+        return step
+      }
+      return d.label === 'reviewer' ? { verdict: 'fix', findings: [BEHAV], summary: 's' } : ok
+    }),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [], judge: verdict({ unavailable: 1, tokens }) },
+    dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    log: [`judge unavailable (${why}): 1 finding(s) keep their round`],
+    prompts: { 'fix · round 1': ['drops the last row'] },
+  })),
+  {
+    name: 'judge: nothing from a retry is asked',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') throw new Error('subagent completed without calling StructuredOutput')
+      return d.label === 'reviewer · retry' ? { verdict: 'fix', findings: [BEHAV], summary: 's' } : ok
+    }),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [], judge: verdict({ asked: 0 }) },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · retry'), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+  },
+  {
+    name: 'judge: a finding a re-review returns open is not asked again',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.9 }) : d.label === 'reviewer' ? { verdict: 'fix', findings: [KEPT], summary: 's' }
+      : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ ...KEPT, status: 'open' }], summary: 'still' } : ok)),
+    returns: { status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0 } }, minors: [], judge: verdict({ tokens: 600 }) },
+    dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+  },
+  {
+    name: 'judge: a finding on the file and category of one it lowered comes back, keeps its round and is counted',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.1, f1: 0.9 }) : d.label === 'reviewer' ? { verdict: 'fix', findings: [BEHAV, KEPT], summary: 's' }
+      : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ ...KEPT, status: 'addressed' }, { ...BEHAV, summary: 'still drops a row' }], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 3, minor: 0 } },
+      minors: [lowJ(BEHAV, 0.1)], judge: verdict({ asked: 2, lowered: 1, back: 1, tokens: 1200 }),
+    },
+    dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+    log: ['judge: 1 finding(s) on a point it lowered came back: they keep their round'],
+    prompts: { 'fix · round 2': ['still drops a row'] },
+  },
+  {
+    name: 'judge: at most 10 findings are asked in a round, the eleventh keeps its round',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said(Object.fromEntries(Array.from({ length: 10 }, (_, i) => [`f${i}`, 0.1])))
+      : d.label === 'reviewer' ? { verdict: 'fix', findings: Array.from({ length: 11 }, (_, i) => ({ ...BEHAV, file: `src/${i}.js`, summary: `row ${i}` })), summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 11, minor: 0 } },
+      minors: Array.from({ length: 10 }, (_, i) => lowJ({ ...BEHAV, file: `src/${i}.js`, summary: `row ${i}` }, 0.1)), judge: verdict({ asked: 10, lowered: 10, tokens: 6000 }),
+    },
+    dispatches: [implement(), reviewer(), judgeStep(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { judge: [asked(...Array.from({ length: 10 }, (_, i) => ({ ...BEHAV, file: `src/${i}.js`, summary: `row ${i}` })))], 'fix · round 1': ['"summary": "row 10"'] },
+  },
+  ...[
+    ...['scripts/judge.mjs', 'p/gtm/scripts/judge.mjs', '/p/gtm/x/../scripts/judge.mjs', '/p/"gtm/scripts/judge.mjs', '/p/$HOME/scripts/judge.mjs', '/p/a`b/scripts/judge.mjs',
+      '/p/a\\b/scripts/judge.mjs', '/p/a\u0001b/scripts/judge.mjs', '/p/a\u2028b/scripts/judge.mjs', '/p/gtm/scripts/judge.js', 3].map((script) => ({ ...JUDGE, script })),
+    ...['acme', 'home/me/acme', '/home/me/..', '/home/me/../x', '/home/"me', '/home/$USER', '/home/a`b', '/home/a\\b', '/home/a\nb', '/home/a\u2029b', 3].map((project) => ({ ...JUDGE, project })),
+    JUDGE.script, { script: JUDGE.script }, null, 3,
+  ].map((given) => ({
+    name: `judge: ${JSON.stringify(given)} is refused and the judge is off`,
+    args: { triggers: TRIGGERS, risky: RISKY, judge: given },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [BEHAV], summary: 's' } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    log: ['Invalid judge arg: the judge is off for this task'],
+  })),
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
 // Answers the designer with `board <round>` and the critic with critique(round, label).
