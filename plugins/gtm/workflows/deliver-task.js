@@ -210,13 +210,14 @@ const MUTATE = '\nMutations: this task is on the full review path, so no light p
 const skipped = (res) => !(res.mutations?.planted > 0) && /mutations\s+skipped\s*:\s*light\s+path/i.test(String(res.summary || ''))
 // An important proof, form or doc finding off security and data ground starts no round: it joins
 // the minors, `was` keeping the severity given, for the ledger and the final review. The ground is
-// the task's, never the finding's own file, as a missing pin sits in a test and the rule it pins
-// does not: a file changed so far on the security or data reviewer's triggers, on a risky path or
-// left absolute. A security reviewer's finding keeps its round anywhere; the data reviewer runs on
+// the task's, as a missing pin sits in a test and the rule it pins does not: a file changed so far
+// on the security or data reviewer's triggers, on a risky path or left absolute. The finding's own
+// file counts too, as the implementer's list may leave out the very file it names; it only ever
+// keeps a round. A security reviewer's finding keeps its round anywhere; the data reviewer runs on
 // its ground only. A finding the workflow adds itself (a surviving mutation) is never lowered.
 const MILD = ['proof', 'form', 'doc']
 const lowered = (f, r) => MILD.includes(f.category) && f.severity === 'important' && r !== SEC
-  && !changed.some((x) => pinned(x) || ground([x]).includes(SEC))
+  && ![...changed, ...relative(f.file ? [f.file] : [])].some((x) => pinned(x) || ground([x]).includes(SEC))
 const UNPLANTED = () => `\nMutations: none on the ${path} review path; plant none, return 0 planted and write \`mutations skipped: light path\` in the summary.`
 
 // A reviewer whose dispatch throws (its structured result lost) gets one more dispatch on a

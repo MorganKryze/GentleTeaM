@@ -2256,6 +2256,29 @@ const deliver = [
     log: ['reviewer: 1 proof, form or doc finding(s) off security and data ground'],
   },
   {
+    name: 'lowered: a form finding on a risky file the implementer left out of its list keeps its round, the proof one beside it is lowered',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...FORM, file: WF }, PROOF], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
+      minors: [{ ...PROOF, severity: 'minor', was: 'important', by: 'reviewer' }],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': [`"file": "${WF}"`] },
+    unprompted: { 'fix · round 1': ['"summary": "unpinned"'] },
+  },
+  ...[
+    ['the security reviewer\'s triggers', 'scripts/a.mjs'],
+    ['a path left absolute', '/abs/repo/src/a.test.js'],
+  ].map(([where, file]) => ({
+    name: `lowered: a proof finding whose own file is on ${where} keeps its round off the task's ground`,
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...PROOF, file }], summary: 's' } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    unlogged: ['off security and data ground'],
+  })),
+  {
     name: 'lowered: once a fix reaches a risky path, a re-review\'s proof finding starts a round again',
     args: { triggers: TRIGGERS, risky: RISKY },
     reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ ...addressed }, PROOF], summary: 's' } : ok), [WF]),
