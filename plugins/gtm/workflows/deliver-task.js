@@ -226,7 +226,8 @@ const lowered = (f, r) => MILD.includes(f.category) && f.severity === 'important
 // `/../` or anything a double-quoted shell word would read. Anything else is off, as no arg is. On the same ground, it may lower an important behaviour finding a reviewer returns to
 // a minor, `judge` keeping the probability that a fix changes what a user gets, when it is under
 // the threshold fixed here. Never a point (file and category) lowered before in the task: one
-// coming back stays blocking and is counted. A failed step lowers nothing, never a pass.
+// coming back stays blocking, is counted once, and turns lowering off for the rest of the task,
+// its own round included. A failed step lowers nothing, never a pass.
 const quoted = (v) => typeof v === 'string' && v.startsWith('/') && !/\/\.\.(\/|$)|["`$\\\x00-\x1f\x7f\u0085\u2028\u2029]/.test(v)
 const JUDGE = A.judge && quoted(A.judge.script) && A.judge.script.endsWith('/scripts/judge.mjs') && quoted(A.judge.project) ? A.judge : null
 if (A.judge !== undefined && !JUDGE) log('Invalid judge arg: the judge is off for this task')
@@ -504,7 +505,8 @@ for (; round <= limit; round++) {
   // The judge weighs this round's candidates at once, before any round starts; one under the
   // threshold joins the minors, and its reviewer's verdict over it alone starts no round.
   const gone = new Set()
-  for (const [f, v] of weigh.size ? await judge([...weigh.keys()], `judge${round ? ` · round ${round}` : ''}`) : []) {
+  // Once a point comes back, lowering is off for the rest of the task, this round included.
+  for (const [f, v] of weigh.size && !backed.size ? await judge([...weigh.keys()], `judge${round ? ` · round ${round}` : ''}`) : []) {
     if (!(v < JUDGED)) continue
     gone.add(f)
     points.add(point(f))

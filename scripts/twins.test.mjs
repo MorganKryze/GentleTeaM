@@ -181,6 +181,7 @@ const TWINS = [
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'verdicts.unavailable += asks.length - p.size', to: 'verdicts.unavailable += 1', says: 'each counted unavailable' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'if (held && held.survived > n) {', to: 'if (false) {', says: 'a survivor covered only by a finding the judge lowered' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'if (!backed.has(point(kept))) backs.push(kept)', to: 'backs.push(kept)', says: 'counted come back once' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'weigh.size && !backed.size ?', to: 'weigh.size ?', says: 'once a finding comes back nothing more is asked' },
   { test: 'judge', file: script('judge'), from: '(st.mode & 0o077) !== 0 || ', to: '', says: 'key: readable by the group' },
   { test: 'judge', file: script('judge'), from: 'json.model !== MODEL)', to: 'false)', says: 'ask: another model is unavailable' },
   { test: 'judge', file: script('judge'), from: 'here && lines.some((l) => real(l) === here) ?', to: 'here ?', says: 'projects: another project is not listed' },
