@@ -99,10 +99,10 @@ The external judge is on for a delivery only when both hold at its Prepare (deli
 checkout's `git rev-parse --path-format=absolute --show-toplevel`, prints `{"v":1,"on":true}`
 (anything else, a `why` included, or another exit: off, the `why` in a Heads-up); the project
 ledger, any slug, holds no unstruck `ruling` line whose text starts `judge lowering off`. Only the
-user's own list, `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/gtm/judge.projects`, beside the key, turns it
-on; no line in `<root>` or the repository does, and GTM never writes that list. Then every task's
-workflow gets `judge: { script, project }`, the client's absolute path and `<top>`; otherwise no
-`judge` arg, and nothing leaves the machine.
+user's own list, `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/gtm/judge.projects`,
+beside the key, turns it on; no line in `<root>` or the repository does, and GTM never writes
+that list. Then every task's workflow gets `judge: { script, project }`, the client's absolute path
+and `<top>`; otherwise no `judge` arg, and nothing leaves the machine.
 
 A minor that carries `judge` gets the ledger line of a lowered minor, ending `(<role>; judge <p>;
 lowered from important, behaviour)`, `<p>` as given; the final review reads it first and is never

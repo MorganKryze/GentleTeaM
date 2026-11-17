@@ -553,6 +553,7 @@ const ABSENT = {
 const add = (file, pins) => { PINS[file] = [...(PINS[file] ?? []), ...pins] }
 const addAbsent = (file, words) => { ABSENT[file] = [...(ABSENT[file] ?? []), ...words] }
 add('plugins/gtm/templates/delivery.md', [
+  w("and a Heads-up; from then on no `judge` arg."),
   w("one `ruling` line `judge lowering off: <file>, <category>, <where it came back>` per point the log names, or `judge lowering off: <n> came back` when it names none, and a Heads-up;"),
   w("holds no unstruck `ruling` line whose text starts `judge lowering off`."),
   w("Within a task, the workflow stops lowering once a point it lowered comes back, counts each such point once in `back`,"),
