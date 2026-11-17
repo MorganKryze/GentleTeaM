@@ -2511,6 +2511,19 @@ const deliver = [
     prompts: { 'fix · round 2': ['still drops a row'] },
   },
   {
+    name: 'judge: a finding that came back and stays open is counted come back once',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.1, f1: 0.9 }) : d.label === 'reviewer' ? { verdict: 'fix', findings: [BEHAV, KEPT], summary: 's' }
+      : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ ...KEPT, status: 'addressed' }, { ...BEHAV, summary: 'still drops a row' }], summary: 's' }
+        : d.label === 'reviewer · round 2' ? { verdict: 'fix', findings: [{ ...BEHAV, summary: 'still drops a row', status: 'open' }], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h3', fixRounds: 3, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 4, minor: 0 } },
+      minors: [lowJ(BEHAV, 0.1)], judge: verdict({ asked: 2, lowered: 1, back: 1, tokens: 1200 }),
+    },
+    dispatches: [implement(), reviewer(), judgeStep(), ...rounds(3, (n) => [{ agentType: 'gtm:implementer', label: `fix · round ${n}`, effort: ['medium', 'high', 'high'][n - 1] }, reviewer(`reviewer · round ${n}`)])],
+    log: ['judge: 1 finding(s) on a point it lowered came back'],
+  },
+  {
     name: 'judge: at most 10 findings are asked in a round, the eleventh keeps its round',
     args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
     reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said(Object.fromEntries(Array.from({ length: 10 }, (_, i) => [`f${i}`, 0.1])))

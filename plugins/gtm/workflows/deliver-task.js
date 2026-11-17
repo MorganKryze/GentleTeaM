@@ -237,6 +237,7 @@ const judged = (f, r) => JUDGE && f.category === 'behaviour' && f.severity === '
 const point = (f) => `${relative([f.file || '?'])[0]}\n${f.category}`
 const verdicts = { asked: 0, lowered: 0, unavailable: 0, back: 0, tokens: 0 }
 const points = new Set()
+const backed = new Set()
 // The step reads the findings as hex only, so no reviewer's words reach its prompt.
 const hex = (s) => encodeURIComponent(s).replace(/%([0-9A-F]{2})|[\s\S]/g, (m, h) => (h ? h.toLowerCase() : m.charCodeAt(0).toString(16).padStart(2, '0')))
 const STEP = { type: 'object', properties: { out: { type: 'string' } }, required: ['out'] }
@@ -457,8 +458,11 @@ for (; round <= limit; round++) {
         low++
       } else {
         blocking.push(kept)
-        if (points.has(point(kept))) backs.push(kept)
-        else if (!res.retry && !(pending[i].findings && f.status === 'open') && judged(f, r) && weigh.size < JUDGE_MAX) weigh.set(kept, r)
+        if (points.has(point(kept))) {
+          // Counted once a point: a come-back that stays open is the same one.
+          if (!backed.has(point(kept))) backs.push(kept)
+          backed.add(point(kept))
+        } else if (!res.retry && !(pending[i].findings && f.status === 'open') && judged(f, r) && weigh.size < JUDGE_MAX) weigh.set(kept, r)
       }
     }
     if (low) log(`${r}: ${low} proof, form or doc finding(s) off security and data ground, no round: to the ledger as minors`)
@@ -507,7 +511,7 @@ for (; round <= limit; round++) {
     minors.push({ ...f, severity: 'minor', was: f.severity, judge: v, by: weigh.get(f) })
   }
   verdicts.lowered += gone.size
-  verdicts.back += backs.length
+  verdicts.back = backed.size
   if (gone.size) log(`judge: ${gone.size} behaviour finding(s) off security and data ground judged minor (under ${JUDGED}), no round: to the ledger as minors`)
   if (backs.length) log(`judge: ${backs.length} finding(s) on a point it lowered came back: they keep their round, lowering goes off`)
   for (const { r, blocking, held, found, summary } of blocked) {
