@@ -205,7 +205,9 @@ and cut at 500 characters. Never code, never a diff. The service's terms say it 
 on inputs and keeps them "as long as reasonably necessary"; it keeps telemetry, and zero
 retention comes with enterprise contracts only.
 
-The key sits in a file of one line, readable by you alone, outside any repository; GTM never
-prints it. When the call fails, nothing is lowered. When a point the judge lowered comes back,
-the finding keeps its round and GTM writes a logbook line starting `judge lowering off`: lowering
-stays off until you strike that line. Each finding costs about 600 input tokens, about $0.0001.
+The key sits in `~/.claude/gtm/judge.key` (under `CLAUDE_CONFIG_DIR` when you set it), one line,
+readable by you alone, outside any repository; GTM never prints it. To turn the judge off, remove
+the project's line from `judge.projects`, or the key file. When the call fails, nothing is lowered.
+When a point the judge lowered comes back, the finding keeps its round and GTM writes a logbook line
+starting `judge lowering off`: lowering stays off until you strike that line. Each finding costs
+about 600 input tokens, about $0.0001.
