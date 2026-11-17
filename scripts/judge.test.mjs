@@ -24,24 +24,29 @@ const hex = (v) => Buffer.from(typeof v === 'string' ? v : JSON.stringify(v), 'u
 const F0 = { id: 'f0', severity: 'important', category: 'behaviour', file: 'src/a.js', summary: 'drops the last row' }
 const F1 = { ...F0, id: 'f1', summary: 'off by one' }
 
-// A stand-in of the service: answers from a list, records every request.
+// A stand-in of the service: answers from a list, records every request and each error body read.
 function service(...replies) {
   const sent = []
   const fetch = async (url, init) => {
-    sent.push({ url, init })
+    const request = { url, init, errorRead: false }
+    sent.push(request)
     const r = replies.length > 1 ? replies.shift() : replies[0]
     if (r instanceof Error) throw r
+    const body = (value) => async () => {
+      if ((r.status ?? 200) === 200) return value
+      request.errorRead = true
+      throw new Error('an error body was read')
+    }
     return {
       status: r.status ?? 200,
       headers: { get: (h) => (h === 'retry-after' ? r.retryAfter ?? null : null) },
-      json: async () => {
-        if ((r.status ?? 200) !== 200) throw new Error('an error body was read')
-        return r.body
-      },
+      json: body(r.body),
+      text: body(JSON.stringify(r.body)),
     }
   }
   return { fetch, sent }
 }
+const bodiesRead = (s) => s.sent.filter((r) => r.errorRead).length
 const answer = (noul, extra = {}) => ({ body: { model: MODEL, answers: { user: { noul } }, usage: { input_tokens: 600 }, ...extra } })
 const waits = []
 const wait = async (ms) => { waits.push(ms) }
@@ -74,6 +79,9 @@ check('decode keeps a summary of 500 characters', decode(hex([{ ...F0, summary: 
 
 // What leaves: one request per finding, to the fixed host, the key in the header only, masked text.
 {
+  const timeouts = []
+  const timeout = AbortSignal.timeout
+  AbortSignal.timeout = (ms) => { timeouts.push(ms); return timeout.call(AbortSignal, ms) }
   const s = service(answer(0.12), answer(0.91))
   const got = await ask([{ ...F0, summary: 'reads /home/me/.ssh/id with ghp_abcdef123 and https://u:pw@host/x' }, F1], opts(s))
   check('ask: two answers', got, { p: { f0: 0.12, f1: 0.91 }, tokens: 1200 })
@@ -87,6 +95,8 @@ check('decode keeps a summary of 500 characters', decode(hex([{ ...F0, summary: 
   check('ask: the key in the Authorization header', s.sent[0].init.headers.Authorization, `Bearer ${KEY}`)
   check('ask: the key nowhere in the body', s.sent.some((r) => r.init.body.includes(KEY)), false)
   check('ask: no redirect followed', s.sent[0].init.redirect, 'error')
+  AbortSignal.timeout = timeout
+  check('ask: each request bounded at 5 s', timeouts, [5000, 5000])
 }
 
 // What comes back: the pinned model and one probability from 0 to 1, or nothing is used.
@@ -110,6 +120,7 @@ check('ask: 0 and 1 are answers', (await ask([F0, F1], opts(service(answer(0), a
   waits.length = 0
   const t = service({ status: 529 }, { status: 529 }, { status: 529 })
   check('ask: 529 three times', await ask([F0], opts(t)), { p: {}, tokens: 0, unavailable: 'rate' })
+  check('ask: no 429 or 529 body read', bodiesRead(s) + bodiesRead(t), 0)
   check('ask: three attempts, waits of 1 s then 2 s', [t.sent.length, waits], [3, [1000, 2000]])
   waits.length = 0
   check('ask: a retry-after of 10 s is waited', (await ask([F0], opts(service({ status: 429, retryAfter: '10' }, answer(0.2))))).p, { f0: 0.2 })
@@ -127,7 +138,7 @@ for (const [what, reply, kind] of [
   ['a network error', new TypeError('fetch failed'), 'network'],
 ]) {
   const s = service(reply, answer(0.1))
-  check(`ask: ${what} is unavailable at once`, [await ask([F0, F1], opts(s)), s.sent.length], [{ p: {}, tokens: 0, unavailable: kind }, 1])
+  check(`ask: ${what} is unavailable at once, no body read`, [await ask([F0, F1], opts(s)), s.sent.length, bodiesRead(s)], [{ p: {}, tokens: 0, unavailable: kind }, 1, 0])
 }
 check('ask: an unanswered finding stops the rest, the answered kept', await ask([F0, F1], opts(service(answer(0.1), { status: 500 }))), { p: { f0: 0.1 }, tokens: 600, unavailable: 'status' })
 
