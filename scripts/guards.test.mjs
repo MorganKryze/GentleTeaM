@@ -36,6 +36,7 @@
 // the plan's estimate counting waves no wider.
 // Lowered findings: the section, the ledger mark, the final review never skipped and its first
 // reading, the reviewer's out-of-task work as security.
+// Judge: the user's list alone turns it on, the mark, the measure's line and the switch GTM never strikes.
 // Run by scripts/validate.mjs. No dependencies.
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -704,6 +705,21 @@ add('plugins/gtm/agents/final-reviewer.md', [
   w('**Lowered minors:** a minor line ending `lowered from <severity>, <category>)`'),
   w('read those first, against the branch, then triage each as any other.'),
 ])
+// The external judge: on from the user's list alone, marked, measured, switched off on a return.
+add('plugins/gtm/templates/delivery.md', [
+  '## Judge',
+  w('--project "<top>" --check'),
+  w('prints `{"v":1,"on":true}`'),
+  w('holds no unstruck `ruling` line starting `judge lowering off`.'),
+  w('no line in `<root>` or the repository does, and GTM never writes that list.'),
+  w('otherwise no `judge` arg, and nothing leaves the machine.'),
+  w('ending `(<role>; judge <p>; lowered from important, behaviour)`'),
+  w('is never skipped for it'),
+  w('`judge: <asked> asked, <lowered> lowered, <unavailable> unavailable, <back> came back, <tokens> input tokens`'),
+  w('GTM never strikes that line: the human does, to reopen lowering.'),
+])
+addAbsent('plugins/gtm/templates/team.md', ['judge:'])
+addAbsent('plugins/gtm/templates/config.yml', ['judge:'])
 for (const [file, pins] of Object.entries(PINS)) {
   const text = readFileSync(join(root, file), 'utf8')
   for (const pin of pins) if (!(pin instanceof RegExp ? pin.test(text) : text.includes(pin))) errors.push(`${file} lacks ${pin}`)

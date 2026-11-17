@@ -238,6 +238,8 @@ const TWINS = [
   { test: 'guards', file: skill('deliver'), from: 'none owed, none lowered', to: 'none owed', says: 'none\\s+owed,\\s+none\\s+lowered' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: "so far, nor the finding's own file, is on", to: 'so far is on', says: "nor\\s+the\\s+finding's\\s+own\\s+file" },
   { test: 'guards', file: agent('reviewer'), from: 'is important, category `security`, as is', to: 'is important, category `form`, as is', says: 'category\\s+`security`,\\s+as\\s+is' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '--project "<top>" --check', to: '--check', says: '--project' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'GTM never strikes that line', to: 'GTM may strike that line', says: 'never\\s+strikes' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []

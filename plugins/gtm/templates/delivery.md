@@ -93,6 +93,31 @@ own, never batched, never taken for a duplicate, that ends `(<role>; lowered fro
 <category>)`. A task that lowered one brings the final review back (deliver §4), whose reviewer
 reads those lines first; a Fix, with no final review, lists them under a Heads-up with the go.
 
+## Judge
+The external judge is on for a delivery only when both hold at its Prepare (deliver §1):
+`node "${CLAUDE_PLUGIN_ROOT}/scripts/judge.mjs" --project "<top>" --check`, `<top>` the main
+checkout's `git rev-parse --path-format=absolute --show-toplevel`, prints `{"v":1,"on":true}`
+(anything else, a `why` included, or another exit: off, the `why` in a Heads-up); the slug's
+project ledger holds no unstruck `ruling` line starting `judge lowering off`. Only the user's own
+list, `${CLAUDE_CONFIG_DIR:-$HOME/.claude}/gtm/judge.projects`, beside the key, turns it on; no
+line in `<root>` or the repository does, and GTM never writes that list. Then every task's
+workflow gets `judge: { script, project }`, the client's absolute path and `<top>`; otherwise no
+`judge` arg, and nothing leaves the machine.
+
+A minor that carries `judge` gets the ledger line of a lowered minor, ending `(<role>; judge <p>;
+lowered from important, behaviour)`, `<p>` as given; the final review reads it first and is never
+skipped for it (`## Lowered findings`). Within a task, the workflow stops lowering once a point it
+lowered comes back, counts each such point once in `back`, and turns a surviving mutation covered
+only by a judged minor into a proof finding.
+
+At the run line, one `usage` line: `judge: <asked> asked, <lowered> lowered, <unavailable>
+unavailable, <back> came back, <tokens> input tokens`, the tasks' `judge` counts summed.
+
+A task whose `judge.back` is above 0, or a final-review must-fix on the file and category of a
+minor the judge lowered in this slug: one `ruling` line `judge lowering off: <file>, <category>,
+<where it came back>` and a Heads-up; from then on no `judge` arg. GTM never strikes that line:
+the human does, to reopen lowering.
+
 ## The lead's own files
 Read before the first dispatch. The orchestrator keeps the scripts, logs and tool installs it
 makes for a run in `<root>/reports/<slug>/lead/`, never in the session scratchpad, which Claude
