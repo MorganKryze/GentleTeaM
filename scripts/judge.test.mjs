@@ -246,6 +246,40 @@ yes(`${proj}\n`)
   check('key: git missing refuses it', readKey(file), { off: 'key in a repository' })
   check('projects: git missing refuses it', listed(list, proj), { off: 'projects in a repository' })
   process.env.PATH = PATH
+  // Nor does git refusing the folder for another reason, here a repository another user owns.
+  const bin = join(dir, 'bin')
+  mkdirSync(bin)
+  const standIn = (body) => writeFileSync(join(bin, 'git'), `#!/bin/sh\n${body}\n`, { mode: 0o755 })
+  standIn(`echo "fatal: detected dubious ownership in repository at '$PWD'" >&2\nexit 128`)
+  process.env.PATH = bin
+  check('key: a repository git refuses is refused', readKey(file), { off: 'key in a repository' })
+  check('projects: a repository git refuses is refused', listed(list, proj), { off: 'projects in a repository' })
+  // Git runs in English and finds the repository by itself, whatever the caller's environment
+  // says: this git answers that the folder is in none only when it is run that way.
+  standIn([
+    'if [ "$LC_ALL" = C ] && [ "$GIT_DISCOVERY_ACROSS_FILESYSTEM" = 1 ] && [ -z "$LANGUAGE$GIT_DIR$GIT_CEILING_DIRECTORIES" ]; then',
+    '  echo "fatal: not a git repository (or any of the parent directories): .git" >&2',
+    '  exit 128',
+    'fi',
+    'echo true',
+  ].join('\n'))
+  const saved = Object.fromEntries(['LC_ALL', 'LANGUAGE', 'GIT_DIR', 'GIT_CEILING_DIRECTORIES', 'GIT_DISCOVERY_ACROSS_FILESYSTEM'].map((k) => [k, process.env[k]]))
+  const restore = () => { for (const [k, v] of Object.entries(saved)) if (v === undefined) delete process.env[k]; else process.env[k] = v }
+  Object.assign(process.env, { LC_ALL: 'fr_FR.UTF-8', LANGUAGE: 'fr', GIT_DIR: join(dir, 'none'), GIT_CEILING_DIRECTORIES: dir, GIT_DISCOVERY_ACROSS_FILESYSTEM: '0' })
+  check('key: git run in English on its own discovery, whatever the caller sets', readKey(file), { key: KEY })
+  check('projects: git run in English on its own discovery, whatever the caller sets', listed(list, proj), { on: true })
+  process.env.PATH = PATH
+  restore()
+  // With real git, a ceiling or a GIT_DIR the caller set cannot stop discovery short of the repository.
+  const sub = { key: join(repo, 'sub', 'judge.key'), projects: join(repo, 'sub', 'judge.projects') }
+  mkdirSync(join(repo, 'sub'))
+  writeFileSync(sub.key, `${KEY}\n`, { mode: 0o600 })
+  writeFileSync(sub.projects, `${proj}\n`, { mode: 0o600 })
+  const caller = (vars, read) => { Object.assign(process.env, vars); const got = read(); restore(); return got }
+  const ceiling = { GIT_CEILING_DIRECTORIES: top }
+  const gitDir = { GIT_DIR: join(dir, 'none') }
+  check('key: a ceiling or a GIT_DIR set by the caller does not hide a repository', [caller(ceiling, () => readKey(sub.key)), caller(gitDir, () => readKey(sub.key))], [{ off: 'key in a repository' }, { off: 'key in a repository' }])
+  check('projects: a ceiling or a GIT_DIR set by the caller does not hide a repository', [caller(ceiling, () => listed(sub.projects, proj)), caller(gitDir, () => listed(sub.projects, proj))], [{ off: 'projects in a repository' }, { off: 'projects in a repository' }])
 }
 
 // The whole run: a project not listed, an input refused or a key refused asks nothing.
