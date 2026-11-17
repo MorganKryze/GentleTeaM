@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.23.0] - 2026-11-17
+
 ### Changed
 - An important review finding of category `proof`, `form` or `doc` no longer starts a correction
   round when its task is off security and data ground (no file the task changed, nor the finding's
