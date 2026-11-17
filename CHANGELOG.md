@@ -5,6 +5,15 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- An important review finding of category `proof`, `form` or `doc` no longer starts a correction
+  round when its task is off security and data ground (no file the task changed, nor the finding's
+  own file, on the security or data reviewer's triggers or a risky path, and not raised by the
+  security reviewer): it goes to the ledger as a minor marked with its original severity, on a
+  line of its own. A task that lowered one brings the final review back, which reads those lines
+  first; a Fix lists them with the go. A retried review, a re-check's open finding and work
+  outside the task (now graded `security`) are never lowered.
+
 ## [0.22.0] - 2026-11-16
 
 ### Added
