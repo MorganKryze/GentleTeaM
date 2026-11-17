@@ -229,6 +229,12 @@ yes(`${proj}\n`)
   check('projects: in a git work tree, by git', [listed(inside.projects, proj), listed(linked.projects, proj)], [{ off: 'projects in a repository' }, { off: 'projects in a repository' }])
   check('key: outside any work tree, by git', readKey(file), { key: KEY })
   check('projects: outside any work tree, by git', listed(list, proj), { on: true })
+  // Only git saying the folder is in no repository counts: git missing refuses both files.
+  const PATH = process.env.PATH
+  process.env.PATH = ''
+  check('key: git missing refuses it', readKey(file), { off: 'key in a repository' })
+  check('projects: git missing refuses it', listed(list, proj), { off: 'projects in a repository' })
+  process.env.PATH = PATH
 }
 
 // The whole run: a project not listed, an input refused or a key refused asks nothing.

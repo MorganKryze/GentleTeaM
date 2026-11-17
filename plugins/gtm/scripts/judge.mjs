@@ -9,7 +9,7 @@
 import { readFileSync, realpathSync, statSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { homedir } from 'node:os'
-import { execFileSync } from 'node:child_process'
+import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
 export const HOST = 'https://api.typesafe.ai/v1/systemone'
@@ -60,12 +60,17 @@ export const keyFile = (env = process.env) => join(folder(env), 'judge.key')
 export const projectsFile = (env = process.env) => join(folder(env), 'judge.projects')
 const PATH = /^\/[^\x00-\x1f\x7f]{0,4095}$/
 
+// Whether `dir` sits in a git work tree. Only git's own answer that it is in no repository reads
+// as outside: git missing, its timeout or a folder it refuses all read as inside, so the file is
+// refused. Git runs in English, its discovery left to the folder alone, whatever the caller's
+// environment says.
 function inGitTree(dir) {
-  try {
-    return execFileSync('git', ['-C', dir, 'rev-parse', '--is-inside-work-tree'], { stdio: ['ignore', 'pipe', 'ignore'], timeout: 5000 }).toString().trim() === 'true'
-  } catch {
-    return false
-  }
+  const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith('GIT_') && k !== 'LANGUAGE'))
+  const r = spawnSync('git', ['-C', dir, 'rev-parse', '--is-inside-work-tree'], {
+    encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 5000, env: { ...env, LC_ALL: 'C', GIT_DISCOVERY_ACROSS_FILESYSTEM: '1' },
+  })
+  if (r.status === 128 && /^fatal: not a git repository/m.test(r.stderr)) return false
+  return r.status !== 0 || r.stdout.trim() === 'true'
 }
 
 // A user-level file's text, or why it is refused (`<name> <condition>`), never its content: a
