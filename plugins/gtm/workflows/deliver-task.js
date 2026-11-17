@@ -208,6 +208,19 @@ const light = () => path === 'text' || path === 'code'
 const model = (role) => (role === 'reviewer' && light() && PATHS[path].model ? { model: PATHS[path].model } : {})
 const MUTATE = '\nMutations: this task is on the full review path, so no light path skip applies. Plant your mutations now, whatever the round, as your Mutations paragraph says, and return their count.'
 const skipped = (res) => !(res.mutations?.planted > 0) && /mutations\s+skipped\s*:\s*light\s+path/i.test(String(res.summary || ''))
+// An important proof, form or doc finding off security and data ground starts no round: it joins
+// the minors, `was` keeping the severity given, for the ledger and the final review. The ground is
+// the task's, as a missing pin sits in a test and the rule it pins does not: a file changed so far
+// on the security or data reviewer's triggers, on a risky path or left absolute. The finding's own
+// file counts too, as the implementer's list may leave out the very file it names; it only ever
+// keeps a round. A security reviewer's finding keeps its round anywhere; the data reviewer runs on
+// its ground only. A finding the workflow adds itself (a surviving mutation) is never lowered,
+// nor one a retry returns: what its budget left unchecked is a finding, whatever its category.
+// Nor is a finding a re-review returns open: one sent back keeps its severity until it is
+// addressed, whoever added it and whatever label it comes back with.
+const MILD = ['proof', 'form', 'doc']
+const lowered = (f, r) => MILD.includes(f.category) && f.severity === 'important' && r !== SEC
+  && ![...changed, ...relative(f.file ? [f.file] : [])].some((x) => pinned(x) || ground([x]).includes(SEC))
 const UNPLANTED = () => `\nMutations: none on the ${path} review path; plant none, return 0 planted and write \`mutations skipped: light path\` in the summary.`
 
 // A reviewer whose dispatch throws (its structured result lost) gets one more dispatch on a
@@ -253,7 +266,7 @@ async function retried(prompt, opts, pass = '') {
   }
   const second = await attempt(prompt + RETRY, { ...opts, label: `${opts.label} · retry` })
   if (second == null) log(`${opts.label}: no result after its retry, no third dispatch`)
-  return second && { ...second, passed: false }
+  return second && { ...second, passed: false, retry: true }
 }
 
 phase('Implement')
@@ -373,6 +386,7 @@ for (; round <= limit; round++) {
     const yields = res.passed ? (at().sheets = Object.fromEntries([...SHEETS.keys()].map((n) => [n, { passes: 1, critical: 0, important: 0, minor: 0 }]))) : {}
     let found = 0
     let small = 0
+    let low = 0
     for (const f of res.findings) {
       // Only a reviewer sent findings to re-check can close one; anywhere else the severity decides.
       if (pending[i].findings && f.status === 'addressed') continue
@@ -385,8 +399,12 @@ for (; round <= limit; round++) {
       if (f.severity === 'minor') {
         minors.push({ ...kept, by: r })
         small++
+      } else if (!(pending[i].findings && f.status === 'open') && !res.retry && lowered(f, r)) {
+        minors.push({ ...kept, severity: 'minor', was: f.severity, by: r })
+        low++
       } else blocking.push(kept)
     }
+    if (low) log(`${r}: ${low} proof, form or doc finding(s) off security and data ground, no round: to the ledger as minors`)
     // Mutations count once, on a review's first round: a re-review replays the survivors it sent.
     // A survivor is a finding, never a silent pass: more survivors than findings is one more.
     const m = res.mutations
@@ -408,9 +426,10 @@ for (; round <= limit; round++) {
     }
     // A fix verdict is never an approval, even with nothing blocking to show for it: its summary is
     // then the only reason given, so the fix round and the re-review get it, and it counts as one.
-    // On a light path a fix asked over minors only starts no round: they go to the ledger. With
-    // no finding at all, the summary stays the only reason given, and it still counts.
-    if (res.verdict === 'fix' && !blocking.length && light() && small) {
+    // On a light path a fix asked over minors only starts no round: they go to the ledger; so does
+    // one with a lowered finding on any path. With no finding at all, the summary stays the only
+    // reason given, and it still counts.
+    if (res.verdict === 'fix' && !blocking.length && (low || (light() && small))) {
       log(`${r} asked for a fix over minors only: no round on the ${path} path, the minors go to the ledger`)
     } else if (res.verdict === 'fix' && !blocking.length) {
       count('important')

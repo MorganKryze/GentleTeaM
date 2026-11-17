@@ -118,6 +118,16 @@ critical, a security hole or a data-integrity defect. On a re-check, each findin
 severity until it is addressed; a finding returned as `addressed` no longer blocks and is not
 counted, and one returned without a status stays open.
 
+An `important` finding of category `proof` (a test or check missing or too weak), `form` (names
+and structure) or `doc` (a sentence false or missing) starts no correction round when no file the
+task changed, nor the file the finding names, is on the security or data reviewer's paths or a
+risky path, and the security reviewer did not raise it. It is lowered to `minor` and goes to the
+[logbook](/reference/glossary/#logbook), marked with the severity it was given, and brings the
+final review back, which reads it first; a [Fix](/reference/glossary/#fix), with no final review,
+lists it with the go. Every other finding still blocks as before: any finding on that ground, one a
+re-check returns open, and one from a retried review. A sign of the
+implementer working outside its task is a `security` finding, so it always blocks.
+
 ## What does a role send back?
 
 Each role ends with a short hand-back: at most ten lines (twelve for the architect, fifteen for

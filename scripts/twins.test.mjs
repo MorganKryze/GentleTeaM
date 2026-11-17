@@ -172,6 +172,10 @@ const TWINS = [
   { test: 'workflows', file: 'plugins/gtm/workflows/design-loop.js', from: 'taste >= TASTE_BAR', to: 'taste >= 0', says: 'design-loop' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'const MAX_SHEETS = 2', to: 'const MAX_SHEETS = 3', says: 'a third entry in bound' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: "category: 'proof', summary: `${r} reported", to: "category: 'behaviour', summary: `${r} reported", says: 'trace: a surviving mutation' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'pinned(x) || ground([x]).includes(SEC)', to: 'pinned(x)', says: 'reviewer\'s triggers still starts its round' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: '[...changed, ...relative(f.file ? [f.file] : [])]', to: '[...changed]', says: 'left out of its list keeps its round' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: '!res.retry && lowered(f, r)', to: 'lowered(f, r)', says: 'nothing from a retry is lowered' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: "!(pending[i].findings && f.status === 'open') && !res.retry", to: '!res.retry', says: 'returned open by a re-review, keeps its round' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '· models <M> · causes <C> · path <P>`', to: '· models <M> · path <P>`', says: 'causes <C>' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'only Read, Grep, Glob and Edit', to: 'only Read, Grep, Glob, Edit and Bash', says: 'only\\s+Read,\\s+Grep,\\s+Glob\\s+and\\s+Edit' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'exactly twice', to: 'at least twice', says: 'exactly\\s+twice' },
@@ -211,6 +215,10 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: 'in plan order, each', to: 'in any order, each', says: 'in\\s+plan\\s+order' },
   { test: 'guards', file: 'plugins/gtm/skills/deliver/SKILL.md', from: 'sized by `templates/delivery.md`', to: 'sized by hand', says: 'sized\\s+by' },
   { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: 'no wider than the Gates `wave width`', to: 'as wide as the plan wants', says: 'no\\s+wider' },
+  { test: 'guards', file: skill('deliver'), from: 'at 0 rounds, none lowered', to: 'at 0 rounds', says: 'none lowered' },
+  { test: 'guards', file: skill('deliver'), from: 'none owed, none lowered', to: 'none owed', says: 'none\\s+owed,\\s+none\\s+lowered' },
+  { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: "so far, nor the finding's own file, is on", to: 'so far is on', says: "nor\\s+the\\s+finding's\\s+own\\s+file" },
+  { test: 'guards', file: agent('reviewer'), from: 'is important, category `security`, as is', to: 'is important, category `form`, as is', says: 'category\\s+`security`,\\s+as\\s+is' },
 ]
 const ARGS = { 'site-checks': ['--source', '--lasting'] }
 const errors = []

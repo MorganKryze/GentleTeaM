@@ -43,11 +43,12 @@ plant, and a second skip counts as no review.
 
 The final review replays two of the mutations the task reports planted, those that move or drop a
 pinned threshold, plan order on a tie (all of them when two or fewer); one that survives is a
-must-fix. A branch of one task, clean at zero correction rounds, skips it: that task's review, with
-every triggered specialist, was the last, and the `run` line in `ledger.md` says so. Any correction
-round, a commit outside the tasks' ranges (a [Fix](/reference/glossary/#fix) that grew, a hand
-commit) or a specialist whose trigger matched a task's changed paths but who did not review it
-brings the final review back.
+must-fix. A branch of one task, clean at zero correction rounds with no finding lowered to
+`minor`, skips it: that task's review, with every triggered specialist, was the last, and the `run`
+line in `ledger.md` says so. Any correction round, a commit outside the tasks' ranges (a
+[Fix](/reference/glossary/#fix) that grew, a hand commit), a specialist whose trigger matched a
+task's changed paths but who did not review it, or a finding a task lowered to `minor`
+([how severe](/reference/roles/#how-severe-is-a-finding)) brings the final review back.
 
 ## How is a decision recorded?
 

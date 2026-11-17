@@ -131,6 +131,10 @@ const TRACED = { implementer: { model: 'opus', effort: 'low' }, reviewer: { mode
 const hole = { severity: 'important', file: WF, summary: 'hole', category: 'security' }
 const CATEGORY = ['Category: give each finding one of behaviour, security, proof, doc, form']
 const CATEGORY_FIELD = { type: 'string', enum: ['behaviour', 'security', 'proof', 'doc', 'form'] }
+// Lowered stubs: one important finding of each category that starts no round off every ground.
+const PROOF = { severity: 'important', file: 'src/a.test.js', summary: 'unpinned', category: 'proof' }
+const FORM = { severity: 'important', file: 'src/a.js', summary: 'name', category: 'form' }
+const DOC = { severity: 'important', file: 'docs/a.md', summary: 'false sentence', category: 'doc' }
 // Names a project could give a specialist or a model, each refused by one clause of the alphabet:
 // a segment separator, a newline, upper case, a leading `; `, and one character past the cap.
 // Review path stubs: team.md's two `review path` lines as /gtm:deliver hands them, and the
@@ -2182,6 +2186,138 @@ const deliver = [
     returns: { status: 'CLEAN', head: 'h9', fixRounds: 0, reviewers: ['ux-qa'], stats: {}, minors: [], trace: { models: 'ux-qa ?/?', causes: 'none', path: 'full' } },
     dispatches: [{ agentType: 'gtm:ux-qa', label: 'ux-qa' }],
     log: ['Review path: full'],
+  },
+  // A proof, form or doc finding off security and data ground starts no round: it joins the
+  // minors with the severity it was given. Ground is the task's: a changed file on the security
+  // or data reviewer's triggers or a risky path; a finding by the security reviewer; a critical.
+  {
+    name: 'lowered: off every ground, important proof, form and doc findings start no round and keep their severity as `was`',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], () => ({ verdict: 'fix', findings: [PROOF, FORM, DOC], summary: 's' })),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 3, minor: 0 } },
+      minors: [PROOF, FORM, DOC].map((f) => ({ ...f, severity: 'minor', was: 'important', by: 'reviewer' })),
+    },
+    dispatches: [implement(), reviewer()],
+    logs: [['reviewer: 3 proof, form or doc finding(s) off security and data ground, no round: to the ledger as minors'], ['reviewer asked for a fix over minors only: no round on the full path']],
+  },
+  {
+    name: 'lowered: on the text path an important doc finding starts no round',
+    args: { paths: PATHS, triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['docs/a.md'], () => ({ verdict: 'fix', findings: [DOC], summary: 's' })),
+    returns: { status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [{ ...DOC, severity: 'minor', was: 'important', by: 'reviewer' }] },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' })],
+    log: ['reviewer: 1 proof, form or doc finding(s) off security and data ground'],
+  },
+  ...[
+    ['a risky path', [WF, 'src/a.js'], []],
+    ['the data reviewer\'s triggers', ['templates/a.md'], ['data-reviewer']],
+    ['the security reviewer\'s triggers', ['scripts/a.mjs'], ['security-reviewer']],
+    ['a path left absolute', ['/abs/repo/src/a.js'], []],
+  ].map(([where, files, also]) => ({
+    name: `lowered: a proof finding on a task with a file on ${where} still starts its round`,
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(files, (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [PROOF], summary: 's' } : d.label === 'reviewer · round 1' ? { ...ok, findings: [{ ...PROOF, status: 'addressed' }] } : ok), files),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', ...also], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), ...also.map((r) => ({ agentType: `gtm:${r}`, label: r })), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' },
+      reviewer('reviewer · round 1'), ...also.map((r) => ({ agentType: `gtm:${r}`, label: `${r} · round 1` }))],
+    prompts: { 'fix · round 1': ['"summary": "unpinned"'] },
+    unlogged: ['off security and data ground'],
+  })),
+  {
+    name: 'lowered: off every ground a behaviour finding keeps its round, the proof finding beside it goes to the minors',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...badFinding, category: 'behaviour' }, PROOF], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
+      minors: [{ ...PROOF, severity: 'minor', was: 'important', by: 'reviewer' }],
+      trace: { models: 'implementer ?/?/medium, reviewer ?/?', causes: '1:reviewer/important/behaviour', path: 'full' },
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    unprompted: { 'fix · round 1': ['"summary": "unpinned"'] },
+  },
+  {
+    name: 'lowered: a critical proof finding off every ground still starts its round',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...PROOF, severity: 'critical' }], summary: 's' } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 1, important: 0, minor: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    unlogged: ['off security and data ground'],
+  },
+  {
+    name: 'lowered: the security reviewer\'s proof finding keeps its round off its triggers, the reviewer\'s own is lowered',
+    args: { paths: PATHS, triggers: { 'security-reviewer': ['^plugins/'] }, risky: RISKY },
+    reply: implementer(['scripts/a.test.mjs'], (d) => (d.label === 'reviewer' || d.label === 'security-reviewer' ? { verdict: 'fix', findings: [PROOF], summary: 's' } : ok), ['scripts/a.test.mjs']),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer', 'security-reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0 }, 'security-reviewer': { critical: 0, important: 1, minor: 0 } },
+      minors: [{ ...PROOF, severity: 'minor', was: 'important', by: 'reviewer' }],
+    },
+    dispatches: [implement(), reviewer('reviewer', { model: 'sonnet' }), security(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, security('security-reviewer · round 1')],
+    log: ['reviewer: 1 proof, form or doc finding(s) off security and data ground'],
+  },
+  {
+    name: 'lowered: a form finding on a risky file the implementer left out of its list keeps its round, the proof one beside it is lowered',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...FORM, file: WF }, PROOF], summary: 's' } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
+      minors: [{ ...PROOF, severity: 'minor', was: 'important', by: 'reviewer' }],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': [`"file": "${WF}"`] },
+    unprompted: { 'fix · round 1': ['"summary": "unpinned"'] },
+  },
+  ...[
+    ['the security reviewer\'s triggers', 'scripts/a.mjs'],
+    ['a path left absolute', '/abs/repo/src/a.test.js'],
+  ].map(([where, file]) => ({
+    name: `lowered: a proof finding whose own file is on ${where} keeps its round off the task's ground`,
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...PROOF, file }], summary: 's' } : ok)),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    unlogged: ['off security and data ground'],
+  })),
+  {
+    name: 'lowered: nothing from a retry is lowered, as what its budget left unchecked is a finding',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') throw new Error('subagent completed without calling StructuredOutput')
+      return d.label === 'reviewer · retry' ? { verdict: 'fix', findings: [{ ...PROOF, summary: 'could not check the error path within the 25-call budget' }], summary: 's' } : ok
+    }),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · retry'), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': ['could not check the error path'] },
+    unlogged: ['off security and data ground'],
+  },
+  // The workflow's own finding sent back, returned open as sent: it keeps its round, whatever the
+  // label the re-review gives it.
+  ...[
+    ['a surviving mutation', { mutations: { planted: 3, survived: 1 } }, { severity: 'important', category: 'proof', summary: 'reviewer reported 1 surviving mutations and 0 findings: s' }, { planted: 3, survived: 1 }],
+    ['a fix verdict with nothing blocking', {}, { severity: 'important', summary: 'reviewer asked for a fix without a blocking finding: s', category: 'doc' }, {}],
+  ].map(([what, first, sent, counted]) => ({
+    name: `lowered: the workflow's own finding for ${what}, returned open by a re-review, keeps its round`,
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [], summary: 's', ...first }
+      : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ ...sent, status: 'open' }], summary: 'still', mutations: { planted: 0, survived: first.mutations ? 1 : 0 } } : ok)),
+    returns: { status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], minors: [], stats: { reviewer: { critical: 0, important: 2, minor: 0, ...counted } } },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+    prompts: { 'fix · round 2': [sent.summary] },
+    unlogged: ['off security and data ground', 'no round on the full path'],
+  })),
+  {
+    name: 'lowered: once a fix reaches a risky path, a re-review\'s proof finding starts a round again',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ ...addressed }, PROOF], summary: 's' } : ok), [WF]),
+    returns: {
+      status: 'CLEAN', head: 'h2', fixRounds: 2, reviewers: ['reviewer'], minors: [],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0 } },
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1'),
+      { agentType: 'gtm:implementer', label: 'fix · round 2', effort: 'high' }, reviewer('reviewer · round 2')],
+    unlogged: ['off security and data ground'],
   },
 ].map((s) => ({ workflow: 'deliver-task', ...s }))
 
