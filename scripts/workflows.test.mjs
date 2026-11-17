@@ -2279,6 +2279,18 @@ const deliver = [
     unlogged: ['off security and data ground'],
   })),
   {
+    name: 'lowered: nothing from a retry is lowered, as what its budget left unchecked is a finding',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => {
+      if (d.label === 'reviewer') throw new Error('subagent completed without calling StructuredOutput')
+      return d.label === 'reviewer · retry' ? { verdict: 'fix', findings: [{ ...PROOF, summary: 'could not check the error path within the 25-call budget' }], summary: 's' } : ok
+    }),
+    returns: { status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } }, minors: [] },
+    dispatches: [implement(), reviewer(), reviewer('reviewer · retry'), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': ['could not check the error path'] },
+    unlogged: ['off security and data ground'],
+  },
+  {
     name: 'lowered: once a fix reaches a risky path, a re-review\'s proof finding starts a round again',
     args: { triggers: TRIGGERS, risky: RISKY },
     reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? bad : d.label === 'reviewer · round 1' ? { verdict: 'fix', findings: [{ ...addressed }, PROOF], summary: 's' } : ok), [WF]),

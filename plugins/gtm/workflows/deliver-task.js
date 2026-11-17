@@ -214,7 +214,8 @@ const skipped = (res) => !(res.mutations?.planted > 0) && /mutations\s+skipped\s
 // on the security or data reviewer's triggers, on a risky path or left absolute. The finding's own
 // file counts too, as the implementer's list may leave out the very file it names; it only ever
 // keeps a round. A security reviewer's finding keeps its round anywhere; the data reviewer runs on
-// its ground only. A finding the workflow adds itself (a surviving mutation) is never lowered.
+// its ground only. A finding the workflow adds itself (a surviving mutation) is never lowered,
+// nor one a retry returns: what its budget left unchecked is a finding, whatever its category.
 const MILD = ['proof', 'form', 'doc']
 const lowered = (f, r) => MILD.includes(f.category) && f.severity === 'important' && r !== SEC
   && ![...changed, ...relative(f.file ? [f.file] : [])].some((x) => pinned(x) || ground([x]).includes(SEC))
@@ -263,7 +264,7 @@ async function retried(prompt, opts, pass = '') {
   }
   const second = await attempt(prompt + RETRY, { ...opts, label: `${opts.label} · retry` })
   if (second == null) log(`${opts.label}: no result after its retry, no third dispatch`)
-  return second && { ...second, passed: false }
+  return second && { ...second, passed: false, retry: true }
 }
 
 phase('Implement')
@@ -396,7 +397,7 @@ for (; round <= limit; round++) {
       if (f.severity === 'minor') {
         minors.push({ ...kept, by: r })
         small++
-      } else if (lowered(f, r)) {
+      } else if (!res.retry && lowered(f, r)) {
         minors.push({ ...kept, severity: 'minor', was: f.severity, by: r })
         low++
       } else blocking.push(kept)

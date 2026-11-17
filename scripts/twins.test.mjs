@@ -174,6 +174,7 @@ const TWINS = [
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: "category: 'proof', summary: `${r} reported", to: "category: 'behaviour', summary: `${r} reported", says: 'trace: a surviving mutation' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: 'pinned(x) || ground([x]).includes(SEC)', to: 'pinned(x)', says: 'reviewer\'s triggers still starts its round' },
   { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: '[...changed, ...relative(f.file ? [f.file] : [])]', to: '[...changed]', says: 'left out of its list keeps its round' },
+  { test: 'workflows', file: 'plugins/gtm/workflows/deliver-task.js', from: '!res.retry && lowered(f, r)', to: 'lowered(f, r)', says: 'nothing from a retry is lowered' },
   { test: 'guards', file: 'plugins/gtm/templates/delivery.md', from: '· models <M> · causes <C> · path <P>`', to: '· models <M> · path <P>`', says: 'causes <C>' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'only Read, Grep, Glob and Edit', to: 'only Read, Grep, Glob, Edit and Bash', says: 'only\\s+Read,\\s+Grep,\\s+Glob\\s+and\\s+Edit' },
   { test: 'guards', file: 'plugins/gtm/templates/upstream.md', from: 'exactly twice', to: 'at least twice', says: 'exactly\\s+twice' },
