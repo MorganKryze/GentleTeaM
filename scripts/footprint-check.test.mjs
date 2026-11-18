@@ -20,6 +20,9 @@ const env = {
   GIT_COMMITTER_NAME: 'Fixture', GIT_COMMITTER_EMAIL: 'fixture@example.com', GIT_COMMITTER_DATE: '2026-01-01T00:00:00Z',
   GIT_CONFIG_GLOBAL: '/dev/null', GIT_CONFIG_NOSYSTEM: '1',
 }
+// The check runs without the user's global git config, and under diff.noprefix: a user who sets
+// it must get the same hits.
+const checkEnv = { ...env, GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'diff.noprefix', GIT_CONFIG_VALUE_0: 'true' }
 const errors = []
 
 for (const name of readdirSync(fixtures, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name)) {
@@ -44,7 +47,7 @@ for (const name of readdirSync(fixtures, { withFileTypes: true }).filter((d) => 
     let out
     let code = 0
     try {
-      out = execFileSync(process.execPath, [script, '--repo', repo, '--config', existsSync(own) ? own : join(fixtures, 'config.yml'), '--pr', join(dir, 'pr.md'), '--json'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+      out = execFileSync(process.execPath, [script, '--repo', repo, '--config', existsSync(own) ? own : join(fixtures, 'config.yml'), '--pr', join(dir, 'pr.md'), '--json'], { env: checkEnv, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
     } catch (e) { out = e.stdout; code = e.status }
     const result = JSON.parse(out)
     const label = (h) => `${h.kind} | ${h.where.replace(/commit ([0-9a-f]+)/, (_, s) => `commit c${shas.indexOf(s) + 1}`)} | ${h.match}`
