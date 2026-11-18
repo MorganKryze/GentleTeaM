@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.24.0] - 2026-11-18
+
 ### Added
 - An external judge, off by default: once you list a project's repository in your own file
   `~/.claude/gtm/judge.projects` and place your key beside it, an important `behaviour` finding
