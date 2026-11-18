@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.24.2] - 2026-11-18
+
 ### Added
 - The site measure takes `--changed <base>` and measures only the documentation pages a branch
   changed, so a contributor can check them before the push.
