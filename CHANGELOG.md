@@ -5,7 +5,12 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- The site measure takes `--changed <base>` and measures only the documentation pages a branch
+  changed, so a contributor can check them before the push.
+
 ### Fixed
+- The footprint check reads file names right when the user's git config sets `diff.noprefix`.
 - The reviewer now files a surviving mutation as a `proof` finding, so a minor survivor no longer
   costs a needless correction round.
 - The external judge's recount no longer starts a spurious survivor round when it lowers a finding

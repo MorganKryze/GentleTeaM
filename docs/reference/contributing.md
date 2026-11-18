@@ -41,6 +41,8 @@ for five minutes at most: no rerun turns a red gate green.
 --source`). On every pull request the Pages workflow builds the site and runs the full checks:
 links, and in a browser the overflow, 44 px targets, reading measure, contrast, tables and axe
 (`scripts/site-measure.test.mjs`); it deploys from main.
+Before you push a branch that changes `docs/`, build the site and run `node
+scripts/site-measure.test.mjs . --changed main`: it measures only the pages the branch changed.
 `validate.mjs` also runs each workflow against scripted agents (`scripts/workflows.test.mjs`): a
 new workflow needs a scenario there, and a changed default or threshold changes one.
 
