@@ -449,17 +449,21 @@ for (; round <= limit; round++) {
       if (pending[i].findings && f.status === 'addressed') continue
       count(f.severity)
       // A pass's finding is graded as any other; only it never answers for a surviving mutation.
-      if (Object.hasOwn(yields, f.sheet)) yields[f.sheet][f.severity]++
-      else found++
+      const pass = Object.hasOwn(yields, f.sheet)
+      if (pass) yields[f.sheet][f.severity]++
       // A status it may not set goes too, or the fix round and the re-review would read it as true.
       const { status, ...kept } = f
       if (f.severity === 'minor') {
         minors.push({ ...kept, by: r })
         small++
+        if (!pass) found++
       } else if (!(pending[i].findings && f.status === 'open') && !res.retry && lowered(f, r)) {
         minors.push({ ...kept, severity: 'minor', was: f.severity, by: r })
         low++
+        // Lowered, only a proof finding answers for a survivor: a doc or form one never does.
+        if (!pass && f.category === 'proof') found++
       } else {
+        if (!pass) found++
         blocking.push(kept)
         if (points.has(point(kept))) {
           // Counted once a point: a come-back that stays open is the same one.

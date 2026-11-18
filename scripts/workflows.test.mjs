@@ -1503,6 +1503,30 @@ const deliver = [
     prompts: { 'fix · round 1': ['reviewer reported 1 surviving mutations and 0 findings'] },
   },
   {
+    name: 'sheets: a tagged proof finding moved to the minors answers for no surviving mutation',
+    args: { sheets: [SHEET], triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, findings: [{ ...PROOF, sheet: 'security' }], mutations: { planted: 1, survived: 1 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0, planted: 1, survived: 1, sheets: { security: yields({ important: 1 }) } } },
+      minors: [{ ...PROOF, sheet: 'security', severity: 'minor', was: 'important', by: 'reviewer' }],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': ['reviewer reported 1 surviving mutations and 0 findings'] },
+  },
+  {
+    name: 'sheets: a tagged blocking finding answers for no surviving mutation',
+    args: { sheets: [SHEET], triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...bad, findings: [{ ...badFinding, category: 'behaviour', sheet: 'security' }], mutations: { planted: 1, survived: 1 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 2, minor: 0, planted: 1, survived: 1, sheets: { security: yields({ important: 1 }) } } },
+      minors: [],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': ['reviewer reported 1 surviving mutations and 0 findings'] },
+  },
+  {
     name: 'sheets: an untagged finding still answers for a survivor beside a tagged one',
     args: { sheets: [SHEET] },
     reply: implementer(['src/a.js'], () => ({ ...ok, findings: [{ ...typo, sheet: 'security' }, typo], mutations: { planted: 2, survived: 1 } })),
@@ -2209,6 +2233,39 @@ const deliver = [
     },
     dispatches: [implement(), reviewer()],
     logs: [['reviewer: 3 proof, form or doc finding(s) off security and data ground, no round: to the ledger as minors'], ['reviewer asked for a fix over minors only: no round on the full path']],
+  },
+  // A lowered doc or form finding never answers for a surviving mutation; a lowered proof one does.
+  {
+    name: 'lowered: a doc finding moved to the minors leaves a survivor no finding reported to start its round',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [DOC], summary: 's', mutations: { planted: 1, survived: 1 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0, planted: 1, survived: 1 } },
+      minors: [{ ...DOC, severity: 'minor', was: 'important', by: 'reviewer' }],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': ['reviewer reported 1 surviving mutations and 0 findings: s'] },
+  },
+  {
+    name: 'lowered: a form finding moved to the minors leaves a survivor no finding reported to start its round',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'fix', findings: [FORM], summary: 's', mutations: { planted: 1, survived: 1 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 2, minor: 0, planted: 1, survived: 1 } },
+      minors: [{ ...FORM, severity: 'minor', was: 'important', by: 'reviewer' }],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': ['reviewer reported 1 surviving mutations and 0 findings: s'] },
+  },
+  {
+    name: 'lowered: a proof finding moved to the minors still answers for the survivor it reports',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], () => ({ verdict: 'fix', findings: [PROOF], summary: 's', mutations: { planted: 1, survived: 1 } })),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 1, survived: 1 } },
+      minors: [{ ...PROOF, severity: 'minor', was: 'important', by: 'reviewer' }],
+    },
+    dispatches: [implement(), reviewer()],
   },
   {
     name: 'lowered: on the text path an important doc finding starts no round',
