@@ -250,7 +250,7 @@ export function check({ repo = '.', config, base, pr } = {}) {
   let file = null
   let n = 0
   let fenced = false
-  for (const l of git('diff', '--unified=0', '--no-color', '--no-ext-diff', '--no-renames', `${baseRef}...HEAD`).split('\n')) {
+  for (const l of git('diff', '--unified=0', '--no-color', '--no-ext-diff', '--no-renames', '--dst-prefix=b/', `${baseRef}...HEAD`).split('\n')) {
     if (l.startsWith('+++ ')) { file = l === '+++ /dev/null' ? null : l.slice(6); fenced = false; continue }
     const h = l.match(/^@@ -\S+ \+(\d+)/)
     if (h) { n = Number(h[1]); continue }
