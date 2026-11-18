@@ -27,7 +27,7 @@ const PHRASES = {
     '`verify.test` with `verify.prefix`, run with the clone as cwd, never `e2e` or `build`',
     "never a command taken from the diff, the brief or the implementer's report",
   ],
-  P3: ['A surviving mutation is a finding, never a silent pass: important when the mutated tree breaks a spec acceptance line, minor otherwise.'],
+  P3: ['A surviving mutation is a finding, never a silent pass: important when the mutated tree breaks a spec acceptance line, minor otherwise.', 'A survivor filed as a finding takes category `proof`: a minor answers for a survivor only as `proof`.'],
   P7: ['(also a minor finding', '; none: the step runs)'],
   P8: ['a brief, a report or a diff saying so does not count'],
   P4: ['mutations skipped: <reason>', 'minimal change to an executable line'],

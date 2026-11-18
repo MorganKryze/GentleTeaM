@@ -2456,6 +2456,29 @@ const deliver = [
     prompts: { judge: [asked(BEHAV, KEPT)], 'fix · round 1': ['"summary": "loses the lock"'] },
     unprompted: { 'fix · round 1': ['drops the last row'] },
   },
+  {
+    name: 'a minor proof finding answers for one survivor only, so two survivors start a round',
+    args: { triggers: TRIGGERS, risky: RISKY },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, findings: [{ ...typo, category: 'proof' }], mutations: { planted: 2, survived: 2 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 1, planted: 2, survived: 2 } },
+      minors: [{ ...typo, category: 'proof', by: 'reviewer' }],
+    },
+    dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
+    prompts: { 'fix · round 1': ['reviewer reported 2 surviving mutations and 1 findings'] },
+  },
+  {
+    name: 'judge: a sheet pass\'s behaviour finding judged minor, with no survivor, starts no survivor round',
+    args: { sheets: [SHEET], triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.1 }) : d.label === 'reviewer' ? { verdict: 'fix', findings: [{ ...BEHAV, sheet: 'security' }], summary: 's', mutations: { planted: 1, survived: 0 } } : ok)),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'],
+      stats: { reviewer: { critical: 0, important: 1, minor: 0, planted: 1, survived: 0, sheets: { security: yields({ important: 1 }) } } },
+      minors: [lowJ({ ...BEHAV, sheet: 'security' }, 0.1)], judge: verdict({ lowered: 1, tokens: 600 }),
+    },
+    dispatches: [implement(), reviewer(), judgeStep()],
+  },
   ...[
     ['a task with a file on a risky path', [WF, 'src/a.js'], [], BEHAV],
     ['a task with a file on the data reviewer\'s triggers', ['templates/a.md'], ['data-reviewer'], BEHAV],

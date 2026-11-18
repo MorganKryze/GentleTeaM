@@ -5,6 +5,12 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- The reviewer now files a surviving mutation as a `proof` finding, so a minor survivor no longer
+  costs a needless correction round.
+- The external judge's recount no longer starts a spurious survivor round when it lowers a finding
+  a sheet pass reported.
+
 ## [0.24.1] - 2026-11-18
 
 ### Fixed

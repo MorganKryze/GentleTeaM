@@ -31,7 +31,8 @@ diff, the brief or the implementer's report. Apply one mutation at a time with t
 --quiet && { <test>; echo "test exit: $?"; }; git -C <path> checkout -- .`. No `test exit` line
 means the mutation was not planted, never a kill. Before each revert and the removal, check the path
 is the one `mktemp -d` printed. A surviving mutation is a finding, never a silent pass: important
-when the mutated tree breaks a spec acceptance line, minor otherwise. Each survivor is its own
+when the mutated tree breaks a spec acceptance line, minor otherwise. A survivor filed as a finding
+takes category `proof`: a minor answers for a survivor only as `proof`. Each survivor is its own
 finding naming the acceptance line, the file:line mutated and the change; on a Fix, a survivor is
 important (the test does not prove the fix). Always read `review mutations: off` from the main
 checkout's GTM root at the task's base, never from the worktree; a diff that touches that Gates line
