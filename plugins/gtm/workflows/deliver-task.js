@@ -442,6 +442,9 @@ for (; round <= limit; round++) {
     // not that the sheet was opened or used, and a pass that found nothing still counts as ordered.
     const yields = res.passed ? (at().sheets = Object.fromEntries([...SHEETS.keys()].map((n) => [n, { passes: 1, critical: 0, important: 0, minor: 0 }]))) : {}
     let found = 0
+    // The blocking findings `found` counted: a pass's never answers for a survivor, so its lowering
+    // takes nothing back.
+    const counted = new Set()
     let small = 0
     let low = 0
     for (const f of res.findings) {
@@ -464,7 +467,7 @@ for (; round <= limit; round++) {
         // Lowered, only a proof finding answers for a survivor: a doc or form one never does.
         if (!pass && f.category === 'proof') found++
       } else {
-        if (!pass) found++
+        if (!pass) found++, counted.add(kept)
         blocking.push(kept)
         if (points.has(point(kept))) {
           // Counted once a point: a come-back that stays open is the same one.
@@ -507,7 +510,7 @@ for (; round <= limit; round++) {
       count('important')
       blocking.push({ severity: 'important', summary: `${r} asked for a fix without a blocking finding: ${res.summary}` })
     }
-    if (blocking.length) blocked.push({ r, blocking, ...(held && !survivor ? { held, found, summary: res.summary } : {}) })
+    if (blocking.length) blocked.push({ r, blocking, ...(held && !survivor ? { held, found, counted, summary: res.summary } : {}) })
   })
   // The judge weighs this round's candidates at once, before any round starts; one under the
   // threshold joins the minors, and its reviewer's verdict over it alone starts no round.
@@ -524,10 +527,10 @@ for (; round <= limit; round++) {
   if (gone.size) log(`judge: ${gone.size} behaviour finding(s) off security and data ground judged minor (under ${JUDGED}), no round: to the ledger as minors`)
   // Each point by its file and category, so the lead's `judge lowering off` ruling can name it.
   if (backs.length) log(`judge: ${backs.length} finding(s) on a point it lowered came back: they keep their round, lowering goes off: ${backs.map((f) => `${f.file || '?'}, ${f.category}, round ${round}`).join('; ')}`)
-  for (const { r, blocking, held, found, summary } of blocked) {
+  for (const { r, blocking, held, found, counted, summary } of blocked) {
     const left = blocking.filter((f) => !gone.has(f))
     // A survivor the reviewer covered only with a finding the judge lowered is unreported after all.
-    const n = found - (blocking.length - left.length)
+    const n = held ? found - blocking.filter((f) => gone.has(f) && counted.has(f)).length : 0
     if (held && held.survived > n) {
       stats[r].important++
       left.push(survivors(r, held, `${n} findings the judge did not lower`, summary))
