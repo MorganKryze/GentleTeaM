@@ -2257,17 +2257,17 @@ const deliver = [
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
     prompts: { 'fix · round 1': ['reviewer reported 1 surviving mutations and 0 findings: s'] },
   },
-  {
-    name: 'mutations: a minor doc finding leaves a survivor no finding reported to start its round',
+  ...['doc', 'form', 'behaviour', 'security'].map((category) => ({
+    name: `mutations: a minor ${category} finding leaves a survivor no finding reported to start its round`,
     args: {},
-    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'approve', findings: [{ ...typo, category: 'doc' }], summary: 's', mutations: { planted: 1, survived: 1 } } : ok)),
+    reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { verdict: 'approve', findings: [{ ...typo, category }], summary: 's', mutations: { planted: 1, survived: 1 } } : ok)),
     returns: {
       status: 'CLEAN', head: 'h1', fixRounds: 1, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 1, planted: 1, survived: 1 } },
-      minors: [{ ...typo, category: 'doc', by: 'reviewer' }],
+      minors: [{ ...typo, category, by: 'reviewer' }],
     },
     dispatches: [implement(), reviewer(), { agentType: 'gtm:implementer', label: 'fix · round 1', effort: 'medium' }, reviewer('reviewer · round 1')],
     prompts: { 'fix · round 1': ['reviewer reported 1 surviving mutations and 0 findings: s'] },
-  },
+  })),
   {
     name: 'mutations: a minor proof finding still answers for the survivor it reports',
     args: {},
