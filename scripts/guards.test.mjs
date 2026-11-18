@@ -703,6 +703,8 @@ add('plugins/gtm/templates/delivery.md', [
   w('that ends `(<role>; lowered from <was>, <category>)`.'),
   w('A task that lowered one brings the final review back (deliver §4), whose reviewer reads those lines first;'),
   w('a Fix, with no final review, lists them under a Heads-up with the go.'),
+  w('A surviving mutation no finding reported starts a round: a lowered finding answers for it only as `proof`, never as `doc` or `form`,'),
+  w('and a minor the reviewer graded itself only as `proof` or with no category, never as `doc`, `form`, `behaviour` or `security`.'),
 ])
 add('plugins/gtm/skills/deliver/SKILL.md', [
   'returned `CLEAN` at 0 rounds, none lowered (`GATED`: below);',

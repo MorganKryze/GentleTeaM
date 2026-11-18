@@ -6,6 +6,9 @@ versions follow [SemVer](https://semver.org/).
 ## [Unreleased]
 
 ### Fixed
+- A minor finding the reviewer graded itself answers for a surviving mutation only when its
+  category is `proof` (or it has none): a minor doc, form, behaviour or security finding beside an
+  unreported survivor now starts that survivor's round.
 - A doc or form finding lowered to a minor no longer counts as answering for a surviving
   mutation, so a survivor no finding reported still starts its round; a lowered proof finding, which
   reports the survivor itself, still answers for it.

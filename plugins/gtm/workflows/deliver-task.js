@@ -456,7 +456,8 @@ for (; round <= limit; round++) {
       if (f.severity === 'minor') {
         minors.push({ ...kept, by: r })
         small++
-        if (!pass) found++
+        // A minor answers for a survivor only as proof, or with no category (an older reviewer's).
+        if (!pass && (f.category === 'proof' || !f.category)) found++
       } else if (!(pending[i].findings && f.status === 'open') && !res.retry && lowered(f, r)) {
         minors.push({ ...kept, severity: 'minor', was: f.severity, by: r })
         low++

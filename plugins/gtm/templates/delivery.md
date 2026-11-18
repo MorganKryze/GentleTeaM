@@ -92,6 +92,9 @@ itself (a surviving mutation) are never lowered. Each lowered finding gets a led
 own, never batched, never taken for a duplicate, that ends `(<role>; lowered from <was>,
 <category>)`. A task that lowered one brings the final review back (deliver §4), whose reviewer
 reads those lines first; a Fix, with no final review, lists them under a Heads-up with the go.
+A surviving mutation no finding reported starts a round: a lowered finding answers for it only as
+`proof`, never as `doc` or `form`, and a minor the reviewer graded itself only as `proof` or with
+no category, never as `doc`, `form`, `behaviour` or `security`.
 
 ## Judge
 The external judge is on for a delivery only when both hold at its Prepare (deliver §1):
