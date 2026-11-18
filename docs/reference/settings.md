@@ -185,3 +185,29 @@ again, and diffs `head` against the branch it merges into, not against the base 
 clone that fetched the branch over a transport (`git clone --no-local`, or a fetch from your
 remote). It never diffs in this repository or a plain local clone, which shares its objects and
 commit-graph: a session can rewrite either to hide a change from the diff.
+
+## The external judge {#the-external-judge}
+
+It is off unless you list the project's repository in your own file `~/.claude/gtm/judge.projects`
+(under `CLAUDE_CONFIG_DIR` when you set it): one absolute path a line, `#` lines for comments,
+readable by you alone and outside any repository. No project file can turn it on, so cloning a
+repository never does.
+
+With the project listed and your key in place, before a correction round, each `important`
+finding of category `behaviour` off security and data ground goes to the judge, an outside
+service (TypeSafe's Jev, pinned at `jev-1.14.0`). When the judge rates under 0.3 the chance that
+fixing it changes what a user gets, the finding is lowered to `minor` and goes to the
+[logbook](/reference/glossary/#logbook). The judge never raises a finding, never adds a reviewer,
+and never touches a critical, security or data finding.
+
+What leaves your machine: each such finding's severity, category, file path and summary, masked
+and cut at 500 characters. Never code, never a diff. The service's terms say it does not train
+on inputs and keeps them "as long as reasonably necessary"; it keeps telemetry, and zero
+retention comes with enterprise contracts only.
+
+The key sits in `~/.claude/gtm/judge.key` (under `CLAUDE_CONFIG_DIR` when you set it), one line,
+readable by you alone, outside any repository; GTM never prints it. To turn the judge off, remove
+the project's line from `judge.projects`, or the key file. When the call fails, nothing is lowered.
+When a point the judge lowered comes back, the finding keeps its round and GTM writes a logbook line
+starting `judge lowering off`: lowering stays off until you strike that line. Each finding costs
+about 600 input tokens, about $0.0001.

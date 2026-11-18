@@ -126,7 +126,9 @@ risky path, and the security reviewer did not raise it. It is lowered to `minor`
 final review back, which reads it first; a [Fix](/reference/glossary/#fix), with no final review,
 lists it with the go. Every other finding still blocks as before: any finding on that ground, one a
 re-check returns open, and one from a retried review. A sign of the
-implementer working outside its task is a `security` finding, so it always blocks.
+implementer working outside its task is a `security` finding, so it always blocks. With the
+[external judge](/reference/glossary/#external-judge) on, an important `behaviour` finding on the
+same ground can be lowered too, when the judge rates it under 0.3.
 
 ## What does a role send back?
 
