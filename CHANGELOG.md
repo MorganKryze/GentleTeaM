@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.24.1] - 2026-11-18
+
 ### Fixed
 - A minor finding the reviewer graded itself answers for a surviving mutation only when its
   category is `proof` (or it has none): a minor doc, form, behaviour or security finding beside an
