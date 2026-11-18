@@ -5,6 +5,11 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- A doc or form finding lowered to a minor no longer counts as answering for a surviving
+  mutation, so a survivor no finding reported still starts its round; a lowered proof finding, which
+  reports the survivor itself, still answers for it.
+
 ## [0.24.0] - 2026-11-18
 
 ### Added
