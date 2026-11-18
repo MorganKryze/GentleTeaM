@@ -13,24 +13,34 @@
 // No other dependencies.
 //
 // Usage: node scripts/site-measure.test.mjs <repo> [--pages /,/reference/roles/] [--widths 360,1920]
-//                                          [--only A17,A19,axe] [--json <file>]
+//                                          [--only A17,A19,axe] [--json <file>] [--changed <base>]
+// --changed measures only the pages whose docs/*.md the branch changed since <base> (a docs file that
+// is not Markdown, or docmd.config.json, measures them all); no docs change: nothing to measure, exit 0.
 // One PASS or FAIL line per line, details indented; exit 1 on any FAIL.
 import { createServer } from 'node:http';
 import { readFileSync, existsSync, statSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, extname, resolve as resolvePath, sep } from 'node:path';
 import { createRequire } from 'node:module';
+import { execFileSync } from 'node:child_process';
 
 const argv = process.argv.slice(2);
 const opt = k => (argv.includes(k) ? argv[argv.indexOf(k) + 1] : null);
 const repo = argv[0];
 if (!repo || repo.startsWith('-')) { console.error('usage: node scripts/site-measure.test.mjs <repo> [--pages ...] [--widths ...] [--only ...] [--json f]'); process.exit(2); }
+let pages = opt('--pages') ? opt('--pages').split(',') : null;
+if (opt('--changed')) {
+  if (opt('--changed').startsWith('-')) { console.error('--changed takes a base ref'); process.exit(2); }
+  const files = execFileSync('git', ['-C', repo, '-c', 'core.quotePath=false', 'diff', '--name-only', '--no-renames', `${opt('--changed')}...HEAD`, '--', 'docs', 'docmd.config.json'], { encoding: 'utf8' }).split('\n').filter(Boolean);
+  if (!files.length) { console.log('no docs page changed: nothing to measure'); process.exit(0); }
+  if (files.every(f => /^docs\/.+\.md$/.test(f))) pages = [...new Set(files.map(f => f.slice(4, -3).replace(/(^|\/)index$/, '') + '/').map(p => p.replace(/^\/?/, '/').replace(/\/+$/, '/')))].sort();
+  console.log(`pages: ${pages ? pages.join(',') : 'all'}`);
+}
 const root = resolvePath(repo, 'site');
 if (!existsSync(join(root, 'index.html'))) { console.error('no build: run `npx -y @docmd/core@0.9.7 build` in the repo first'); process.exit(2); }
 const BASE = '/GentleTeaM';
 const widths = (opt('--widths') || '360,390,1280,1440,1920,2560').split(',').map(Number);
 const only = opt('--only') ? opt('--only').split(',') : null;
 const want = id => !only || only.includes(id);
-let pages = opt('--pages') ? opt('--pages').split(',') : null;
 if (!pages) {
   const walk = (d, out = []) => { for (const n of readdirSync(d)) { const p = join(d, n); if (statSync(p).isDirectory()) { if (!['okf', 'assets', '_docmd-search'].includes(n)) walk(p, out); } else if (n === 'index.html') out.push(p); } return out; };
   pages = walk(root).map(p => p.slice(root.length).replace(/index\.html$/, '') || '/').sort();
