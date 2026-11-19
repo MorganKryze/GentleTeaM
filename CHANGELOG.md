@@ -6,6 +6,9 @@ versions follow [SemVer](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- CI is hardened: the validate workflow pins its actions to full commit SHAs and keeps no
+  checkout credentials, and the site build verifies the registry signatures of its locked
+  packages and fails on a known high or critical advisory. The site checks hold both.
 - `/gtm:plan` says what a split does next: the amend moves the deferred lines and rows word for
   word to Out of scope, and once it is approved one backlog story holds the deferred part.
 
