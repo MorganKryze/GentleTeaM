@@ -39,6 +39,7 @@ JavaScript syntax, matched against repository-relative paths.
 | `git.branch` | the branch name pattern | `"<slug>"` | `/gtm:deliver` |
 | `git.commits` | Conventional Commits, one logical change, tests with their code | `conventional` | the implementer |
 | `git.forbid` | text never written in a commit message | `["Co-authored-by", "Generated with"]` | the implementer, `/gtm:ship` |
+| `git.protected` | long-lived branches besides the base whose rules the posture reading checks | `[]` | `/gtm:gtm`, `/gtm:ship` |
 | `git.never_name` | paths or words never written in tracked files | `[]` | the implementer, the final reviewer, `/gtm:ship` |
 | `git.merge` | `merge-commit`, `rebase` or `squash` | `merge-commit` | `/gtm:deliver`, the final reviewer, `/gtm:ship` |
 | `git.push` | `ask`: nothing pushed, merged, tagged or released without your go; `standing`: GTM still pushes nothing, and `/gtm:ship` records a landing for a class you signed ahead (below) | `ask` | `/gtm:ship` |

@@ -12,7 +12,9 @@
 > `minor` (a deferred review finding), `resolved` (closes a minor, names it), `ship` (a push,
 > merge, tag or publication done on the human's go), `run` (one line per
 > delivered branch, `/gtm:tune` reads these), `usage` (a note on cost or limits hit, or a budget
-> passed), `escape` (a defect found after the merge of the branch that brought it, `- <date> ·
+> passed; a posture reading reads
+> `- <date> · posture · usage · read <n> gaps open: <ids>; closed: <ids>`),
+> `escape` (a defect found after the merge of the branch that brought it, `- <date> ·
 > <slug of the branch that brought it> · escape · <what>, merged in <merge or PR>, found <where
 > and by whom>, path <text|code|full|?>, category <category>`; written by the gtm skill when it
 > records such a bug, and by the retro), `recu` and `refus` (a project report's receipt and

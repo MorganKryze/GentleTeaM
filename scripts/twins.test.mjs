@@ -149,6 +149,7 @@ const TWINS = [
   { test: 'guards', file: skill('plan'), from: 'one without a source goes back.', to: 'one without a source is kept.', says: 'one without a source goes back.' },
   { test: 'lenses', file: LEDGER, from: '· lenses <role>', to: '· lens <role>', says: 'does not state the `lenses` segment' },
   { test: 'ledger-check', file: script('ledger-check'), from: "'refus', 'ship']", to: "'refus', 'ship', 'device']", says: 'bad ledger' },
+  { test: 'posture', file: script('posture'), from: "if (!types.has('non_fast_forward'))", to: "if (false)", says: 'branch rules: got' },
   { test: 'measure', file: script('measure'), from: "parts[1].startsWith('CLEAN')", to: "parts[1] === 'CLEAN'", says: 'all: got' },
   { test: 'methods', file: agent('reviewer'), from: 'Steelmanning [elicitation]', to: 'Steelman [elicitation]', says: 'reviewer' },
   { test: 'now-facts', file: script('now-facts'), from: 'return s.length % 2 ? s[m]', to: 'return s.length % 2 ? s[0]', says: 'want' },
