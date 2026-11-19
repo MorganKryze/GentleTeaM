@@ -148,6 +148,7 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/plan.md', from: '<Only when the human\'s request or answer gives a mandate;', to: '<When a mandate helps;', says: '<Only when the human\'s request' },
   { test: 'guards', file: skill('plan'), from: 'one without a source goes back.', to: 'one without a source is kept.', says: 'one without a source goes back.' },
   { test: 'lenses', file: LEDGER, from: '· lenses <role>', to: '· lens <role>', says: 'does not state the `lenses` segment' },
+  { test: 'measure', file: script('measure'), from: "parts[1].startsWith('CLEAN')", to: "parts[1] === 'CLEAN'", says: 'all' },
   { test: 'methods', file: agent('reviewer'), from: 'Steelmanning [elicitation]', to: 'Steelman [elicitation]', says: 'reviewer' },
   { test: 'now-facts', file: script('now-facts'), from: 'return s.length % 2 ? s[m]', to: 'return s.length % 2 ? s[0]', says: 'want' },
   { test: 'pool', file: 'scripts/pool.mjs', from: 'results[i] = await fn(items[i], i)', to: 'results.push(await fn(items[i], i))', says: 'order' },

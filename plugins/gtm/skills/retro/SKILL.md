@@ -36,8 +36,9 @@ ledger. Guideline edits follow `<root>/guidelines/voice.md`.
   proposed again only after 3 runs that name it, newer than that line.
   A sheet with a standing remove ruling, or with no row in
   `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md`, gets no card.
-- **Paths:** per path, from the `paths` segments of the last three run lines that carry it: tasks,
-  and the median minutes, tokens and correction rounds per task; and the `escape` lines per path.
+- **Paths:** run `node "${CLAUDE_PLUGIN_ROOT}/scripts/measure.mjs" --since <day> <root>`, `<day>`
+  the date of the third-last run line, and quote its table (tasks, CLEAN, mean rounds, median
+  minutes and tokens, per path and per implementer model); then the `escape` lines per path.
   A defect of this branch found after its merge is one `escape` line.
 
 - **Project sheet:** where `config.yml`'s `project.sheet` reads `on`, hand `decisions` and

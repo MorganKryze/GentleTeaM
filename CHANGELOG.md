@@ -5,6 +5,11 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- `scripts/measure.mjs` summarises a project's task lines: tasks, CLEAN, mean correction rounds,
+  median minutes and tokens, per review path and per implementer model, numbers only; `/gtm:retro`
+  quotes its table instead of counting by hand.
+
 ## [0.24.2] - 2026-11-18
 
 ### Added
