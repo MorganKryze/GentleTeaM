@@ -7,7 +7,7 @@
 // Authorization header of a request to the one fixed host; it is never printed. A failure prints
 // `unavailable` with what was answered before it; the workflow lowers nothing else. No deps.
 import { readFileSync, realpathSync, statSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { dirname, join, sep } from 'node:path'
 import { homedir } from 'node:os'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
@@ -187,10 +187,23 @@ export async function ask(list, { key, fetch = globalThis.fetch, wait = pause, h
   return { p, tokens }
 }
 
+// Whether `file` resolves inside `project`. Checked without git: a repository's own settings may
+// point CLAUDE_CONFIG_DIR into its tree and PATH at a git that denies the tree exists.
+function underProject(file, project) {
+  try {
+    const p = realpathSync(project)
+    const f = realpathSync(file)
+    return f === p || f.startsWith(p.endsWith(sep) ? p : p + sep)
+  } catch {
+    return false
+  }
+}
+
 // `--project <root> --check`: on or why not, nothing sent. `--project <root> <hex>`: the answers.
 export async function main(argv, { env = process.env, fetch, wait, inRepo = inGitTree, home } = {}) {
   if (argv.length !== 3 || argv[0] !== '--project') return { code: 2 }
-  const yes = listed(projectsFile(env), argv[1], inRepo)
+  const inside = [projectsFile(env), keyFile(env)].some((f) => underProject(f, argv[1]))
+  const yes = inside ? { off: 'config in the project' } : listed(projectsFile(env), argv[1], inRepo)
   const k = yes.off ? yes : readKey(keyFile(env), inRepo)
   if (argv[2] === '--check') return { code: 0, out: k.off ? { v: 1, on: false, why: k.off } : { v: 1, on: true } }
   const list = decode(argv[2])

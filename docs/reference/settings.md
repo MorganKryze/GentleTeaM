@@ -191,7 +191,8 @@ commit-graph: a session can rewrite either to hide a change from the diff.
 It is off unless you list the project's repository in your own file `~/.claude/gtm/judge.projects`
 (under `CLAUDE_CONFIG_DIR` when you set it): one absolute path a line, `#` lines for comments,
 readable by you alone and outside any repository. No project file can turn it on, so cloning a
-repository never does.
+repository never does: a list or key that resolves inside the project, through a link or a
+setting the repository gives, keeps it off.
 
 With the project listed and your key in place, before a correction round, each `important`
 finding of category `behaviour` off security and data ground goes to the judge, an outside

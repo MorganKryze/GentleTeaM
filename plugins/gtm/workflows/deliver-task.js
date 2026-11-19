@@ -467,7 +467,10 @@ for (; round <= limit; round++) {
         // Lowered, only a proof finding answers for a survivor: a doc or form one never does.
         if (!pass && f.category === 'proof') found++
       } else {
-        if (!pass) found++, counted.add(kept)
+        if (!pass) {
+          found++
+          counted.add(kept)
+        }
         blocking.push(kept)
         if (points.has(point(kept))) {
           // Counted once a point: a come-back that stays open is the same one.

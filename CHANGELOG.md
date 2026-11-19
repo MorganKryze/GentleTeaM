@@ -5,6 +5,10 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- The external judge stays off when its project list or key resolves inside the project, even
+  through a link, so a repository's own settings cannot point it at files the repository holds.
+
 ### Added
 - A run cut short (a turn cap, a usage limit, an API error) ends its progress line with `· cut
   <report>` or `· cut none`, and the measure script counts cut tasks per path and per model.
