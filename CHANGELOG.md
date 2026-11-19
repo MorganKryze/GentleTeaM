@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.25.0] - 2026-11-19
+
 ### Added
 - `scripts/ledger-check.mjs` reports each ledger entry off the format (date, slug, known kind,
   text) by line number and reason, never the line's text; `/gtm:retro` gives its count. `ship`
