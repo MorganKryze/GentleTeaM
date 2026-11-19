@@ -45,6 +45,7 @@ git:
   commits: conventional           # Conventional Commits, one logical change, tests with their code
   forbid: ["Co-authored-by", "Generated with"]   # never in a commit message
   never_name: []                  # paths or words never written in tracked files (e.g. .gtm/)
+  protected: []                   # long-lived branch globs besides base, read by the posture check (e.g. dev, release/*)
   merge: merge-commit             # merge-commit (GTM default) | rebase | squash; another value only
                                   # when the history shows it established (see guidelines/git.md)
   push: ask                       # ask = nothing pushed, merged, tagged or released without the go;

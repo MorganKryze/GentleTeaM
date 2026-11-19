@@ -80,4 +80,4 @@ the §1 entry (never `.gitignore` without asking); with B, add the root to `git.
 tracked file names it.
 
 ## 6. Done
-TL;DR with what was created, then Next steps: `you` · run `/gtm:gtm <what you want done>`.
+TL;DR of what was created; Next steps: `you` · run `/gtm:gtm <what you want done>` (posture first).

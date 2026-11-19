@@ -64,7 +64,7 @@ argument-hint: "[what you want done]"
   `${CLAUDE_PLUGIN_ROOT}/templates/commands.md`, none when the state calls for none.
 
 ## 1. Pick the track (≤ 2 questions)
-Request: $ARGUMENTS
+Posture first, at most every 30 days, as `templates/posture.md` says. Request: $ARGUMENTS
 
 Facts with phase `paused` (`now-facts.mjs`): before anything else, one line naming the slug
 and its `resume` command (`?`: the `handoff` file to read instead); on yes, run it only when
