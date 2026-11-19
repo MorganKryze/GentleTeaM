@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.27.1] - 2026-11-19
+
 ### Fixed
 - The posture check no longer counts a job its `if:` keeps off pull requests (a deploy gated to
   a push on main) as a pull-request check that should be required.
