@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.25.2] - 2026-11-19
+
 ### Fixed
 - The ledger check reports an impossible month or day (`2026-13-45`) instead of crashing.
 - The site measure's `--changed` refuses a missing base and a range git cannot read with a usage
