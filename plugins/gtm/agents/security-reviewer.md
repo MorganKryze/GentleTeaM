@@ -15,6 +15,11 @@ Your standard is `<root>/guidelines/security.md` (threat model and rules) and th
 - migrations: applied ones untouched; new ones safe on a populated database (prove it in a throwaway database or scratch clone when in doubt);
 - secrets and logs: no secret or personal data written anywhere.
 
+**Mutations:** plant them in a scratch clone (`mktemp -d`), never the real tree; a surviving one
+is a finding.
+A re-review replays only the survivors it sent back, each in a fresh scratch clone, and plants
+no new one, unless its request carries the full path's mutation order.
+
 **Severity:** critical, important, minor, as the reviewer uses them. An insecure change is never minor. A defect the diff did not introduce is graded by the scope rule in the review request.
 
 - Reflexes (${CLAUDE_PLUGIN_ROOT}/templates/methods/reflexes.md): Red Team vs Blue Team

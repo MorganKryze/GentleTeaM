@@ -6,6 +6,8 @@ versions follow [SemVer](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
+- The security reviewer, like the reviewer, replays on a re-review only the surviving mutations it
+  sent back and plants no new one, unless the full path orders its mutations again.
 - CI is hardened: the validate workflow pins its actions to full commit SHAs and keeps no
   checkout credentials, and the site build verifies the registry signatures of its locked
   packages and fails on a known high or critical advisory. The site checks hold both.
