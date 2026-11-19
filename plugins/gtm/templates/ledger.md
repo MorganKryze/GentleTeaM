@@ -9,7 +9,8 @@
 > Kinds: `lesson` (a rule to keep), `ruling` (a decision taken without the human, with its cost if
 > wrong; one taken by default under a mandate reads `- <YYYY-MM-DD> · <slug> · ruling · default:
 > <choice> (cost if wrong: <one line>)`, one line each, counted in the state's `defaults`),
-> `minor` (a deferred review finding), `resolved` (closes a minor, names it), `run` (one line per
+> `minor` (a deferred review finding), `resolved` (closes a minor, names it), `ship` (a push,
+> merge, tag or publication done on the human's go), `run` (one line per
 > delivered branch, `/gtm:tune` reads these), `usage` (a note on cost or limits hit, or a budget
 > passed), `escape` (a defect found after the merge of the branch that brought it, `- <date> ·
 > <slug of the branch that brought it> · escape · <what>, merged in <merge or PR>, found <where

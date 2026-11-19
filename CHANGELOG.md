@@ -6,6 +6,9 @@ versions follow [SemVer](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- `scripts/ledger-check.mjs` reports each ledger entry off the format (date, slug, known kind,
+  text) by line number and reason, never the line's text; `/gtm:retro` gives its count. `ship`
+  joins the ledger's kinds, for a push, merge, tag or publication done on the human's go.
 - `scripts/measure.mjs` summarises a project's task lines: tasks, CLEAN, mean correction rounds,
   median minutes and tokens, per review path and per implementer model, numbers only; `/gtm:retro`
   quotes its table instead of counting by hand.

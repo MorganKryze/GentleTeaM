@@ -285,7 +285,8 @@ first and fails above its budget. The gate and CI run it on every push.
 
 The [logbook](/reference/glossary/#logbook), `ledger.md`, is append-only, one line per entry:
 `- <date> · <slug> · <kind> · <text>`, with kinds `lesson`, `ruling`, `minor`, `resolved`, `run`,
-`usage` and `escape`. Superseded lines are struck through, never deleted.
+`usage`, `escape` and `ship`. Superseded lines are struck through, never deleted. The retro counts
+the lines off this format with `scripts/ledger-check.mjs`; it never rewrites them.
 
 This is the compound step. The architect reads the logbook before every plan and lists the
 lessons it applied. [`/gtm:retro`](/reference/glossary/#retro) distils each delivered branch into
