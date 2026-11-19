@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.26.0] - 2026-11-19
+
 ### Fixed
 - The external judge stays off when its project list or key resolves inside the project, even
   through a link, so a repository's own settings cannot point it at files the repository holds.
