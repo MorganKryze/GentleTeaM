@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.27.0] - 2026-11-19
+
 ### Added
 - GTM reads a repository's CI/CD posture: `scripts/posture.mjs` lists, read-only, each gap
   (a long-lived branch with no rule, required checks or force-push block, a CI job that runs
