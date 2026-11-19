@@ -298,6 +298,31 @@ yes(`${proj}\n`)
     [{ code: 0, out: { v: 1, on: false, why: 'key missing' } }, { code: 0, out: { v: 1, unavailable: 'key missing' } }, 0])
   keyed(`${KEY}\n`)
   check('main: answered', await run([hex([F0])]), { code: 0, out: { v: 1, model: MODEL, p: { f0: 0.1 }, tokens: 600 } })
+  // A config folder inside the project, as a repository's own settings could set it, is refused
+  // even when git says no repository (its PATH may hold another git).
+  const inner = join(proj, '.cfg')
+  mkdirSync(join(inner, 'gtm'), { recursive: true })
+  writeFileSync(projectsFile({ CLAUDE_CONFIG_DIR: inner }), `${proj}\n`, { mode: 0o600 })
+  writeFileSync(keyFile({ CLAUDE_CONFIG_DIR: inner }), `${KEY}\n`, { mode: 0o600 })
+  const before = s.sent.length
+  check('main: a config folder inside the project is off and asks nothing', [await run(['--check'], { env: { CLAUDE_CONFIG_DIR: inner } }), await run([hex([F0])], { env: { CLAUDE_CONFIG_DIR: inner } }), s.sent.length - before],
+    [{ code: 0, out: { v: 1, on: false, why: 'config in the project' } }, { code: 0, out: { v: 1, unavailable: 'config in the project' } }, 0])
+  // One file only, linked into the project from a config folder outside it.
+  const out = join(dir, 'cfg-out')
+  for (const which of ['projects', 'key']) {
+    rmSync(out, { recursive: true, force: true })
+    mkdirSync(join(out, 'gtm'), { recursive: true })
+    const env1 = { CLAUDE_CONFIG_DIR: out }
+    const target = which === 'projects' ? projectsFile(env1) : keyFile(env1)
+    const other = which === 'projects' ? keyFile(env1) : projectsFile(env1)
+    writeFileSync(other, which === 'projects' ? `${KEY}\n` : `${proj}\n`, { mode: 0o600 })
+    const planted = join(inner, `${which}.txt`)
+    writeFileSync(planted, which === 'projects' ? `${proj}\n` : `${KEY}\n`, { mode: 0o600 })
+    symlinkSync(planted, target)
+    check(`main: a ${which} file linked into the project is off`, await run(['--check'], { env: env1 }), { code: 0, out: { v: 1, on: false, why: 'config in the project' } })
+  }
+  rmSync(out, { recursive: true, force: true })
+  rmSync(inner, { recursive: true, force: true })
   for (const args of [[], [hex([F0])], ['--project', proj], ['--root', proj, hex([F0])], ['--project', proj, hex([F0]), 'x']]) check(`main: ${JSON.stringify(args).slice(0, 40)} is a usage error`, await main(args), { code: 2 })
 }
 
