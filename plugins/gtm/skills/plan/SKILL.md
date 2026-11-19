@@ -62,7 +62,9 @@ phase's lines are summed in the run line.
   (split as proposed / one branch anyway / wait), with your recommendation; under 4 hours, none.
   Split: the human's answer is logged as a `ruling`; the cut is a spec amend made by hand, which
   never defers a line or row guarding what the first part ships, and nothing runs until the human
-  approves it. Wait: nothing runs. No measured run: the architect's own W stands in.
+  approves it. The amend moves the deferred lines and rows word for word to Out of scope; once it
+  is approved, the orchestrator writes one backlog story for that part, its Spec cell naming the
+  spec and the moved ids. Wait: nothing runs. No measured run: the architect's own W stands in.
 One round of corrections with the architect if a check fails.
 
 ## 3. Continue

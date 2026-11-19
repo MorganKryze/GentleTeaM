@@ -5,6 +5,10 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- `/gtm:plan` says what a split does next: the amend moves the deferred lines and rows word for
+  word to Out of scope, and once it is approved one backlog story holds the deferred part.
+
 ## [0.25.0] - 2026-11-19
 
 ### Added
