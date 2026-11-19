@@ -33,6 +33,11 @@ counts as 1 agent) ends with five segments, in this order, after every segment i
 Nothing else in the line changes, and segments are only added at its end, so every reader of
 today's lines reads them as before. A run's line without this tail lacks its trace.
 
+A cut run, one that ends without its hand-back or result (a turn cap, a usage limit, an API
+error), keeps the status it left and ends its line, after the tail, with `· cut
+reports/<slug>/<file>.md` when that report file exists and is not empty, else `· cut none`. This
+records the cut and nothing more: nothing here resumes the run.
+
 ## Before each dispatch
 Before a task's or a Fix's workflow, a re-run review, a re-review, a hand fix's brief, a fix wave
 and the final review, read the slug's ledger `ruling` lines and the human's answers newer than the

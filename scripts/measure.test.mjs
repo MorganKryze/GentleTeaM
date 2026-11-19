@@ -2,7 +2,7 @@
 // plugins/gtm/scripts/measure.mjs over a throwaway GTM root: grouping by path and implementer, the
 // CLEAN count, means and medians that skip a missing field, --since, links skipped, usage errors,
 // and no line text in the output. Run by scripts/validate.mjs.
-import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { spawnSync } from 'node:child_process'
@@ -22,6 +22,7 @@ try {
   put('b', [
     '- task 1 · CLEAN · text path · rounds 0 · reviewer · a..b · 300 s · 40k · 2 agents · start 2026-11-12T09:00:00Z · end x · models implementer sonnet · path text',
     '- task 2 · CLEAN by ruling · start ? · end ? · models none · causes none · path code',
+    '- task 3 · OPEN · fix · text path · rounds 0 · reviewer · a..b · 120 s · 20k · 1 agents · start 2026-11-12T11:00:00Z · end x · models implementer sonnet · causes none · path text · cut none',
   ])
   mkdirSync(join(root, 'elsewhere'))
   writeFileSync(join(root, 'elsewhere', 'progress.md'), '- task 1 · CLEAN · text path · rounds 9 · 9 s · 9k\n')
@@ -30,19 +31,22 @@ try {
   const all = run('--json', root)
   eq('exit', all.status, 0)
   const o = JSON.parse(all.stdout)
-  eq('all', o.all, { tasks: 4, clean: 3, rounds: 1.3, minutes: 10, tokens: 100 })
-  eq('path full', o.path.full, { tasks: 2, clean: 1, rounds: 2, minutes: 20, tokens: 200 })
-  eq('path code, no numbers', o.path.code, { tasks: 1, clean: 1, rounds: null, minutes: null, tokens: null })
-  eq('implementer sonnet', o.implementer.sonnet, { tasks: 2, clean: 1, rounds: 1.5, minutes: 17.5, tokens: 170 })
+  eq('all', o.all, { tasks: 5, clean: 3, cut: 1, rounds: 1, minutes: 7.5, tokens: 70 })
+  eq('path full', o.path.full, { tasks: 2, clean: 1, cut: 0, rounds: 2, minutes: 20, tokens: 200 })
+  eq('path code, no numbers', o.path.code, { tasks: 1, clean: 1, cut: 0, rounds: null, minutes: null, tokens: null })
+  eq('implementer sonnet', o.implementer.sonnet, { tasks: 3, clean: 1, cut: 1, rounds: 1, minutes: 5, tokens: 40 })
   eq('implementer unknown', o.implementer['?'].tasks, 1)
   const s = JSON.parse(run('--json', '--since', '2026-11-12', root).stdout)
-  eq('since', s.all.tasks, 2)
+  eq('since', s.all.tasks, 3)
   const text = run(root)
   if (/SECRET|reviewer|a\.\.b/.test(text.stdout)) errors.push('line text in the output')
-  if (!text.stdout.includes('| path text | 1 | 1 | 0 | 5 | 40 |')) errors.push(`table row: ${text.stdout}`)
+  if (!text.stdout.includes('| path text | 2 | 1 | 1 | 0 | 3.5 | 30 |')) errors.push(`table row: ${text.stdout}`)
   for (const bad of [[], ['--since', 'yesterday', root], [root, root], [join(root, 'nope')], [join(root, 'reports', 'a', 'progress.md')], ['--verbose', root], ['--json', '--json', root], ['--since', '2026-11-12', '--since', '2026-11-10', root], ['--since']]) {
     if (run(...bad).status !== 2) errors.push(`usage error not refused: ${bad.join(' ')}`)
   }
 } finally { rmSync(root, { recursive: true, force: true }) }
+// The record measure.mjs reads is the one templates/delivery.md tells the lead to write.
+const delivery = readFileSync(new URL('../plugins/gtm/templates/delivery.md', import.meta.url), 'utf8').replace(/\s+/g, ' ')
+for (const shape of ['`· cut reports/<slug>/<file>.md`', '`· cut none`']) if (!delivery.includes(shape)) errors.push(`delivery.md does not give the cut shape ${shape}`)
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('measure: cases OK')

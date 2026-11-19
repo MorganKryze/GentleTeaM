@@ -40,8 +40,8 @@ in the report; an entry off the format is never rewritten (the ledger is append-
   `${CLAUDE_PLUGIN_ROOT}/templates/sheets/index.md`, gets no card.
 - **Paths:** run `node "${CLAUDE_PLUGIN_ROOT}/scripts/measure.mjs" --since <day> <root>`, `<day>`
   the date of the third-last run line (fewer than three: no `--since`), and quote its table
-  (tasks, CLEAN, mean rounds, median minutes and tokens, per path and per implementer model); then
-  the `escape` lines per path.
+  (tasks, CLEAN, cut, mean rounds, median minutes and tokens, per path and per implementer
+  model); then the `escape` lines per path.
   A defect of this branch found after its merge is one `escape` line.
 
 - **Project sheet:** where `config.yml`'s `project.sheet` reads `on`, hand `decisions` and
