@@ -34,6 +34,10 @@ const SECTIONS = ['When it applies', 'Method', 'Reflexes', 'What is measured', '
 const files = readdirSync(dir)
 for (const f of files) if (!/^[a-z0-9-]+\.md$/.test(f)) errors.push(`sheets: ${f} is not <speciality>.md`)
 const sheets = files.filter((f) => !['index.md', 'template.md'].includes(f))
+// The sheet freeze: no sheet is added or removed until their measure says which ones earn their
+// place. Changing the set lifts the freeze on purpose: a ruling, then this number.
+const FROZEN = 38
+if (sheets.length !== FROZEN) errors.push(`sheet freeze: ${sheets.length} sheets, the freeze holds ${FROZEN}; changing the set needs a ruling and this number`)
 const rowName = (line) => /^\| `([a-z0-9-]+)` \| `\1\.md` \| \S.* \|$/.exec(line)?.[1]
 const GOOD = ['| `quality` | `quality.md` | x |', '| `i18n` | `i18n.md` | x |', '| `oauth2` | `oauth2.md` | x |']
 const BAD = [

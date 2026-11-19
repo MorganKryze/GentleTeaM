@@ -5,6 +5,12 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- A run cut short (a turn cap, a usage limit, an API error) ends its progress line with `· cut
+  <report>` or `· cut none`, and the measure script counts cut tasks per path and per model.
+- The sheet set is frozen at 38: adding or removing a sheet fails the gate until a ruling changes
+  the number, so a sheet earns its place by its measure first.
+
 ## [0.25.2] - 2026-11-19
 
 ### Fixed

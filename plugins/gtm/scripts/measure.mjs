@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Measure: reads the task lines of every `<root>/reports/*/progress.md` and prints, per review
-// path and per implementer model, how many tasks ran, how many ended CLEAN, the mean correction
+// path and per implementer model, how many tasks ran, how many ended CLEAN, how many were cut
+// (their line ends `· cut <report>` or `· cut none`, templates/delivery.md), the mean correction
 // rounds and the median minutes and tokens. It prints numbers only, never line text, writes
 // nothing, and skips links. A field a line lacks is left out of that mean or median, never
 // guessed. No dependencies.
@@ -36,7 +37,7 @@ for (const d of readdirSync(reports)) {
     const path = (line.match(/ · (text|code|full) path\b/) || line.match(/ · path (text|code|full)\b/) || [])[1] || '?'
     const model = (line.match(/ · models [^·]*\bimplementer (opus|sonnet|haiku|fable)\b/) || [])[1] || '?'
     tasks.push({
-      path, model, clean: parts[1].startsWith('CLEAN'),
+      path, model, clean: parts[1].startsWith('CLEAN'), cut: / · cut (none|\S+)\s*$/.test(line),
       rounds: num(/ · rounds (\d+)\b/), seconds: num(/ · (\d+) s\b/), tokens: num(/ · (\d+)k\b/),
     })
   }
@@ -48,7 +49,7 @@ const sum = (group) => {
   const has = (k) => group.map((t) => t[k]).filter((v) => v !== null)
   const r = has('rounds')
   return {
-    tasks: group.length, clean: group.filter((t) => t.clean).length,
+    tasks: group.length, clean: group.filter((t) => t.clean).length, cut: group.filter((t) => t.cut).length,
     rounds: r.length ? round1(r.reduce((a, b) => a + b, 0) / r.length) : null,
     minutes: round1(median(has('seconds')) === null ? null : median(has('seconds')) / 60),
     tokens: median(has('tokens')),
@@ -59,8 +60,8 @@ const out = { all: sum(tasks), path: by('path'), implementer: by('model') }
 
 if (json) { console.log(JSON.stringify(out)); process.exit(0) }
 const show = (v) => (v === null ? '?' : String(v))
-const row = (name, s) => `| ${name} | ${s.tasks} | ${s.clean} | ${show(s.rounds)} | ${show(s.minutes)} | ${show(s.tokens)} |`
-console.log('| group | tasks | clean | mean rounds | median min | median k tokens |\n| --- | --- | --- | --- | --- | --- |')
+const row = (name, s) => `| ${name} | ${s.tasks} | ${s.clean} | ${s.cut} | ${show(s.rounds)} | ${show(s.minutes)} | ${show(s.tokens)} |`
+console.log('| group | tasks | clean | cut | mean rounds | median min | median k tokens |\n| --- | --- | --- | --- | --- | --- | --- |')
 console.log(row('all', out.all))
 for (const [k, s] of Object.entries(out.path)) console.log(row(`path ${k}`, s))
 for (const [k, s] of Object.entries(out.implementer)) console.log(row(`implementer ${k}`, s))

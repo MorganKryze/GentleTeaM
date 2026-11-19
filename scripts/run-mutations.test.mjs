@@ -68,7 +68,7 @@ const PATHS = [
 for (const p of PATHS) if (!template.includes(p)) errors.push(`ledger template lacks: ${p}`)
 const retro = read('plugins/gtm/skills/retro/SKILL.md')
 for (const p of [
-  '**Paths:** run `node "${CLAUDE_PLUGIN_ROOT}/scripts/measure.mjs" --since <day> <root>`, `<day>` the date of the third-last run line (fewer than three: no `--since`), and quote its table (tasks, CLEAN, mean rounds, median minutes and tokens, per path and per implementer model); then the `escape` lines per path.',
+  '**Paths:** run `node "${CLAUDE_PLUGIN_ROOT}/scripts/measure.mjs" --since <day> <root>`, `<day>` the date of the third-last run line (fewer than three: no `--since`), and quote its table (tasks, CLEAN, cut, mean rounds, median minutes and tokens, per path and per implementer model); then the `escape` lines per path.',
   'A defect of this branch found after its merge is one `escape` line.',
   'one table (path, tasks, minutes, tokens, rounds, escapes)',
 ]) if (!retro.includes(p)) errors.push(`retro lacks: ${p}`)
