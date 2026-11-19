@@ -1,0 +1,12 @@
+# Proposes updates once a month: the site build's locked packages and the workflows' actions
+# (kept pinned to a full commit SHA, the version in a comment).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /.github/site-build
+    schedule:
+      interval: monthly
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

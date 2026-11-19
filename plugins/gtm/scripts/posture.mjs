@@ -89,7 +89,10 @@ for (const { file, text } of workflows) {
     const prop = body.length ? indent(body[0]) : 0
     const named = body.find((b) => indent(b) === prop && /^\s*name:/.test(b))
     const name = named ? uncomment(named).replace(/^\s*name:\s*/, '').replace(/^["']|["']$/g, '').trim() : key[1]
-    if (!name.includes('${{')) prJobs.push(name)
+    // A job its `if:` keeps off pull requests never runs as their check.
+    const cond = body.find((b) => indent(b) === prop && /^\s*if:/.test(b)) || ''
+    const offPr = /event_name\s*==\s*['"]push['"]|event_name\s*!=\s*['"]pull_request['"]|github\.ref\s*==/.test(cond)
+    if (!name.includes('${{') && !offPr) prJobs.push(name)
   }
 }
 
