@@ -399,7 +399,11 @@ const PINS = {
     '`## Mandate` section with its `> Source:` line (none: none).',
     'existing section over verbatim, its `> Source:` line included.',
   ],
-  'plugins/gtm/agents/security-reviewer.md': [/^effort: high$/m],
+  'plugins/gtm/agents/security-reviewer.md': [
+    /^effort: high$/m,
+    'A re-review replays only the survivors it sent back, each in a fresh scratch clone, and plants',
+    'no new one, unless its request carries the full path\'s mutation order.',
+  ],
   // An agent stays within its task: the implementer's limits, the reviewer's scope findings.
   'plugins/gtm/agents/architect.md': [
     // A required check behind a path filter or a scanner's upload: a `config` row.
