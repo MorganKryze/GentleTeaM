@@ -28,6 +28,8 @@ jobs:
         # docmd from the committed lockfile, so a new upstream release cannot change the site.
         run: |
           npm ci --prefix .github/site-build
+          npm audit signatures --prefix .github/site-build
+          npm audit --prefix .github/site-build --omit=dev --audit-level=high
           .github/site-build/node_modules/.bin/docmd build
       - name: Install the site test tools
         run: |

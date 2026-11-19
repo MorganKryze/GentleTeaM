@@ -636,6 +636,9 @@ check('A29', () => {
   if (/npx\b/.test(j.build)) f.push('build job installs a package with npx');
   if (!/npm ci --prefix \.github\/site-build\b/.test(j.build)) f.push('build job does not npm ci the site-build lockfile');
   if (!/\.github\/site-build\/node_modules\/\.bin\/docmd build/.test(j.build)) f.push('build job does not run the locked docmd build');
+  // The lockfile's packages carry valid registry signatures and no known high or critical advisory.
+  if (!/npm audit signatures --prefix \.github\/site-build\b/.test(j.build)) f.push('build job does not verify the registry signatures of the lockfile');
+  if (!/npm audit --prefix \.github\/site-build --omit=dev --audit-level=high\b/.test(j.build)) f.push('build job does not audit the lockfile for high advisories');
   const lock = JSON.parse(read('.github/site-build/package-lock.json') || '{}');
   const docmd = Object.entries(lock.packages || {}).filter(([k]) => /node_modules\/@docmd\/[^/]+$/.test(k));
   if (!docmd.length) f.push('the site-build lockfile pins no @docmd package');
@@ -668,6 +671,21 @@ check('A30', () => {
   for (const m of (j.build || '').matchAll(/npm_config_ignore_scripts:\s*(.*)$/gim)) if (!/^["']?true["']?\s*$/.test(m[1])) f.push(`a build step sets npm_config_ignore_scripts to ${m[1].trim()}`);
   for (const m of t.matchAll(/uses:\s*([^\s#]+)/g)) if (!/@[0-9a-f]{40}$/.test(m[1])) f.push(`not pinned to a full SHA: ${m[1]}`);
   if (!/^    concurrency:\s*\n\s+group:\s*\S+\s*\n\s+cancel-in-progress:\s*false\s*$/m.test(j.deploy || '')) f.push('deploy has no concurrency group with cancel-in-progress: false');
+  return f;
+});
+
+// The validate workflow, as hardened as the build: read-only token, no kept credentials, every
+// action pinned to a full SHA, no pull_request_target, no secret read.
+check('A35', () => {
+  const t = read('.github/workflows/validate.yml');
+  if (!t) return ['no .github/workflows/validate.yml'];
+  const f = [];
+  if (/pull_request_target/.test(t)) f.push('validate uses pull_request_target');
+  if (!/^permissions:\s*\n  contents: read\s*\n(?!  )/m.test(t)) f.push('validate top-level permissions are not contents: read only');
+  if (/^    permissions:/m.test(t)) f.push('a validate job widens its permissions');
+  if (!/actions\/checkout@\S+\s*(#.*)?\n\s+with:\s*\n\s+persist-credentials:\s*false/.test(t)) f.push('validate checkout persists its token');
+  if (/secrets\.|github\.token|GITHUB_TOKEN/.test(t)) f.push('validate reads a secret or the token');
+  for (const m of t.matchAll(/uses:\s*([^\s#]+)/g)) if (!/@[0-9a-f]{40}$/.test(m[1])) f.push(`validate: not pinned to a full SHA: ${m[1]}`);
   return f;
 });
 
