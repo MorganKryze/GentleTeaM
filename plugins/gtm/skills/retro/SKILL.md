@@ -13,6 +13,8 @@ Ground rules: as in the `gtm` skill §0.
 ## 1. Read
 `<root>/reports/<slug>/` (progress, task reports, final review), the spec and plan, and the whole
 ledger. Guideline edits follow `<root>/guidelines/voice.md`.
+Run `node "${CLAUDE_PLUGIN_ROOT}/scripts/ledger-check.mjs" <root>/ledger.md` and give its count
+in the report; an entry off the format is never rewritten (the ledger is append-only).
 
 ## 2. Distil
 - **CI reds:** with `ci` lines in the progress file, count them by hand before the lessons, as
