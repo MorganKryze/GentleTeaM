@@ -5,6 +5,14 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- The posture check no longer counts a job its `if:` keeps off pull requests (a deploy gated to
+  a push on main) as a pull-request check that should be required.
+
+### Added
+- This repository runs CodeQL on pull requests, pushes to main and weekly, and Dependabot
+  proposes monthly updates for the site build's packages and the workflows' actions.
+
 ## [0.27.0] - 2026-11-19
 
 ### Added
