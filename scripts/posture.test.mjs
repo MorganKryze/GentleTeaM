@@ -17,7 +17,7 @@ const eq = (name, got, want) => { if (JSON.stringify(got) !== JSON.stringify(wan
 const bin = join(dir, 'bin')
 mkdirSync(bin)
 const fake = join(bin, 'gh')
-writeFileSync(fake, `#!/usr/bin/env node\nconst m = JSON.parse(require('fs').readFileSync(process.env.FAKE_GH, 'utf8'))\nconst p = process.argv[3]\nif (!(p in m)) { console.error('no route'); process.exit(1) }\nprocess.stdout.write(JSON.stringify(m[p]))\n`)
+writeFileSync(fake, `#!/usr/bin/env node\nconst m = JSON.parse(require('fs').readFileSync(process.env.FAKE_GH, 'utf8'))\nconst p = process.argv[3]\nif (!(p in m)) { console.error('no route'); process.exit(1) }\nconst v = m[p]\nprocess.stdout.write(v && v.__pages ? v.__pages.map((x) => JSON.stringify(x)).join('') : JSON.stringify(v))\n`)
 chmodSync(fake, 0o755)
 
 const SHA = 'a'.repeat(40)
@@ -84,6 +84,35 @@ try {
   eq('not GitHub: rules unknown', [no.status, JSON.parse(no.stdout).rules, ids(no)], [0, 'unknown', ['rules.unknown check by hand']])
   const f = make('ghfails', { '.github/workflows/ci.yml': ci }, {})
   eq('gh failing: rules unknown', ids(run(f, '--json')).includes('rules.unknown check by hand'), true)
+
+  // Review cases: one-line `on:`, a stray pull_request outside `on:`, matrix and reusable jobs,
+  // a comment between jobs, credentials masked by a later step, `write` in a comment, a listing
+  // over several pages, a listing or a branch read that fails.
+  const one = `on: [push, pull_request]\npermissions: read-all # never write here\njobs:\n  test:\n    strategy:\n      matrix:\n        os: [a, b]\n    steps:\n      - run: osv-scanner . && gitleaks detect\n# a comment between jobs\n  call:\n    uses: o/r/.github/workflows/x.yml@${SHA}\n  named:\n    name: Build \${{ matrix.os }}\n    steps:\n      - run: true\n  plain:\n    steps:\n      - run: true\n`
+  const push = `on:\n  push:\npermissions:\n  contents: read\njobs:\n  deploy:\n    if: github.event_name == 'pull_request'\n    steps:\n      - uses: actions/checkout@${SHA}\n      - uses: actions/setup-node@${SHA}\n        with:\n          persist-credentials: false\n`
+  const prt = `on: [push, pull_request_target]\npermissions:\n  contents: read\njobs:\n  a:\n    steps:\n      - run: git checkout \${{ github.event.pull_request.head.sha }}\n`
+  const rv = make('review', { '.github/workflows/one.yml': one, '.github/workflows/push.yml': push, '.github/workflows/prt.yml': prt, '.github/workflows/sec.yml': sec, '.github/dependabot.yml': 'version: 2\n' }, {
+    'repos/o/r': { default_branch: 'main', visibility: 'private', security_and_analysis: {} },
+    'repos/o/r/rules/branches/main': [{ type: 'non_fast_forward' }, { type: 'required_status_checks', parameters: { required_status_checks: [{ context: 'test (a)' }, { context: 'call / build' }] } }],
+    'repos/o/r/branches': { __pages: [[{ name: 'main' }], [{ name: 'dev' }]] },
+    'repos/o/r/rules/branches/dev': [],
+  })
+  eq('review cases', ids(run(rv, '--json', '--branches', 'dev')), [
+    'wf.prt-checkout .github/workflows/prt.yml', 'wf.credentials .github/workflows/push.yml:9', 'ci.not-required main plain', 'rules.unknown dev',
+  ])
+  const lf = make('listfails', { '.github/workflows/sec.yml': sec, '.github/workflows/one.yml': one, '.github/dependabot.yml': 'version: 2\n' }, {
+    'repos/o/r': { default_branch: 'main', visibility: 'private' },
+    'repos/o/r/rules/branches/main': [],
+  })
+  eq('listing and branch read fail, push protection unread', ids(run(lf, '--json', '--branches', 'release/*')), ['rules.unknown release/*', 'rules.unknown main'])
+  const nogh = spawnSync(process.execPath, [script, '--json', lf.repo], { encoding: 'utf8', env: { PATH: dirname(execFileSync('which', ['git'], { encoding: 'utf8' }).trim()) === '/usr/bin' ? '/usr/bin:/bin' : `${dirname(execFileSync('which', ['git'], { encoding: 'utf8' }).trim())}:/usr/bin:/bin` } })
+  eq('gh absent', [nogh.status, JSON.parse(nogh.stdout).rules], [0, 'unknown'])
+
+  const un = make('unread', { '.github/workflows/sec.yml': sec, '.github/dependabot.yml': 'version: 2\n' }, {
+    'repos/o/r': { default_branch: 'main', visibility: 'private' },
+    'repos/o/r/rules/branches/main': [{ type: 'non_fast_forward' }, { type: 'required_status_checks', parameters: { required_status_checks: [{ context: 'x' }] } }],
+  })
+  eq('push protection unread without a secrets tool', ids(run(un, '--json')), ['deps.no-scan', 'secrets.unknown check by hand'])
 
   // A public repository without Scorecard, and gh answering the repository but not its rules.
   const pub = make('pub', { '.github/workflows/ci.yml': ci, '.github/dependabot.yml': 'version: 2\n' }, { 'repos/o/r': { default_branch: 'main', visibility: 'public', security_and_analysis: {} } })

@@ -754,11 +754,12 @@ const POSTURE = {
     w('None, or older than 30 days: run'),
     w('Show at most three gaps as decision cards, ranked'),
     w('every other gap in one card "later"'),
-    w('skip a gap a `ruling` line `posture <id> <where>: <answer>` names'),
+    w('`ruling` line `posture <id> <where>: accepted` names, while any other answer'),
+    w('with the ids closed since the last reading'),
     w('GTM changes nothing in the repository or its settings'),
   ],
   'plugins/gtm/skills/init/SKILL.md': [
-    w('run `/gtm:gtm <what you want done>` (posture first)'),
+    w('Run `templates/posture.md`\'s reading, then TL;DR and Next steps'),
   ],
   'plugins/gtm/templates/guidelines/pipeline.md': [
     w('Work lands through a reviewed pull request; nobody pushes to a long-lived branch by hand.'),
@@ -768,6 +769,7 @@ const POSTURE = {
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
     w('is one line in the card, saying a ruling `posture <id> <where>: accepted` silences it'),
+    w('as `templates/posture.md` does, and write nothing'),
     w('The line warns; it never blocks the go.'),
   ],
   'plugins/gtm/skills/status/SKILL.md': [
@@ -786,7 +788,7 @@ const POSTURE = {
     w('at most once every 30 days, reads your repository\'s CI/CD posture'),
   ],
   'plugins/gtm/templates/ledger.md': [
-    w('a posture reading reads `- <date> · posture · usage · read <n> gaps open: <ids>`'),
+    w('`- <date> · posture · usage · read <n> gaps open: <ids>; closed: <ids>`'),
   ],
 }
 for (const [file, pins] of Object.entries(POSTURE)) (PINS[file] ||= []).push(...pins)

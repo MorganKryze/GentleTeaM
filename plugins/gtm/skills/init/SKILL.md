@@ -80,4 +80,4 @@ the §1 entry (never `.gitignore` without asking); with B, add the root to `git.
 tracked file names it.
 
 ## 6. Done
-TL;DR of what was created; Next steps: `you` · run `/gtm:gtm <what you want done>` (posture first).
+Run `templates/posture.md`'s reading, then TL;DR and Next steps: `you` · run `/gtm:gtm <request>`.

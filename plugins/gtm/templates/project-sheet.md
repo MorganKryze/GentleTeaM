@@ -26,8 +26,8 @@ line, never empty, no control or format character; the number after a text is it
   `modules`).
 
 ## Who hands what
-A posture reading with gaps open is one difficulty: `k` `posture`, `text` `<n> gaps open:
-<ids>`, `src` its ledger line.
+A posture reading with gaps open is one difficulty: `k` `posture`, `text` `<n> gaps open, <m>
+closed: <ids>`, `src` its ledger line.
 - `/gtm:init`: reads `config.yml`'s `project.kind` and `<root>/sheet.json` first (no file:
   `purpose` and `users` null). One row of its guesses table per kind unset or `purpose` or `users`
   null (the kind: the guess and why; purpose and users: a summary of the brief), rows, not
