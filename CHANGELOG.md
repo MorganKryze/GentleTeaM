@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.25.1] - 2026-11-19
+
 ### Changed
 - The security reviewer, like the reviewer, replays on a re-review only the surviving mutations it
   sent back and plants no new one, unless the full path orders its mutations again.
