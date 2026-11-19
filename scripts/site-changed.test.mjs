@@ -13,6 +13,7 @@ const cases = [
   { name: 'pages from Markdown', files: ['docs/index.md', 'docs/reference/commands.md', 'docs/x/index.md'], out: 'pages: /,/reference/commands/,/x/', code: 2 },
   { name: 'a non-Markdown docs file measures all', files: ['docs/reference/roles.md', 'docs/assets/site.css'], out: 'pages: all', code: 2 },
   { name: 'the site config measures all', files: ['docmd.config.json'], out: 'pages: all', code: 2 },
+  { name: 'a deleted page is not measured', files: ['docs/reference/roles.md'], remove: ['docs/old.md'], out: 'pages: /reference/roles/', code: 2 },
   { name: 'no docs change measures nothing', files: ['src/a.js'], out: 'no docs page changed: nothing to measure', code: 0 },
 ]
 const errors = []
@@ -21,7 +22,9 @@ for (const c of cases) {
   const git = (...a) => execFileSync('git', ['-C', repo, '-c', 'commit.gpgsign=false', ...a], { env, stdio: 'ignore' })
   try {
     git('init', '-q', '-b', 'main'); writeFileSync(join(repo, 'README.md'), '# r\n'); git('add', '-A'); git('commit', '-q', '-m', 'start')
+    for (const f of c.remove || []) { mkdirSync(join(repo, dirname(f)), { recursive: true }); writeFileSync(join(repo, f), 'x\n'); git('add', '-A'); git('commit', '-q', '-m', 'old') }
     git('checkout', '-q', '-b', 'b')
+    for (const f of c.remove || []) rmSync(join(repo, f))
     for (const f of c.files) { mkdirSync(join(repo, dirname(f)), { recursive: true }); writeFileSync(join(repo, f), 'x\n') }
     git('add', '-A'); git('commit', '-q', '-m', 'change')
     const r = spawnSync(process.execPath, [script, repo, '--changed', 'main'], { env, encoding: 'utf8' })
@@ -30,8 +33,15 @@ for (const c of cases) {
 }
 // Run in a scratch folder: a broken refusal lets git write its --output file there.
 const scratch = mkdtempSync(join(tmpdir(), 'gtm-site-changed-'))
+const scratch2 = mkdtempSync(join(tmpdir(), 'gtm-site-changed-'))
+execFileSync('git', ['-C', scratch2, 'init', '-q'], { env, stdio: 'ignore' })
 const bad = spawnSync(process.execPath, [script, scratch, '--changed', '--output=x'], { cwd: scratch, encoding: 'utf8' })
 rmSync(scratch, { recursive: true, force: true })
 if (bad.status !== 2) errors.push(`a base starting with "-" is refused: got exit ${bad.status}`)
+for (const args of [['--changed'], ['--changed', '--widths', '360'], ['--changed', 'no-such-ref']]) {
+  const r = spawnSync(process.execPath, [script, scratch2, ...args], { cwd: scratch2, encoding: 'utf8' })
+  if (r.status !== 2 || !r.stderr.startsWith('--changed') || /at .*\.mjs:\d+/.test(r.stderr)) errors.push(`refused with exit 2 and no stack: ${args.join(' ')}: got exit ${r.status}`)
+}
+rmSync(scratch2, { recursive: true, force: true })
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
 console.log('site --changed: cases OK')

@@ -28,9 +28,13 @@ const opt = k => (argv.includes(k) ? argv[argv.indexOf(k) + 1] : null);
 const repo = argv[0];
 if (!repo || repo.startsWith('-')) { console.error('usage: node scripts/site-measure.test.mjs <repo> [--pages ...] [--widths ...] [--only ...] [--json f]'); process.exit(2); }
 let pages = opt('--pages') ? opt('--pages').split(',') : null;
-if (opt('--changed')) {
-  if (opt('--changed').startsWith('-')) { console.error('--changed takes a base ref'); process.exit(2); }
-  const files = execFileSync('git', ['-C', repo, '-c', 'core.quotePath=false', 'diff', '--name-only', '--no-renames', `${opt('--changed')}...HEAD`, '--', 'docs', 'docmd.config.json'], { encoding: 'utf8' }).split('\n').filter(Boolean);
+if (argv.includes('--changed')) {
+  const base = opt('--changed');
+  if (!base || base.startsWith('-')) { console.error('--changed takes a base ref'); process.exit(2); }
+  let files;
+  // A deleted page has nothing to measure: --diff-filter=d leaves it out.
+  try { files = execFileSync('git', ['-C', repo, '-c', 'core.quotePath=false', 'diff', '--name-only', '--no-renames', '--diff-filter=d', `${base}...HEAD`, '--', 'docs', 'docmd.config.json'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).split('\n').filter(Boolean); }
+  catch { console.error(`--changed: git found no range ${base}...HEAD`); process.exit(2); }
   if (!files.length) { console.log('no docs page changed: nothing to measure'); process.exit(0); }
   if (files.every(f => /^docs\/.+\.md$/.test(f))) pages = [...new Set(files.map(f => f.slice(4, -3).replace(/(^|\/)index$/, '') + '/').map(p => p.replace(/^\/?/, '/').replace(/\/+$/, '/')))].sort();
   console.log(`pages: ${pages ? pages.join(',') : 'all'}`);

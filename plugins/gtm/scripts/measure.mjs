@@ -18,7 +18,8 @@ const since = si >= 0 ? argv[si + 1] : null
 const rest = argv.filter((a, i) => !a.startsWith('--') && (si < 0 || i !== si + 1))
 const root = rest[0]
 const usage = () => { console.error('usage: node measure.mjs [--json] [--since YYYY-MM-DD] <root>'); process.exit(2) }
-if (rest.length !== 1 || (since !== null && !/^\d{4}-\d{2}-\d{2}$/.test(since || ''))) usage()
+const flags = argv.filter((a, i) => a.startsWith('--') && (si < 0 || i !== si + 1))
+if (flags.some((f) => !['--json', '--since'].includes(f)) || new Set(flags).size !== flags.length || rest.length !== 1 || (since !== null && !/^\d{4}-\d{2}-\d{2}$/.test(since || ''))) usage()
 let reports
 try { if (!lstatSync(root).isDirectory()) usage(); reports = join(root, 'reports'); if (!lstatSync(reports).isDirectory()) usage() } catch { usage() }
 

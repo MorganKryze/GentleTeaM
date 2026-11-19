@@ -5,6 +5,13 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- The ledger check reports an impossible month or day (`2026-13-45`) instead of crashing.
+- The site measure's `--changed` refuses a missing base and a range git cannot read with a usage
+  error, and no longer measures a page the branch deleted.
+- The measure script refuses an unknown or repeated flag instead of ignoring it, and retro runs it
+  without `--since` when the ledger holds fewer than three run lines.
+
 ## [0.25.1] - 2026-11-19
 
 ### Changed
