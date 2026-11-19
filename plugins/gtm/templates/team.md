@@ -48,7 +48,7 @@ A specialist reviews a task only when a changed path matches one of its triggers
 regexes on repo-relative paths). `off` removes it. A project agent may be added by its full agent
 type.
 
-- security-reviewer: on · triggers `^(server|api|auth)/`, `migrations?/` · why: <reason> · YYYY-MM-DD
+- security-reviewer: on · triggers `^(server|api|auth)/`, `migrations?/`, `^\.(github|forgejo)/workflows/` · why: <reason> · YYYY-MM-DD
 - data-reviewer: on · triggers `migrations?/`, `(db|store|sync)/` · why: <reason> · YYYY-MM-DD
 - ux-qa: on · triggers `^(src/)?(components|routes|pages|screens)/`, `\.css$` · why: <reason> · YYYY-MM-DD
 

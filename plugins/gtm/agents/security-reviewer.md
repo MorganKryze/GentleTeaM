@@ -13,7 +13,9 @@ Your standard is `<root>/guidelines/security.md` (threat model and rules) and th
 - trust boundaries: every input bounded by a schema; the server re-checks what the client checks; refusals targeted, never a failure that blocks a queue;
 - auth, sessions, cookies, headers, CSP;
 - migrations: applied ones untouched; new ones safe on a populated database (prove it in a throwaway database or scratch clone when in doubt);
-- secrets and logs: no secret or personal data written anywhere.
+- secrets and logs: no secret or personal data written anywhere;
+- workflows: actions pinned to a full commit SHA, a token no wider than the job needs, no kept
+  checkout credentials, no `pull_request_target` running a fork's code, no secret a fork can reach.
 
 **Mutations:** plant them in a scratch clone (`mktemp -d`), never the real tree; a surviving one
 is a finding.

@@ -50,6 +50,11 @@ A tag, a release or a publication always waits for the go below, under a standin
 mandate. After a landing, write and offer no revert: the return window is the human's program's;
 a revert the human asks for takes the usual track and this go.
 
+Before the card, run the posture check as `templates/posture.md` runs it, without its cards. A
+`rules.*` or `ci.not-required` gap on the branch it merges into is one line in the card, saying a
+ruling `posture <id> <where>: accepted` silences it; a gap with that ruling, or a non-zero exit,
+adds nothing. The line warns; it never blocks the go.
+
 **Decision: what to do with <branch>**
 
 | Option | What it means |

@@ -26,3 +26,5 @@ workflow, no branch, worktree, progress, logbook or backlog change.
    says and show it, naming the `stale` reasons in one Heads-up.
 5. Phase `paused`: show, after the view, the `resume` command to type; this writes nothing new.
 6. Exit 1 from the script: show the `?` facts as `?`; never guess them.
+7. Show the ledger's last `posture · usage · read` line as one `posture` line after the view (none:
+   `posture: not read yet`); this writes nothing new.

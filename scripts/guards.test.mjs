@@ -766,6 +766,25 @@ const POSTURE = {
     w('Two common shapes, neither imposed'),
     w('Names, not versions'),
   ],
+  'plugins/gtm/skills/ship/SKILL.md': [
+    w('is one line in the card, saying a ruling `posture <id> <where>: accepted` silences it'),
+    w('The line warns; it never blocks the go.'),
+  ],
+  'plugins/gtm/skills/status/SKILL.md': [
+    w('one `posture` line after the view'),
+  ],
+  'plugins/gtm/agents/security-reviewer.md': [
+    w('workflows: actions pinned to a full commit SHA'),
+  ],
+  'plugins/gtm/templates/team.md': [
+    w('`^\\.(github|forgejo)/workflows/`'),
+  ],
+  'plugins/gtm/templates/project-sheet.md': [
+    w('A posture reading with gaps open is one difficulty'),
+  ],
+  'docs/reference/commands.md': [
+    w('at most once every 30 days, reads your repository\'s CI/CD posture'),
+  ],
   'plugins/gtm/templates/ledger.md': [
     w('a posture reading reads `- <date> · posture · usage · read <n> gaps open: <ids>`'),
   ],

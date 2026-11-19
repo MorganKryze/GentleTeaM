@@ -5,6 +5,18 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- GTM reads a repository's CI/CD posture: `scripts/posture.mjs` lists, read-only, each gap
+  (a long-lived branch with no rule, required checks or force-push block, a CI job that runs
+  without being required, no dependency scan or updates, no SAST, no secret protection, unpinned
+  actions, wide tokens, kept checkout credentials, `pull_request_target` on fork code, and for
+  images and packages scan, signature and SBOM). `/gtm:gtm` runs it at most every 30 days and
+  shows up to three gaps as decision cards; an answered gap never comes back. A new
+  `pipeline.md` guideline holds the controls and the branching hygiene, with no model imposed.
+- `/gtm:ship` warns, without blocking, when the branch it merges into is unprotected;
+  `/gtm:status` shows the last posture reading; the security reviewer reads workflow changes;
+  `git.protected` names long-lived branches beside the base.
+
 ## [0.26.0] - 2026-11-19
 
 ### Fixed
