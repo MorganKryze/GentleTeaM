@@ -40,7 +40,7 @@ try {
   const text = run(root)
   if (/SECRET|reviewer|a\.\.b/.test(text.stdout)) errors.push('line text in the output')
   if (!text.stdout.includes('| path text | 1 | 1 | 0 | 5 | 40 |')) errors.push(`table row: ${text.stdout}`)
-  for (const bad of [[], ['--since', 'yesterday', root], [root, root], [join(root, 'nope')], [join(root, 'reports', 'a', 'progress.md')]]) {
+  for (const bad of [[], ['--since', 'yesterday', root], [root, root], [join(root, 'nope')], [join(root, 'reports', 'a', 'progress.md')], ['--verbose', root], ['--json', '--json', root], ['--since', '2026-11-12', '--since', '2026-11-10', root], ['--since']]) {
     if (run(...bad).status !== 2) errors.push(`usage error not refused: ${bad.join(' ')}`)
   }
 } finally { rmSync(root, { recursive: true, force: true }) }

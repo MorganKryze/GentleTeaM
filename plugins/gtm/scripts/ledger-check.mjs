@@ -28,7 +28,8 @@ readFileSync(rest[0], 'utf8').split('\n').forEach((raw, i) => {
   }
   const [date, slug, kind, ...text] = line.split(' · ')
   const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date)
-  if (!d || new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date) bad.push({ line: i + 1, reason: 'date' })
+  const dt = new Date(`${date}T00:00:00Z`)
+  if (!d || Number.isNaN(dt.getTime()) || dt.toISOString().slice(0, 10) !== date) bad.push({ line: i + 1, reason: 'date' })
   else if (!slug || !/^[a-z0-9][a-z0-9._-]*$/.test(slug)) bad.push({ line: i + 1, reason: 'slug' })
   else if (!KINDS.includes(kind)) bad.push({ line: i + 1, reason: 'kind' })
   else if (!text.join(' · ').trim()) bad.push({ line: i + 1, reason: 'no text' })

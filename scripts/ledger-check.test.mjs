@@ -24,10 +24,11 @@ try {
   writeFileSync(bad, [
     '- 2026-02-30 · a · minor · SECRET-1', '- 2026-11-18 · Bad Slug · minor · SECRET-2', '- 2026-11-18 · a · device · SECRET-3',
     '- 2026-11-18 · a · lesson · ', '- ~~2026-11-18 · a · minor · SECRET-4', '- 2026-11-18 · a · run · fine',
+    '- 2026-13-45 · a · lesson · x', '- 2026-00-10 · a · lesson · x',
   ].join('\n') + '\n')
   const b = run('--json', bad)
   const got = b.status === 1 ? JSON.parse(b.stdout) : null
-  const want = { entries: 6, bad: [{ line: 1, reason: 'date' }, { line: 2, reason: 'slug' }, { line: 3, reason: 'kind' }, { line: 4, reason: 'no text' }, { line: 5, reason: 'strike not closed' }] }
+  const want = { entries: 8, bad: [{ line: 1, reason: 'date' }, { line: 2, reason: 'slug' }, { line: 3, reason: 'kind' }, { line: 4, reason: 'no text' }, { line: 5, reason: 'strike not closed' }, { line: 7, reason: 'date' }, { line: 8, reason: 'date' }] }
   if (JSON.stringify(got) !== JSON.stringify(want)) errors.push(`bad ledger: exit ${b.status}, ${b.stdout}`)
   if (/SECRET/.test(run(bad).stdout)) errors.push('line text in the output')
   symlinkSync(ok, join(dir, 'link.md'))
