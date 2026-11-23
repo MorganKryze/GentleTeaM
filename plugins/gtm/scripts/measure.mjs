@@ -38,11 +38,18 @@ for (const d of readdirSync(reports)) {
     const model = (line.match(/ · models [^·]*\bimplementer (opus|sonnet|haiku|fable)\b/) || [])[1] || '?'
     tasks.push({
       path, model, clean: parts[1].startsWith('CLEAN'), cut: / · cut (none|\S+)\s*$/.test(line),
-      rounds: num(/ · rounds (\d+)\b/), seconds: num(/ · (\d+) s\b/), tokens: num(/ · (\d+)k\b/),
+      rounds: num(/ · rounds (\d+)\b/), seconds: num(/ · (\d+) s\b/) ?? span(line), tokens: num(/ · (\d+)k\b/) ?? (/ · 0 agents\b/.test(line) ? 0 : null),
     })
   }
 }
 
+// A line with no seconds segment, such as a task the lead did in session: its end minus its start,
+// when both are instants; any `?` leaves it unknown.
+function span(line) {
+  const t = (k) => { const m = line.match(new RegExp(` · ${k} (\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\dZ)\\b`)); return m ? Date.parse(m[1]) : NaN }
+  const s = (t('end') - t('start')) / 1000
+  return Number.isFinite(s) && s >= 0 ? s : null
+}
 const median = (xs) => { if (!xs.length) return null; const s = [...xs].sort((a, b) => a - b); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2 }
 const round1 = (x) => (x === null ? null : Math.round(x * 10) / 10)
 const sum = (group) => {

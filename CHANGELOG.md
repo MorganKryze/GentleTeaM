@@ -5,6 +5,11 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- The measure script reads a task the lead did in session: with no seconds segment it takes the
+  line's end minus its start, and `0 agents` with no tokens segment counts as 0k tokens. Those
+  tasks were all `?` before.
+
 ## [0.29.0] - 2026-11-23
 
 ### Added

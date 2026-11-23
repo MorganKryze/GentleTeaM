@@ -24,6 +24,11 @@ try {
     '- task 2 · CLEAN by ruling · start ? · end ? · models none · causes none · path code',
     '- task 3 · OPEN · fix · text path · rounds 0 · reviewer · a..b · 120 s · 20k · 1 agents · start 2026-11-12T11:00:00Z · end x · models implementer sonnet · causes none · path text · cut none',
   ])
+  // A task the lead did in session: no seconds or tokens segment, only its instants and 0 agents.
+  put('c', ['- task 1 · CLEAN · fix · by the lead in session · a..b · rounds 0 · start 2026-11-20T10:00:00Z · end 2026-11-20T10:09:00Z · 0 agents · path code', '- task 2 · CLEAN · fix · by the lead in session · start 2026-11-20T11:00:00Z · end ? · 0 agents · path code', '- task 3 · CLEAN · fix · by the lead in session · start 2026-11-20T12:00:00Z · end 2026-11-20T11:00:00Z · 0 agents · path code'])
+  const c = JSON.parse(run('--json', '--since', '2026-11-20', root).stdout)
+  eq('in session: seconds from start and end, 0 agents as 0k', c.path.code, { tasks: 3, clean: 3, cut: 0, rounds: 0, minutes: 9, tokens: 0 })
+  rmSync(join(root, 'reports', 'c'), { recursive: true, force: true })
   mkdirSync(join(root, 'elsewhere'))
   writeFileSync(join(root, 'elsewhere', 'progress.md'), '- task 1 · CLEAN · text path · rounds 9 · 9 s · 9k\n')
   symlinkSync(join(root, 'elsewhere'), join(root, 'reports', 'linked'))
