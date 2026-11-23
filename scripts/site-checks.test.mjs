@@ -709,7 +709,9 @@ check('A31', () => {
 });
 
 // A link to the site: the site's address followed by a path character or the end of the target.
-const linksSite = t => new RegExp(`${SITE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:[/#?]|(?=[\\s)"'>]|$))`).test(t);
+// A written-out pattern for SITE_URL, so no character of the address is read as a pattern.
+const SITE_LINK = /https:\/\/morgankryze\.github\.io\/GentleTeaM(?:[/#?]|(?=[\s)"'>]|$))/;
+const linksSite = t => SITE_LINK.test(t);
 
 check('A32', () => {
   const f = [];
@@ -739,7 +741,7 @@ check('A32', () => {
 });
 
 // The page without its script elements, matched case-insensitively, until none is left.
-const noScripts = h => { let p; do { p = h; h = h.replace(/<script\b[\s\S]*?<\/script\s*>/gi, ''); } while (h !== p); return h; };
+const noScripts = h => { let p; do { p = h; h = h.replace(/<script\b[\s\S]*?<\/script\b[^>]*>/gi, ''); } while (h !== p); return h; };
 
 check('A33', () => {
   const f = [];
