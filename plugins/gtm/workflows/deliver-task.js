@@ -244,9 +244,11 @@ const backed = new Set()
 // The step reads the findings as hex only, so no reviewer's words reach its prompt.
 const hex = (s) => encodeURIComponent(s).replace(/%([0-9A-F]{2})|[\s\S]/g, (m, h) => (h ? h.toLowerCase() : m.charCodeAt(0).toString(16).padStart(2, '0')))
 const STEP = { type: 'object', properties: { out: { type: 'string' } }, required: ['out'] }
+// At most 500 characters, cut between characters: half an emoji would fail the encoding below.
+const cut = (s) => [...String(s)].slice(0, 500).join('')
 // The probability the judge gave each finding asked; a finding without one keeps its round.
 async function judge(asks, label) {
-  const list = asks.map((f, i) => ({ id: `f${i}`, severity: f.severity, category: f.category, file: String(f.file || '').slice(0, 500), summary: String(f.summary).slice(0, 500) }))
+  const list = asks.map((f, i) => ({ id: `f${i}`, severity: f.severity, category: f.category, file: cut(f.file || ''), summary: cut(f.summary) }))
   verdicts.asked += asks.length
   let text = null
   try {
@@ -479,7 +481,7 @@ for (; round <= limit; round++) {
         } else if (!res.retry && !(pending[i].findings && f.status === 'open') && judged(f, r) && weigh.size < JUDGE_MAX) weigh.set(kept, r)
       }
     }
-    if (low) log(`${r}: ${low} proof, form or doc finding(s) off security and data ground, no round: to the ledger as minors`)
+    if (low) log(`${r}: ${low} proof, form or doc finding(s) off security and data ground, no round: to the ledger as minors; a lowered doc or form one answers for no survivor`)
     // Mutations count once, on a review's first round: a re-review replays the survivors it sent.
     // A survivor is a finding, never a silent pass: more survivors than findings is one more.
     const m = res.mutations

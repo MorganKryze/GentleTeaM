@@ -142,6 +142,8 @@ const DOC = { severity: 'important', file: 'docs/a.md', summary: 'false sentence
 // Judge stubs: the script and project /gtm:deliver hands over, behaviour findings, the step's line.
 const JUDGE = { script: '/p/gtm/scripts/judge.mjs', project: '/home/me/acme repo' }
 const BEHAV = { severity: 'important', file: 'src/a.js', summary: 'drops the last row, é ✓', category: 'behaviour' }
+// 499 characters, then an emoji (two UTF-16 units) across the 500th, then more.
+const LONG = { ...BEHAV, summary: 'a'.repeat(499) + '😀' + 'b'.repeat(20) }
 const KEPT = { ...BEHAV, file: 'src/b.js', summary: 'loses the lock' }
 const said = (p, extra = {}) => ({ out: JSON.stringify({ v: 1, model: 'jev-1.14.0', p, tokens: 600 * Object.keys(p).length, ...extra }) })
 const judgeStep = (label = 'judge') => ({ agentType: 'general-purpose', label, model: 'haiku' })
@@ -2232,7 +2234,7 @@ const deliver = [
       minors: [PROOF, FORM, DOC].map((f) => ({ ...f, severity: 'minor', was: 'important', by: 'reviewer' })),
     },
     dispatches: [implement(), reviewer()],
-    logs: [['reviewer: 3 proof, form or doc finding(s) off security and data ground, no round: to the ledger as minors'], ['reviewer asked for a fix over minors only: no round on the full path']],
+    logs: [['reviewer: 3 proof, form or doc finding(s) off security and data ground, no round: to the ledger as minors; a lowered doc or form one answers for no survivor'], ['reviewer asked for a fix over minors only: no round on the full path']],
   },
   // A lowered doc or form finding never answers for a surviving mutation; a lowered proof one does.
   {
@@ -2419,6 +2421,20 @@ const deliver = [
   // The external judge, on the same ground: an important behaviour finding a reviewer returns, judged
   // under 0.3, joins the minors with its probability; what it cannot answer keeps its round.
   {
+    // A summary past 500 characters is cut by character, never inside an emoji: a half emoji would
+    // fail the encoding and turn the judge off for the whole round.
+    name: 'judge: a long summary is cut whole, an emoji at the cut kept or dropped, never split',
+    args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
+    reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.12 }) : { verdict: 'fix', findings: [LONG], summary: 's' })),
+    returns: {
+      status: 'CLEAN', head: 'h0', fixRounds: 0, reviewers: ['reviewer'], stats: { reviewer: { critical: 0, important: 1, minor: 0 } },
+      minors: [lowJ(LONG, 0.12)], judge: verdict({ lowered: 1, tokens: 600 }),
+      trace: { models: 'implementer ?/?, reviewer ?/?, general-purpose haiku/?', causes: 'none', path: 'full' },
+    },
+    dispatches: [implement(), reviewer(), judgeStep()],
+    prompts: { judge: [`\nnode "${JUDGE.script}" --project "${JUDGE.project}" ${asked({ ...LONG, summary: [...LONG.summary].slice(0, 500).join('') })}`] },
+  },
+  {
     name: 'judge: off every ground an important behaviour finding judged under 0.3 starts no round, its probability kept',
     args: { triggers: TRIGGERS, risky: RISKY, judge: JUDGE },
     reply: implementer(['src/a.js'], (d) => (d.label === 'judge' ? said({ f0: 0.12 }) : { verdict: 'fix', findings: [BEHAV], summary: 's' })),
@@ -2457,7 +2473,7 @@ const deliver = [
     unprompted: { 'fix · round 1': ['drops the last row'] },
   },
   {
-    name: 'a minor proof finding answers for one survivor only, so two survivors start a round',
+    name: 'mutations: a minor proof finding answers for one survivor only, so two survivors start a round',
     args: { triggers: TRIGGERS, risky: RISKY },
     reply: implementer(['src/a.js'], (d) => (d.label === 'reviewer' ? { ...ok, findings: [{ ...typo, category: 'proof' }], mutations: { planted: 2, survived: 2 } } : ok)),
     returns: {
