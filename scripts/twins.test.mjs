@@ -62,7 +62,7 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/now.md', from: 'never write `<root>/sheet.json` yourself', to: 'write `<root>/sheet.json` yourself', says: 'never write `<root>/sheet.json`' },
   { test: 'guards', file: 'plugins/gtm/templates/now.md', from: '`/<rel>/sheet.json` goes to the exclude file', to: '`/<rel>/sheet.json` stays out of the exclude file', says: '`/<rel>/sheet.json` goes' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'never shorten or reword', to: 'shorten', says: 'project-sheet.md lacks never shorten' },
-  { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`showcase` is never handed', to: '`showcase` is handed', says: '`showcase` is never handed' },
+  { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`showcase` is handed only by `/gtm:ship`', to: '`showcase` is handed by any skill', says: '`showcase` is handed only by `/gtm:ship`' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`/gtm:retro`: reads `<root>/sheet.json` first', to: '`/gtm:retro`:', says: '`/gtm:retro`: reads `<root>/sheet.json` first' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'never rebuilt from the ledger alone', to: 'rebuilt from the ledger', says: 'never rebuilt from the ledger alone' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'counts once and its stored entry stays as it is', to: 'counts again', says: 'lacks counts once and its stored entry' },
