@@ -25,13 +25,14 @@ Then run `/gtm:init` in your project. Project-wide install, updates and pinning:
 [install](https://morgankryze.github.io/GentleTeaM/start/install/).
 
 ## 💸 What it costs
-GTM trades agent time for your attention. Measured on GTM's own changes:
+GTM trades agent time for your attention. Measured per task on GTM's own branches (GTM 0.23 to
+0.28):
 
-| Change | Size | Agent time | Measured on |
-| --- | --- | --- | --- |
-| 2 files, on security ground | Fix | 71 s | GTM 0.3.0 |
-| a docs fix and one workflow argument, 2 tasks | Feature | 11 min | GTM 0.3.0 |
-| a workflow change, 3 tasks | Feature | 58 min | GTM 0.2.0 |
+| How the task ran | Time per task | Agent tokens per task |
+| --- | --- | --- |
+| Agents, text path | 5 min | 42k |
+| Agents, full path | 34 min | 217k |
+| The lead in session, no agent | 8 min | 0 |
 
 Installed and idle, GTM adds about 760 tokens to a session. A Feature uses more of your plan
 than asking Claude Code directly; a Fix is the cheap path. What a change costs and how to lower

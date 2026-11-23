@@ -138,3 +138,15 @@ The folder is out of git when `reports/` is excluded, as `/gtm:init` sets it.
 Root inside the repository: with `<rel>` its path from `git rev-parse --show-toplevel`, run from
 that top, if `git check-ignore -q <rel>/reports/<slug>/lead/` fails, the folder is not ignored:
 write nothing there and stop with a Heads-up. A root outside the repository is out of git already.
+
+## The lead in session
+A Fix or a small Feature may be done by the lead itself, in the session, with no workflow and no
+reviewer agent: with the human present and asking for speed or fewer tokens, on the text or code
+review path, or on the full path when the branch ends with one Sonnet review of the branch before
+the push, its findings fixed. It is never on a product's data or security ground (a migration,
+sign-in, a trust boundary), a Milestone or a branch past 4 hours: those keep the full loop.
+What stays: each test written first and seen red; one planted defect per new rule, each caught,
+the test's exit read into a variable before anything else runs; the gate before each commit,
+each exit read on its own; the changed documentation pages measured; the lead's files in
+`reports/<slug>/lead/`; a progress line with `rounds 0 · <s> s · 0k · 0 agents · path <path>`
+and the ledger `run` line; the human's go before any push.

@@ -5,6 +5,14 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- The lead can do a Fix or a small Feature itself, in session, with no workflow and no reviewer
+  agent; `templates/delivery.md` says when, and what proof it keeps. The guides, the home page and
+  the README now give this week's measured costs per task (agents on the text and full paths, the
+  lead in session), and the glossary explains companions, the posture reading and the lead in
+  session.
+- The twins test skips a nested repository, such as a worktree under `.claude/worktrees/`.
+
 ## [0.28.0] - 2026-11-23
 
 ### Added

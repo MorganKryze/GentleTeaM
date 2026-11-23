@@ -35,6 +35,11 @@ red check itself.
 A moment where you decide, three per Feature: the mockups, the summary and the go, at
 `/gtm:design`, `/gtm:spec` and `/gtm:ship`.
 
+### Companion {#companion}
+A plugin or skill you installed that GTM can use when your team settings turn it on: impeccable
+for screens, humanize for prose, break-ui for worst-case data, review-animations for motion. It
+only adds findings, and GTM never installs one.
+
 ### Confirmation {#confirmation}
 What would show a decision still holds, named in its row of the spec: an acceptance line, a step
 of the gate, or a named review when nothing can be measured.
@@ -93,6 +98,11 @@ A change of at most 3 files with no schema or sign-in change, run by `/gtm:gtm`.
 `handoff.md`, written by `/gtm:pause`: what was stopped, what waited, the worktrees kept and the
 command that resumes.
 
+### Lead in session {#lead-in-session}
+A Fix or a small Feature the lead does itself, with no workflow and no reviewer agent: faster
+and without agent tokens, at the cost of a second pair of eyes. See
+[which size](/guides/which-size/#can-the-lead-do-it-in-session).
+
 ### Landing {#landing}
 What `/gtm:ship` records under a standing go instead of pushing: the class, the commit and its
 proofs, in `.gtm/reports/<slug>/landing.json`, for a program of yours to check and merge.
@@ -102,6 +112,7 @@ The method behind an item, named at its end as `(lens: <method name>)`.
 
 ### Logbook {#logbook}
 `ledger.md`, in `.gtm/`: one line per lesson, decision or deferred finding, kept across changes.
+The retro checks its format; a run cut short is marked `cut`, so the measure counts it.
 
 ### Mandate {#mandate}
 Four lines letting `/gtm:deliver` settle reversible decisions alone; it asks you only at four
@@ -118,6 +129,11 @@ A small planted change; it survives when no test catches it.
 
 ### Reflex {#reflex}
 A method a role applies every time, listed in its file; it adds a lens and never weakens a check.
+
+### Posture reading {#posture-reading}
+At most every 30 days, `/gtm:gtm` reads your repository's CI/CD posture: a branch no rule protects,
+a check that blocks nothing, no dependency or secret scan, loose workflows. It shows up to three
+gaps as decisions and changes nothing in your repository.
 
 ### Project sheet {#project-sheet}
 `sheet.json` in your GTM folder, one page of the project as data for a program of yours, kept
@@ -145,7 +161,8 @@ left out, and how each part is checked.
 
 ### Speciality sheet {#speciality-sheet}
 One file per speciality that a plan names for a task, at most 2 per task: it adds a lens to the
-roles that read it and never softens a check. Not the [project sheet](#project-sheet).
+roles that read it and never softens a check. Not the [project sheet](#project-sheet). The set
+is frozen at 38 sheets until their measure shows which ones earn their place.
 
 ### Stealth {#stealth}
 `stealth: on` in `config.yml`: GTM keeps its files out of the tracked tree and its names out of

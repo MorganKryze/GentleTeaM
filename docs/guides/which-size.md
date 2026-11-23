@@ -141,14 +141,35 @@ flowchart TD
 
 How to read it: you approve the split once, then each branch has a Feature's three checkpoints.
 
-The same answer as a table, with agent times measured on GTM's own changes:
+The same answer as a table, with the time per task measured on GTM's own branches from 17 to 23
+November 2026 (GTM 0.23 to 0.28):
 
-| Track | You decide | Agent time |
+| Track | You decide | Time per task |
 | --- | --- | --- |
-| Fix | the 3-line design, then the go | about a minute (71 s measured) |
-| Feature | the mockups if screens change, the summary, the go | 11 to 58 min measured |
+| Fix | the 3-line design, then the go | about 5 min on the text path, 34 min on the full path |
+| Feature | the mockups if screens change, the summary, the go | the same per task, times its tasks |
 | Milestone | the split into branches, then each branch as a Feature | hours |
 
+
+## Can the lead do it in session?
+
+Yes, for a Fix or a small Feature, when you are there and want it fast or cheap. The lead, the
+Claude you talk to, then does the work itself: no workflow and no reviewer agent. It keeps the
+proof: each test written first and seen failing, one planted defect per new rule, each caught,
+the project checks run before every commit, and the documentation pages it touched measured.
+You still give the go before anything is pushed.
+
+| Route | Time per task | Agent tokens per task | Measured on |
+| --- | --- | --- | --- |
+| The lead in session | 8 min | 0 | 14 tasks |
+| Agents, text path | 5 min | 42k | 4 tasks |
+| Agents, full path | 34 min | 217k | 9 tasks |
+
+What you give up is a second pair of eyes. So code on a risky path, such as a script GTM ships,
+ends with one review of the whole branch by a lighter model before the push. On GTM's own work,
+two such reviews cost 31k and 36k tokens and found a crash and twelve issues, all fixed before
+the merge. A product's data or security code, a Milestone and a branch past four hours keep the
+full loop.
 
 ## What if a Fix grows?
 

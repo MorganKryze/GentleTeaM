@@ -749,6 +749,7 @@ const POSTURE = {
   // The posture reading: when it runs, how many cards, what never repeats, what never changes.
   'plugins/gtm/skills/gtm/SKILL.md': [
     w('Posture first, at most every 30 days, as `templates/posture.md` says.'),
+    w('or the lead in session (`templates/delivery.md`)'),
   ],
   'plugins/gtm/templates/posture.md': [
     w('None, or older than 30 days: run'),
@@ -786,6 +787,15 @@ const POSTURE = {
   ],
   'docs/reference/commands.md': [
     w('at most once every 30 days, reads your repository\'s CI/CD posture'),
+  ],
+  'plugins/gtm/templates/delivery.md': [
+    '## The lead in session',
+    w('the human present and asking for speed or fewer tokens'),
+    w('never on a product\'s data or security ground'),
+    w('one Sonnet review of the branch before the push'),
+  ],
+  'docs/guides/which-size.md': [
+    '## Can the lead do it in session?',
   ],
   'plugins/gtm/templates/ledger.md': [
     w('`- <date> · posture · usage · read <n> gaps open: <ids>; closed: <ids>`'),
