@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.28.1] - 2026-11-23
+
 ### Changed
 - The lead can do a Fix or a small Feature itself, in session, with no workflow and no reviewer
   agent; `templates/delivery.md` says when, and what proof it keeps. The guides, the home page and
