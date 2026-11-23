@@ -47,7 +47,7 @@ scripts/site-measure.test.mjs . --changed main`: it measures only the pages the 
 new workflow needs a scenario there, and a changed default or threshold changes one.
 
 The size check, `node plugins/gtm/scripts/size.mjs`, counts what GTM adds to every session: about
-760 tokens in 0.13.0, against a budget of 800 held in the script. CI runs it on every push and
+760 tokens in 0.28.0, against a budget of 800 held in the script. CI runs it on every push and
 fails above the budget. A change that must grow a description raises the budget in its own
 commit, saying why; the docs then state the new figure.
 

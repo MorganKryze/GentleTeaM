@@ -4,7 +4,7 @@ description: What GTM costs, measured, and the levers that make a change cheaper
 ---
 
 ::: callout summary
-- **You will learn:** what a change costs, and nine levers that lower it, each with its risk.
+- **You will learn:** what a change costs, and ten levers that lower it, each with its risk.
 - **Reading time:** 5 minutes.
 - **Before this:** [Change your team settings](/guides/team-settings/).
 :::
@@ -15,16 +15,17 @@ directly. A [Fix](/reference/glossary/#fix) is the cheap path.
 
 ## What does a change cost?
 
-Measured on GTM's own changes:
+Measured per task on GTM's own branches, 17 to 23 November 2026 (GTM 0.23 to 0.28), by
+`scripts/measure.mjs`:
 
-| Change | Size | Agent time | Measured on |
+| How the task ran | Time per task | Agent tokens per task | Tasks |
 | --- | --- | --- | --- |
-| 2 files, on security ground | Fix | 71 s | GTM 0.3.0 |
-| a docs fix and one workflow argument, 2 tasks | Feature | 11 min, 61% of it the final review | GTM 0.3.0 |
-| a workflow change, 3 tasks | Feature | 58 min | GTM 0.2.0 |
+| Agents, text path (a reviewer on a light model) | 5 min | 42k | 4 |
+| Agents, full path (every specialist, planted defects) | 34 min | 217k | 9 |
+| The lead in session, no agent | 8 min | 0 | 14 |
 
 Installed and idle, GTM adds about 760 tokens to a session, measured by `size.mjs` on GTM
-0.13.0. No controlled comparison with Claude Code alone has been run yet.
+0.28.0. No controlled comparison with Claude Code alone has been run yet.
 
 ## How do I know what a change will cost before it runs?
 
@@ -66,7 +67,7 @@ Each lever saves something and risks something. Most change your
 
 | Lever | What it saves | What it risks |
 | --- | --- | --- |
-| Keep the change small enough to stay a Fix | the spec, the plan and the final review: 71 s against 11 min or more | nothing, while it stays within its file limit; past it, it grows into a Feature |
+| Keep the change small enough to stay a Fix | the spec, the plan and the final review | nothing, while it stays within its file limit; past it, it grows into a Feature |
 | Lower a role's effort with `/gtm:tune` | tokens on every call of that role; the roles that run most often save most | that role misses more; reviews and [correction rounds](/reference/glossary/#correction-round) catch part of it |
 | Narrow a specialist's paths | a security, data or screen review on tasks outside its ground | a path rule that is too narrow misses a change; the final review catches it |
 | Keep `design.screens` off when nothing is visual | the [mockups](/reference/glossary/#mockups) step: a designer and a critic for each screen | a screen change goes unscored before it is built |
@@ -74,6 +75,7 @@ Each lever saves something and risks something. Most change your
 | Keep plans to 8 tasks or fewer, each a vertical slice (`tasks per branch`) | the fixed cost each task pays: brief, review, report | a slice too big for one review; the reviewer splits its findings |
 | Keep task briefs short: the task, the constraints it touches, paths to the rest | the tokens each implementer reads | a rule the brief points at but the implementer skips; the review catches it |
 | Set `design.kit` so screens built only from the kit are designed in code | a designer and a critic per screen: 20 to 25 minutes each | a screen you approve from captures rather than mockups |
+| Ask the lead to do a Fix or a small Feature in session ([which size](/guides/which-size/#can-the-lead-do-it-in-session)) | every agent: 0 agent tokens, 8 min a task measured | no second pair of eyes; risky code ends with one light review before the push |
 | Read summaries with `/gtm:brief-me` | your reading time: it shows any document at brief, standard or deep detail | a detail you would have caught in the full text |
 
 ## Where does the time go in a Feature?

@@ -300,7 +300,8 @@ try {
   const first = mkdtempSync(join(tmpdir(), 'gtm-twins-'))
   scratches.push(first)
   const files = execFileSync('git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'], { cwd: root, encoding: 'utf8' })
-    .split('\0').filter((f) => f && existsSync(join(root, f)))
+    // A nested repository, such as a worktree under .claude/worktrees/, is listed as `<dir>/`: skip it.
+    .split('\0').filter((f) => f && !f.endsWith('/') && existsSync(join(root, f)))
   for (const f of files) {
     mkdirSync(dirname(join(first, f)), { recursive: true })
     cpSync(join(root, f), join(first, f), { verbatimSymlinks: true })

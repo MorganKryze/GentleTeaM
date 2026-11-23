@@ -65,7 +65,7 @@ const COVER = [
   ['README', 'How it works (tracks)', 'guides/which-size.md', /\bMilestone\b/],
   ['README', 'Install', 'start/install.md', /plugin marketplace add MorganKryze\/GentleTeaM/],
   ['README', 'Quick start', 'start/install.md', /\/gtm:gtm\b/],
-  ['README', 'What it costs', 'guides/too-slow.md', /71 s\b/],
+  ['README', 'What it costs', 'guides/too-slow.md', /\b217k\b/],
   ['README', 'Roles', 'reference/roles.md', /\bthirteen\b/i],
   ['README', 'Principles', 'why/positions.md', /light over complete/i],
   ['README', 'Docs', 'README.md', /morgankryze\.github\.io\/GentleTeaM/],

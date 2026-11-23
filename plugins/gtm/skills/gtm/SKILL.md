@@ -78,7 +78,7 @@ brainstorm note, its path, read only: tell the analyst never to write it.
 
 | Track | When | Flow | Human checkpoints |
 | --- | --- | --- | --- |
-| **Fix** | ≤ the file limit for a fix (team settings, 3 by default), no schema, migration or auth change | 3-line design in chat → implementer + the reviewers team.md's review paths call for | approve the 3-line design, then the go |
+| **Fix** | ≤ the file limit for a fix (team settings, 3 by default), no schema, migration or auth change | 3-line design in chat → implementer + the reviewers team.md's review paths call for, or the lead in session (`templates/delivery.md`) | approve the 3-line design, then the go |
 | **Feature** | one capability, one branch | design-loop if screens change → spec → plan → deliver per task → final review | mockups, spec summary, go |
 | **Milestone** | several branches, a new surface | decomposition into sub-features, then the Feature flow per branch, final review per branch | decomposition, then per branch: mockups, spec, go |
 
