@@ -53,13 +53,15 @@ type.
 - ux-qa: on · triggers `^(src/)?(components|routes|pages|screens)/`, `\.css$` · why: <reason> · YYYY-MM-DD
 
 ## Companions
-Optional plugins GTM knows (`templates/companions.md`): a role uses one only when it is `on` here
-and installed; GTM never installs one. The two lines below are examples: init replaces them with
-one line per companion found and approved, or `- none detected · YYYY-MM-DD`. A file without this
-section has none on: nothing to migrate.
+Optional plugins and user-level skills GTM knows (`templates/companions.md`): a role uses one only
+when it is `on` here and installed; GTM never installs one. The lines below are examples:
+init replaces them with one line per companion found and approved, or `- none detected ·
+YYYY-MM-DD`. A file without this section has none on: nothing to migrate.
 
 - impeccable: on · detected skill `impeccable:impeccable` · roles designer, design-critic, ux-qa · why: <reason> · YYYY-MM-DD
 - humanize: on · detected skill `humanize:humanize` · roles ship, implementer · why: <reason> · YYYY-MM-DD
+- break-ui: on · detected skill `break-ui` · roles ux-qa · why: <reason> · YYYY-MM-DD
+- review-animations: on · detected skill `review-animations` · roles design-critic · why: <reason> · YYYY-MM-DD
 
 ## Gates
 - fix rounds per task: 3 · why: past three, the plan is wrong, not the code · YYYY-MM-DD

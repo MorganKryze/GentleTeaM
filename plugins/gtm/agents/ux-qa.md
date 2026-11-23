@@ -18,7 +18,9 @@ compared as a minor; rate important a new route the test file lacks. Without `ve
 method above.
 
 With impeccable `on` in `<root>/team.md` and present, run its detector on the touched screens once
-per review, as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable).
+per review, as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable). With break-ui
+`on` and present, feed the touched screens its worst-case data once per review, as the same
+file says (break-ui); you change no project file for it.
 
 Accessibility failures are important findings, never polish.
 

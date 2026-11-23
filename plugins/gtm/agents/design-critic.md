@@ -17,6 +17,8 @@ You judge; you never edit the mockups. Your standard is `<root>/guidelines/desig
 - With impeccable `on` in `<root>/team.md` and present, add its detector's hits to your
   measurements as `${CLAUDE_PLUGIN_ROOT}/templates/companions.md` says (impeccable); your own
   measurements still decide the score.
+- With review-animations `on` and present, check a mockup page that adds or changes motion
+  against its standards, as the same file says (review-animations).
 
 **Taste (only when the prompt names a direction):** read the direction file the prompt names,
 `references.md` beside it, the craft it names (`${CLAUDE_PLUGIN_ROOT}/templates/crafts/<job>.md`)
