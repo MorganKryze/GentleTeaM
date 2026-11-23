@@ -367,7 +367,7 @@ try {
     for (const [reset, want] of [['2026-10-15T12:00:00Z', 'projected 101.2% · flag'], ['2026-10-15T10:20:00Z', 'projected 91.6%']]) {
       writeFileSync(b.store, JSON.stringify({ v: 1, at, five_hour: { used_percentage: 82, resets_at: reset }, seven_day: { used_percentage: 92, resets_at: null } }))
       const r = b.run(['--read', '--now', at, '--ledger', ledger, '--tokens', '640', '--minutes', '40'])
-      check(`F9 reset ${reset}`, new RegExp(`^5h 82% · .* · ${want.replace(/[.+]/g, '\\$&')}$`, 'm').test(r.stdout), r.stdout)
+      check(`F9 reset ${reset}`, new RegExp(`^5h 82% · .* · ${want.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm').test(r.stdout), r.stdout)
       check('F9 7d: one run with limits, threshold kept', /^7d 92% · resets \? · in \? min · flag$/m.test(r.stdout), r.stdout)
     }
   }

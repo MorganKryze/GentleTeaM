@@ -708,6 +708,9 @@ check('A31', () => {
   return f;
 });
 
+// A link to the site: the site's address followed by a path character or the end of the target.
+const linksSite = t => new RegExp(`${SITE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:[/#?]|(?=[\\s)"'>]|$))`).test(t);
+
 check('A32', () => {
   const f = [];
   const t = read('README.md') || '';
@@ -717,10 +720,10 @@ check('A32', () => {
   for (const sec of t.split(/^## /m).slice(1)) {
     const name = sec.split('\n')[0];
     if (/licen[cs]e/i.test(name)) continue;
-    if (!sec.includes(SITE_URL)) f.push(`README "${name.trim()}" does not link to the site`);
+    if (!linksSite(sec)) f.push(`README "${name.trim()}" does not link to the site`);
   }
   const intro = t.split(/^## /m)[0];
-  if (!intro.includes(SITE_URL)) f.push('README intro (what GTM is) does not link to the site');
+  if (!linksSite(intro)) f.push('README intro (what GTM is) does not link to the site');
   const cost = (t.split(/^## .*cost.*$/im)[1] || '').split(/^## /m)[0];
   const rows = cost.split('\n').filter(l => /^\|/.test(l)).slice(2);
   if (!rows.length) f.push('no cost table');
@@ -734,6 +737,9 @@ check('A32', () => {
   }
   return f;
 });
+
+// The page without its script elements, matched case-insensitively, until none is left.
+const noScripts = h => { let p; do { p = h; h = h.replace(/<script\b[\s\S]*?<\/script\s*>/gi, ''); } while (h !== p); return h; };
 
 check('A33', () => {
   const f = [];
@@ -752,7 +758,7 @@ check('A33', () => {
   const idsOf = p => { if (!ids.has(p)) ids.set(p, new Set([...readFileSync(p, 'utf8').matchAll(/\bid="([^"]+)"/g)].map(m => m[1]))); return ids.get(p); };
   let n = 0;
   for (const p of htmls) {
-    const html = readFileSync(p, 'utf8').replace(/<script[\s\S]*?<\/script>/g, '');
+    const html = noScripts(readFileSync(p, 'utf8'));
     for (const m of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
       let u = m[1];
       if (/^(mailto:|javascript:|data:|tel:)/.test(u)) continue;
