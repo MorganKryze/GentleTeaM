@@ -418,6 +418,7 @@ const PINS = {
     'start; never read, print or write a secret or token.',
   ],
   'plugins/gtm/agents/reviewer.md': [
+    w('A file outside the task that shows such a sign is `security`, never `form`.'),
     '- Scope: a changed file the brief does not name is a finding, important, category `form`;',
     w('any sign of the implementer working outside its task (another worktree,'),
     'logs, a file outside the repository, a process it did not start)',

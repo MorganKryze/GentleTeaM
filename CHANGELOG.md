@@ -5,6 +5,12 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- A finding summary past 500 characters is cut between characters before it goes to the external
+  judge: an emoji cut in half failed the encoding and turned the judge off for the whole round.
+- The reviewer files a file outside the task that shows work outside it as `security`, never
+  `form`; the lowered-findings log line says a lowered doc or form finding answers for no survivor.
+
 ## [0.28.1] - 2026-11-23
 
 ### Changed

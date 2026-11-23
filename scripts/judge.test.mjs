@@ -40,7 +40,7 @@ function service(...replies) {
     return {
       status: r.status ?? 200,
       headers: { get: (h) => (h === 'retry-after' ? r.retryAfter ?? null : null) },
-      json: body(r.body),
+      json: r.notJson ? async () => { throw new SyntaxError('not JSON') } : body(r.body),
       text: body(JSON.stringify(r.body)),
     }
   }
@@ -108,6 +108,7 @@ for (const [what, reply] of [
   ['no probability', { body: { model: MODEL, answers: { user: {} } } }],
   ['an extra answer', { body: { model: MODEL, answers: { user: { noul: 0.1 }, other: { noul: 0.1 } } } }],
   ['no body', { body: null }],
+  ['a 200 that is not JSON', { notJson: true }],
 ]) check(`ask: ${what} is unavailable`, await ask([F0], opts(service(reply))), { p: {}, tokens: 0, unavailable: 'answer' })
 check('ask: 0 and 1 are answers', (await ask([F0, F1], opts(service(answer(0), answer(1))))).p, { f0: 0, f1: 1 })
 
