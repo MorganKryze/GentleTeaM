@@ -6,7 +6,8 @@
 
 ## Detect
 - Init and tune only, read-only: a companion is found when the session lists its skill
-  (`impeccable:impeccable`, `humanize:humanize`). No tool call, nothing run or written.
+  (`impeccable:impeccable`, `humanize:humanize`, or a user-level skill such as `break-ui`).
+  No tool call, nothing run or written.
 - Init: each one found is a row of the team-settings table, proposed `on`; none found, no row.
   No question and no install advice either way: the docs name them.
 - Record what the human approves: `- <name>: on|off · detected skill <skill> · roles <roles> ·
@@ -22,7 +23,8 @@
 ## Use
 - Read `<root>/team.md` `## Companions`. Off or no line: the role's own method, unchanged, no
   warning. On: its entry point is the last of `ls -d "<config>"/plugins/cache/<entry point> |
-  sort -V` (`<config>` = `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`); none: the skip line below.
+  sort -V` (`<config>` = `${CLAUDE_CONFIG_DIR:-$HOME/.claude}`); a user-level skill's is the file
+  its entry names under `<config>/skills/<name>/`; none: the skip line below.
 - Run only the Run line, through the tools the role already has; read only what it names.
 - A companion only adds findings: it never removes, downgrades or replaces one the role's own
   method found, nor changes a threshold or a verdict rule.
@@ -67,3 +69,26 @@
   under "Where"; without it, the README and `docs/`), on what it changed, before its commit.
 - **Never:** a rewrite of unflagged text, an audit table in a tracked file, commit or PR text,
   and with `stealth: on` no tool name either.
+
+## break-ui
+- **Source:** github.com/emilkowalski/skills (MIT); the human installs it with `npx skills@latest
+  add emilkowalski/skills`; a user-level skill, listed as `break-ui`.
+- **Entry point:** `<config>/skills/break-ui/CATALOG.md`, the worst-case data catalog.
+- **Run:** read that catalog only, never the skill's workflow. For each touched screen, take the
+  rows that apply and build one worst-case dataset through the boundary its demo data already
+  uses, inside your own capture harness or a temporary folder outside the repository; capture the
+  screen with it at `design.widths` and report each break, with no change to the project's files.
+- **Roles:** `ux-qa`, once per review, on the touched screens: a break on an accessibility path
+  (a lost label, a target pushed off screen) is important, any other a minor.
+- **Never:** its dev toggle, a fixture or component edit, a commit or a fix; nonsense values (random
+  strings, thousands of characters), which its own catalog refuses.
+
+## review-animations
+- **Source:** github.com/emilkowalski/skills (MIT), installed with break-ui; a user-level skill,
+  listed as `review-animations`.
+- **Entry point:** `<config>/skills/review-animations/STANDARDS.md`.
+- **Run:** only when the mockup adds or changes motion (a transition, an animation, keyframes, a
+  motion library call): read that file only and check each motion against it.
+- **Roles:** `design-critic`, on a mockup page with motion: a motion that ignores reduced motion
+  is a must-fix, any other miss a should-fix; your own measurements still decide the score.
+- **Never:** its rewrite, plan or audit steps; a change to any file.

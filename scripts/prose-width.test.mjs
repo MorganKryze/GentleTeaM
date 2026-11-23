@@ -68,7 +68,7 @@ const FROZEN = Object.freeze({
   'plugins/gtm/templates/guidelines/docs.md': 2,
   'plugins/gtm/templates/guidelines/git.md': 2,
   'plugins/gtm/templates/guidelines/i18n.md': 1,
-  'plugins/gtm/templates/team.md': 9,
+  'plugins/gtm/templates/team.md': 10, // + the review-animations example line, one line per companion by format
   'README.md': 4,
 })
 

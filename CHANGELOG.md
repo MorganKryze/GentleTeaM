@@ -5,6 +5,12 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- Two design companions from user-level skills: `break-ui` gives ux-qa a worst-case data
+  catalog (long, short, missing and non-Latin values, huge counts) to feed the touched screens,
+  changing no project file; `review-animations` gives the design critic motion standards for a
+  mockup that adds or changes motion. Companion detection now reads user-level skills too.
+
 ## [0.27.1] - 2026-11-19
 
 ### Fixed

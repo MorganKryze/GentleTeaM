@@ -36,11 +36,11 @@ for (const [role, tools] of Object.entries(TOOLS)) {
 
 const rules = read('templates/companions.md')
 const section = (name) => (rules.split(/^## /m).find((s) => s.startsWith(`${name}\n`)) || '')
-for (const h of ['Detect', 'Use', 'impeccable', 'humanize']) if (!section(h)) fail(`companions.md: no "## ${h}"`)
+for (const h of ['Detect', 'Use', 'impeccable', 'humanize', 'break-ui', 'review-animations']) if (!section(h)) fail(`companions.md: no "## ${h}"`)
 // A bullet with its wrapped continuation lines, joined by spaces.
 const line = (sec, key) => ((sec.match(new RegExp(`^- \\*\\*${key}:\\*\\*.*(?:\\n  .*)*`, 'm')) || [''])[0].replace(/\n\s+/g, ' '))
 const isRole = (r) => existsSync(join(plugin, 'agents', `${r}.md`)) || existsSync(join(plugin, 'skills', r, 'SKILL.md'))
-for (const name of ['impeccable', 'humanize']) {
+for (const name of ['impeccable', 'humanize', 'break-ui', 'review-animations']) {
   const sec = section(name)
   for (const key of ['Source', 'Entry point', 'Run', 'Roles', 'Never']) if (!line(sec, key)) fail(`${name}: no "${key}" line`)
   const roles = [...line(sec, 'Roles').matchAll(/`([a-z-]+)`/g)].map((m) => m[1])
@@ -52,15 +52,20 @@ if (!/IMPECCABLE_LAUNCHER_PROBE=1 "<entry>" detect --json/.test(imp)) fail('impe
 if (!/exit 2/.test(imp)) fail('impeccable: Run must read exit 2 as hits, not a failure')
 const hum = line(section('humanize'), 'Run')
 if (!/--audit-only/.test(hum) || !/python3 -I/.test(hum)) fail('humanize: Run must be the audit only, the scanner isolated')
+// The user-level design skills: a file to read, never their workflow, never a change to the project.
+const brk = line(section('break-ui'), 'Run')
+if (!/CATALOG\.md`/.test(line(section('break-ui'), 'Entry point')) || !/no change to the project's files/.test(brk)) fail('break-ui: Run must read the catalog only and change no project file')
+const anim = line(section('review-animations'), 'Run')
+if (!/STANDARDS\.md`/.test(line(section('review-animations'), 'Entry point')) || !/only when/.test(anim)) fail('review-animations: Run must read the standards only, and only on motion')
 const use = section('Use')
-for (const w of ['companion <name> skipped: <reason>', 'companion <name> dropped:', 'only adds findings', 'tracked tree'])
+for (const w of ['<config>/skills/<name>/', 'companion <name> skipped: <reason>', 'companion <name> dropped:', 'only adds findings', 'tracked tree'])
   if (!use.includes(w)) fail(`companions.md Use lacks "${w}"`)
 if (!section('Detect').includes('none detected')) fail('companions.md Detect lacks "none detected"')
 
 const team = read('templates/team.md')
 const at = (h) => team.indexOf(`\n## ${h}\n`)
 if (!(at('Specialists') < at('Companions') && at('Companions') < at('Gates'))) fail('team.md: ## Companions must sit between Specialists and Gates')
-for (const w of ['none on', '- impeccable: on · detected skill `impeccable:impeccable`', 'templates/companions.md'])
+for (const w of ['none on', '- impeccable: on · detected skill `impeccable:impeccable`', '- break-ui: on · detected skill `break-ui` · roles ux-qa', '- review-animations: on · detected skill `review-animations` · roles design-critic', 'templates/companions.md'])
   if (!team.includes(w)) fail(`team.md Companions lacks "${w}"`)
 
 // The template's companion lines are examples: init must never keep them unchosen.
@@ -72,6 +77,8 @@ if (!/Companions[^.]*`- none detected/.test(read('agents/analyst.md'))) fail('ag
 // Every role and skill that uses a companion points at the one rule source.
 for (const f of ['agents/designer.md', 'agents/design-critic.md', 'agents/ux-qa.md', 'agents/implementer.md', 'skills/ship/SKILL.md'])
   if (!read(f).includes('templates/companions.md')) fail(`${f} does not point at templates/companions.md`)
+if (!read('agents/ux-qa.md').includes('(break-ui)')) fail('agents/ux-qa.md does not use break-ui as companions.md says')
+if (!read('agents/design-critic.md').includes('(review-animations)')) fail('agents/design-critic.md does not use review-animations as companions.md says')
 const ship = read('skills/ship/SKILL.md')
 const humAt = ship.indexOf('With humanize `on`')
 if (!(ship.indexOf('\n## 2.') < humAt && humAt < ship.indexOf('\n## 2b.'))) fail('ship: the humanize pass on pr.md must sit in §2, before §2b')
