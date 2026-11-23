@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.28.2] - 2026-11-23
+
 ### Fixed
 - A finding summary past 500 characters is cut between characters before it goes to the external
   judge: an emoji cut in half failed the encoding and turned the judge off for the whole round.
