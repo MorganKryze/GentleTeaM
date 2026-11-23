@@ -7,6 +7,7 @@
 // `--update` rewrites expected.json from the current output.
 import { existsSync, readFileSync, writeFileSync, readdirSync, mkdtempSync, mkdirSync, cpSync, rmSync, appendFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import { tmpdir } from 'node:os'
 import { execFileSync } from 'node:child_process'
 
@@ -63,6 +64,14 @@ for (const name of readdirSync(fixtures, { withFileTypes: true }).filter((d) => 
   } finally {
     rmSync(repo, { recursive: true, force: true })
   }
+}
+
+// A quoted value unescapes in one pass: an escaped backslash before a quote stays a backslash.
+{
+  const { parseYaml } = await import(pathToFileURL(script).href)
+  const got = parseYaml('k: "a\\\\"b"\n').k
+  const want = 'a\\"b'
+  if (got !== want) errors.push(`quoted value: expected ${JSON.stringify(want)}, got ${JSON.stringify(got)}`)
 }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1) }
