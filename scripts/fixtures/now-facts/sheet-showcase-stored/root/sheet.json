@@ -1,0 +1,41 @@
+{
+  "v": 1,
+  "kind": "tool",
+  "headline": null,
+  "purpose": "Un but déjà relu par le propriétaire.",
+  "users": null,
+  "plan": {
+    "branch": null,
+    "steps": null,
+    "milestone": null,
+    "stories": null
+  },
+  "decisions": [
+    {
+      "at": "2026-10-01",
+      "text": "Une décision relue.",
+      "by": "owner"
+    }
+  ],
+  "cost": {
+    "tokens": null,
+    "seconds": null,
+    "dollars": null
+  },
+  "difficulties": [],
+  "modules": [],
+  "showcase": {
+    "public": false,
+    "kicker": "Outil",
+    "line": "Une ligne relue.",
+    "facts": [],
+    "principles": [],
+    "visuals": [
+      {
+        "frame": "none",
+        "src": "reports/where-am-i/shots/gone.png",
+        "alt": "Une image retirée depuis."
+      }
+    ]
+  }
+}

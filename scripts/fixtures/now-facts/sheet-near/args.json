@@ -346,14 +346,14 @@
         ]
       ],
       "want": {
-        "exit": 1,
+        "exit": 0,
         "facts": {
-          "written": false,
-          "field": "showcase",
-          "why": "set"
+          "written": true,
+          "field": null,
+          "why": null
         },
         "files": {
-          "sheet.json": null
+          "sheet.json": true
         }
       }
     },
@@ -370,8 +370,8 @@
         "exit": 1,
         "facts": {
           "written": false,
-          "field": "showcase",
-          "why": "set"
+          "field": "showcase.public",
+          "why": "missing"
         },
         "files": {
           "sheet.json": null

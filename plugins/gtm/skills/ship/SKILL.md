@@ -76,6 +76,11 @@ check has ended green and none is red, a skipped or cancelled one read as `runne
 a CI red`). A CI red follows `## On a CI red`; under `git.push: standing`, so does a CI red the
 human reports on a landing.
 
+**Showcase:** with `project.sheet` `on`, propose the project's showcase as
+`templates/showcase.md` says, after the go of a ship when the sheet holds none and no
+`showcase · ruling` line answered one, and after the release of each new major version; GTM
+writes it only on the owner's approval.
+
 ## 4. After the human deploys
 If `qa.live_url` is set, offer one line: run `gtm:release-qa` on the live instance. Report per the
 briefing format; a bug becomes a Fix or a Feature through `/gtm:gtm`.

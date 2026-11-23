@@ -974,7 +974,7 @@ function written(s, answering, given, stamp, dir, file, drop, no3) {
 // nothing else. Owner fields come from the step only, fact fields from the script only.
 const PROJECTS = ['app-mobile', 'app-web', 'infra', 'tool', 'sandbox'], STEPS = ['done', 'blocked', 'todo', 'doing']
 const SHEET = ['v', 'kind', 'headline', 'purpose', 'users', 'plan', 'decisions', 'cost', 'difficulties', 'modules', 'showcase']
-const OWNER = ['purpose', 'users', 'decisions', 'difficulties']
+const OWNER = ['purpose', 'users', 'decisions', 'difficulties', 'showcase']
 // config.yml's `project` block: `sheet` on only when it reads `on`, `kind` one of PROJECTS; each a
 // two-space key and one bare word, a comment after a space allowed, nothing else on the line; a
 // key given twice is no value.
@@ -1008,6 +1008,39 @@ const PLAN = {
   }),
   stories: (v, f) => orNull(v, f, (s, g) => { const q = exact(s, ['done', 'total'], g); int(1e6)(q.done, at(g, 'done')); int(1e6)(q.total, at(g, 'total')); if (q.done > q.total) refuse(at(g, 'done'), 'range'); return q }),
 }
+// The showcase (templates/project-sheet.md): the project shown to someone else, never the work in
+// progress. A visual is a regular PNG, JPEG or WebP file under the root's reports/, no link.
+const FRAMES = ['phone', 'tablet', 'desktop', 'none']
+// A stored sheet keeps a visual whose file has gone since: only a showcase handed in is checked
+// against the disk, so a removed capture never blocks the sheet's later writes.
+let storedRead = false
+const imageIn = (v, f) => {
+  if (typeof v !== 'string') refuse(f, 'type')
+  if (!/^reports\/[^\0]+\.(png|jpe?g|webp)$/i.test(v) || v.includes('\\') || BAD.test(v) || v.split('/').some((p) => p === '..' || p === '.' || p === '')) refuse(f, 'file')
+  // On disk: a regular file, its real path inside the real reports/ (a link anywhere on the way out
+  // is refused, not only a link as the last part).
+  if (!storedRead) try {
+    const reports = realpathSync(join(root, 'reports')) + sep
+    if (!lstatSync(join(root, v)).isFile() || !realpathSync(join(root, v)).startsWith(reports)) refuse(f, 'file')
+  } catch (e) { if (e instanceof Refused) throw e; refuse(f, 'file') }
+  return v
+}
+function showcaseOf(v, f) {
+  const q = exact(v, ['public', 'kicker', 'line', 'facts', 'principles', 'visuals'], f)
+  if (typeof q.public !== 'boolean') refuse(at(f, 'public'), 'type')
+  txt(q.kicker, 60, at(f, 'kicker'))
+  txt(q.line, 200, at(f, 'line'))
+  q.facts = listOf(0, 6, (x, g) => { list(x, 2, 2, g); txt(x[0], 30, `${g}[0]`); txt(x[1], 80, `${g}[1]`); return [x[0], x[1]] })(q.facts, at(f, 'facts'))
+  q.principles = listOf(0, 5, (x, g) => txt(x, 120, g))(q.principles, at(f, 'principles'))
+  q.visuals = listOf(0, 4, (x, g) => {
+    const w = exact(x, ['frame', 'src', 'alt'], g)
+    if (!FRAMES.includes(w.frame)) refuse(at(g, 'frame'), 'list')
+    imageIn(w.src, at(g, 'src'))
+    txt(w.alt, 120, at(g, 'alt'))
+    return w
+  })(q.visuals, at(f, 'visuals'))
+  return q
+}
 const CHECKS = {
   v: (v, f) => { if (v !== 1) refuse(f, 'list'); return v },
   kind: (v, f) => { if (v !== null && !PROJECTS.includes(v)) refuse(f, 'list'); return v },
@@ -1019,7 +1052,7 @@ const CHECKS = {
   cost: (v, f) => { const c = exact(v, ['tokens', 'seconds', 'dollars'], f); orNull(c.tokens, at(f, 'tokens'), int(1e12)); orNull(c.seconds, at(f, 'seconds'), int(1e9)); if (c.dollars !== null) refuse(at(f, 'dollars'), 'list'); return c },
   difficulties: listOf(0, 6, (x, g) => { const d = exact(x, ['k', 'text', 'src'], g); txt(d.k, 20, at(g, 'k')); txt(d.text, 200, at(g, 'text')); txt(d.src, 120, at(g, 'src')); return d }),
   modules: listOf(0, 8, moduleOf),
-  showcase: (v, f) => { if (v !== null) refuse(f, 'list'); return v },
+  showcase: (v, f) => orNull(v, f, showcaseOf),
 }
 // A sheet checked whole, as stored, or the step's input: owner fields only, at least one, a fact
 // field given refusing as `set`. A stored sheet without `showcase` reads it as null. Returns a fresh
@@ -1035,7 +1068,8 @@ function sheetOf(v, stored) {
   const keys = stored ? SHEET : OWNER.filter((k) => Object.hasOwn(v, k))
   if (!keys.length) refuse('', 'missing')
   const s = exact(v, keys, '')
-  for (const k of keys) s[k] = CHECKS[k](s[k], k)
+  storedRead = stored
+  try { for (const k of keys) s[k] = CHECKS[k](s[k], k) } finally { storedRead = false }
   return s
 }
 // This slug's spend (A5): the sums of its progress lines' `<n> s` segments and of the `<n>k`
@@ -1138,9 +1172,9 @@ function held(stepping, given, file, no1, no3) {
     let old = null
     if (kind(file) === 'file') try { old = sheetOf(JSON.parse(quoted('sheet.json', '')), true) } catch { return stepping ? no1('', 'stored') : no3('sheet.json fails the check, left as it is') }
     if (given === undefined) refuse('', 'json')
-    const o = { purpose: null, users: null, decisions: [], difficulties: [], ...(old && Object.fromEntries(OWNER.map((k) => [k, old[k]]))), ...(stepping ? sheetOf(given, false) : {}) }
+    const o = { purpose: null, users: null, decisions: [], difficulties: [], showcase: null, ...(old && Object.fromEntries(OWNER.map((k) => [k, old[k]]))), ...(stepping ? sheetOf(given, false) : {}) }
     const f = factsOf()
-    next = sheetOf({ v: 1, kind: f.kind, headline: null, purpose: o.purpose, users: o.users, plan: f.plan, decisions: o.decisions, cost: f.cost, difficulties: o.difficulties, modules: [], showcase: null }, true)
+    next = sheetOf({ v: 1, kind: f.kind, headline: null, purpose: o.purpose, users: o.users, plan: f.plan, decisions: o.decisions, cost: f.cost, difficulties: o.difficulties, modules: [], showcase: o.showcase }, true)
   } catch (e) {
     if (!stepping) return no3(e instanceof Refused ? `${e.field || '.'} off its shape` : 'an error in the check')
     return no1(e instanceof Refused ? e.field : '', e instanceof Refused ? e.why : 'error')

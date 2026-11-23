@@ -4,7 +4,7 @@
 // defect that no longer applies fails too, so a twin cannot rot. Every scripts/*.test.mjs has a
 // twin; a new one needs its row. No object in a test holds a key twice: the later one wins and
 // the pins under the first never run. Run by scripts/validate.mjs. No dependencies.
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { tmpdir } from 'node:os'
 import { execFileSync } from 'node:child_process'
@@ -62,7 +62,7 @@ const TWINS = [
   { test: 'guards', file: 'plugins/gtm/templates/now.md', from: 'never write `<root>/sheet.json` yourself', to: 'write `<root>/sheet.json` yourself', says: 'never write `<root>/sheet.json`' },
   { test: 'guards', file: 'plugins/gtm/templates/now.md', from: '`/<rel>/sheet.json` goes to the exclude file', to: '`/<rel>/sheet.json` stays out of the exclude file', says: '`/<rel>/sheet.json` goes' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'never shorten or reword', to: 'shorten', says: 'project-sheet.md lacks never shorten' },
-  { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`showcase` is never handed', to: '`showcase` is handed', says: '`showcase` is never handed' },
+  { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`showcase` is handed only by `/gtm:ship`', to: '`showcase` is handed by any skill', says: '`showcase` is handed only by `/gtm:ship`' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: '`/gtm:retro`: reads `<root>/sheet.json` first', to: '`/gtm:retro`:', says: '`/gtm:retro`: reads `<root>/sheet.json` first' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'never rebuilt from the ledger alone', to: 'rebuilt from the ledger', says: 'never rebuilt from the ledger alone' },
   { test: 'guards', file: 'plugins/gtm/templates/project-sheet.md', from: 'counts once and its stored entry stays as it is', to: 'counts again', says: 'lacks counts once and its stored entry' },
@@ -304,7 +304,9 @@ try {
     .split('\0').filter((f) => f && !f.endsWith('/') && existsSync(join(root, f)))
   for (const f of files) {
     mkdirSync(dirname(join(first, f)), { recursive: true })
-    cpSync(join(root, f), join(first, f), { verbatimSymlinks: true })
+    // A link is made again as it is: cpSync refuses a link to a folder without recursing into it.
+    if (lstatSync(join(root, f)).isSymbolicLink()) symlinkSync(readlinkSync(join(root, f)), join(first, f))
+    else cpSync(join(root, f), join(first, f), { verbatimSymlinks: true })
   }
   git(first, 'init', '-q', '-b', 'main')
   git(first, 'add', '-A')

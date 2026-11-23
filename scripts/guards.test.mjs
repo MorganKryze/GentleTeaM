@@ -170,7 +170,7 @@ const PINS = {
   ],
   'plugins/gtm/templates/project-sheet.md': [
     'never shorten or reword',
-    '`showcase` is never handed in this version',
+    '`showcase` is handed only by `/gtm:ship`, as `templates/showcase.md` says',
     '`/gtm:retro`: reads `<root>/sheet.json` first',
     'never rebuilt from the ledger alone',
     'counts once and its stored entry stays as it is',
@@ -747,6 +747,16 @@ addAbsent('plugins/gtm/templates/team.md', ['judge:'])
 addAbsent('plugins/gtm/templates/config.yml', ['judge:'])
 // Added pins merge into PINS, never replacing a file's earlier ones.
 const POSTURE = {
+  // The showcase: proposed by ship alone, on the owner's approval, never the work in progress.
+  'plugins/gtm/templates/showcase.md': [
+    'GTM is the only writer of its root; a reader only',
+    w('Nothing of the work in progress'),
+    w('check it shows no test data and no secret'),
+    w('A project without screens proposes none.'),
+    w('C writes nothing and the next major version asks again'),
+    w('A new major version is a release whose tag\'s first'),
+    '| no kind | the plainest',
+  ],
   // The posture reading: when it runs, how many cards, what never repeats, what never changes.
   'plugins/gtm/skills/gtm/SKILL.md': [
     w('Posture first, at most every 30 days, as `templates/posture.md` says.'),
@@ -770,6 +780,8 @@ const POSTURE = {
     w('Names, not versions'),
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
+    w('after the go of a ship when the sheet holds none and no `showcase · ruling` line answered one'),
+    w('after the release of each new major version; GTM writes it only on the owner\'s approval'),
     w('is one line in the card, saying a ruling `posture <id> <where>: accepted` silences it'),
     w('as `templates/posture.md` does, and write nothing'),
     w('The line warns; it never blocks the go.'),
