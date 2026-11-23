@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.28.0] - 2026-11-23
+
 ### Added
 - Two design companions from user-level skills: `break-ui` gives ux-qa a worst-case data
   catalog (long, short, missing and non-Latin values, huge counts) to feed the touched screens,
