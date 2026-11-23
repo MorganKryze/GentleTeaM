@@ -21,9 +21,9 @@ line, never empty, no control or format character; the number after a text is it
 - `decisions`: 0 to 6; `at` a real date, not after today; `by` `owner` for the owner's answer,
   `gtm` for a default taken for them.
 - `difficulties`: 0 to 6.
-- `showcase` is never handed in this version: the script writes it `null` and refuses it given,
-  `null` included, as `set`. So does every fact field (`v`, `kind`, `headline`, `plan`, `cost`,
-  `modules`).
+- `showcase` is handed only by `/gtm:ship`, as `templates/showcase.md` says; `null` clears it, and
+  a visual must be a regular image under `reports/` when handed (`file` otherwise). Every fact
+  field (`v`, `kind`, `headline`, `plan`, `cost`, `modules`) is refused given, as `set`.
 
 ## Who hands what
 A posture reading with gaps open is one difficulty: `k` `posture`, `text` `<n> gaps open, <m>
