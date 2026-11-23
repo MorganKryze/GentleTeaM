@@ -1,0 +1,10 @@
+{
+  "showcase": {
+    "public": false,
+    "kicker": "Outil en ligne de commande",
+    "line": "Dit où en est un projet, en une page.",
+    "facts": [["Langage", "Node, sans dépendance"]],
+    "principles": ["Rien n'est écrit sans le propriétaire."],
+    "visuals": [{ "frame": "desktop", "src": "reports/where-am-i/shots/home.png", "alt": "La page d'accueil." }]
+  }
+}
