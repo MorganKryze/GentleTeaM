@@ -258,12 +258,16 @@ in your `language.human`, at most the characters given.
 | `cost` | `{tokens, seconds, dollars}`: the sums of this branch's progress lines, whole numbers or null; `dollars` null | the script |
 | `difficulties` | 0 to 6 `{k, text, src}`: texts, 20, 200 and 120 | `/gtm:retro` |
 | `modules` | 0 to 8 modules as in the [card file](#card-file); `[]` in this version | the script |
-| `showcase` | absent or null in this version; a later version's object, added under `v` 1 | the script |
+| `showcase` | null, or `{public, kicker (60), line (200), facts, principles, visuals}`: `public` true or false, 0 to 6 `facts` `[label (30), value (80)]`, 0 to 5 `principles` (120), 0 to 4 `visuals` `{frame, src, alt (120)}` with `frame` `phone`, `tablet`, `desktop` or `none` and `src` an image under `reports/` | `/gtm:ship`, on your approval |
 
 `cost` adds the seconds and tokens of each line in `reports/<slug>/progress.md`; the tail that
 ends a line (start, end, models, causes, path) adds nothing. A sum GTM cannot be sure of is `null`,
-never smaller. A `showcase` holding anything but `null` comes from a later GTM: read it as a field
-you do not know.
+never smaller.
+
+The `showcase` presents the project to someone else, never the work in progress: no quota, cost,
+wait or difficulty. `/gtm:ship` proposes it after the go of the first ship, then after each new
+major version, framed by the project's kind; it is written only when you approve it, and stays
+private (`public` false) until you say otherwise.
 
 ## What does a new project start with?
 

@@ -5,6 +5,13 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- The project sheet carries a showcase: the project presented to someone else (a kicker, one
+  line, facts, principles, up to four visuals), never the work in progress, private by default.
+  `/gtm:ship` proposes it after the go of the first ship and after each new major version, framed
+  by the project's kind, and writes it only on the owner's approval; each visual is shown on the
+  card, and a visual whose file is later removed never blocks the sheet's next writes.
+
 ## [0.28.2] - 2026-11-23
 
 ### Fixed
