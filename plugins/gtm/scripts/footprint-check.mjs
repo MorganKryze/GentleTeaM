@@ -116,7 +116,7 @@ function value(v) {
 }
 function scalar(s) {
   s = s.trim()
-  if (/^".*"$/.test(s)) return s.slice(1, -1).replace(/\\\\/g, '\\').replace(/\\"/g, '"')
+  if (/^".*"$/.test(s)) return s.slice(1, -1).replace(/\\(["\\])/g, '$1')
   if (/^'.*'$/.test(s)) return s.slice(1, -1).replace(/''/g, "'")
   return s
 }
