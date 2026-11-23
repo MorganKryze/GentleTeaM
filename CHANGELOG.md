@@ -5,6 +5,8 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.29.0] - 2026-11-23
+
 ### Added
 - The project sheet carries a showcase: the project presented to someone else (a kicker, one
   line, facts, principles, up to four visuals), never the work in progress, private by default.
