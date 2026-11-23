@@ -1016,8 +1016,13 @@ const FRAMES = ['phone', 'tablet', 'desktop', 'none']
 let storedRead = false
 const imageIn = (v, f) => {
   if (typeof v !== 'string') refuse(f, 'type')
-  if (!/^reports\/[^\0]+\.(png|jpe?g|webp)$/i.test(v) || v.split('/').some((p) => p === '..' || p === '.' || p === '')) refuse(f, 'file')
-  if (!storedRead) try { if (!lstatSync(join(root, v)).isFile()) refuse(f, 'file') } catch (e) { if (e instanceof Refused) throw e; refuse(f, 'file') }
+  if (!/^reports\/[^\0]+\.(png|jpe?g|webp)$/i.test(v) || v.includes('\\') || BAD.test(v) || v.split('/').some((p) => p === '..' || p === '.' || p === '')) refuse(f, 'file')
+  // On disk: a regular file, its real path inside the real reports/ (a link anywhere on the way out
+  // is refused, not only a link as the last part).
+  if (!storedRead) try {
+    const reports = realpathSync(join(root, 'reports')) + sep
+    if (!lstatSync(join(root, v)).isFile() || !realpathSync(join(root, v)).startsWith(reports)) refuse(f, 'file')
+  } catch (e) { if (e instanceof Refused) throw e; refuse(f, 'file') }
   return v
 }
 function showcaseOf(v, f) {

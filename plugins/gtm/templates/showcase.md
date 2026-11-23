@@ -19,7 +19,9 @@
 One decision card, the drafted showcase beside the stored one on an update: A keep as drafted, B
 change the words (the owner's own), C not now. A or B hands `{"showcase": {...}}` to the sheet
 step as `templates/project-sheet.md` says, `public` true only when the owner says so; C writes
-nothing and the next major version asks again. The answer is a ledger `ruling` line.
+nothing and the next major version asks again. The answer is one ledger line, `- <date> · showcase
+· ruling · <A, B or C>: <the owner's words>`. A new major version is a release whose tag's first
+number is above the previous release tag's (`v2.0.0` after `v1.4.2`).
 
 ## Frames per kind
 | `project.kind` | Kicker, for example | Facts that suit it | Visual frames |
@@ -29,3 +31,4 @@ nothing and the next major version asks again. The answer is a ledger `ruling` l
 | `tool` | "Outil en ligne de commande" | install, language, dependencies | `none`, or a terminal capture |
 | `infra` | "Infrastructure · un cluster" | where it runs, its parts, its footprint | `none`, or `desktop` for a dashboard |
 | `sandbox` | "Bac à sable · une piste" | what it explores, where it stands | any |
+| no kind | the plainest: a kicker and a line from the brief | none unless the brief names one | `none` |

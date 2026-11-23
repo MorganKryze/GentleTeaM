@@ -754,6 +754,8 @@ const POSTURE = {
     w('check it shows no test data and no secret'),
     w('A project without screens proposes none.'),
     w('C writes nothing and the next major version asks again'),
+    w('A new major version is a release whose tag\'s first'),
+    '| no kind | the plainest',
   ],
   // The posture reading: when it runs, how many cards, what never repeats, what never changes.
   'plugins/gtm/skills/gtm/SKILL.md': [
@@ -778,7 +780,7 @@ const POSTURE = {
     w('Names, not versions'),
   ],
   'plugins/gtm/skills/ship/SKILL.md': [
-    w('after the go of a ship when the sheet holds none and no ledger `ruling` answered one'),
+    w('after the go of a ship when the sheet holds none and no `showcase · ruling` line answered one'),
     w('after the release of each new major version; GTM writes it only on the owner\'s approval'),
     w('is one line in the card, saying a ruling `posture <id> <where>: accepted` silences it'),
     w('as `templates/posture.md` does, and write nothing'),

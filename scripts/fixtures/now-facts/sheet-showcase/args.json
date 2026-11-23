@@ -420,6 +420,139 @@
           "sheet.json": null
         }
       }
+    },
+    {
+      "patch": [
+        [
+          "showcase.visuals.0.src",
+          "reports/where-am-i/linked/shot.png"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "showcase.visuals[0].src",
+          "why": "file"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "showcase.visuals.0.src",
+          "reports/where-am-i/dir.png"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "showcase.visuals[0].src",
+          "why": "file"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "showcase.visuals.0.src",
+          "/etc/hosts.png"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "showcase.visuals[0].src",
+          "why": "file"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "showcase.visuals.0.src",
+          "reports/where-am-i/shots/UPPER.PNG"
+        ]
+      ],
+      "want": {
+        "exit": 0,
+        "facts": {
+          "written": true,
+          "field": null,
+          "why": null
+        },
+        "files": {
+          "sheet.json": true
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "showcase.visuals.0.src",
+          "reports\\\\where-am-i\\\\shots\\\\home.png"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "showcase.visuals[0].src",
+          "why": "file"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "showcase.visuals.0.src",
+          "reports/where-am-i/shots/ho\nme.png"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "showcase.visuals[0].src",
+          "why": "file"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
+    },
+    {
+      "patch": [
+        [
+          "showcase.visuals.0.src",
+          "reports/where-am-i/shots/ho‮me.png"
+        ]
+      ],
+      "want": {
+        "exit": 1,
+        "facts": {
+          "written": false,
+          "field": "showcase.visuals[0].src",
+          "why": "file"
+        },
+        "files": {
+          "sheet.json": null
+        }
+      }
     }
   ]
 }
