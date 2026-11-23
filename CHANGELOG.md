@@ -5,6 +5,10 @@ versions follow [SemVer](https://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- Quoted config values unescape in one pass, and a slug is escaped before it joins a pattern;
+  the test regexes behind eight code-scanning alerts are tightened.
+
 ## [0.28.0] - 2026-11-23
 
 ### Added

@@ -170,7 +170,8 @@ const med = (k) => { const xs = runs.map((r) => r[k]).filter((x) => x != null); 
 // A spec or plan is slug s's when its whole name is `<date>-<s>.md`, or with part `<date>-<s>-<part>.md`
 // for a part a skill writes (gtm/SKILL.md, Milestone); any other suffix may be another story's.
 const PARTS = ['milestone']
-const named = (n, s, part) => new RegExp(`^\\d{4}-\\d\\d-\\d\\d-${s}${part ? `(-(${PARTS.join('|')}))?` : ''}\\.md$`).test(n)
+const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const named = (n, s, part) => new RegExp(`^\\d{4}-\\d\\d-\\d\\d-${esc(s)}${part ? `(-(${PARTS.join('|')}))?` : ''}\\.md$`).test(n)
 
 function facts(s) {
   const progressFile = join(root, 'reports', s, 'progress.md')
@@ -211,7 +212,7 @@ function facts(s) {
   }
   const doneTasks = Object.values(status).filter((w) => /^(CLEAN|GATED)$/.test(w)).length
   if (phase === 'delivery' && typeof of === 'number' && doneTasks >= of) phase = 'final review'
-  if (new RegExp(`^- \\d{4}-\\d\\d-\\d\\d · ${s} · run · shipped`, 'm').test(ledger)) phase = 'shipped'
+  if (new RegExp(`^- \\d{4}-\\d\\d-\\d\\d · ${esc(s)} · run · shipped`, 'm').test(ledger)) phase = 'shipped'
   const task = phase !== 'delivery' ? null : typeof of === 'number' ? { n: doneTasks + 1, of } : '?'
   const cmd = paused && RESUME[paused] ? RESUME[paused](s, { plan, spec }) : null
   const command = typeof cmd === 'string' && /^\/gtm:[a-z]+( [A-Za-z0-9._/-]+)?$/.test(cmd) ? cmd : '?'
